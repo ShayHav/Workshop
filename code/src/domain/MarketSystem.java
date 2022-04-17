@@ -19,7 +19,7 @@ public class MarketSystem {
         return uc.Login(n,p);
     }
 
-    public String gettingInformation(String s){}
+    public String gettingInformation(String s){return null;}
 
-    public String searchItems(String s){}
+    public String searchItems(String s){return null;}
 }

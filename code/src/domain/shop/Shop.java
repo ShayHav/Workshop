@@ -1,5 +1,7 @@
 package domain.shop;
 
+import domain.Tuple;
+
 public class Shop {
 
     private Inventory inventory;
@@ -17,7 +19,7 @@ public class Shop {
 
     public String gettingInformationProduct(String s){return null;}
 
-    public Product[] searchItems(String s){return null;}
+    public Food[] searchItems(String s){return null;}
 
     public int shopDiscountPolicy(int purchase){return 0;}
 
@@ -25,8 +27,19 @@ public class Shop {
 
     public boolean isProductIsAvailable(int id){return true;}
 
-    public void addProductToInventory(Product product,int quantity){inventory.addProuct(product,quantity);}
+    public void addProductToInventory(Product product, Tuple<Integer,Integer> quantityPrice){inventory.addProuct(product,quantityPrice);}
 
-    
+    public void removeProductFromInventory(Product product){
+        //check if the product on demands.
+        inventory.reomveProduct(product);
+    }
+
+    public void changeProductDetail(Product p, String s, String cat){}
+
+    public void changeDiscountPolicy(DiscountPolicy discountPolicy){}
+
+    public void changePurchasePolicy(PurchasePolicy purchasePolicy){}
+
+    public void changeProductDiscount(PurchasePolicy purchasePolicy){}
 
 }

@@ -1,4 +1,7 @@
 package domain.shop;
 
-public class Product {
+public interface Product {
+    String getName();
+    String getInfo();
+    int getId();
 }
