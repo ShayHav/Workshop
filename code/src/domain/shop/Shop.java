@@ -4,6 +4,10 @@ import domain.Tuple;
 
 public class Shop {
 
+    /*
+        TODO: Decide if to create class which will handle roles of member os just a Map attribute in shop
+     */
+
     private Inventory inventory;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
@@ -14,7 +18,11 @@ public class Shop {
         this.purchasePolicy=purchasePolicy;
     }
 
-
+    /***
+     *
+     * @param s
+     * @return
+     */
     public String gettingInformation(String s){return null;}
 
     public String gettingInformationProduct(String s){return null;}
