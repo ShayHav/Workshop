@@ -1,4 +1,4 @@
-package domain;
+package domain.market;
 
 import domain.shop.ShopController;
 import domain.shop.TransactionInfo;
@@ -44,7 +44,7 @@ public class MarketSystem {
      * @param ti - should be address and maybe also date
      * @return - true if supply is approved, false otherwise
      */
-    public boolean supply(TransactionInfo ti)//
+    public boolean supply(TransactionInfo ti)
     {
         throw new UnsupportedOperationException();
     }

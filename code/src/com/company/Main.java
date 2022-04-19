@@ -1,6 +1,6 @@
 package com.company;
 
-import domain.MarketSystem;
+import domain.market.MarketSystem;
 
 public class Main {
 
