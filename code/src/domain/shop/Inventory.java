@@ -4,14 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Inventory {
+    private final Map<Integer, Product> keyToProduct;
     private final Map<Product, PricesAndQuantity> items;
 
-    private Inventory(){
+    public Inventory(){
         items = new HashMap<>();
+        keyToProduct = new HashMap<>();
     }
 
-    public boolean isInStock(Product p){
-        return getQuantity(p) > 0;
+    /**
+     * check if a product is in stock
+     * @param p the product querying
+     * @return true if there is at least one item in the inventory
+     */
+    public boolean isInStock(int product){
+        return getQuantity(keyToProduct.get(product)) > 0;
     }
 
     public double getPrice(Product p){
@@ -53,6 +60,16 @@ public class Inventory {
         return true;
     }
 
+    public boolean reduceAmount(int product, int amount){
+        if(!keyToProduct.containsKey(product))
+            return false;
+        Product p = keyToProduct.get(product);
+        if(items.get(p).quantity < amount)
+            return false;
+        items.get(p).quantity -= amount;
+        return true;
+    }
+
     public void removeProduct(Product product) {
         if(product == null)
             return;
@@ -67,5 +84,8 @@ public class Inventory {
             this.price = price;
             this.quantity = quantity;
         }
+    }
+    public Product findProduct(int productID){
+        return keyToProduct.get(productID);
     }
 }

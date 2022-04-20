@@ -1,6 +1,11 @@
 package domain.shop;
 
 import domain.Tuple;
+import domain.user.Transaction;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Shop {
 
@@ -8,7 +13,7 @@ public class Shop {
         TODO: Decide if to create class which will handle roles of member os just a Map attribute in shop
      */
 //
-//    private Inventory inventory;
+    private Inventory inventory;
 //    private DiscountPolicy discountPolicy;
 //    private PurchasePolicy purchasePolicy;
 //
@@ -50,4 +55,29 @@ public class Shop {
 //
 //    public void changeProductDiscount(PurchasePolicy purchasePolicy){}
 
+    public double calculateTotalAmountOfOrder(Map<Integer,Integer> itemsAndQuantity){
+        return 0.0; //TODO: impl
+    }
+
+    public int checkOut(Map<Integer,Integer> items, double totalAmount, TransactionInfo transaction){
+        //TODO lock inventory to check stock
+        for(Integer item: items.keySet()){
+            if(!inventory.isInStock(item)){
+                return -1 ;// whereve status to the user
+            }
+        }
+        //all the item is in stock and we want to reserve them untill payment
+        for(Integer item: items.keySet()){
+            inventory.reduceAmount(items.get(item));
+        }
+        //TODO: call to payment and shipment and return appropraite answer
+        List<Product> boughtProducts = new ArrayList<>();
+        for(Integer item: items.keySet()){
+            Product p = inventory.findProduct(item);
+            double price = inventory.getPrice(p);
+            boughtProducts.add(new ProductHistory(p,price ,items.get(item)));
+        }
+        Order o = new Order(boughtProducts, totalAmount);
+        return 0;
+    }
 }
