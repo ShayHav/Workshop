@@ -28,4 +28,4 @@ public interface UserState {
     void checkout();
 
     void leaveMarket();
-   }
+}

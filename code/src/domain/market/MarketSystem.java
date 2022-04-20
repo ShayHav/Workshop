@@ -1,7 +1,7 @@
 package domain.market;
 
 import domain.shop.ShopController;
-import domain.shop.TransactionInfo;
+import domain.user.TransactionInfo;
 import domain.user.UserController;
 
 import java.util.logging.Logger;

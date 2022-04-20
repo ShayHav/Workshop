@@ -4,8 +4,10 @@ import domain.shop.Product;
 
 import java.util.Map;
 
-public class Guest implements UserState{
+public class Guest implements UserState {
     private Map<Integer, User> userList;
+
+
     @Override
     public void getInfo(Filter f) {
 
