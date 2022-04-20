@@ -1,7 +1,6 @@
 package domain.user;
 
-import domain.Tuple;
-import domain.shop.Product;
+import domain.Logger_singleton;
 import domain.shop.Shop;
 
 import java.util.HashMap;
@@ -30,6 +29,9 @@ public class ShoppingBasket {
     public boolean updateAmount(int productID, int amount) {
         if (!productAmountList.containsKey(productID)) {
             logger.log(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
+            //TODO: singleton Logger??
+            Logger_singleton.getInstance().logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
+            //TODO: singleton Logger??
             return false;
         } else if (amount < 0) {
             logger.log(Level.WARNING, String.format("update amount of product in basket of shop %d failed - tried to update to negative amount.", shop.getID()));

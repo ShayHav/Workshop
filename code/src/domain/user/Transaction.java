@@ -12,7 +12,6 @@ enum status {
 
 public class Transaction {
 
-
     private status status;
     private User user;
     private Cart cart;

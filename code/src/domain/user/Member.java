@@ -36,9 +36,10 @@ public class Member implements UserState{
      *
      * @param shop - shop's name or ID
      */
-    public void createShop(String shop)
+    public void createShop(String shop,int id)
     {
-        throw new UnsupportedOperationException();
+        //check if shop id exist
+
     } //TODO: should be at upper level
 
     /***
