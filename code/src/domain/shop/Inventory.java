@@ -1,9 +1,6 @@
 package domain.shop;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Inventory {
     private final Map<Integer, Product> keyToProduct;
@@ -79,10 +76,17 @@ public class Inventory {
     }
 
     public List<Product> getItemsInStock() {
-    return new LinkedList<>(); //todo
+        List<Product> products = new ArrayList<>();
+        for(Product p : items.keySet()){
+            if(items.get(p).quantity > 0){
+                products.add(p);
+            }
+        }
+        return products;
     }
 
-    public Product getProduct(String prodName){return null; //todo
+    public Product getProduct(int productID){
+        return keyToProduct.get(productID);
     }
 
     private class PricesAndQuantity{
