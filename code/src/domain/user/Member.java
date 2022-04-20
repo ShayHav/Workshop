@@ -1,6 +1,7 @@
 package domain.user;
 
 import domain.shop.Product;
+import domain.shop.Shop;
 
 public class Member implements UserState{
 
@@ -14,10 +15,6 @@ public class Member implements UserState{
 
     }
 
-    @Override
-    public void addProductToCart(String shop, Product p, int amount) {
-
-    }
 
     @Override
     public void checkCart() {
@@ -29,6 +26,11 @@ public class Member implements UserState{
 
     }
 
+    @Override
+    public void leaveMarket() {
+        //TODO: how to accesses to the user cart?
+    }
+
 
     /***
      *
@@ -37,7 +39,7 @@ public class Member implements UserState{
     public void createShop(String shop)
     {
         throw new UnsupportedOperationException();
-    }
+    } //TODO: should be at upper level
 
     /***
      *
@@ -46,7 +48,7 @@ public class Member implements UserState{
     public void appointOwner(String userID)
     {
         throw new UnsupportedOperationException();
-    }
+    } //TODO: should be at upper level
 
     /***
      *
@@ -71,7 +73,7 @@ public class Member implements UserState{
      *
      * @param shop
      */
-    public void closeShop(String shop)
+    public void closeShop(Shop shop)
     {
         throw new UnsupportedOperationException();
     }

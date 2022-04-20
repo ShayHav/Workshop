@@ -2,7 +2,10 @@ package domain.user;
 
 import domain.shop.Product;
 
+import java.util.Map;
+
 public class Guest implements UserState{
+    private Map<Integer, User> userList;
     @Override
     public void getInfo(Filter f) {
 
@@ -14,17 +17,17 @@ public class Guest implements UserState{
     }
 
     @Override
-    public void addProductToCart(String shop, Product p, int amount) {
-
-    }
-
-    @Override
     public void checkCart() {
 
     }
 
     @Override
     public void checkout() {
+
+    }
+
+    @Override
+    public void leaveMarket() {
 
     }
 }

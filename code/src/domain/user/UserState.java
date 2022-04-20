@@ -16,13 +16,6 @@ public interface UserState {
      */
     void searchProduct(Filter f);
 
-    /***
-     *
-     * @param shop
-     * @param p
-     * @param amount
-     */
-    void addProductToCart(String shop, Product p, int amount);
 
     /***
      *
@@ -34,4 +27,5 @@ public interface UserState {
      */
     void checkout();
 
+    void leaveMarket();
    }
