@@ -1,20 +1,22 @@
 package domain.shop;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class Order {
     private long orderId;
     private LocalDateTime buyingTime;
-    private int userid;
+    private int userID;
     private List<Product> broughtItem;
     double totalAmount;
 
-    public Order(List<Product> products,double totalAmount){
+    public Order(List<Product> products,double totalAmount, int userID){
         buyingTime = LocalDateTime.now();
-        broughtItem = products;
+        broughtItem = Collections.unmodifiableList(products);
         this.totalAmount = totalAmount;
+        this.userID = userID;
 
     }
 
@@ -22,8 +24,8 @@ public class Order {
         return buyingTime;
     }
 
-    public int getUserid() {
-        return userid;
+    public int getUserID() {
+        return userID;
     }
 
     public List<Product> getBroughtItem() {

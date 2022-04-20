@@ -25,6 +25,6 @@ public class OrderHistory {
     }
 
     public List<Order> searchByUser(int userID){
-        return orders.stream().filter((Order o) -> o.getUserid() == userID).collect(Collectors.toList());
+        return orders.stream().filter((Order o) -> o.getUserID() == userID).collect(Collectors.toList());
     }
 }

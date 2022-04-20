@@ -8,21 +8,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class InventoryTest {
 
     Inventory inv;
-    ProductImp p = new ProductImp(1, "Iphone13", "Apples new overpriced smartphone", "smartphone");
-    ProductImp p2 = new ProductImp(2,"Galaxy s22", "Samsung new overpriced smartphone", "smartphone");
+
 
     @BeforeEach
     void setUp() {
         inv = new Inventory();
+        ProductImp p = new ProductImp(1, "Iphone13", "Apples new overpriced smartphone", "smartphone");
+        ProductImp p2 = new ProductImp(2,"Galaxy s22", "Samsung new overpriced smartphone", "smartphone");
         inv.addProduct(p,3499.90, 100);
-        inv.addProduct(p2,2999.90, 100);
+        inv.addProduct(p2,2999.90, 0);
     }
 
     @Test
     void isInStock() {
-        assertTrue(inv.isInStock(p));
-        inv.setAmount(p, 0);
-        assertFalse(inv.isInStock(p));
+        assertTrue(inv.isInStock(1));
+        inv.setAmount(1, 0);
+        assertFalse(inv.isInStock(2));
     }
 
     @Test

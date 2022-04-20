@@ -19,7 +19,7 @@ public class Shop {
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
 
- public Shop(DiscountPolicy discountPolicy,PurchasePolicy purchasePolicy){
+    public Shop(DiscountPolicy discountPolicy,PurchasePolicy purchasePolicy){
         this.discountPolicy=discountPolicy;
         this.purchasePolicy=purchasePolicy;
     }
@@ -77,14 +77,14 @@ public class Shop {
         for(Integer item: items.keySet()){
             inventory.reduceAmount(items.get(item));
         }
-        //TODO: call to payment and shipment and return appropraite answer
+        //TODO: call to payment and shipment and return appropriate answer
         List<Product> boughtProducts = new ArrayList<>();
         for(Integer item: items.keySet()){
             Product p = inventory.findProduct(item);
             double price = inventory.getPrice(p);
             boughtProducts.add(new ProductHistory(p,price ,items.get(item)));
         }
-        Order o = new Order(boughtProducts, totalAmount);
+        Order o = new Order(boughtProducts, totalAmount, transaction.getUserID());
         return 0;
     }
 }

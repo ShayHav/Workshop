@@ -26,7 +26,6 @@ public class ProductHistory implements Product{
         return description;
     }
 
-
     @Override
     public int getId() {
         return 0;
