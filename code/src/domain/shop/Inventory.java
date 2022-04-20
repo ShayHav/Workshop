@@ -1,6 +1,8 @@
 package domain.shop;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class Inventory {
@@ -26,7 +28,7 @@ public class Inventory {
         return items.get(p).quantity;
     }
 
-    public boolean addProduct(Product p, double price, int quantity) {
+    public boolean addProduct(String p, double price, int quantity) {
         if(p == null || items.containsKey(p)){
             return false;
         }
@@ -57,6 +59,13 @@ public class Inventory {
         if(product == null)
             return;
         items.remove(product);
+    }
+
+    public List<Product> getItemsInStock() {
+    return new LinkedList<>(); //todo
+    }
+
+    public Product getProduct(String prodName){return null; //todo
     }
 
     private class PricesAndQuantity{
