@@ -1,15 +1,15 @@
 package domain.user;
 
-import domain.Logger_singleton;
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
 import domain.shop.Shop;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ShoppingBasket {
-    private static final Logger_singleton logger = Logger_singleton.getInstance();
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private Shop shop;
     Map<Integer, Integer> productAmountList = new HashMap<>();
     double basketAmount;
@@ -28,13 +28,10 @@ public class ShoppingBasket {
      */
     public boolean updateAmount(int productID, int amount) {
         if (!productAmountList.containsKey(productID)) {
-            logger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
-            //TODO: singleton Logger??
-            Logger_singleton.getInstance().logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
-            //TODO: singleton Logger??
+            errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
             return false;
         } else if (amount < 0) {
-            logger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - tried to update to negative amount.", shop.getID()));
+            errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - tried to update to negative amount.", shop.getID()));
             return false;
         } else {
             if (amount == 0) {
@@ -54,7 +51,7 @@ public class ShoppingBasket {
      */
     public boolean removeProduct(int productID) {
         if (!productAmountList.containsKey(productID)) {
-            logger.logMsg(Level.WARNING, String.format("remove product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
+            errorLogger.logMsg(Level.WARNING, String.format("remove product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
             return false;
         } else {
             productAmountList.remove(productID);
@@ -70,7 +67,7 @@ public class ShoppingBasket {
      */
     public boolean addProductToBasket(int productID, int amountToAdd) {
         if (amountToAdd < 0) {
-            logger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getID()));
+            errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getID()));
             return false;
         } else if (!productAmountList.containsKey(productID)) {
             productAmountList.put(productID, amountToAdd);

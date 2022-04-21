@@ -1,7 +1,6 @@
 package domain.user;
 
-import domain.Logger_singleton;
-import domain.user.UserInfo;
+import domain.EventLoggerSingleton;
 
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
@@ -33,7 +32,7 @@ public class SecurePasswordStorage {
         try{
             return authenticateUser(inputUser,inputPass);
         }catch (Exception e) {
-            Logger_singleton.getInstance().logMsg(Level.WARNING,String.format("passwordCheck of %d failed.",inputUser));
+            EventLoggerSingleton.getInstance().logMsg(Level.WARNING,String.format("passwordCheck of %d failed.",inputUser));
             return false;
         }
     }
@@ -54,7 +53,7 @@ public class SecurePasswordStorage {
     }
     public void inRole(int userid, String password){
         try{ signUp(userid,password); }
-        catch (Exception e){ Logger_singleton.getInstance().logMsg(Level.WARNING,String.format("Cryptographic Hash password of %d failed.",userid)); }
+        catch (Exception e){ EventLoggerSingleton.getInstance().logMsg(Level.WARNING,String.format("Cryptographic Hash password of %d failed.",userid)); }
     }
 
     private void signUp(int userid, String password) throws Exception {
