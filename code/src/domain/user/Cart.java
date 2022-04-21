@@ -1,8 +1,13 @@
 package domain.user;
 
+import domain.Tuple;
+import domain.shop.Order;
 import domain.shop.Shop;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Cart {
@@ -44,9 +49,25 @@ public class Cart {
         return totalAmount;
     }
 
-    public boolean checkout(TransactionInfo billingInfo) {
+
+    public Map<Integer, List<Tuple<Integer,Integer>>> showCart(){
+        Map<Integer, List<Tuple<Integer,Integer>>> cart = new HashMap<>();
+        for(Integer shopID: baskets.keySet()){
+            List<Tuple<Integer,Integer>> basket = baskets.get(shopID).showBasket();
+            cart.put(shopID, basket);
+        }
+        return cart;
+    }
+
+    //TODO: figure out how to notify error per basket
+    public List<Tuple<status,Order>> checkout(int id, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        LocalDate transaction_date = LocalDate.now();
+        TransactionInfo billingInfo = new TransactionInfo(id ,fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
+        List<Tuple<status,Order>> orders = new ArrayList<>();
         for (ShoppingBasket s : baskets.values()) {
-            s.checkout(billingInfo);
+            Tuple<status,Order> result = s.checkout(billingInfo);
+            if (result.y != null)
+                baskets.remove(s);
         }
 
     }

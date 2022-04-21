@@ -6,8 +6,6 @@ import java.util.Map;
 
 public class Guest implements UserState {
 
-
-
     @Override
     public void getInfo(Filter f) {
 
@@ -18,18 +16,11 @@ public class Guest implements UserState {
 
     }
 
-    @Override
-    public void checkCart() {
-
-    }
 
     @Override
-    public void checkout() {
-
+    public void checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate){
+        c.checkout(id,fullName,address,phoneNumber,cardNumber,expirationDate);
     }
 
-    @Override
-    public void leaveMarket() {
 
-    }
 }

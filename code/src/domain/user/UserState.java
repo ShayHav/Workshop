@@ -20,12 +20,7 @@ public interface UserState {
     /***
      *
      */
-    void checkCart();
-
-    /***
-     *
-     */
-    void checkout();
+    void checkout(int id, Cart c,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate));
 
     void leaveMarket();
 }

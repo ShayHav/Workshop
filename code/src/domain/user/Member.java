@@ -15,16 +15,11 @@ public class Member implements UserState{
 
     }
 
-
     @Override
-    public void checkCart() {
+    public void checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
 
     }
 
-    @Override
-    public void checkout() {
-
-    }
 
     @Override
     public void leaveMarket() {

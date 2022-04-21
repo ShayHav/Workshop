@@ -2,13 +2,24 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Tuple;
+import domain.shop.Order;
 import domain.shop.Shop;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
 public class ShoppingBasket {
+    enum status {
+        active,
+        completed,
+        failed_payment,
+        failed_supply,
+        failed_due_to_error
+    }
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private Shop shop;
     Map<Integer, Integer> productAmountList = new HashMap<>();
@@ -91,7 +102,16 @@ public class ShoppingBasket {
      * complete the purchase by performing checkout via the relevant shop of the basket.
      * @param billingInfo all the relevant information to complete the transaction.
      */
-    public void checkout(TransactionInfo billingInfo) {
-        shop.checkout(productAmountList, basketAmount, billingInfo);
+    public Tuple<status, Order> checkout(TransactionInfo billingInfo) {
+        return shop.checkout(productAmountList, basketAmount, billingInfo);
+    }
+
+    public List<Tuple<Integer, Integer>> showBasket() {
+        List<Tuple<Integer, Integer>> productList = new ArrayList<>();
+        for (Integer productID : productAmountList.keySet()) {
+            int amount = productAmountList.get(productID);
+            productList.add(new Tuple<>(productID,amount));
+        }
+        return productList;
     }
 }

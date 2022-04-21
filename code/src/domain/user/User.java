@@ -1,9 +1,13 @@
 package domain.user;
 
 
+import domain.Tuple;
+
 import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -18,9 +22,11 @@ public class User {
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
-    public User() {us = null;}
+    public User() {
+        us = null;
+    }
 
-    public User(int id){
+    public User(int id) {
         this.id = id;
         loggedIn = false;
     }
@@ -36,7 +42,7 @@ public class User {
     /***
      * leave market - user has no state
      */
-    public void leaveMarket(){
+    public void leaveMarket() {
         us = null;
     }
 
@@ -57,12 +63,20 @@ public class User {
         loggedIn = false;
     }
 
-
-
-
+    /***
+     * show the contents of the cart
+     * @return the contents of the cart
+     */
+    public Map<Integer, List<Tuple<Integer, Integer>>> showCart() {
+        return userCart.showCart();
+    }
 
     public int getId() {
         return id;
+    }
+
+    public void checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        us.checkout(id, userCart, fullName, address, phoneNumber, cardNumber, expirationDate);
     }
 
 
