@@ -1,6 +1,9 @@
 package domain.user;
 
+import domain.Tuple;
 import domain.shop.Product;
+
+import java.util.List;
 
 public interface UserState {
 
@@ -8,7 +11,12 @@ public interface UserState {
      *
      * @param f
      */
-    void getInfo(Filter f);
+    List<String> getInfoOfShops();
+
+    /***
+     *
+     */
+    List<Tuple<String,String>> getInfoOfProductInShop(int shopID);
 
     /***
      *
@@ -22,5 +30,4 @@ public interface UserState {
      */
     void checkout(int id, Cart c,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate));
 
-    void leaveMarket();
 }
