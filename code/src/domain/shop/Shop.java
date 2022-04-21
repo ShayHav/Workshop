@@ -29,32 +29,62 @@ public class Shop {
      * @param s
      * @return
      */
-    public String getItemInfo(String s){return null;}
+    public String getItemInfo(int prodID){
+        try{
+            return getProduct(prodID).getDescription();
+        }catch (NullPointerException npe){
+            return "this product does not exist.";
+        }
+    }
 
     private List<Product> getItemsInStock(){
+        //might be an empty list, make sure
         return inventory.getItemsInStock();
     }
 
-    private Product getProduct(String prodName){
-        return inventory.getProduct(prodName);
+    private Product getProduct(int prodID){
+        Product product = inventory.getProduct(prodID);
+        if(product != null)
+            return product;
+        else
+            throw new NullPointerException("product not found");
     }
 
-    private void addListing(){}
+    public boolean addListing(int prodID, double price, int quantity){
+        return inventory.addProduct(prodID, price, quantity);
+    }
 
-    public int shopDiscountPolicy(int purchase){return 0;}
+    public void removeListing(int prodID){
+        inventory.removeProduct(prodID);
+    }
 
-    public int productDiscount(int id){return 0;}
+    public boolean editPrice(int prodID, double newPrice){
+        return inventory.setPrice(prodID, newPrice);
+    }
 
-    public boolean isProductIsAvailable(int id){return true;}
+    public boolean editQuantity(int prodID, int newQuantity){
+        return inventory.setAmount(prodID, newQuantity);
+    }
+
+
+    public int shopDiscountPolicy(int purchase){
+
+    }
+
+    public int productDiscount(int prodID){return 0;}
+
+    public boolean isProductIsAvailable(int prodID){return true;}
 
     public void addProductToInventory(Product product, Tuple<Integer,Integer> quantityPrice){inventory.addProuct(product,quantityPrice);}
 
-    public void removeProductFromInventory(Product product){
+    public void removeProductFromInventory(int prodID){
         //check if the product on demands.
-        inventory.reomveProduct(product);
+        inventory.removeProduct(prodID);
     }
 
-    public void changeProductDetail(Product p, String s, String cat){}
+    public void changeProductDetail(int prodID, String description){
+        inventory.setDescription(prodID, description);
+    }
 
     public void changeDiscountPolicy(DiscountPolicy discountPolicy){}
 
