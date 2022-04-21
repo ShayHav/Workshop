@@ -1,32 +1,32 @@
 package domain.user;
 
 
-import domain.Tuple;
+import domain.ErrorLoggerSingleton;
+import domain.shop.ManagerAppointment;
+import domain.shop.OwnerAppointment;
+import domain.shop.Shop;
 
-import java.io.ByteArrayOutputStream;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 public class User {
-    private static final Logger logger = Logger.getLogger(User.class.getName());
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final String ca = "command approve";
     private int id;
-    //TODO:dont save password here, impl with bcrypt
     private UserState us;
+    private List<Role> roleList;
     private Cart userCart;
     private boolean loggedIn;
+    private List<ManagerAppointment> managerAppointeeList;
+    private List<OwnerAppointment> ownerAppointmentList;
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
-    public User() {
-        us = null;
-    }
+    public User() {us = null;}
 
-    public User(int id) {
+    public User(int id){
         this.id = id;
         loggedIn = false;
     }
@@ -42,16 +42,37 @@ public class User {
     /***
      * leave market - user has no state
      */
-    public void leaveMarket() {
+    public void leaveMarket(){
+        us.leaveMarket(userCart);
         us = null;
     }
 
+    public void closeShop(Shop shop){
+        if(roleList.contains(Role.ShopFounder))
+            us.closeShop(shop,this.id);
+        else errorLogger.logMsg(Level.WARNING,String.format("Not Founder shop try to close shop. user: %d",this.id));
+    }
+
+    public void createShop(Shop shop){
+        roleList.add(Role.ShopFounder);
+        us.createShop(shop,this.id);
+    }
+
+    public void appointOwner(User user,Shop shop){
+        if(roleList.contains(Role.ShopFounder) || roleList.contains(Role.ShopOwner))
+            us.appointOwner(user,shop,this.id,ownerAppointmentList);
+        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner withOut appropriate role by user: %d",id));
+    }
 
     /***
      * login to the system
      */
     public void login() {
         us = new Member();
+        if (ownerAppointmentList == null)
+            ownerAppointmentList = new LinkedList<>();
+        if (managerAppointeeList == null)
+            managerAppointeeList = new LinkedList<>();
         loggedIn = true;
     }
 
@@ -63,21 +84,11 @@ public class User {
         loggedIn = false;
     }
 
-    /***
-     * show the contents of the cart
-     * @return the contents of the cart
-     */
-    public Map<Integer, List<Tuple<Integer, Integer>>> showCart() {
-        return userCart.showCart();
-    }
-
     public int getId() {
-        return id;
+        return this.id;
     }
 
-    public void checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        us.checkout(id, userCart, fullName, address, phoneNumber, cardNumber, expirationDate);
+    public boolean islog() {
+        return this.loggedIn;
     }
-
-
 }

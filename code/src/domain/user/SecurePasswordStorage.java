@@ -1,5 +1,6 @@
 package domain.user;
 
+import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 
 import java.security.SecureRandom;
@@ -13,12 +14,14 @@ import java.util.logging.Level;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-public class SecurePasswordStorage {
 
+
+//TODO: https://www.quickprogrammingtips.com/java/how-to-securely-store-passwords-in-java.html
+public class SecurePasswordStorage {
     private static SecurePasswordStorage securePasswordStorage_singleton = null;
     // Simulates database of users!
     private Map<Integer, UserInfo> userDatabase = new HashMap<Integer,UserInfo>();
-
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
 
     private SecurePasswordStorage(){}
 
@@ -32,7 +35,7 @@ public class SecurePasswordStorage {
         try{
             return authenticateUser(inputUser,inputPass);
         }catch (Exception e) {
-            EventLoggerSingleton.getInstance().logMsg(Level.WARNING,String.format("passwordCheck of %d failed.",inputUser));
+            errorLogger.logMsg(Level.WARNING,String.format("passwordCheck of %d failed.",inputUser));
             return false;
         }
     }
@@ -53,7 +56,7 @@ public class SecurePasswordStorage {
     }
     public void inRole(int userid, String password){
         try{ signUp(userid,password); }
-        catch (Exception e){ EventLoggerSingleton.getInstance().logMsg(Level.WARNING,String.format("Cryptographic Hash password of %d failed.",userid)); }
+        catch (Exception e){ errorLogger.logMsg(Level.WARNING,String.format("Cryptographic Hash password of %d failed.: "+e.getMessage(),userid)); }
     }
 
     private void signUp(int userid, String password) throws Exception {
