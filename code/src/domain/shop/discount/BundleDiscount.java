@@ -1,25 +1,36 @@
 package domain.shop.discount;
 
-public class BundleDiscount {
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
+
+import java.util.logging.Level;
+
+public class BundleDiscount implements Discount {
 
     int amountToBuyNeeded;
     int amountToGetFree;
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+
 
     public BundleDiscount(int amountToBuy, int amountToGet) throws IllegalArgumentException {
         if(amountToBuy > 0)
             this.amountToBuyNeeded = amountToBuy;
-        else
-            throw new IllegalArgumentException("inviable amount of products to buy needed");
-
+        else {
+            errorLogger.logMsg(Level.WARNING, String.format("inviable amount of products needed to buy: %d ", amountToBuy));
+            throw new IllegalArgumentException("inviable amount of products needed to buy");
+        }
         if(amountToGet > 0)
             this.amountToGetFree = amountToGet;
-        else
+        else {
+            errorLogger.logMsg(Level.WARNING, String.format("inviable amount of products to get free: %d ", amountToGet));
             throw new IllegalArgumentException("inviable amount of items to get when discount applied");
+        }
     }
 
     public double applyDiscount(double price, int amount) {
         int numberOfApplies = (int)(amount/ amountToBuyNeeded);
-        double toPay = (amount - (numberOfApplies * amountToGetFree)) * price;
-        return toPay;
+        double toPayPerProduct = ((amount - (numberOfApplies * amountToGetFree)) * price)/amount;
+        return toPayPerProduct;
     }
 }

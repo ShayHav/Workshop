@@ -22,7 +22,8 @@ public class Inventory {
         return getQuantity(keyToProduct.get(product)) > 0;
     }
 
-    public double getPrice(Product p){
+    public double getPrice(int prodID){
+        //todo:fix to ProdID
         if(p == null || !items.containsKey(p))
             return -1;
         return items.get(p).price;
