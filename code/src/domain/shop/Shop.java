@@ -2,6 +2,7 @@ package domain.shop;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
@@ -123,6 +124,25 @@ public class Shop {
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
+    private boolean reserveItems(Map<Integer,Integer> items){
+        for(Integer item: items.keySet()){
+            if(!inventory.isInStock(item)){
+                return false;
+            }
+        }
+        //all the item is in stock ,and we want to reserve them until payment
+        for(Integer item: items.keySet()){
+            inventory.reduceAmount(item ,items.get(item));
+        }
+        return true;
+    }
+
+    private void restoreStock(Map<Integer,Integer> items){
+        for(Integer item: items.keySet()){
+            inventory.setAmount(item , inventory.getQuantity(item) + items.get(item));
+        }
+    }
+
     public int checkOut(Map<Integer,Integer> items, double totalAmount, TransactionInfo transaction){
         //TODO lock inventory to check stock
         for(Map.Entry<Integer, Integer> set : items.entrySet()){
@@ -133,16 +153,19 @@ public class Shop {
             //if (purchasePolicyLegal(transaction.getUserid(), set.getKey(), inventory.getPrice(set.getKey()), ))
             //todo:check discount policy regarding the item
         }
-        for(Integer item: items.keySet()){
-            if(!inventory.isInStock(item)){
-                return -1 ;
-            }
+        if(!reserveItems(items)){
+            restoreStock(items);
+            return new Respone("not in stock");
         }
-        //all the item is in stock ,and we want to reserve them until payment
-        for(Integer item: items.keySet()){
-            inventory.reduceAmount(item ,items.get(item));
+        MarketSystem market = MarketSystem.getInstance();
+        if(!market.pay(transaction)){
+            restoreStock(items);
+            return new Response();
         }
-        //TODO: call to payment and shipment and return appropriate answer
+        if(!market.supply(transaction)){
+            return new Resonse("problem with supply system");
+        }
+        // creating Order object to store in the Order History with unmutable copy of product
         List<Product> boughtProducts = new ArrayList<>();
         for(Integer item: items.keySet()){
             Product p = inventory.findProduct(item);
@@ -151,6 +174,6 @@ public class Shop {
         }
         Order o = new Order(boughtProducts, totalAmount, transaction.getUserid());
         orders.addOrder(o);
-        return 0;
+        return new Response(o);
     }
 }
