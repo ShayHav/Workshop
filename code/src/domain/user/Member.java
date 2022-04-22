@@ -3,9 +3,7 @@ package domain.user;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Tuple;
-import domain.shop.ManagerAppointment;
-import domain.shop.OwnerAppointment;
-import domain.shop.Shop;
+import domain.shop.*;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -17,18 +15,13 @@ public class Member implements UserState{
 
 
     @Override
-    public List<String> getInfoOfShops() {
+    public List<ShopInfo> getInfoOfShops() {
         return null;
     }
 
     @Override
-    public List<Tuple<String, String>> getInfoOfProductInShop(int shopID) {
+    public List<ProductInfo> getInfoOfProductInShop(int shopID) {
         return null;
-    }
-
-    @Override
-    public void searchProduct(Filter f) {
-
     }
 
     @Override

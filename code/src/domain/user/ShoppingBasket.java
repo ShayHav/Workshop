@@ -2,6 +2,7 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.ResponseT;
 import domain.Tuple;
 import domain.shop.Order;
 import domain.shop.Shop;
@@ -102,7 +103,7 @@ public class ShoppingBasket {
      * complete the purchase by performing checkout via the relevant shop of the basket.
      * @param billingInfo all the relevant information to complete the transaction.
      */
-    public Tuple<status, Order> checkout(TransactionInfo billingInfo) {
+    public ResponseT<Order> checkout(TransactionInfo billingInfo) {
         return shop.checkout(productAmountList, basketAmount, billingInfo);
     }
 

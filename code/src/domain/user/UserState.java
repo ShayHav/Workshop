@@ -1,10 +1,7 @@
 package domain.user;
 
 import domain.Tuple;
-import domain.shop.ManagerAppointment;
-import domain.shop.OwnerAppointment;
-import domain.shop.Product;
-import domain.shop.Shop;
+import domain.shop.*;
 
 import java.util.List;
 
@@ -13,20 +10,14 @@ public interface UserState {
     /***
      *
      * @param f
+     * @return
      */
-    List<String> getInfoOfShops();
+    List<ShopInfo> getInfoOfShops();
 
     /***
      *
      */
-    List<Tuple<String,String>> getInfoOfProductInShop(int shopID);
-
-    /***
-     *
-     * @param f
-     */
-    void searchProduct(Filter f);
-
+    List<ProductInfo> getInfoOfProductInShop(int shopID);
 
     /***
      *

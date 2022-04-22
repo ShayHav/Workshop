@@ -1,5 +1,7 @@
 package domain.user;
 
+import domain.Response;
+import domain.ResponseT;
 import domain.Tuple;
 import domain.shop.Order;
 import domain.shop.Shop;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 public class Cart {
     private Map<Integer, ShoppingBasket> baskets;
@@ -21,7 +24,7 @@ public class Cart {
 
 
     public void addProductToCart(Shop shop, int productID, int amount) {
-        int shopID = shop.getID();
+        int shopID = shop.getId();
         if (!baskets.containsKey(shopID)) {
             ShoppingBasket newBasket = new ShoppingBasket(shop, productID, amount);
             baskets.put(shopID, newBasket);
@@ -50,25 +53,28 @@ public class Cart {
     }
 
 
-    public Map<Integer, List<Tuple<Integer,Integer>>> showCart(){
-        Map<Integer, List<Tuple<Integer,Integer>>> cart = new HashMap<>();
-        for(Integer shopID: baskets.keySet()){
-            List<Tuple<Integer,Integer>> basket = baskets.get(shopID).showBasket();
+    public Map<Integer, List<Tuple<Integer, Integer>>> showCart() {
+        Map<Integer, List<Tuple<Integer, Integer>>> cart = new HashMap<>();
+        for (Integer shopID : baskets.keySet()) {
+            List<Tuple<Integer, Integer>> basket = baskets.get(shopID).showBasket();
             cart.put(shopID, basket);
         }
         return cart;
     }
 
     //TODO: figure out how to notify error per basket
-    public List<Tuple<status,Order>> checkout(int id, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public List<ResponseT<Order>> checkout(int userId, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         LocalDate transaction_date = LocalDate.now();
-        TransactionInfo billingInfo = new TransactionInfo(id ,fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
-        List<Tuple<status,Order>> orders = new ArrayList<>();
-        for (ShoppingBasket s : baskets.values()) {
-            Tuple<status,Order> result = s.checkout(billingInfo);
-            if (result.y != null)
-                baskets.remove(s);
+        TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
+        List<ResponseT<Order>> orders = new ArrayList<>();
+        for (Integer shopId : baskets.keySet()) {
+            ShoppingBasket s = baskets.get(shopId);
+            ResponseT<Order> result = s.checkout(billingInfo);
+            orders.add(result);
+            if (!result.isErrorOccurred()) {
+                baskets.remove(shopId);
+            }
         }
-
+        return orders;
     }
 }
