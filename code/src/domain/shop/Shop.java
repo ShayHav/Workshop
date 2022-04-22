@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class Shop {
+    private String name;
+    private int rank;
     private User ShopFounder;
     private List<User> ShopOwners;
     private List<User> ShopManagers;
@@ -24,11 +26,15 @@ public class Shop {
     private PurchasePolicy purchasePolicy;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    private OrderHistory orders;
 
 
-    public Shop(DiscountPolicy discountPolicy,PurchasePolicy purchasePolicy){
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
         this.discountPolicy=discountPolicy;
         this.purchasePolicy=purchasePolicy;
+        orders = new OrderHistory();
+        rank = 0;
+        this.name = name;
     }
 
 
@@ -132,11 +138,7 @@ public class Shop {
                 return -1 ;
             }
         }
-
-        for(Integer item: items.keySet()){
-
-        }
-        //all the item is in stock and we want to reserve them untill payment
+        //all the item is in stock ,and we want to reserve them until payment
         for(Integer item: items.keySet()){
             inventory.reduceAmount(item ,items.get(item));
         }
@@ -144,10 +146,11 @@ public class Shop {
         List<Product> boughtProducts = new ArrayList<>();
         for(Integer item: items.keySet()){
             Product p = inventory.findProduct(item);
-            double price = inventory.getPrice(p);
+            double price = inventory.getPrice(p.getId());
             boughtProducts.add(new ProductHistory(p,price ,items.get(item)));
         }
         Order o = new Order(boughtProducts, totalAmount, transaction.getUserid());
+        orders.addOrder(o);
         return 0;
     }
 }

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class OrderHistory {
 
     private final List<Order> orders;
+    private long orderIdGen = 0;
 
     public OrderHistory(){
         orders = new ArrayList<>();
@@ -16,6 +17,8 @@ public class OrderHistory {
 
     public boolean addOrder(Order o){
         orders.add(o);
+        o.setOrderId(orderIdGen);
+        orderIdGen++;
         return true;
     }
 
@@ -27,4 +30,13 @@ public class OrderHistory {
     public List<Order> searchByUser(int userID){
         return orders.stream().filter((Order o) -> o.getUserID() == userID).collect(Collectors.toList());
     }
+
+    public Order getOrder(int orderID){
+        for(Order o: orders){
+            if(o.getOrderId() == orderID)
+                return o;
+        }
+        return null;
+    }
+
 }

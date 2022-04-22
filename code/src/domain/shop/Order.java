@@ -31,4 +31,12 @@ public class Order {
     public List<Product> getBroughtItem() {
         return broughtItem;
     }
+
+    public long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(long id){
+        orderId = id;
+    }
 }
