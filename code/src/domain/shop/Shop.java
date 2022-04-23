@@ -7,7 +7,6 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.User;
-import org.w3c.dom.events.Event;
 
 import java.util.List;
 
@@ -22,22 +21,21 @@ public class Shop {
     private List<User> ShopOwners;
     private List<User> ShopManagers;
     private List<User> Shoppers;
-    private Inventory inventory;
+    private final Inventory inventory;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
-    private OrderHistory orders;
-
+    private final OrderHistory orders;
 
     public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
         this.discountPolicy=discountPolicy;
         this.purchasePolicy=purchasePolicy;
+        inventory = new Inventory();
         orders = new OrderHistory();
         rank = 0;
         this.name = name;
     }
-
 
     public String getItemInfo(int prodID){
         try{
@@ -119,47 +117,25 @@ public class Shop {
         return discountPolicy.addBundleDiscount(prodID, amountNeededToBuy, amountGetFree);
     }
 
-
     public boolean purchasePolicyLegal(int userID, int prodID, double price,int amount){
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
-    private boolean reserveItems(Map<Integer,Integer> items){
-        for(Integer item: items.keySet()){
-            if(!inventory.isInStock(item)){
-                return false;
-            }
-        }
-        //all the item is in stock ,and we want to reserve them until payment
-        for(Integer item: items.keySet()){
-            inventory.reduceAmount(item ,items.get(item));
-        }
-        return true;
-    }
-
-    private void restoreStock(Map<Integer,Integer> items){
-        for(Integer item: items.keySet()){
-            inventory.setAmount(item , inventory.getQuantity(item) + items.get(item));
-        }
-    }
-
     public int checkOut(Map<Integer,Integer> items, double totalAmount, TransactionInfo transaction){
-        //TODO lock inventory to check stock
         for(Map.Entry<Integer, Integer> set : items.entrySet()){
-            if(!inventory.isInStock(set.getKey())){
-                return -1;
-            }
             //todo:check purchase policy regarding the item
             //if (purchasePolicyLegal(transaction.getUserid(), set.getKey(), inventory.getPrice(set.getKey()), ))
             //todo:check discount policy regarding the item
         }
-        if(!reserveItems(items)){
-            restoreStock(items);
-            return new Respone("not in stock");
+        synchronized (inventory) {
+            if (!inventory.reserveItems(items)) {
+                inventory.restoreStock(items);
+                return new Respone("not in stock");
+            }
         }
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)){
-            restoreStock(items);
+            inventory.restoreStock(items);
             return new Response();
         }
         if(!market.supply(transaction)){

@@ -1,10 +1,15 @@
 package domain.shop;
 
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
+
 import java.util.*;
 
 public class Inventory {
     private final Map<Integer, ProductImp> keyToProduct;
     private final Map<ProductImp, PricesAndQuantity> items;
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private Products productList;
 
     public Inventory(){
@@ -19,14 +24,13 @@ public class Inventory {
      * @return true if there is at least one item in the inventory
      */
     public boolean isInStock(int product){
-        return getQuantity(keyToProduct.get(product)) > 0;
+        return getQuantity(product) > 0;
     }
 
     public double getPrice(int prodID){
-        //todo:fix to ProdID
-        if(p == null || !items.containsKey(p))
-            return -1;
-        return items.get(p).price;
+        if(keyToProduct.containsKey(prodID))
+            return items.get(keyToProduct.get(prodID)).price;
+        return -1;
     }
 
     public int getQuantity(int product){
@@ -35,6 +39,13 @@ public class Inventory {
         return items.get(keyToProduct.get(product)).quantity;
     }
 
+    /**
+     * adding a product to the store inventrory
+     * @param prodID
+     * @param price
+     * @param quantity
+     * @return
+     */
     public boolean addProduct(int prodID, double price, int quantity) {
         Product product = productList.getProduct(prodID);
         if(product == null || keyToProduct.containsKey(prodID)){
@@ -42,7 +53,7 @@ public class Inventory {
         }
         if(price < 0.0 || quantity < 0)
             return false;
-        items.put(product/*todo: config to impl*/ ,new PricesAndQuantity(quantity, price));
+        items.put(new ProductImp(product),new PricesAndQuantity(quantity, price));
         return true;
     }
 
@@ -104,6 +115,25 @@ public class Inventory {
         }
         keyToProduct.get(productID).setDescription(newDesc);
         return true;
+    }
+
+    boolean reserveItems(Map<Integer, Integer> items){
+        for(Integer item: items.keySet()){
+            if(!isInStock(item)){
+                return false;
+            }
+        }
+        //all the item is in stock ,and we want to reserve them until payment
+        for(Integer item: items.keySet()){
+            reduceAmount(item ,items.get(item));
+        }
+        return true;
+    }
+
+    void restoreStock(Map<Integer, Integer> items){
+        for(Integer item: items.keySet()){
+            setAmount(item , getQuantity(item) + items.get(item));
+        }
     }
 
     private class PricesAndQuantity{
