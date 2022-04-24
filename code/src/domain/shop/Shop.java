@@ -8,6 +8,7 @@ import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 import java.util.ArrayList;
@@ -123,23 +124,38 @@ public class Shop {
 
     public int checkOut(Map<Integer,Integer> items, double totalAmount, TransactionInfo transaction){
         for(Map.Entry<Integer, Integer> set : items.entrySet()){
-            //todo:check purchase policy regarding the item
-            //if (purchasePolicyLegal(transaction.getUserid(), set.getKey(), inventory.getPrice(set.getKey()), ))
-            //todo:check discount policy regarding the item
+            //check purchase policy regarding the item
+            if (!purchasePolicyLegal(transaction.getUserid(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
+                return new Response("violates purchase policy");
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(items)) {
                 inventory.restoreStock(items);
-                return new Respone("not in stock");
+                return new Response("not in stock");
             }
         }
+
+
+        //calculate price
+        Map<Integer, Double> item_totalPricePer = new HashMap<>();
+        double totalPaymentDue = 0;
+        double item_price_single;
+        double item_total;
+        for(Map.Entry<Integer, Integer> set : items.entrySet()){
+            //check purchase policy regarding the item
+            item_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            item_total = item_price_single * set.getValue();
+            item_totalPricePer.put(set.getKey(), item_total);
+            totalPaymentDue += item_total;
+        }
+
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)){
             inventory.restoreStock(items);
             return new Response();
         }
         if(!market.supply(transaction)){
-            return new Resonse("problem with supply system");
+            return new Response("problem with supply system");
         }
         // creating Order object to store in the Order History with unmutable copy of product
         List<Product> boughtProducts = new ArrayList<>();
