@@ -25,7 +25,7 @@ public class Member implements UserState{
     }
 
     @Override
-    public void checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public List<Order> checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
 
     }
 

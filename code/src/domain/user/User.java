@@ -2,10 +2,9 @@ package domain.user;
 
 
 import domain.ErrorLoggerSingleton;
-import domain.shop.ManagerAppointment;
-import domain.shop.OwnerAppointment;
-import domain.shop.Shop;
+import domain.shop.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,6 +20,7 @@ public class User {
     private boolean loggedIn;
     private List<ManagerAppointment> managerAppointeeList;
     private List<OwnerAppointment> ownerAppointmentList;
+    private List<Order> orderHistory;
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
@@ -70,9 +70,11 @@ public class User {
     public void login() {
         us = new Member();
         if (ownerAppointmentList == null)
-            ownerAppointmentList = new LinkedList<>();
+            ownerAppointmentList = new ArrayList<>();
         if (managerAppointeeList == null)
-            managerAppointeeList = new LinkedList<>();
+            managerAppointeeList = new ArrayList<>();
+        if (orderHistory == null)
+            orderHistory = new ArrayList<>();
         loggedIn = true;
     }
 
@@ -91,4 +93,15 @@ public class User {
     public boolean islog() {
         return this.loggedIn;
     }
+
+    public void checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate){
+        List<Order> result = us.checkout(id,userCart,fullName,address,phoneNumber,cardNumber,expirationDate);
+        orderHistory.addAll(result);
+    }
+
+    public void getInfoOfShops(){}
+
+
+    List<ProductInfo> getInfoOfProductInShop(int shopID){}
+
 }
