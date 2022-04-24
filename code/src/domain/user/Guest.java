@@ -1,5 +1,7 @@
 package domain.user;
 
+import domain.ResponseT;
+import domain.Tuple;
 import domain.market.MarketSystem;
 import domain.shop.*;
 
@@ -38,8 +40,11 @@ public class Guest implements UserState {
 
 
     @Override
-    public void checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
+    public List<Order> checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        List<ResponseT<Order>> result = c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
+        for(ResponseT<Order> o : result){
+
+        }
     }
 
 

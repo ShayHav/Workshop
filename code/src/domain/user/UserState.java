@@ -21,7 +21,7 @@ public interface UserState {
     /***
      *
      */
-    void checkout(int id, Cart c,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
+    List<Order> checkout(int id, Cart c,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
 	
 	void leaveMarket(Cart cart);
 
