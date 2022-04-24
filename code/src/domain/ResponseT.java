@@ -6,6 +6,9 @@ public class ResponseT<T> extends Response{
     public ResponseT(String msg){
         super(msg);
     }
+    public ResponseT(){
+        super();
+    }
 
     public ResponseT(T value){
         super();

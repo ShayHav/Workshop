@@ -1,21 +1,29 @@
 package domain.market;
 
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
+import domain.shop.ProductInfo;
+import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.ShopController;
 import domain.shop.ShopInfo;
+import domain.shop.discount.DiscountPolicy;
 import domain.user.TransactionInfo;
+import domain.user.User;
 import domain.user.UserController;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MarketSystem {
-    private UserController uc; // singleton?
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    private UserController uc;
     private ShopController sc;
     private static MarketSystem instance = null;
-    private static final Logger logger = Logger.getLogger(MarketSystem.class.getName()); // array of loggers?
 
     private MarketSystem() {
-        logger.info("System start");
+        eventLogger.logMsg(Level.INFO,"System start");
         this.start();
     }
 
@@ -58,6 +66,18 @@ public class MarketSystem {
 
 
     public List<ShopInfo> getInfoOfShops() {
+        throw new UnsupportedOperationException();
+    }
 
+    public List<ProductInfo> getInfoOfProductInShop(int shopID){
+        throw new UnsupportedOperationException();
+    }
+
+    public User getUser(int id) {
+        return uc.getUser(id);
+    }
+
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id) {
+        sc.crearteShop(name,discountPolicy, purchasePolicy,id);
     }
 }

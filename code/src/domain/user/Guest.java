@@ -4,6 +4,8 @@ import domain.ResponseT;
 import domain.Tuple;
 import domain.market.MarketSystem;
 import domain.shop.*;
+import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.discount.DiscountPolicy;
 
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class Guest implements UserState {
     }
 
     @Override
-    public void createShop(Shop shop, int id) {
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 

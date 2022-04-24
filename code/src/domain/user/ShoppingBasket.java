@@ -40,10 +40,10 @@ public class ShoppingBasket {
      */
     public boolean updateAmount(int productID, int amount) {
         if (!productAmountList.containsKey(productID)) {
-            errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
+            errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
             return false;
         } else if (amount < 0) {
-            errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - tried to update to negative amount.", shop.getID()));
+            errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - tried to update to negative amount.", shop.getShopID()));
             return false;
         } else {
             if (amount == 0) {
@@ -63,7 +63,7 @@ public class ShoppingBasket {
      */
     public boolean removeProduct(int productID) {
         if (!productAmountList.containsKey(productID)) {
-            errorLogger.logMsg(Level.WARNING, String.format("remove product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getID(), productID));
+            errorLogger.logMsg(Level.WARNING, String.format("remove product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
             return false;
         } else {
             productAmountList.remove(productID);
@@ -79,7 +79,7 @@ public class ShoppingBasket {
      */
     public boolean addProductToBasket(int productID, int amountToAdd) {
         if (amountToAdd < 0) {
-            errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getID()));
+            errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
             return false;
         } else if (!productAmountList.containsKey(productID)) {
             productAmountList.put(productID, amountToAdd);
@@ -104,7 +104,7 @@ public class ShoppingBasket {
      * @param billingInfo all the relevant information to complete the transaction.
      */
     public ResponseT<Order> checkout(TransactionInfo billingInfo) {
-        return shop.checkout(productAmountList, basketAmount, billingInfo);
+        return shop.checkOut(productAmountList, basketAmount, billingInfo);
     }
 
     public List<Tuple<Integer, Integer>> showBasket() {

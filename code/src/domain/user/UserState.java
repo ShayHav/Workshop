@@ -1,6 +1,8 @@
 package domain.user;
 
 import domain.shop.*;
+import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.discount.DiscountPolicy;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ public interface UserState {
 	
 	void leaveMarket(Cart cart);
 
-    void createShop(Shop shop, int id);
+    void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id);
 
     void appointOwner(User user, Shop shop, int id, List<OwnerAppointment> ownerAppointmentList);
 

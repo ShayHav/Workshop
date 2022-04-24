@@ -1,6 +1,7 @@
 package domain.market;
 
 import domain.shop.TransactionInfo;
+import domain.user.TransactionInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ExternalConnector {
 
     public boolean pay(TransactionInfo ti){
         for(PaymentService service: paymentServices){
-            boolean processed = service.processPayment(ti.getName(), ti.getUserid(), ti.getCreditCard(),
+            boolean processed = service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(),
                     ti.getExpiredDate(), ti.getTotalAmount());
             if(processed)
                 return true;
@@ -42,7 +43,7 @@ public class ExternalConnector {
 
     public boolean supply(TransactionInfo ti){
         for(SupplyService service: supplyServices){
-            boolean processed = service.supply(ti.getName(), ti.getAddress(), ti.getItems());
+            boolean processed = service.supply(ti.getFullName(), ti.getAddress(), ti.getItems());
             if(processed)
                 return true;
         }

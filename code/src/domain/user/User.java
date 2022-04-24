@@ -2,7 +2,10 @@ package domain.user;
 
 
 import domain.ErrorLoggerSingleton;
+import domain.market.MarketSystem;
 import domain.shop.*;
+import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.discount.DiscountPolicy;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -53,9 +56,9 @@ public class User {
         else errorLogger.logMsg(Level.WARNING,String.format("Not Founder shop try to close shop. user: %d",this.id));
     }
 
-    public void createShop(Shop shop){
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,int id){
         roleList.add(Role.ShopFounder);
-        us.createShop(shop,this.id);
+        us.createShop(name,  discountPolicy, purchasePolicy,this.id);
     }
 
     public void appointOwner(User user,Shop shop){
@@ -102,6 +105,12 @@ public class User {
     public void getInfoOfShops(){}
 
 
-    List<ProductInfo> getInfoOfProductInShop(int shopID){}
+    List<ProductInfo> getInfoOfProductInShop(int shopID){
+        return MarketSystem.getInstance().getInfoOfProductInShop(shopID);
+    }
 
+    public void addRole(Role role) {
+        if(!roleList.contains(role))
+            roleList.add(role);
+    }
 }

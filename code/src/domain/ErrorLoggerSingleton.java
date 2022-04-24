@@ -14,7 +14,5 @@ public class ErrorLoggerSingleton {
         }
         return single_instance;
     }
-    public void logMsg(Level l, String s){
-        logger.log(l,s);
-    }
+    public void logMsg(Level l, String s) { synchronized (this) { logger.log(l, s); } }
 }

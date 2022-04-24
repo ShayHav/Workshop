@@ -79,4 +79,13 @@ public class UserController {
         this.activeUser = temp;
         eventLogger.logMsg(Level.INFO, "User entered Market.");
     }
+
+    public User getUser(int id) {
+        User getUser = null;
+        for (Map.Entry<Integer, User> entry : memberList.entrySet()){
+            if(entry.getKey()==id)
+                getUser = entry.getValue();
+        }
+        return getUser;
+    }
 }

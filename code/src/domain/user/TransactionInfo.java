@@ -52,4 +52,8 @@ public class TransactionInfo {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
+    public int getUserID() {
+        return userID;
+    }
 }

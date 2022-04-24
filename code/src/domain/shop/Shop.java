@@ -2,21 +2,22 @@ package domain.shop;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Response;
+import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.TransactionInfo;
 import domain.user.User;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.logging.Level;
 
 public class Shop {
     private String name;
+    private int shopID;
     private int rank;
     private User ShopFounder;
     private List<User> ShopOwners;
@@ -28,14 +29,21 @@ public class Shop {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final OrderHistory orders;
+    private boolean isOpen;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy){
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,int founderId, int shopID){
         this.discountPolicy=discountPolicy;
         this.purchasePolicy=purchasePolicy;
         inventory = new Inventory();
         orders = new OrderHistory();
+        ShopOwners = new LinkedList<>();
+        ShopManagers = new LinkedList<>();
+        Shoppers = new LinkedList<>();
         rank = 0;
         this.name = name;
+        isOpen = true;
+        ShopFounder=MarketSystem.getInstance().getUser(founderId);
+        this.shopID = shopID;
     }
 
     public String getItemInfo(int prodID){
@@ -122,16 +130,16 @@ public class Shop {
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
-    public int checkOut(Map<Integer,Integer> items, double totalAmount, TransactionInfo transaction){
+    public ResponseT checkOut(Map<Integer,Integer> items, double totalAmount, TransactionInfo transaction){
         for(Map.Entry<Integer, Integer> set : items.entrySet()){
             //check purchase policy regarding the item
-            if (!purchasePolicyLegal(transaction.getUserid(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
-                return new Response("violates purchase policy");
+            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
+                return new ResponseT("violates purchase policy");
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(items)) {
                 inventory.restoreStock(items);
-                return new Response("not in stock");
+                return new ResponseT("not in stock");
             }
         }
 
@@ -152,10 +160,10 @@ public class Shop {
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)){
             inventory.restoreStock(items);
-            return new Response();
+            return new ResponseT();
         }
         if(!market.supply(transaction)){
-            return new Response("problem with supply system");
+            return new ResponseT("problem with supply system");
         }
         // creating Order object to store in the Order History with unmutable copy of product
         List<Product> boughtProducts = new ArrayList<>();
@@ -164,8 +172,48 @@ public class Shop {
             double price = inventory.getPrice(p.getId());
             boughtProducts.add(new ProductHistory(p,price ,items.get(item)));
         }
-        Order o = new Order(boughtProducts, totalAmount, transaction.getUserid());
+        Order o = new Order(boughtProducts, totalAmount, transaction.getUserID());
         orders.addOrder(o);
-        return new Response(o);
+        return new ResponseT(o);
+    }
+
+    public boolean isFounder(int id) {
+        return ShopFounder.getId() == id;
+    }
+
+    public boolean isOwner(int id) {
+        for(User run :ShopOwners){
+            if (run.getId()==id)
+                return true;
+        }
+        return false;
+    }
+
+    public void setOwner(int id) {
+        User newOwner =MarketSystem.getInstance().getUser(id);
+        if(newOwner!=null)
+            if(!ShopOwners.contains(newOwner))
+                ShopOwners.add(newOwner);
+    }
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setManager(int id) {
+        User newManager =MarketSystem.getInstance().getUser(id);
+        if(newManager!=null)
+            if(!ShopManagers.contains(newManager))
+                ShopManagers.add(newManager);
+    }
+
+    public boolean closeShop(){
+        if(isOpen)
+            isOpen = false;
+        return !isOpen;
+    }
+
+    public String getName() {
+        return name;
     }
 }

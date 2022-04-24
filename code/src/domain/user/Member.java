@@ -2,7 +2,10 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.market.MarketSystem;
 import domain.shop.*;
+import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.discount.DiscountPolicy;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -15,17 +18,17 @@ public class Member implements UserState{
 
     @Override
     public List<ShopInfo> getInfoOfShops() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<ProductInfo> getInfoOfProductInShop(int shopID) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<Order> checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-
+        throw new UnsupportedOperationException();
     }
 
 
@@ -40,9 +43,9 @@ public class Member implements UserState{
      * @param shop - shop's name or ID
      */
     @Override
-    public void createShop(Shop shop,int id)
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,int id)
     {
-        shop.setFounder(id);
+        MarketSystem.getInstance().createShop(name,discountPolicy,purchasePolicy, id);
     } //TODO: should be at upper level
 
     /***
@@ -58,9 +61,9 @@ public class Member implements UserState{
             shop.setOwner(user.getId());
             OwnerAppointment newAppointment = new OwnerAppointment(shop,id,user);
             ownerAppointmentList.add(newAppointment);
-            eventLogger.logMsg(Level.INFO,String.format("appointOwner = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getId()));
+            eventLogger.logMsg(Level.INFO,String.format("appointOwner = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
         }
-        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getId()));
+        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
     } //TODO: should be at upper level
 
     /***
@@ -75,9 +78,9 @@ public class Member implements UserState{
             shop.setManager(user.getId());
             ManagerAppointment newAppointment = new ManagerAppointment(shop,id,user);
             managerAppointmentList.add(newAppointment);
-            eventLogger.logMsg(Level.INFO,String.format("appointManager = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getId()));
+            eventLogger.logMsg(Level.INFO,String.format("appointManager = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
         }
-        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getId()));
+        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
     }
 
     /***
@@ -95,9 +98,9 @@ public class Member implements UserState{
      */
     @Override
     public void closeShop(Shop shop,int id) {
-        if(shop.close(id))
-            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %d",shop.getId()));
-        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %d , user id:%d",shop.getId(),id));
+        if(shop.closeShop())
+            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %d",shop.getShopID()));
+        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %d , user id:%d",shop.getShopID(),id));
     }
 
     @Override
