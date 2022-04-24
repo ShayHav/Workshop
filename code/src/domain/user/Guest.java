@@ -1,6 +1,5 @@
 package domain.user;
 
-import domain.Tuple;
 import domain.market.MarketSystem;
 import domain.shop.*;
 

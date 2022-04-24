@@ -2,8 +2,6 @@ package domain.user;
 
 
 import domain.ErrorLoggerSingleton;
-import domain.shop.ManagerAppointment;
-import domain.shop.OwnerAppointment;
 import domain.shop.Shop;
 
 import java.util.LinkedList;

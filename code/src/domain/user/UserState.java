@@ -1,6 +1,5 @@
 package domain.user;
 
-import domain.Tuple;
 import domain.shop.*;
 
 import java.util.List;

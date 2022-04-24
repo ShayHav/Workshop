@@ -1,5 +1,6 @@
-package domain.shop;
+package domain.user;
 
+import domain.shop.Shop;
 import domain.user.User;
 
 public class OwnerAppointment {

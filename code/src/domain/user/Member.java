@@ -2,7 +2,6 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
-import domain.Tuple;
 import domain.shop.*;
 
 import java.util.List;
