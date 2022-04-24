@@ -1,9 +1,9 @@
 package domain.user;
 
+import domain.shop.Shop;
+
 public class SystemManager extends Member {
 
-    @Override
-    public void getOrderHistory(Filter f) {
-
+    public void getOrderHistory(Filter f, Shop s) {
     }
 }

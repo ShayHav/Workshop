@@ -1,32 +1,38 @@
 package domain.user;
 
-import domain.shop.Product;
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
+import domain.Tuple;
+import domain.shop.*;
+
+import java.util.List;
+import java.util.logging.Level;
+
 
 public class Member implements UserState{
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+
 
     @Override
-    public void getInfo(Filter f) {
-
+    public List<ShopInfo> getInfoOfShops() {
+        return null;
     }
 
     @Override
-    public void searchProduct(Filter f) {
-
+    public List<ProductInfo> getInfoOfProductInShop(int shopID) {
+        return null;
     }
 
     @Override
-    public void addProductToCart(String shop, Product p, int amount) {
+    public void checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
 
     }
 
-    @Override
-    public void checkCart() {
-
-    }
 
     @Override
-    public void checkout() {
-
+    public void leaveMarket(Cart cart) {
+        //TODO: how to accesses to the user cart?
     }
 
 
@@ -34,35 +40,52 @@ public class Member implements UserState{
      *
      * @param shop - shop's name or ID
      */
-    public void createShop(String shop)
+    @Override
+    public void createShop(Shop shop,int id)
     {
-        throw new UnsupportedOperationException();
-    }
+        shop.setFounder(id);
+    } //TODO: should be at upper level
 
     /***
-     *
-     * @param userID - The appointed user's unique id
+     *  @param user - appointed for shopOwner
+     * @param shop - relevant shop
+     * @param id - appointee id
+     * @param ownerAppointmentList
      */
-    public void appointOwner(String userID)
-    {
-        throw new UnsupportedOperationException();
-    }
+    @Override
+    public void appointOwner(User user, Shop shop,int id, List<OwnerAppointment> ownerAppointmentList) {
+        if (shop.isFounder(id) || shop.isOwner(id)) {
+            user.addRole(Role.ShopOwner);
+            shop.setOwner(user.getId());
+            OwnerAppointment newAppointment = new OwnerAppointment(shop,id,user);
+            ownerAppointmentList.add(newAppointment);
+            eventLogger.logMsg(Level.INFO,String.format("appointOwner = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getId()));
+        }
+        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getId()));
+    } //TODO: should be at upper level
 
     /***
      *
-     * @param userID - The appointed user's unique id
+     * @param user - The appointed user's object
      *               TODO: decide if need to add param Permissions or to receive permission in the
      */
-    public void appointManager(String userID)
-    {
-        throw new UnsupportedOperationException();
+    @Override
+    public void appointManager(User user, Shop shop, int id, List<ManagerAppointment> managerAppointmentList) {
+        if(shop.isOwner(id)){
+            user.addRole(Role.ShopManager);
+            shop.setManager(user.getId());
+            ManagerAppointment newAppointment = new ManagerAppointment(shop,id,user);
+            managerAppointmentList.add(newAppointment);
+            eventLogger.logMsg(Level.INFO,String.format("appointManager = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getId()));
+        }
+        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getId()));
     }
 
     /***
      *
-     * @param userID - The Manager's unique id
+     * @param user - The Manager's unique id
      */
-    public void changeManagerPermissions(String userID)
+    public void changeManagerPermissions(User user)
     {
         throw new UnsupportedOperationException();
     }
@@ -71,9 +94,26 @@ public class Member implements UserState{
      *
      * @param shop
      */
-    public void closeShop(String shop)
-    {
-        throw new UnsupportedOperationException();
+    @Override
+    public void closeShop(Shop shop,int id) {
+        if(shop.close(id))
+            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %d",shop.getId()));
+        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %d , user id:%d",shop.getId(),id));
+    }
+
+    @Override
+    public void searchProductByName(String name, Filter f) {
+
+    }
+
+    @Override
+    public void searchProductByCategory(String category, Filter f) {
+
+    }
+
+    @Override
+    public void searchProductByKeyword(String keyword, Filter f) {
+
     }
 
 
@@ -86,17 +126,6 @@ public class Member implements UserState{
     {
         throw new UnsupportedOperationException();
     }
-
-
-    /***
-     * The function will display past orders that were completed in the shop
-     * @param f
-     */
-    public void getOrderHistory(Filter f)
-    {
-
-    }
-
 
 
 
