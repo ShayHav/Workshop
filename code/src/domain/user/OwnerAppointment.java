@@ -5,10 +5,10 @@ import domain.user.User;
 
 public class OwnerAppointment {
     private Shop shop;
-    private int appointeeId;
+    private String appointeeId;
     private User appointed;
 
-    public OwnerAppointment(Shop shop,int appointee , User appointed){
+    public OwnerAppointment(Shop shop,String appointee , User appointed){
         this.appointed=appointed;
         this.shop = shop;
         this.appointeeId =appointee;

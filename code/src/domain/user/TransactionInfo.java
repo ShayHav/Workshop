@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class TransactionInfo {
 
-    private int userID;
+    private String userID;
     private String fullName;
     private String address;
     private String phoneNumber;
@@ -14,7 +14,7 @@ public class TransactionInfo {
     private double totalAmount;
 
 
-    public TransactionInfo(int userID, String fullName, String address,String phoneNumber,String cardNumber, String expirationDate, LocalDate transactionDate, double totalAmount){
+    public TransactionInfo(String userID, String fullName, String address,String phoneNumber,String cardNumber, String expirationDate, LocalDate transactionDate, double totalAmount){
         this.userID = userID;
         this.fullName = fullName;
         this.address = address;
@@ -53,7 +53,7 @@ public class TransactionInfo {
         return phoneNumber;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 }

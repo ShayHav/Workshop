@@ -24,7 +24,7 @@ public class Cart {
 
 
     public void addProductToCart(Shop shop, int productID, int amount) {
-        int shopID = shop.getId();
+        int shopID = shop.getShopID();
         if (!baskets.containsKey(shopID)) {
             ShoppingBasket newBasket = new ShoppingBasket(shop, productID, amount);
             baskets.put(shopID, newBasket);
@@ -63,7 +63,7 @@ public class Cart {
     }
 
     //TODO: figure out how to notify error per basket
-    public List<ResponseT<Order>> checkout(int userId, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         LocalDate transaction_date = LocalDate.now();
         TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
         List<ResponseT<Order>> orders = new ArrayList<>();

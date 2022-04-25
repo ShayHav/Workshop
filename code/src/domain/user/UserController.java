@@ -12,7 +12,7 @@ public class UserController {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
-    private Map<Integer, User> memberList; //TODO: At a later stage there will be a list of Thread by users
+    private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
     private User activeUser; //TODO: temporary
 
     public UserController() {
@@ -27,8 +27,8 @@ public class UserController {
      * @param id the unique identifier of the user
      * @param pass password given by the user
      */
-    public void logIn(int id, String pass) {
-        if(memberList.get(new Integer(id))!=null) {
+    public void logIn(String id, String pass) {
+        if(memberList.get(id)!=null) {
             if (securePasswordStorage.passwordCheck(id, pass)) {
                 activeUser = memberList.get(id);
                 activeUser.login();
@@ -47,9 +47,9 @@ public class UserController {
      */
     public void logOut() {
         if (activeUser != null) {
-            int id = activeUser.getId();
+            String id = activeUser.getId();
             activeUser.logout();
-            eventLogger.logMsg(Level.INFO, String.format("logOut for user: %d.", id));
+            eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", id));
         }
         else errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
     }
@@ -60,7 +60,7 @@ public class UserController {
      * @param id the unique identifier of the user
      * @param pass password given by the user
      */
-    public void register(int id, String pass) {
+    public void register(String id, String pass) {
         if (!memberList.containsKey(id)) {
             User user = new User(id);
             memberList.put(id, user);
@@ -80,10 +80,10 @@ public class UserController {
         eventLogger.logMsg(Level.INFO, "User entered Market.");
     }
 
-    public User getUser(int id) {
+    public User getUser(String id) {
         User getUser = null;
-        for (Map.Entry<Integer, User> entry : memberList.entrySet()){
-            if(entry.getKey()==id)
+        for (Map.Entry<String, User> entry : memberList.entrySet()){
+            if(entry.getKey().equals(id))
                 getUser = entry.getValue();
         }
         return getUser;

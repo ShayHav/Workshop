@@ -16,7 +16,7 @@ import java.util.logging.Level;
 public class User {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final String ca = "command approve";
-    private int id;
+    private String id;
     private UserState us;
     private List<Role> roleList;
     private Cart userCart;
@@ -29,7 +29,7 @@ public class User {
 
     public User() {us = null;}
 
-    public User(int id){
+    public User(String id){
         this.id = id;
         loggedIn = false;
     }
@@ -89,7 +89,7 @@ public class User {
         loggedIn = false;
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
