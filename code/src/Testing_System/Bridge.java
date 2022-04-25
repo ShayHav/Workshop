@@ -78,4 +78,12 @@ public interface Bridge {
     Result<Boolean, String> RemoveBuyingProductPolicy(String shopname);
 
     Result<Boolean, String> AppointNewShopOwner(String username);
+
+    Result<Boolean, String> AppointNewShopManager(String username);
+
+    Result<Boolean, String> AddShopMangerPermissions(String username, List<String> permissions);
+
+    Result<Boolean, String> RemoveShopManagerPermissions(String username, List<String> permissions);
+
+    Result<Boolean, String> CloseShop(String shopname);
 }

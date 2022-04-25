@@ -4,9 +4,11 @@ import domain.shop.Product;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.TransactionInfo;
 import domain.shop.discount.Discount;
+import domain.shop.ShopManagersPermissions;
 
 import java.util.List;
 import java.util.Map;
+
 
 public class Tester {
     private Bridge br;
@@ -64,19 +66,22 @@ public class Tester {
 //
 //    public Result<Boolean, String> RemoveBuyingProductPolicy(String shopname) { return br.RemoveBuyingProductPolicy(shopname);}
 
-      public Result<Boolean, String> AppointNewShopOwner(String username) { return br.AppointNewShopOwner(username);}
+    public Result<Boolean, String> AppointNewShopOwner(String username) { return br.AppointNewShopOwner(username);}
 
-     public Result<Boolean, String> AppointNewShopManager(String username, )
+    public Result<Boolean, String> AppointNewShopManager(String username) { return br.AppointNewShopManager(username);}
 
+    public Result<Boolean, String> AddShopManagerPermissions(String username, List<ShopManagersPermissions> permissions) { return br.AddShopMangerPermissions(username, permissions); }
+
+    public Result<Boolean, String> RemoveShopManagerPermissions(String username, List<ShopManagersPermissions> permissions) { return br.RemoveShopManagerPermissions(username, permissions);}
+
+    public Result<Boolean, String> CloseShop(String shopname) { return br.CloseShop(shopname);}
+
+    public Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f)
 
     //Member-Visitor General
-    public Result<Boolean, String> Logout(String username)
-    {
-        return br.Logout(username);
-    }
+    public Result<Boolean, String> Logout(String username) { return br.Logout(username); }
 
     public Result<Boolean, String> CreateShop(String username, String shopname) { return br.CreateShop(username, shopname);}
-
 
 
     //System Scnerios
