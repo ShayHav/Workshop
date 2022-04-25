@@ -65,6 +65,21 @@ public class MarketSystem {
         return externalConnector.supply(ti,products);
     }
 
+    public void setSupplierConnection(boolean b)
+    {
+
+    }
+
+    public void setPaymentConnection(boolean b)
+    {
+
+    }
+
+    public void createSystemManger(String username, String pw)
+    {
+
+    }
+
 
     public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
         return sc.getInfoOfShops(f);

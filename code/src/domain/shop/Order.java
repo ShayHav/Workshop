@@ -10,7 +10,9 @@ public class Order {
     private LocalDateTime buyingTime;
     private String userID;
     private List<Product> broughtItem;
-    double totalAmount;
+    private double totalAmount;
+    private OrderInfo oi;
+
 
     public Order(List<Product> products,double totalAmount, String userID){
         buyingTime = LocalDateTime.now();
@@ -19,6 +21,8 @@ public class Order {
         this.userID = userID;
 
     }
+
+    public Order(OrderInfo oi) { this.oi = oi;}
 
     public LocalDateTime getBuyingTime() {
         return buyingTime;
@@ -39,4 +43,6 @@ public class Order {
     public void setOrderId(long id){
         orderId = id;
     }
+
+    public OrderInfo getOrderInfo(){ return oi;}
 }
