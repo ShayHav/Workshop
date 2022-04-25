@@ -97,4 +97,12 @@ public class MarketSystem {
     public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         sc.createShop(name,discountPolicy, purchasePolicy,id);
     }
+
+    public void register(String userId,String pass){
+        uc.register(userId,pass);
+    }
+
+    public void deleteUserTest(String[] username){
+        uc.deleteUserTest(username);
+    }
 }
