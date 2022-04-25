@@ -2,8 +2,10 @@ package Testing_System;
 
 import domain.shop.Product;
 import domain.shop.PurchasePolicys.PurchaseRule;
+import domain.shop.ShopManagersPermissions;
 import domain.shop.TransactionInfo;
 import domain.shop.discount.Discount;
+import domain.user.Filter;
 
 import java.util.List;
 import java.util.Map;
@@ -40,10 +42,15 @@ public interface Bridge {
     Result<Boolean, String> RemoveExternalService(String path);
 
     //Guest-Visitor Shop options
+    Result<Boolean, String> GetShopsInfo();
 
-    Result<Boolean, String> GetProductInfo(Product p); //display information of a product?
+    Result<Boolean, String> GetProductInfoInShop(String shopname); //display information of a product?
 
-    Result<Boolean, String> SearchProducts(Product p);
+    Result<Boolean, String> SearchProductByName(String pName);
+
+    Result<Boolean, String> SearchProductByCategory(String pName);
+
+    Result<Boolean, String> SearchProductByKeyword(String keyword);
 
     Result<Boolean, String> AddToShoppingCart(Product p, String shopname, int amount);
 
@@ -81,9 +88,12 @@ public interface Bridge {
 
     Result<Boolean, String> AppointNewShopManager(String username);
 
-    Result<Boolean, String> AddShopMangerPermissions(String username, List<String> permissions);
+    Result<Boolean, String> AddShopMangerPermissions(String username, List<ShopManagersPermissions> permissions);
 
-    Result<Boolean, String> RemoveShopManagerPermissions(String username, List<String> permissions);
+    Result<Boolean, String> RemoveShopManagerPermissions(String username, List<ShopManagersPermissions> permissions);
 
     Result<Boolean, String> CloseShop(String shopname);
+
+    Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f);
+
 }
