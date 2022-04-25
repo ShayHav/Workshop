@@ -1,6 +1,7 @@
 package domain.user;
 
 import domain.ResponseT;
+import domain.Tuple;
 import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
@@ -9,6 +10,8 @@ import domain.shop.discount.DiscountPolicy;
 import java.util.List;
 
 public class Guest implements UserState {
+
+    private static MarketSystem market = MarketSystem.getInstance();
 
     @Override
     public List<ShopInfo> getInfoOfShops() {
@@ -23,6 +26,7 @@ public class Guest implements UserState {
     }
 
 
+    //TODO: remind shay to add rank to shop and product
     @Override
     public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
         MarketSystem market = MarketSystem.getInstance();
@@ -46,6 +50,9 @@ public class Guest implements UserState {
     public List<ResponseT<Order>> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         return c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
     }
+
+
+
 
 
     @Override

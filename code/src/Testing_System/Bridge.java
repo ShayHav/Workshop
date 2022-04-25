@@ -1,7 +1,9 @@
 package Testing_System;
 
 import domain.shop.Product;
+import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.TransactionInfo;
+import domain.shop.discount.Discount;
 
 import java.util.List;
 import java.util.Map;
@@ -61,7 +63,27 @@ public interface Bridge {
 
     Result<Boolean, String> RemoveProductToShopInventory(Product p, String shopname);
 
-    Result<Boolean, String> ChangeProductDetails(Product p, String shopname);
-
     Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo);
+
+    Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr);
+
+    Result<Boolean, String> RemoveBuyingShopPolicy(String shopname);
+
+    Result<Boolean, String> AddDiscountShopPolicy(String shopname, Discount discount);
+
+    Result<Boolean, String> RemoveDiscountShopPolicy(String shopname);
+
+    Result<Boolean, String> AddBuyingProductPolicy(String shopname, PurchaseRule pr);
+
+    Result<Boolean, String> RemoveBuyingProductPolicy(String shopname);
+
+    Result<Boolean, String> AppointNewShopOwner(String username);
+
+    Result<Boolean, String> AppointNewShopManager(String username);
+
+    Result<Boolean, String> AddShopMangerPermissions(String username, List<String> permissions);
+
+    Result<Boolean, String> RemoveShopManagerPermissions(String username, List<String> permissions);
+
+    Result<Boolean, String> CloseShop(String shopname);
 }

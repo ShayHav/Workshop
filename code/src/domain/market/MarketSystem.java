@@ -14,6 +14,7 @@ import domain.user.UserController;
 
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MarketSystem {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();

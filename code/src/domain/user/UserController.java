@@ -52,7 +52,7 @@ public class UserController {
         if (activeUser != null) {
             String id = activeUser.getId();
             activeUser.logout();
-            eventLogger.logMsg(Level.INFO, String.format("logOut for user: %d.", id));
+            eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", id));
         }
         else errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
     }

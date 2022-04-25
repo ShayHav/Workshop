@@ -17,7 +17,6 @@ public class Member implements UserState{
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
 
-
     @Override
     public List<ShopInfo> getInfoOfShops() {
         MarketSystem market = MarketSystem.getInstance();
@@ -60,7 +59,8 @@ public class Member implements UserState{
         //TODO: impl,shahar need to add method save cart when we manage DB
     }
 
-    /***
+
+    /**
      *
      * @param name
      * @param discountPolicy
@@ -68,10 +68,9 @@ public class Member implements UserState{
      * @param id
      */
     @Override
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String id)
-    {
-        MarketSystem.getInstance().createShop(name,discountPolicy,purchasePolicy, id);
-    } //TODO: should be at upper level
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String id) {
+        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);
+    }
 
     /***
      *  @param user - appointed for shopOwner
@@ -84,13 +83,24 @@ public class Member implements UserState{
         if (shop.isFounder(id) || shop.isOwner(id)) {
             user.addRole(Role.ShopOwner);
             shop.setOwner(user.getId());
-            OwnerAppointment newAppointment = new OwnerAppointment(shop,id,user);
-            ownerAppointmentList.add(newAppointment);
-            eventLogger.logMsg(Level.INFO,String.format("appointOwner = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
+            if(isAppointedMeOwner(user,id)) {
+                OwnerAppointment newAppointment = new OwnerAppointment(shop,id,user);
+                ownerAppointmentList.add(newAppointment);
+                eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %d , appointedId: %d , ShopId %d}", id, user.getId(), shop.getShopID()));
+            }
+            else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
         }
         else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
     } //TODO: should be at upper level
 
+    private boolean isAppointedMeOwner(User user,String id){
+        List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
+        for(OwnerAppointment run : Appointmentusers){
+            if(run.getAppointed().getId().equals(id))
+                return true;
+        }
+        return false;
+    }
     /***
      *
      * @param user - The appointed user's object
@@ -101,13 +111,24 @@ public class Member implements UserState{
         if(shop.isOwner(id)){
             user.addRole(Role.ShopManager);
             shop.setManager(user.getId());
-            ManagerAppointment newAppointment = new ManagerAppointment(shop,id,user);
-            managerAppointmentList.add(newAppointment);
-            eventLogger.logMsg(Level.INFO,String.format("appointManager = {appointeeId: %s , appointedId: %s , ShopId %d}",id,user.getId(),shop.getShopID()));
+            if(isAppointedMeManager(user,id)) {
+                ManagerAppointment newAppointment = new ManagerAppointment(shop, id, user);
+                managerAppointmentList.add(newAppointment);
+                eventLogger.logMsg(Level.INFO, String.format("appointManager = {appointeeId: %d , appointedId: %d , ShopId %d}", id, user.getId(), shop.getShopID()));
+            }
+            else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
         }
         else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %s , appointedId: %s , ShopId %d}",id,user.getId(),shop.getShopID()));
     }
 
+    private boolean isAppointedMeManager(User user,String id){
+        List<ManagerAppointment> Appointmentusers = user.getManagerAppointeeList();
+        for(ManagerAppointment run : Appointmentusers){
+            if(run.getAppointed().getId().equals(id))
+                return true;
+        }
+        return false;
+    }
     /***
      *
      * @param user - The Manager's unique id
@@ -123,9 +144,20 @@ public class Member implements UserState{
      */
     @Override
     public void closeShop(Shop shop,String id) {
-        if(shop.closeShop())
-            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %s",shop.getShopID()));
-        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %s , user id:%s",shop.getShopID(),id));
+        shop.closeShop();
+        if(!shop.isOpen())
+            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %d",shop.getShopID()));
+        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %d , user id:%d",shop.getShopID(),id));
+    }
+
+    /***
+     * The function will display information on the shop, and shop's officials.
+     * The function can be called only by Shop Owner
+     * @param f
+     */
+    public void requestShopInfo(Filter f)
+    {
+        throw new UnsupportedOperationException();
     }
 
 

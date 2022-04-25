@@ -22,6 +22,7 @@ public class Shop {
     private User ShopFounder;
     private List<User> ShopOwners;
     private List<User> ShopManagers;
+    private Map<ShopManagersPermissions, List<String>> ShopManagersPermissionsMap;
     private List<User> Shoppers;
     private final Inventory inventory;
     private DiscountPolicy discountPolicy;
@@ -31,7 +32,7 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String founderId, int shopID) {
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String founderId, int shopID) {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
@@ -44,20 +45,57 @@ public class Shop {
         isOpen = true;
         ShopFounder = MarketSystem.getInstance().getUser(founderId);
         this.shopID = shopID;
+        ShopManagersPermissionsMap = new HashMap<>();
+        ShopManagersPermissionsInit();
     }
 
-    public String getItemInfo(int prodID) {
-        try {
+    public void addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , int id){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)){
+            for (ShopManagersPermissions run: shopManagersPermissionsList)
+                if(!PermissionExist(ShopManagersPermissionsMap.get(run),tragetUser.getId())) {
+                    ShopManagersPermissionsMap.get(run).add(tragetUser.getId());
+                    eventLogger.logMsg(Level.INFO,String.format("add Permissions to user: %s",tragetUser.getId()));
+                }
+        }
+    }
+
+    public void removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , int id){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)){
+            for (ShopManagersPermissions run: shopManagersPermissionsList)
+                if(PermissionExist(ShopManagersPermissionsMap.get(run),tragetUser.getId())) {
+                    ShopManagersPermissionsMap.get(run).remove(tragetUser.getId());
+                }
+        }
+    }
+
+    private boolean PermissionExist(List<String> permissionlist,String userId){
+        for (String run : permissionlist){
+            if(run.equals(userId))
+                return true;
+        }
+        return false;
+    }
+
+
+    private void ShopManagersPermissionsInit(){
+        for (ShopManagersPermissions myVar : ShopManagersPermissions.values()){
+            ShopManagersPermissionsMap.put(myVar, new LinkedList<>());
+        }
+    }
+
+    public String getProductInfo(int prodID){
+        try{
             String info = getProduct(prodID).getDescription();
             eventLogger.logMsg(Level.INFO, String.format("returned description of product: %d ", prodID));
             return info;
-        } catch (NullPointerException npe) {
+        }catch (NullPointerException npe){
             errorLogger.logMsg(Level.WARNING, String.format("could not find product: %d", prodID));
             return "this product does not exist.";
         }
     }
 
-    public List<Product> getItemsInStock() {
+
+    public List<Product> getProductsInStock(){
         //might be an empty list, make sure
         return inventory.getItemsInStock();
     }
@@ -73,20 +111,27 @@ public class Shop {
         }
     }
 
-    public boolean addListing(int prodID, double price, int quantity) {
-        return inventory.addProduct(prodID, price, quantity);
+    public boolean addListing(int prodID, double price, int quantity,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AddProductToInventory).contains(userId))
+            return inventory.addProduct(prodID, price, quantity);
+        else return false;
     }
 
-    public void removeListing(int prodID) {
+    public void removeListing(int prodID,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.RemoveProductToInventory).contains(userId))
         inventory.removeProduct(prodID);
     }
 
-    public boolean editPrice(int prodID, double newPrice) {
-        return inventory.setPrice(prodID, newPrice);
+    public boolean editPrice(int prodID, double newPrice,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
+            return inventory.setPrice(prodID, newPrice);
+        else return false;
     }
 
-    public boolean editQuantity(int prodID, int newQuantity) {
-        return inventory.setAmount(prodID, newQuantity);
+    public boolean editQuantity(int prodID, int newQuantity,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
+            return inventory.setAmount(prodID, newQuantity);
+        else return false;
     }
 
     public List<Discount> productDiscount(int prodID) {
@@ -102,79 +147,75 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public void changeProductDetail(int prodID, String description) {
-        inventory.setDescription(prodID, description);
+    public void changeProductDetail(int prodID, String description,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
+            inventory.setDescription(prodID, description);
     }
 
     //todo????? needed?
-    public void changeDiscountPolicy(DiscountPolicy discountPolicy) {
-    }
-
+    public void changeDiscountPolicy(DiscountPolicy discountPolicy){}
     //todo????? needed?
-    public void changePurchasePolicy(PurchasePolicy purchasePolicy) {
-    }
-
+    public void changePurchasePolicy(PurchasePolicy purchasePolicy){}
     //todo????? needed?
-    public void changeProductDiscount(PurchasePolicy purchasePolicy) {
-    }
+    public void changeProductDiscount(PurchasePolicy purchasePolicy){}
 
-    public double calculateTotalAmountOfOrder(Map<Integer, Integer> itemsAndQuantity) {
+    public double calculateTotalAmountOfOrder(Map<Integer,Integer> ProductsAndQuantity){
         return 0.0; //TODO: impl
     }
 
-    public boolean addPercentageDiscount(int prodID, double percentage) {
+    public boolean addPercentageDiscount(int prodID, double percentage){
         return discountPolicy.addPercentageDiscount(prodID, percentage);
     }
 
-    public boolean addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree) {
+    public boolean addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
         return discountPolicy.addBundleDiscount(prodID, amountNeededToBuy, amountGetFree);
     }
 
-    public boolean purchasePolicyLegal(String userID, int prodID, double price, int amount) {
+    public boolean purchasePolicyLegal(int userID, int prodID, double price,int amount){
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
-    public ResponseT<Order> checkOut(Map<Integer, Integer> items, double totalAmount, TransactionInfo transaction) {
-        for (Map.Entry<Integer, Integer> set : items.entrySet()) {
-            //check purchase policy regarding the item
+    public ResponseT checkOut(Map<Integer,Integer> Products, double totalAmount, TransactionInfo transaction){
+        for(Map.Entry<Integer, Integer> set : Products.entrySet()){
+            //check purchase policy regarding the Product
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
-                return new ResponseT<>(null, "violates purchase policy");
+                return new ResponseT("violates purchase policy");
         }
         synchronized (inventory) {
-            if (!inventory.reserveItems(items)) {
-                inventory.restoreStock(items);
-                return new ResponseT<>(null, "not in stock");
+            if (!inventory.reserveItems(Products)) {
+                inventory.restoreStock(Products);
+                return new ResponseT("not in stock");
             }
         }
 
 
         //calculate price
-        Map<Integer, Double> item_totalPricePer = new HashMap<>();
+        Map<Integer, Double> Product_totalPricePer = new HashMap<>();
         double totalPaymentDue = 0;
-        double item_price_single;
-        double item_total;
-        for (Map.Entry<Integer, Integer> set : items.entrySet()) {
-            //check purchase policy regarding the item
-            item_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
-            item_total = item_price_single * set.getValue();
-            item_totalPricePer.put(set.getKey(), item_total);
-            totalPaymentDue += item_total;
+        double Product_price_single;
+        double Product_total;
+        for(Map.Entry<Integer, Integer> set : Products.entrySet()){
+            //check purchase policy regarding the Product
+            Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            Product_total = Product_price_single * set.getValue();
+            Product_totalPricePer.put(set.getKey(), Product_total);
+            totalPaymentDue += Product_total;
         }
 
         MarketSystem market = MarketSystem.getInstance();
-        if (!market.pay(transaction)) {
-            inventory.restoreStock(items);
+        if(!market.pay(transaction)){
+            inventory.restoreStock(Products);
             return new ResponseT();
         }
-        if (!market.supply(transaction)) {
+        if(!market.supply(transaction)){
             return new ResponseT("problem with supply system");
         }
         // creating Order object to store in the Order History with unmutable copy of product
         List<Product> boughtProducts = new ArrayList<>();
-        for (Integer item : items.keySet()) {
-            Product p = inventory.findProduct(item);
+        for(Integer Product: Products.keySet()){
+            Product p = inventory.findProduct(Product);
             double price = inventory.getPrice(p.getId());
-            boughtProducts.add(new ProductHistory(p, price, items.get(item)));
+            boughtProducts.add(new ProductHistory(p,price ,Products.get(Product)));
         }
         Order o = new Order(boughtProducts, totalAmount, transaction.getUserID());
         orders.addOrder(o);
@@ -186,7 +227,7 @@ public class Shop {
     }
 
     public boolean isOwner(String id) {
-        for (User run : ShopOwners) {
+        for(User run :ShopOwners){
             if (run.getId().equals(id))
                 return true;
         }
@@ -194,9 +235,9 @@ public class Shop {
     }
 
     public void setOwner(String id) {
-        User newOwner = MarketSystem.getInstance().getUser(id);
-        if (newOwner != null)
-            if (!ShopOwners.contains(newOwner))
+        User newOwner =MarketSystem.getInstance().getUser(id);
+        if(newOwner!=null)
+            if(!ShopOwners.contains(newOwner))
                 ShopOwners.add(newOwner);
     }
 
@@ -205,20 +246,23 @@ public class Shop {
     }
 
     public void setManager(String id) {
-        User newManager = MarketSystem.getInstance().getUser(id);
-        if (newManager != null)
-            if (!ShopManagers.contains(newManager))
+        User newManager =MarketSystem.getInstance().getUser(id);
+        if(newManager!=null)
+            if(!ShopManagers.contains(newManager))
                 ShopManagers.add(newManager);
     }
 
-    public boolean closeShop() {
-        if (isOpen)
+    public void closeShop(){
+        if(isOpen)
             isOpen = false;
-        return !isOpen;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 
     public ShopInfo getShopInfo() {

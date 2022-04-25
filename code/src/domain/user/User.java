@@ -32,7 +32,7 @@ public class User {
         us = null;
     }
 
-    public User(String id) {
+    public User(String id){
         this.id = id;
         loggedIn = false;
     }
@@ -48,7 +48,7 @@ public class User {
     /***
      * leave market - user has no state
      */
-    public void leaveMarket() {
+    public void leaveMarket(){
         us.leaveMarket(userCart);
         us = null;
     }
@@ -123,6 +123,7 @@ public class User {
         return us.getInfoOfProductInShop(shopID);
     }
 
+    public void getInfoOfShops(){}
 
     public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
         return us.searchProductByName(name, f);
@@ -139,5 +140,13 @@ public class User {
     public void addRole(Role role) {
         if (!roleList.contains(role))
             roleList.add(role);
+    }
+
+    public List<OwnerAppointment> getOwnerAppointmentList() {
+        return ownerAppointmentList;
+    }
+
+    public List<ManagerAppointment> getManagerAppointeeList() {
+        return managerAppointeeList;
     }
 }
