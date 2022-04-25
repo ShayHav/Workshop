@@ -188,7 +188,7 @@ public class Shop {
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
                 inventory.restoreStock(products);
-                return new ResponseT<Order>("not in stock");
+                return new ResponseT<>("not in stock");
             }
         }
 
@@ -214,8 +214,8 @@ public class Shop {
             inventory.restoreStock(products);
             return new ResponseT<Order>();
         }
-        if(!market.supply(transaction)){
-            return new ResponseT<Order>("problem with supply system");
+        if(!market.supply(transaction, products)){
+            return new ResponseT<>("problem with supply system");
         }
         // creating Order object to store in the Order History with immutable copy of product
         List<Product> boughtProducts = new ArrayList<>();
@@ -226,7 +226,7 @@ public class Shop {
         }
         Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID());
         orders.addOrder(o);
-        return new ResponseT<Order>(o);
+        return new ResponseT<>(o);
     }
 
 

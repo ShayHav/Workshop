@@ -4,6 +4,7 @@ import domain.user.TransactionInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ExternalConnector {
     private final List<PaymentService> paymentServices;
@@ -40,9 +41,9 @@ public class ExternalConnector {
         return false;
     }
 
-    public boolean supply(TransactionInfo ti){
+    public boolean supply(TransactionInfo ti, Map<Integer,Integer> products){
         for(SupplyService service: supplyServices){
-            boolean processed = service.supply(ti.getFullName(), ti.getAddress(), ti.getItems());
+            boolean processed = service.supply(ti.getFullName(), ti.getAddress(), products);
             if(processed)
                 return true;
         }

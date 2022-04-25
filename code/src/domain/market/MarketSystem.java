@@ -12,6 +12,7 @@ import domain.user.User;
 import domain.user.UserController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,8 +63,8 @@ public class MarketSystem {
      * @param ti - should be address and maybe also date
      * @return - true if supply is approved, false otherwise
      */
-    public boolean supply(TransactionInfo ti) {
-        return externalConnector.supply(ti);
+    public boolean supply(TransactionInfo ti, Map<Integer,Integer> products) {
+        return externalConnector.supply(ti,products);
     }
 
 

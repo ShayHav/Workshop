@@ -137,6 +137,10 @@ public class Inventory {
         return true;
     }
 
+    public void setProductList(Products productList) {
+        this.productList = productList;
+    }
+
     /**
      * a method to reserved all the item to a client, so he could buy them
      * @param items map of product id to the quantity
