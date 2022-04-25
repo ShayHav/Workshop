@@ -1,5 +1,6 @@
 package Testing_System;
 
+import domain.shop.Product;
 import domain.shop.TransactionInfo;
 
 import java.util.List;
@@ -25,11 +26,33 @@ public interface Bridge {
     //System
     Result<Boolean, String> RealTimeNotification(List<String> users, String msg);
 
-    Result<Boolean, String> PurchaseDelivery(TransactionInfo ti);
+    Result<Boolean, String> PurchaseDelivery(TransactionInfo ti); //supply
+
+    Result<Boolean, String> Payment(TransactionInfo ti);
 
     Result<Boolean, String> StartMarket();
 
     Result<Boolean, String> AddExternalService(String path);
 
     Result<Boolean, String> RemoveExternalService(String path);
+
+    //Guest-Visitor Shop options
+
+    Result<Boolean, String> GetProductInfo(Product p); //display information of a product?
+
+    Result<Boolean, String> SearchProducts(Product p);
+
+    Result<Boolean, String> AddToShoppingCart(Product p, String shopname, int amount);
+
+    Result<Boolean, String> EditShoppingCart(Product p, String shopname, int amount);
+
+    Result<Boolean, String> Checkout();
+
+    Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname);
+
+    Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname); //
+
+    Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname);
+
+    Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname);
 }
