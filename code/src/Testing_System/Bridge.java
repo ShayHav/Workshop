@@ -96,4 +96,5 @@ public interface Bridge {
 
     Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f);
 
+    Result<Boolean, String> DeleteUserTest(String[] usernames);
 }
