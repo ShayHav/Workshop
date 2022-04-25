@@ -75,11 +75,11 @@ public class MarketSystem {
         throw new UnsupportedOperationException();
     }
 
-    public User getUser(int id) {
+    public User getUser(String id) {
         return uc.getUser(id);
     }
 
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id) {
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         sc.crearteShop(name,discountPolicy, purchasePolicy,id);
     }
 }

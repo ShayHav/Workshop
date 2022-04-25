@@ -27,7 +27,7 @@ public class Member implements UserState{
     }
 
     @Override
-    public List<Order> checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public List<Order> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         throw new UnsupportedOperationException();
     }
 
@@ -46,7 +46,7 @@ public class Member implements UserState{
      * @param id
      */
     @Override
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,int id) {
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String id) {
         MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);
     }
 
@@ -57,7 +57,7 @@ public class Member implements UserState{
      * @param ownerAppointmentList
      */
     @Override
-    public void appointOwner(User user, Shop shop,int id, List<OwnerAppointment> ownerAppointmentList) {
+    public void appointOwner(User user, Shop shop,String id, List<OwnerAppointment> ownerAppointmentList) {
         if (shop.isFounder(id) || shop.isOwner(id)) {
             user.addRole(Role.ShopOwner);
             shop.setOwner(user.getId());
@@ -71,10 +71,10 @@ public class Member implements UserState{
         else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
     } //TODO: should be at upper level
 
-    private boolean isAppointedMeOwner(User user,int id){
+    private boolean isAppointedMeOwner(User user,String id){
         List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
         for(OwnerAppointment run : Appointmentusers){
-            if(run.getAppointed().getId()==id)
+            if(run.getAppointed().getId().equals(id))
                 return true;
         }
         return false;
@@ -85,7 +85,7 @@ public class Member implements UserState{
      *               TODO: decide if need to add param Permissions or to receive permission in the
      */
     @Override
-    public void appointManager(User user, Shop shop, int id, List<ManagerAppointment> managerAppointmentList) {
+    public void appointManager(User user, Shop shop, String id, List<ManagerAppointment> managerAppointmentList) {
         if(shop.isOwner(id)){
             user.addRole(Role.ShopManager);
             shop.setManager(user.getId());
@@ -99,10 +99,10 @@ public class Member implements UserState{
         else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
     }
 
-    private boolean isAppointedMeManager(User user,int id){
+    private boolean isAppointedMeManager(User user,String id){
         List<ManagerAppointment> Appointmentusers = user.getManagerAppointeeList();
         for(ManagerAppointment run : Appointmentusers){
-            if(run.getAppointed().getId()==id)
+            if(run.getAppointed().getId().equals(id))
                 return true;
         }
         return false;
@@ -121,7 +121,7 @@ public class Member implements UserState{
      * @param shop
      */
     @Override
-    public void closeShop(Shop shop,int id) {
+    public void closeShop(Shop shop,String id) {
         shop.closeShop();
         if(!shop.isOpen())
             eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %d",shop.getShopID()));
