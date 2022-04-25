@@ -7,10 +7,7 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.ShopController;
 import domain.shop.ShopInfo;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.SearchProductFilter;
-import domain.user.TransactionInfo;
-import domain.user.User;
-import domain.user.UserController;
+import domain.user.*;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -68,25 +65,25 @@ public class MarketSystem {
     }
 
 
-    public List<ShopInfo> getInfoOfShops() {
-        return sc.getInfoOfShops();
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
+        return sc.getInfoOfShops(f);
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID){
        return sc.getInfoOfProductInShop(shopID);
     }
 
-    public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
         return sc.searchProductByName(name,f);
     }
 
 
-    public List<ProductInfo> searchProductByCategory(String category, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
         return sc.searchProductByCategory(category,f);
     }
 
 
-    public List<ProductInfo> searchProductByKeyword(String keyword, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
         return sc.searchProductByKeyword(keyword, f);
     }
 

@@ -14,9 +14,9 @@ public class Guest implements UserState {
     private static MarketSystem market = MarketSystem.getInstance();
 
     @Override
-    public List<ShopInfo> getInfoOfShops() {
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
         MarketSystem market = MarketSystem.getInstance();
-        return market.getInfoOfShops();
+        return market.getInfoOfShops(f);
     }
 
     @Override
@@ -28,19 +28,19 @@ public class Guest implements UserState {
 
 
     @Override
-    public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
         MarketSystem market = MarketSystem.getInstance();
         return market.searchProductByName(name, f);
     }
 
     @Override
-    public List<ProductInfo>  searchProductByCategory(String category, SearchProductFilter f) {
+    public List<ProductInfo>  searchProductByCategory(String category, Filter<ProductInfo> f) {
         MarketSystem market = MarketSystem.getInstance();
         return market.searchProductByCategory(category, f);
     }
 
     @Override
-    public List<ProductInfo>  searchProductByKeyword(String keyword, SearchProductFilter f) {
+    public List<ProductInfo>  searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
         MarketSystem market = MarketSystem.getInstance();
         return market.searchProductByKeyword(keyword, f);
     }

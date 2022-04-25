@@ -13,7 +13,7 @@ public interface UserState {
      *
      * @return
      */
-    List<ShopInfo> getInfoOfShops();
+    List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f);
 
     /***
      *
@@ -35,9 +35,9 @@ public interface UserState {
 
     void closeShop(Shop shop,String id);
 
-    List<ProductInfo>  searchProductByName(String name, SearchProductFilter f);
+    List<ProductInfo>  searchProductByName(String name, Filter<ProductInfo> f);
 
-    List<ProductInfo>  searchProductByCategory(String category, SearchProductFilter f);
+    List<ProductInfo>  searchProductByCategory(String category, Filter<ProductInfo> f);
 
-    List<ProductInfo>  searchProductByKeyword(String keyword, SearchProductFilter f);
+    List<ProductInfo>  searchProductByKeyword(String keyword, Filter<ProductInfo> f);
 }

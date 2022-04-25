@@ -1,6 +1,5 @@
 package domain.user;
 
-import domain.Response;
 import domain.ResponseT;
 import domain.Tuple;
 import domain.shop.Order;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 public class Cart {
     private Map<Integer, ShoppingBasket> baskets;
