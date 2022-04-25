@@ -11,6 +11,9 @@ import java.util.logging.Level;
 
 public class DiscountPolicy {
 
+    /**
+     *
+     */
     private Map<Integer, List<Discount>> product_discounts;
     private Map<Integer, Discount> productGroup_discounts; ///check if needed
     private List<Integer> hasBundleDeal;
