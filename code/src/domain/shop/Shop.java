@@ -22,6 +22,7 @@ public class Shop {
     private User ShopFounder;
     private List<User> ShopOwners;
     private List<User> ShopManagers;
+    Map<ShopManagersPermissions, List<Integer>> ShopManagersPermissionsMap;
     private List<User> Shoppers;
     private final Inventory inventory;
     private DiscountPolicy discountPolicy;
@@ -31,9 +32,9 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,int founderId, int shopID){
-        this.discountPolicy=discountPolicy;
-        this.purchasePolicy=purchasePolicy;
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,int founderId, int shopID) {
+        this.discountPolicy = discountPolicy;
+        this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
         orders = new OrderHistory();
         ShopOwners = new LinkedList<>();
@@ -42,11 +43,19 @@ public class Shop {
         rank = 0;
         this.name = name;
         isOpen = true;
-        ShopFounder=MarketSystem.getInstance().getUser(founderId);
+        ShopFounder = MarketSystem.getInstance().getUser(founderId);
         this.shopID = shopID;
+        ShopManagersPermissionsMap = new HashMap<>();
+        ShopManagersPermissionsInit();
     }
 
-    public String getItemInfo(int prodID){
+    private void ShopManagersPermissionsInit(){
+        for (ShopManagersPermissions myVar : ShopManagersPermissions.values()){
+            ShopManagersPermissionsMap.put(myVar, new LinkedList<>());
+        }
+    }
+
+    public String getProductInfo(int prodID){
         try{
             String info = getProduct(prodID).getDescription();
             eventLogger.logMsg(Level.INFO, String.format("returned description of product: %d ", prodID));
@@ -57,7 +66,8 @@ public class Shop {
         }
     }
 
-    public List<Product> getItemsInStock(){
+
+    public List<Product> getProductsInStock(){
         //might be an empty list, make sure
         return inventory.getItemsInStock();
     }
@@ -74,11 +84,14 @@ public class Shop {
         }
     }
 
-    public boolean addListing(int prodID, double price, int quantity){
-        return inventory.addProduct(prodID, price, quantity);
+    public boolean addListing(int prodID, double price, int quantity,int userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AddProductToInventory).contains(userId))
+            return inventory.addProduct(prodID, price, quantity);
+        else return false;
     }
 
-    public void removeListing(int prodID){
+    public void removeListing(int prodID,int userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.RemoveProductToInventory).contains(userId))
         inventory.removeProduct(prodID);
     }
 
@@ -114,7 +127,7 @@ public class Shop {
     //todo????? needed?
     public void changeProductDiscount(PurchasePolicy purchasePolicy){}
 
-    public double calculateTotalAmountOfOrder(Map<Integer,Integer> itemsAndQuantity){
+    public double calculateTotalAmountOfOrder(Map<Integer,Integer> ProductsAndQuantity){
         return 0.0; //TODO: impl
     }
 
@@ -130,36 +143,36 @@ public class Shop {
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
-    public ResponseT checkOut(Map<Integer,Integer> items, double totalAmount, TransactionInfo transaction){
-        for(Map.Entry<Integer, Integer> set : items.entrySet()){
-            //check purchase policy regarding the item
+    public ResponseT checkOut(Map<Integer,Integer> Products, double totalAmount, TransactionInfo transaction){
+        for(Map.Entry<Integer, Integer> set : Products.entrySet()){
+            //check purchase policy regarding the Product
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
                 return new ResponseT("violates purchase policy");
         }
         synchronized (inventory) {
-            if (!inventory.reserveItems(items)) {
-                inventory.restoreStock(items);
+            if (!inventory.reserveItems(Products)) {
+                inventory.restoreStock(Products);
                 return new ResponseT("not in stock");
             }
         }
 
 
         //calculate price
-        Map<Integer, Double> item_totalPricePer = new HashMap<>();
+        Map<Integer, Double> Product_totalPricePer = new HashMap<>();
         double totalPaymentDue = 0;
-        double item_price_single;
-        double item_total;
-        for(Map.Entry<Integer, Integer> set : items.entrySet()){
-            //check purchase policy regarding the item
-            item_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
-            item_total = item_price_single * set.getValue();
-            item_totalPricePer.put(set.getKey(), item_total);
-            totalPaymentDue += item_total;
+        double Product_price_single;
+        double Product_total;
+        for(Map.Entry<Integer, Integer> set : Products.entrySet()){
+            //check purchase policy regarding the Product
+            Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            Product_total = Product_price_single * set.getValue();
+            Product_totalPricePer.put(set.getKey(), Product_total);
+            totalPaymentDue += Product_total;
         }
 
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)){
-            inventory.restoreStock(items);
+            inventory.restoreStock(Products);
             return new ResponseT();
         }
         if(!market.supply(transaction)){
@@ -167,10 +180,10 @@ public class Shop {
         }
         // creating Order object to store in the Order History with unmutable copy of product
         List<Product> boughtProducts = new ArrayList<>();
-        for(Integer item: items.keySet()){
-            Product p = inventory.findProduct(item);
+        for(Integer Product: Products.keySet()){
+            Product p = inventory.findProduct(Product);
             double price = inventory.getPrice(p.getId());
-            boughtProducts.add(new ProductHistory(p,price ,items.get(item)));
+            boughtProducts.add(new ProductHistory(p,price ,Products.get(Product)));
         }
         Order o = new Order(boughtProducts, totalAmount, transaction.getUserID());
         orders.addOrder(o);
@@ -207,13 +220,16 @@ public class Shop {
                 ShopManagers.add(newManager);
     }
 
-    public boolean closeShop(){
+    public void closeShop(){
         if(isOpen)
             isOpen = false;
-        return !isOpen;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 }

@@ -113,4 +113,12 @@ public class User {
         if(!roleList.contains(role))
             roleList.add(role);
     }
+
+    public List<OwnerAppointment> getOwnerAppointmentList() {
+        return ownerAppointmentList;
+    }
+
+    public List<ManagerAppointment> getManagerAppointeeList() {
+        return managerAppointeeList;
+    }
 }
