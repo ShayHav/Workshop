@@ -24,7 +24,7 @@ public class Guest implements UserState {
     }
 
 
-    //TODO: remind shay to add rank to shop and product
+
     @Override
     public void searchProductByName(String name, Filter f) {
 
@@ -45,7 +45,7 @@ public class Guest implements UserState {
     public List<Order> checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         List<ResponseT<Order>> result = c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
         for(ResponseT<Order> o : result){
-
+            o.isErrorOccurred()
         }
     }
 

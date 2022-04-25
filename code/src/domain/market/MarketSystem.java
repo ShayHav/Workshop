@@ -21,9 +21,11 @@ public class MarketSystem {
     private UserController uc;
     private ShopController sc;
     private static MarketSystem instance = null;
+    private ExternalConnector externalConnector;
 
     private MarketSystem() {
         eventLogger.logMsg(Level.INFO,"System start");
+        externalConnector = new ExternalConnector();
         this.start();
     }
 
@@ -52,7 +54,7 @@ public class MarketSystem {
      * @return true if approve, false if otherwise
      */
     public boolean pay(TransactionInfo ti) {
-        throw new UnsupportedOperationException();
+        return externalConnector.pay(ti);
     }
 
     /***
@@ -61,7 +63,7 @@ public class MarketSystem {
      * @return - true if supply is approved, false otherwise
      */
     public boolean supply(TransactionInfo ti) {
-        throw new UnsupportedOperationException();
+        return externalConnector.supply(ti);
     }
 
 
