@@ -178,6 +178,12 @@ public class Tester {
 
 
 
+    public Result<Boolean, String> DeleteUserTest(String[] usernames)
+    {
+        return br.DeleteUserTest(usernames);
+    }
+
+
 
 
 

@@ -96,7 +96,6 @@ public class UserController {
         throw new UnsupportedOperationException();
     }
 
-
     public List<ProductInfo> getInfoOfProductInShop(String userId, int shopID){
         throw new UnsupportedOperationException();
     }
@@ -113,4 +112,16 @@ public class UserController {
         throw new UnsupportedOperationException();
     }
 
+    public void deleteUserTest(String[] userId) {
+        for (int i = 0; i < userId.length; i++) {
+            deleteUser(userId[i]);
+        }
+    }
+
+    private void deleteUser(String useID) {
+        for (Map.Entry<String, User> entry : memberList.entrySet()) {
+            if (entry.getKey().equals(useID))
+                memberList.remove(entry.getKey());
+        }
+    }
 }

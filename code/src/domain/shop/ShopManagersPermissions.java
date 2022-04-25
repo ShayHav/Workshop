@@ -3,7 +3,6 @@ package domain.shop;
 
 public enum ShopManagersPermissions {
         AddProductToInventory,
-        RemoveProductToInventory,
         RemoveProductFromInventory,
         ChangeProductsDetail,
         ChangeBuyingShopPolicy ,

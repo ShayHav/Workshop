@@ -82,7 +82,7 @@ public class Member implements UserState{
     public void appointOwner(User user, Shop shop,String id, List<OwnerAppointment> ownerAppointmentList) {
         if (shop.isFounder(id) || shop.isOwner(id)) {
             user.addRole(Role.ShopOwner);
-            shop.setOwner(user.getId());
+            shop.AppointNewShopOwner(user.getId(),id);
             if(isAppointedMeOwner(user,id)) {
                 OwnerAppointment newAppointment = new OwnerAppointment(shop,id,user);
                 ownerAppointmentList.add(newAppointment);
@@ -110,7 +110,7 @@ public class Member implements UserState{
     public void appointManager(User user, Shop shop, String id, List<ManagerAppointment> managerAppointmentList) {
         if(shop.isOwner(id)){
             user.addRole(Role.ShopManager);
-            shop.setManager(user.getId());
+            shop.AppointNewShopManager(user.getId(),id);
             if(isAppointedMeManager(user,id)) {
                 ManagerAppointment newAppointment = new ManagerAppointment(shop, id, user);
                 managerAppointmentList.add(newAppointment);
@@ -144,7 +144,7 @@ public class Member implements UserState{
      */
     @Override
     public void closeShop(Shop shop,String id) {
-        shop.closeShop();
+        shop.closeShop(id);
         if(!shop.isOpen())
             eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %d",shop.getShopID()));
         else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %d , user id:%d",shop.getShopID(),id));
