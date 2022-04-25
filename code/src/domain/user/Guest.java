@@ -26,7 +26,7 @@ public class Guest implements UserState {
     }
 
 
-    //TODO: remind shay to add rank to shop and product
+
     @Override
     public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
         MarketSystem market = MarketSystem.getInstance();

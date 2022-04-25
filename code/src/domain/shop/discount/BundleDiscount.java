@@ -29,7 +29,7 @@ public class BundleDiscount implements Discount {
     }
 
     public double applyDiscount(double price, int amount) {
-        int numberOfApplies = (int)(amount/ amountToBuyNeeded);
+        int numberOfApplies = (int)(amount/ (amountToBuyNeeded + amountToGetFree));
         double toPayPerProduct = ((amount - (numberOfApplies * amountToGetFree)) * price)/amount;
         return toPayPerProduct;
     }
