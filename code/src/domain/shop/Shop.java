@@ -2,7 +2,6 @@ package domain.shop;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
-import domain.Response;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
@@ -281,4 +280,34 @@ public class Shop {
     public void RequestInformationOfShopsSalesHistory(){
         throw new UnsupportedOperationException();
     }
+
+    public ShopInfo getShopInfo() {
+        return new ShopInfo(name, rank);
+    }
+
+    public List<ProductInfo> getProductInfoOfShop() {
+        List<ProductInfo> info = inventory.getAllProductInfo();
+        for (ProductInfo p : info) {
+            p.setShopName(name);
+            p.setShopRank(rank);
+        }
+        return info;
+    }
+
+    public ProductInfo getInfoOnProduct(int productId){
+        ProductInfo p;
+        synchronized (inventory){
+            p = inventory.getProductInfo(productId);
+        }
+        if(p == null){
+            //log
+            return null;
+        }
+
+        p.setShopName(name);
+        p.setShopRank(rank);
+        return p;
+
+    }
+
 }

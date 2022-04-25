@@ -97,7 +97,7 @@ public class User {
         return this.id;
     }
 
-    public boolean islog() {
+    public boolean isLoggedIn() {
         return this.loggedIn;
     }
 

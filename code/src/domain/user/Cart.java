@@ -4,7 +4,7 @@ import domain.ResponseT;
 import domain.Tuple;
 import domain.shop.Order;
 import domain.shop.Shop;
-
+import domain.user.ShoppingBasket.BasketInfo;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,18 +51,20 @@ public class Cart {
     }
 
 
-    public Map<Integer, List<Tuple<Integer, Integer>>> showCart() {
-        Map<Integer, List<Tuple<Integer, Integer>>> cart = new HashMap<>();
+    public CartInfo showCart() {
+        List<BasketInfo> basketInfoList = new ArrayList<>();
         for (Integer shopID : baskets.keySet()) {
-            List<Tuple<Integer, Integer>> basket = baskets.get(shopID).showBasket();
-            cart.put(shopID, basket);
+            BasketInfo basket = baskets.get(shopID).showBasket();
+           basketInfoList.add(basket);
         }
-        return cart;
+        totalAmount = getTotalAmount();
+        return new CartInfo(totalAmount,basketInfoList);
     }
 
     //TODO: figure out how to notify error per basket
     public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         LocalDate transaction_date = LocalDate.now();
+        totalAmount = getTotalAmount();
         TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
         List<ResponseT<Order>> orders = new ArrayList<>();
         for (Integer shopId : baskets.keySet()) {
@@ -74,5 +76,15 @@ public class Cart {
             }
         }
         return orders;
+    }
+
+    public class CartInfo{
+        private double totalAmount;
+        private List<BasketInfo> baskets;
+
+        public CartInfo(double totalAmount, List<BasketInfo> baskets){
+            this.totalAmount = totalAmount;
+            this.baskets = baskets;
+        }
     }
 }

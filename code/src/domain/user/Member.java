@@ -155,7 +155,7 @@ public class Member implements UserState{
      * The function can be called only by Shop Owner
      * @param f
      */
-    public void requestShopInfo(Filter f)
+    public void requestInfoOnOfficials(Filter f)
     {
         throw new UnsupportedOperationException();
     }
