@@ -1,7 +1,6 @@
 package domain.user;
 
 import domain.ResponseT;
-import domain.Tuple;
 import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
@@ -11,46 +10,42 @@ import java.util.List;
 
 public class Guest implements UserState {
 
-    private static MarketSystem market = MarketSystem.getInstance();
-
     @Override
     public List<ShopInfo> getInfoOfShops() {
+        MarketSystem market = MarketSystem.getInstance();
         return market.getInfoOfShops();
     }
 
     @Override
     public List<ProductInfo> getInfoOfProductInShop(int shopID) {
-        return null;
-    }
-
-
-    //TODO: remind shay to add rank to shop and product
-    @Override
-    public void searchProductByName(String name, Filter f) {
-
-    }
-
-    @Override
-    public void searchProductByCategory(String category, Filter f) {
-
-    }
-
-    @Override
-    public void searchProductByKeyword(String keyword, Filter f) {
-
+        MarketSystem market = MarketSystem.getInstance();
+        return market.getInfoOfProductInShop(shopID);
     }
 
 
     @Override
-    public List<Order> checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        List<ResponseT<Order>> result = c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
-        for(ResponseT<Order> o : result){
+    public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByName(name, f);
+    }
 
-        }
+    @Override
+    public List<ProductInfo>  searchProductByCategory(String category, SearchProductFilter f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByCategory(category, f);
+    }
+
+    @Override
+    public List<ProductInfo>  searchProductByKeyword(String keyword, SearchProductFilter f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByKeyword(keyword, f);
     }
 
 
-
+    @Override
+    public List<ResponseT<Order>> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        return c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
+    }
 
 
     @Override
@@ -59,22 +54,22 @@ public class Guest implements UserState {
     }
 
     @Override
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id) {
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void appointOwner(User user, Shop shop, int id, List<OwnerAppointment> ownerAppointmentList) {
+    public void appointOwner(User user, Shop shop, String id, List<OwnerAppointment> ownerAppointmentList) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void appointManager(User user, Shop shop, int id, List<ManagerAppointment> managerAppointmentList) {
+    public void appointManager(User user, Shop shop, String id, List<ManagerAppointment> managerAppointmentList) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void closeShop(Shop shop, int id) {
+    public void closeShop(Shop shop, String id) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 

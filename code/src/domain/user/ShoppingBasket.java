@@ -23,8 +23,8 @@ public class ShoppingBasket {
     }
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private Shop shop;
-    Map<Integer, Integer> productAmountList = new HashMap<>();
-    double basketAmount;
+    private Map<Integer, Integer> productAmountList = new HashMap<>();
+    private double basketAmount;
 
     public ShoppingBasket(Shop shop, int productID, int amount) {
         this.shop = shop;

@@ -2,6 +2,7 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
@@ -16,34 +17,58 @@ public class Member implements UserState{
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
 
+
     @Override
     public List<ShopInfo> getInfoOfShops() {
-        throw new UnsupportedOperationException();
+        MarketSystem market = MarketSystem.getInstance();
+        return market.getInfoOfShops();
     }
 
     @Override
     public List<ProductInfo> getInfoOfProductInShop(int shopID) {
-        throw new UnsupportedOperationException();
+        MarketSystem market = MarketSystem.getInstance();
+        return market.getInfoOfProductInShop(shopID);
+    }
+
+
+    @Override
+    public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByName(name, f);
     }
 
     @Override
-    public List<Order> checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        throw new UnsupportedOperationException();
+    public List<ProductInfo>  searchProductByCategory(String category, SearchProductFilter f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByCategory(category, f);
     }
 
+    @Override
+    public List<ProductInfo>  searchProductByKeyword(String keyword, SearchProductFilter f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByKeyword(keyword, f);
+    }
+
+
+    @Override
+    public List<ResponseT<Order>> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        return c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
+    }
 
     @Override
     public void leaveMarket(Cart cart) {
-        //TODO: how to accesses to the user cart?
+        //TODO: impl,shahar need to add method save cart when we manage DB
     }
-
 
     /***
      *
-     * @param shop - shop's name or ID
+     * @param name
+     * @param discountPolicy
+     * @param purchasePolicy
+     * @param id
      */
     @Override
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,int id)
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String id)
     {
         MarketSystem.getInstance().createShop(name,discountPolicy,purchasePolicy, id);
     } //TODO: should be at upper level
@@ -55,7 +80,7 @@ public class Member implements UserState{
      * @param ownerAppointmentList
      */
     @Override
-    public void appointOwner(User user, Shop shop,int id, List<OwnerAppointment> ownerAppointmentList) {
+    public void appointOwner(User user, Shop shop,String id, List<OwnerAppointment> ownerAppointmentList) {
         if (shop.isFounder(id) || shop.isOwner(id)) {
             user.addRole(Role.ShopOwner);
             shop.setOwner(user.getId());
@@ -72,15 +97,15 @@ public class Member implements UserState{
      *               TODO: decide if need to add param Permissions or to receive permission in the
      */
     @Override
-    public void appointManager(User user, Shop shop, int id, List<ManagerAppointment> managerAppointmentList) {
+    public void appointManager(User user, Shop shop, String id, List<ManagerAppointment> managerAppointmentList) {
         if(shop.isOwner(id)){
             user.addRole(Role.ShopManager);
             shop.setManager(user.getId());
             ManagerAppointment newAppointment = new ManagerAppointment(shop,id,user);
             managerAppointmentList.add(newAppointment);
-            eventLogger.logMsg(Level.INFO,String.format("appointManager = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
+            eventLogger.logMsg(Level.INFO,String.format("appointManager = {appointeeId: %s , appointedId: %s , ShopId %d}",id,user.getId(),shop.getShopID()));
         }
-        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
+        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %s , appointedId: %s , ShopId %d}",id,user.getId(),shop.getShopID()));
     }
 
     /***
@@ -97,37 +122,14 @@ public class Member implements UserState{
      * @param shop
      */
     @Override
-    public void closeShop(Shop shop,int id) {
+    public void closeShop(Shop shop,String id) {
         if(shop.closeShop())
-            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %d",shop.getShopID()));
-        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %d , user id:%d",shop.getShopID(),id));
-    }
-
-    @Override
-    public void searchProductByName(String name, Filter f) {
-
-    }
-
-    @Override
-    public void searchProductByCategory(String category, Filter f) {
-
-    }
-
-    @Override
-    public void searchProductByKeyword(String keyword, Filter f) {
-
+            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %s",shop.getShopID()));
+        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %s , user id:%s",shop.getShopID(),id));
     }
 
 
-    /***
-     * The function will display information on the shop, and shop's officials.
-     * The function can be called only by Shop Owner
-     * @param f
-     */
-    public void requestShopInfo(Filter f)
-    {
-        throw new UnsupportedOperationException();
-    }
+
 
 
 

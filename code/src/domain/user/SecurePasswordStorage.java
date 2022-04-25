@@ -20,7 +20,7 @@ import javax.crypto.spec.PBEKeySpec;
 public class SecurePasswordStorage {
     private static SecurePasswordStorage securePasswordStorage_singleton = null;
     // Simulates database of users!
-    private Map<Integer, UserInfo> userDatabase = new HashMap<Integer,UserInfo>();
+    private Map<String, UserInfo> userDatabase = new HashMap<>();
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
 
     private SecurePasswordStorage(){}
@@ -31,35 +31,31 @@ public class SecurePasswordStorage {
         return securePasswordStorage_singleton;
     }
 
-    public boolean passwordCheck(int inputUser, String inputPass){
+    public boolean passwordCheck(String inputUser, String inputPass){
         try{
             return authenticateUser(inputUser,inputPass);
         }catch (Exception e) {
-            errorLogger.logMsg(Level.WARNING,String.format("passwordCheck of %d failed.",inputUser));
+            errorLogger.logMsg(Level.WARNING,String.format("passwordCheck of %s failed.",inputUser));
             return false;
         }
     }
 
-    private boolean authenticateUser(int inputUser, String inputPass) throws Exception {
+    private boolean authenticateUser(String inputUser, String inputPass) throws Exception {
         UserInfo user = userDatabase.get(inputUser);
         if (user == null) {
             return false;
         } else {
             String salt = user.userSalt;
             String calculatedHash = getEncryptedPassword(inputPass, salt);
-            if (calculatedHash.equals(user.userEncryptedPassword)) {
-                return true;
-            } else {
-                return false;
-            }
+            return calculatedHash.equals(user.userEncryptedPassword);
         }
     }
-    public void inRole(int userid, String password){
+    public void inRole(String userid, String password){
         try{ signUp(userid,password); }
         catch (Exception e){ errorLogger.logMsg(Level.WARNING,String.format("Cryptographic Hash password of %d failed.: "+e.getMessage(),userid)); }
     }
 
-    private void signUp(int userid, String password) throws Exception {
+    private void signUp(String userid, String password) throws Exception {
         String salt = getNewSalt();
         String encryptedPassword = getEncryptedPassword(password, salt);
         UserInfo user = new UserInfo();

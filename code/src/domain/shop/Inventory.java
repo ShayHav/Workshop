@@ -20,7 +20,7 @@ public class Inventory {
 
     /**
      * check if a product is in stock
-     * @param p the product querying
+     * @param product the product querying
      * @return true if there is at least one item in the inventory
      */
     public boolean isInStock(int product){
@@ -144,6 +144,17 @@ public class Inventory {
             this.price = price;
             this.quantity = quantity;
         }
+    }
+
+    public synchronized List<ProductInfo> getProductInfo(){
+        List<ProductInfo> products = new ArrayList<>();
+        for(ProductImp p: keyToProduct.values()){
+            ProductInfo productInfo = p.getProductInfo();
+            double price = items.get(p).price;
+            productInfo.setPrice(price);
+            products.add(productInfo);
+        }
+        return products;
     }
 
 }

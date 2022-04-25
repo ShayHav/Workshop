@@ -4,27 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlackListPolicy implements PurchaseRule {
-    private final List<Integer> userBlackList;
+    private final List<String> userBlackList;
 
     public BlackListPolicy(){
         userBlackList = new ArrayList<>();
     }
 
     @Override
-    public boolean purchaseAllowed(int userID, int amount) {
+    public boolean purchaseAllowed(String userID, int amount) {
         return !(userBlackList.contains(userID));
     }
 
-    public void blackListUser(int userID) {
-        for(Integer ID: userBlackList) {
-            if (ID == userID)
+    public void blackListUser(String userID) {
+        for(String ID: userBlackList) {
+            if (ID.equals(userID))
                 return;
         }
         userBlackList.add(userID);
     }
 
     public void noLongerBlackListed(int userID) {
-        userBlackList.removeIf(ID -> ID == userID);
+        userBlackList.removeIf(ID -> ID.equals(userID));
     }
 
 }

@@ -1,5 +1,6 @@
 package domain.user;
 
+import domain.ResponseT;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
@@ -10,7 +11,6 @@ public interface UserState {
 
     /***
      *
-     * @param f
      * @return
      */
     List<ShopInfo> getInfoOfShops();
@@ -23,21 +23,21 @@ public interface UserState {
     /***
      *
      */
-    List<Order> checkout(int id, Cart c,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
+    List<ResponseT<Order>> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
 	
 	void leaveMarket(Cart cart);
 
-    void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id);
+    void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id);
 
-    void appointOwner(User user, Shop shop, int id, List<OwnerAppointment> ownerAppointmentList);
+    void appointOwner(User user, Shop shop, String id, List<OwnerAppointment> ownerAppointmentList);
 
-    void appointManager(User user, Shop shop, int id, List<ManagerAppointment> managerAppointmentList);
+    void appointManager(User user, Shop shop, String id, List<ManagerAppointment> managerAppointmentList);
 
-    void closeShop(Shop shop,int id);
+    void closeShop(Shop shop,String id);
 
-    void searchProductByName(String name, Filter f);
+    List<ProductInfo>  searchProductByName(String name, SearchProductFilter f);
 
-    void searchProductByCategory(String category, Filter f);
+    List<ProductInfo>  searchProductByCategory(String category, SearchProductFilter f);
 
-    void searchProductByKeyword(String keyword, Filter f);
+    List<ProductInfo>  searchProductByKeyword(String keyword, SearchProductFilter f);
 }

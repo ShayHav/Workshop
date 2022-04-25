@@ -7,13 +7,13 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.ShopController;
 import domain.shop.ShopInfo;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.SearchProductFilter;
 import domain.user.TransactionInfo;
 import domain.user.User;
 import domain.user.UserController;
 
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MarketSystem {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
@@ -66,18 +66,32 @@ public class MarketSystem {
 
 
     public List<ShopInfo> getInfoOfShops() {
-        throw new UnsupportedOperationException();
+        return sc.getInfoOfShops();
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID){
-        throw new UnsupportedOperationException();
+       return sc.getInfoOfProductInShop(shopID);
     }
 
-    public User getUser(int id) {
+    public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
+        return sc.searchProductByName(name,f);
+    }
+
+
+    public List<ProductInfo> searchProductByCategory(String category, SearchProductFilter f) {
+        return sc.searchProductByCategory(category,f);
+    }
+
+
+    public List<ProductInfo> searchProductByKeyword(String keyword, SearchProductFilter f) {
+        return sc.searchProductByKeyword(keyword, f);
+    }
+
+    public User getUser(String id) {
         return uc.getUser(id);
     }
 
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id) {
-        sc.crearteShop(name,discountPolicy, purchasePolicy,id);
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
+        sc.createShop(name,discountPolicy, purchasePolicy,id);
     }
 }
