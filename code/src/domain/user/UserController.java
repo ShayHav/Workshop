@@ -2,11 +2,13 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.shop.ProductInfo;
+import domain.shop.ShopInfo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class UserController {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
@@ -35,9 +37,9 @@ public class UserController {
             }
         }
         else errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
-        if(!activeUser.islog())
-            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %d failed.", id));
-        else eventLogger.logMsg(Level.INFO, String.format(" logIn for user: %d.", id));
+        if(!activeUser.isLoggedIn())
+            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %s failed.", id));
+        else eventLogger.logMsg(Level.INFO, String.format(" logIn for user: %s.", id));
     }
 
     //TODO: add logger and validate user is registered and logged in- when transferring to concurrency
@@ -87,5 +89,38 @@ public class UserController {
                 getUser = entry.getValue();
         }
         return getUser;
+    }
+
+    public List<ShopInfo> getInfoOfShops(String id){
+        throw new UnsupportedOperationException();
+    }
+
+    public List<ProductInfo> getInfoOfProductInShop(String userId, int shopID){
+        throw new UnsupportedOperationException();
+    }
+
+    public List<ProductInfo>  searchProductByName(String userId, String name, SearchProductFilter f){
+        throw new UnsupportedOperationException();
+    }
+
+    public List<ProductInfo>  searchProductByCategory(String userId, String category, SearchProductFilter f){
+        throw new UnsupportedOperationException();
+    }
+
+    public List<ProductInfo>  searchProductByKeyword(String userId, String keyword, SearchProductFilter f){
+        throw new UnsupportedOperationException();
+    }
+
+    public void deleteUserTest(String[] userId) {
+        for (int i = 0; i < userId.length; i++) {
+            deleteUser(userId[i]);
+        }
+    }
+
+    private void deleteUser(String useID) {
+        for (Map.Entry<String, User> entry : memberList.entrySet()) {
+            if (entry.getKey().equals(useID))
+                memberList.remove(entry.getKey());
+        }
     }
 }

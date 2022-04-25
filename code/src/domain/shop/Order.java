@@ -8,11 +8,11 @@ import java.util.Map;
 public class Order {
     private long orderId;
     private LocalDateTime buyingTime;
-    private int userID;
+    private String userID;
     private List<Product> broughtItem;
     double totalAmount;
 
-    public Order(List<Product> products,double totalAmount, int userID){
+    public Order(List<Product> products,double totalAmount, String userID){
         buyingTime = LocalDateTime.now();
         broughtItem = Collections.unmodifiableList(products);
         this.totalAmount = totalAmount;
@@ -24,7 +24,7 @@ public class Order {
         return buyingTime;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 

@@ -5,6 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.ResponseT;
 import domain.Tuple;
 import domain.shop.Order;
+import domain.shop.ProductInfo;
 import domain.shop.Shop;
 
 import java.util.ArrayList;
@@ -23,8 +24,8 @@ public class ShoppingBasket {
     }
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private Shop shop;
-    Map<Integer, Integer> productAmountList = new HashMap<>();
-    double basketAmount;
+    private Map<Integer, Integer> productAmountList = new HashMap<>();
+    private double basketAmount;
 
     public ShoppingBasket(Shop shop, int productID, int amount) {
         this.shop = shop;
@@ -107,12 +108,28 @@ public class ShoppingBasket {
         return shop.checkOut(productAmountList, basketAmount, billingInfo);
     }
 
-    public List<Tuple<Integer, Integer>> showBasket() {
-        List<Tuple<Integer, Integer>> productList = new ArrayList<>();
-        for (Integer productID : productAmountList.keySet()) {
-            int amount = productAmountList.get(productID);
-            productList.add(new Tuple<>(productID,amount));
+    public BasketInfo showBasket() {
+        Map<ProductInfo,Integer> productWithAmount = new HashMap<>();
+        for(Integer product: productAmountList.keySet()){
+            ProductInfo p = shop.getInfoOnProduct(product);
+            int amount = productAmountList.get(product);
+            productWithAmount.put(p,amount);
         }
-        return productList;
+
+        return new BasketInfo(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
+    }
+
+    public class BasketInfo{
+        private int shopId;
+        private String shopName;
+        Map<ProductInfo,Integer> productWithAmount;
+        private double totalAmount;
+
+        public BasketInfo(int shopId, String shopName, Map<ProductInfo,Integer> productWithAmount, double totalAmount){
+            this.shopId = shopId;
+            this.shopName = shopName;
+            this.productWithAmount = productWithAmount;
+            this.totalAmount = totalAmount;
+        }
     }
 }

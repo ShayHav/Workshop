@@ -20,7 +20,7 @@ import javax.crypto.spec.PBEKeySpec;
 public class SecurePasswordStorage {
     private static SecurePasswordStorage securePasswordStorage_singleton = null;
     // Simulates database of users!
-    private Map<String, UserInfo> userDatabase = new HashMap();
+    private Map<String, UserInfo> userDatabase = new HashMap<>();
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
 
     private SecurePasswordStorage(){}
@@ -35,7 +35,7 @@ public class SecurePasswordStorage {
         try{
             return authenticateUser(inputUser,inputPass);
         }catch (Exception e) {
-            errorLogger.logMsg(Level.WARNING,String.format("passwordCheck of %d failed.",inputUser));
+            errorLogger.logMsg(Level.WARNING,String.format("passwordCheck of %s failed.",inputUser));
             return false;
         }
     }
@@ -47,11 +47,7 @@ public class SecurePasswordStorage {
         } else {
             String salt = user.userSalt;
             String calculatedHash = getEncryptedPassword(inputPass, salt);
-            if (calculatedHash.equals(user.userEncryptedPassword)) {
-                return true;
-            } else {
-                return false;
-            }
+            return calculatedHash.equals(user.userEncryptedPassword);
         }
     }
     public void inRole(String userid, String password){

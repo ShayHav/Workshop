@@ -1,5 +1,6 @@
 package domain.user;
 
+import domain.ResponseT;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
@@ -12,7 +13,7 @@ public interface UserState {
      *
      * @return
      */
-    List<ShopInfo> getInfoOfShops();
+    List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f);
 
     /***
      *
@@ -22,7 +23,7 @@ public interface UserState {
     /***
      *
      */
-    List<Order> checkout(String id, Cart c,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
+    List<ResponseT<Order>> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
 	
 	void leaveMarket(Cart cart);
 
@@ -34,9 +35,9 @@ public interface UserState {
 
     void closeShop(Shop shop,String id);
 
-    void searchProductByName(String name, Filter f);
+    List<ProductInfo>  searchProductByName(String name, Filter<ProductInfo> f);
 
-    void searchProductByCategory(String category, Filter f);
+    List<ProductInfo>  searchProductByCategory(String category, Filter<ProductInfo> f);
 
-    void searchProductByKeyword(String keyword, Filter f);
+    List<ProductInfo>  searchProductByKeyword(String keyword, Filter<ProductInfo> f);
 }

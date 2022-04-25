@@ -14,39 +14,41 @@ public class Guest implements UserState {
     private static MarketSystem market = MarketSystem.getInstance();
 
     @Override
-    public List<ShopInfo> getInfoOfShops() {
-        return market.getInfoOfShops();
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.getInfoOfShops(f);
     }
 
     @Override
     public List<ProductInfo> getInfoOfProductInShop(int shopID) {
-        return null;
+        MarketSystem market = MarketSystem.getInstance();
+        return market.getInfoOfProductInShop(shopID);
     }
 
 
 
     @Override
-    public void searchProductByName(String name, Filter f) {
-
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByName(name, f);
     }
 
     @Override
-    public void searchProductByCategory(String category, Filter f) {
-
+    public List<ProductInfo>  searchProductByCategory(String category, Filter<ProductInfo> f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByCategory(category, f);
     }
 
     @Override
-    public void searchProductByKeyword(String keyword, Filter f) {
-
+    public List<ProductInfo>  searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByKeyword(keyword, f);
     }
 
 
     @Override
-    public List<Order> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        List<ResponseT<Order>> result = c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
-        for(ResponseT<Order> o : result){
-            o.isErrorOccurred()
-        }
+    public List<ResponseT<Order>> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        return c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
     }
 
 

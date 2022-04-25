@@ -1,22 +1,19 @@
 package domain.shop;
 
 public class ProductInfo {
-    String shopName;
-    int shopRank;
-    String productName;
-    String description;
-    String category;
-    double price;
-    int productRank;
+    private String shopName;
+    private int shopRank;
+    private String productName;
+    private String description;
+    private String category;
+    private double price;
+    private int productRank;
 
-    public ProductInfo(String name, String description, String category, double price, int rank, String shopName, int shopRank) {
+    public ProductInfo(String name, String description, String category, int rank) {
         this.productName = name;
         this.description = description;
         this.category = category;
-        this.price = price;
         this.productRank = rank;
-        this.shopName = shopName;
-        this.shopRank = shopRank;
     }
 
     public String getProductName() {
@@ -41,5 +38,17 @@ public class ProductInfo {
 
     public int getShopRank() {
         return shopRank;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public void setShopRank(int shopRank) {
+        this.shopRank = shopRank;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

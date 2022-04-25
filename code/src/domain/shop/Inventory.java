@@ -182,4 +182,24 @@ public class Inventory {
         }
     }
 
+    public ProductInfo getProductInfo(int productId){
+        if(!keyToProduct.containsKey(productId))
+            return null;
+        ProductImp p = keyToProduct.get(productId);
+        ProductInfo product =  p.getProductInfo();
+        product.setPrice(items.get(p).price);
+        return product;
+    }
+
+    public synchronized List<ProductInfo> getAllProductInfo(){
+        List<ProductInfo> products = new ArrayList<>();
+        for(ProductImp p: keyToProduct.values()){
+            ProductInfo productInfo = p.getProductInfo();
+            double price = items.get(p).price;
+            productInfo.setPrice(price);
+            products.add(productInfo);
+        }
+        return products;
+    }
+
 }

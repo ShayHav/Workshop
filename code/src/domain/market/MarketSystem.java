@@ -7,9 +7,7 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.ShopController;
 import domain.shop.ShopInfo;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.TransactionInfo;
-import domain.user.User;
-import domain.user.UserController;
+import domain.user.*;
 
 import java.util.List;
 import java.util.Map;
@@ -68,12 +66,26 @@ public class MarketSystem {
     }
 
 
-    public List<ShopInfo> getInfoOfShops() {
-        throw new UnsupportedOperationException();
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
+        return sc.getInfoOfShops(f);
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID){
-        throw new UnsupportedOperationException();
+       return sc.getInfoOfProductInShop(shopID);
+    }
+
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
+        return sc.searchProductByName(name,f);
+    }
+
+
+    public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
+        return sc.searchProductByCategory(category,f);
+    }
+
+
+    public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
+        return sc.searchProductByKeyword(keyword, f);
     }
 
     public User getUser(String id) {
@@ -81,6 +93,14 @@ public class MarketSystem {
     }
 
     public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        sc.crearteShop(name,discountPolicy, purchasePolicy,id);
+        sc.createShop(name,discountPolicy, purchasePolicy,id);
+    }
+
+    public void register(String userId,String pass){
+        uc.register(userId,pass);
+    }
+
+    public void deleteUserTest(String[] username){
+        uc.deleteUserTest(username);
     }
 }

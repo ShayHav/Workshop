@@ -10,7 +10,7 @@ public class MinimumQuantityPolicy implements PurchaseRule {
     }
 
     @Override
-    public boolean purchaseAllowed(int userID, int amount) {
+    public boolean purchaseAllowed(String userID, int amount) {
         return amount >= minimumQuantity;
     }
 

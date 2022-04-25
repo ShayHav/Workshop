@@ -33,7 +33,7 @@ public class PurchasePolicy {
         return new ArrayList<>();
     }
 
-    public boolean checkIfProductRulesAreMet(int userID ,int prodID, Double basePrice, int amount){
+    public boolean checkIfProductRulesAreMet(String userID ,int prodID, Double basePrice, int amount){
         List<PurchaseRule> purchaseRuleList = getAllPurchaseRulesForProd(prodID);
         boolean allowed = true;
         for (PurchaseRule pr: purchaseRuleList){

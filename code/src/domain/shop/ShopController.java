@@ -4,13 +4,15 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.User;
-import domain.user.UserController;
+import domain.user.Filter;
+import domain.user.SearchProductFilter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ShopController {
     private Map<Integer, Shop> shopList;
@@ -23,7 +25,7 @@ public class ShopController {
         shopList = new HashMap<>();
     }
 
-    public void crearteShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         if(isUniqueName(name)) {
             shopCounter++;
             Shop newShop = new Shop(name, discountPolicy, purchasePolicy, id,shopCounter);
@@ -39,5 +41,50 @@ public class ShopController {
                return false;
         }
         return true;
+    }
+
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
+        List<ShopInfo> allShops = new ArrayList<>();
+        for(Shop s: shopList.values()){
+            allShops.add(s.getShopInfo());
+        }
+        return f.applyFilter(allShops);
+    }
+
+    public List<ProductInfo> getInfoOfProductInShop(int shopID) {
+        if(!shopList.containsKey(shopID)){
+            //log
+            return null;
+        }
+
+        Shop s = shopList.get(shopID);
+        return s.getProductInfoOfShop();
+    }
+
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
+        List<ProductInfo> products = new ArrayList<>();
+        for(Shop s: shopList.values()){
+            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().equals(name)).collect(Collectors.toList());
+            products.addAll(shopProducts);
+        }
+        return f.applyFilter(products);
+    }
+
+    public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
+        List<ProductInfo> products = new ArrayList<>();
+        for(Shop s: shopList.values()){
+            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
+            products.addAll(shopProducts);
+        }
+        return f.applyFilter(products);
+    }
+
+    public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
+        List<ProductInfo> products = new ArrayList<>();
+        for(Shop s: shopList.values()){
+            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().contains(keyword)).collect(Collectors.toList());
+            products.addAll(shopProducts);
+        }
+        return f.applyFilter(products);
     }
 }

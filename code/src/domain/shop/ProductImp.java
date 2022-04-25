@@ -6,12 +6,15 @@ public class ProductImp implements Product{
     private String name;
     private String description;
     private String category;
+    private int rank;
 
     public ProductImp(int id, String name, String description, String category){
         this.id = id;
         this.name = name;
         this.description = description;
         this.category = category;
+        //in the next versions, there will be a feedback from user that will change the rank initial value
+        rank = -1;
     }
 
     public ProductImp(Product p) {
@@ -19,6 +22,10 @@ public class ProductImp implements Product{
         this.description = p.getDescription();
         this.name = p.getName();
         this.category = p.getCategory();
+    }
+
+    public int getRank() {
+        return rank;
     }
 
     @Override
@@ -51,5 +58,9 @@ public class ProductImp implements Product{
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public ProductInfo getProductInfo(){
+        return new ProductInfo(name,description,category,rank);
     }
 }
