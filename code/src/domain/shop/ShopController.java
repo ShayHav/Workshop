@@ -24,7 +24,7 @@ public class ShopController {
         shopList = new HashMap<>();
     }
 
-    public void crearteShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         if(isUniqueName(name)) {
             shopCounter++;
             Shop newShop = new Shop(name, discountPolicy, purchasePolicy, id,shopCounter);

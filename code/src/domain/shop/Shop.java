@@ -167,7 +167,7 @@ public class Shop {
         return discountPolicy.addBundleDiscount(prodID, amountNeededToBuy, amountGetFree);
     }
 
-    public boolean purchasePolicyLegal(int userID, int prodID, double price,int amount){
+    public boolean purchasePolicyLegal(String userID, int prodID, double price,int amount){
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 

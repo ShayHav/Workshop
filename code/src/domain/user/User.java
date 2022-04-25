@@ -123,7 +123,6 @@ public class User {
         return us.getInfoOfProductInShop(shopID);
     }
 
-    public void getInfoOfShops(){}
 
     public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
         return us.searchProductByName(name, f);
