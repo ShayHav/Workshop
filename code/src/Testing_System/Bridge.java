@@ -4,6 +4,7 @@ import domain.shop.Product;
 import domain.shop.TransactionInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Bridge {
 
@@ -55,4 +56,12 @@ public interface Bridge {
     Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname);
 
     Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname);
+
+    Result<Boolean, String> AddProductToShopInventory(Product p, String shopname);
+
+    Result<Boolean, String> RemoveProductToShopInventory(Product p, String shopname);
+
+    Result<Boolean, String> ChangeProductDetails(Product p, String shopname);
+
+    Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo);
 }

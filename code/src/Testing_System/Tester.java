@@ -4,6 +4,7 @@ import domain.shop.Product;
 import domain.shop.TransactionInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public class Tester {
     private Bridge br;
@@ -42,8 +43,14 @@ public class Tester {
 
     public Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname) { return br.CheckIfProductAvailable(p, shopname);}
 
-    public
+    //Shop-Owner Options
+    public Result<Boolean, String> AddProductToShopInventory(Product p, String shopname) { return br.AddProductToShopInventory(p, shopname);}
 
+    public Result<Boolean, String> RemoveProductToShopInventory(Product p, String shopname) { return br.RemoveProductToShopInventory(p, shopname);}
+
+    public Result<Boolean, String> ChangeProductDetails(Product p, String shopname) { return br.ChangeProductDetails(p, shopname);}
+
+    public Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String,String> newinfo) { return br.ChangeProductDetail(p, shopname, newinfo);}
 
 
     //Member-Visitor General
