@@ -2,6 +2,7 @@ package domain.shop.discount;
 
 public class PercentageDiscount implements Discount {
     double percentage;
+    private int discountID;
 
 
     public PercentageDiscount(double percentageDiscount) throws IllegalArgumentException {
@@ -15,5 +16,9 @@ public class PercentageDiscount implements Discount {
 
     public double applyDiscount(double price, int amount) {
         return (percentage * price) / 100 ;
+    }
+
+    public int getID(){
+        return discountID;
     }
 }

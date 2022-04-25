@@ -6,9 +6,9 @@ import domain.EventLoggerSingleton;
 import java.util.logging.Level;
 
 public class BundleDiscount implements Discount {
-
-    int amountToBuyNeeded;
-    int amountToGetFree;
+    private int discountID;
+    private int amountToBuyNeeded;
+    private int amountToGetFree;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
@@ -32,5 +32,9 @@ public class BundleDiscount implements Discount {
         int numberOfApplies = (int)(amount/ (amountToBuyNeeded + amountToGetFree));
         double toPayPerProduct = ((amount - (numberOfApplies * amountToGetFree)) * price)/amount;
         return toPayPerProduct;
+    }
+
+    public int getID(){
+        return discountID;
     }
 }

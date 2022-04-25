@@ -2,7 +2,6 @@ package domain.shop;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
-import domain.Response;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
@@ -171,6 +170,21 @@ public class Shop {
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
+    public double calculateTotalAmountOfOrder(Map<Integer, Integer> productAmountList){
+        Map<Integer, Double> Product_totalPricePer = new HashMap<>();
+        double totalPaymentDue = 0;
+        double Product_price_single;
+        double Product_total;
+        for(Map.Entry<Integer, Integer> set : productAmountList.entrySet()){
+            //check purchase policy regarding the Product
+            Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            Product_total = Product_price_single * set.getValue();
+            Product_totalPricePer.put(set.getKey(), Product_total);
+            totalPaymentDue += Product_total;
+        }
+        return totalPaymentDue;
+    }
+
     /**
      * check out from the store the given items to a client
      * @param products the items that the client want to buy and the amount from each
@@ -193,17 +207,13 @@ public class Shop {
 
 
         //calculate price
-        Map<Integer, Double> Product_totalPricePer = new HashMap<>();
-        double totalPaymentDue = 0;
-        double Product_price_single;
-        double Product_total;
+        Map<Integer, Double> product_PricePer = new HashMap<>();
+        double product_price_single;
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
-            //check purchase policy regarding the Product
-            Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
-            Product_total = Product_price_single * set.getValue();
-            Product_totalPricePer.put(set.getKey(), Product_total);
-            totalPaymentDue += Product_total;
+            product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            product_PricePer.put(set.getKey(), product_price_single);
         }
+
 
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)) {
@@ -220,7 +230,7 @@ public class Shop {
         List<Product> boughtProducts = new ArrayList<>();
         for(Integer Product: products.keySet()){
             Product p = inventory.findProduct(Product);
-            double price = Product_totalPricePer.get(Product);
+            double price = product_PricePer.get(Product);
             boughtProducts.add(new ProductHistory(p,price ,products.get(Product)));
         }
         Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID());
