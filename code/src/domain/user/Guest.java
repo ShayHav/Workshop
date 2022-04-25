@@ -42,7 +42,7 @@ public class Guest implements UserState {
 
 
     @Override
-    public List<Order> checkout(int id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public List<Order> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         List<ResponseT<Order>> result = c.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
         for(ResponseT<Order> o : result){
 
@@ -59,22 +59,22 @@ public class Guest implements UserState {
     }
 
     @Override
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id) {
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void appointOwner(User user, Shop shop, int id, List<OwnerAppointment> ownerAppointmentList) {
+    public void appointOwner(User user, Shop shop, String id, List<OwnerAppointment> ownerAppointmentList) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void appointManager(User user, Shop shop, int id, List<ManagerAppointment> managerAppointmentList) {
+    public void appointManager(User user, Shop shop, String id, List<ManagerAppointment> managerAppointmentList) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void closeShop(Shop shop, int id) {
+    public void closeShop(Shop shop, String id) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 

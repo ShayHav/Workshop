@@ -23,14 +23,14 @@ public class ShopController {
         shopList = new HashMap<>();
     }
 
-    public void crearteShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, int id) {
+    public void crearteShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         if(isUniqueName(name)) {
             shopCounter++;
             Shop newShop = new Shop(name, discountPolicy, purchasePolicy, id,shopCounter);
             shopList.put(shopCounter,newShop);
-            eventLogger.logMsg(Level.INFO,String.format("create new shop. FounderId: %d , ShopName: %s",id,name));
+            eventLogger.logMsg(Level.INFO,String.format("create new shop. FounderId: %s , ShopName: %s",id,name));
         }
-        errorLogger.logMsg(Level.WARNING,String.format("attempt to create a shop with exist name. id: %d , name: %s",id,name));
+        errorLogger.logMsg(Level.WARNING,String.format("attempt to create a shop with exist name. id: %s , name: %s",id,name));
     }
 
     private boolean isUniqueName(String name) {

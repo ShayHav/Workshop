@@ -1,7 +1,6 @@
 package domain.market;
 
 import domain.shop.TransactionInfo;
-import domain.user.TransactionInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -22,7 +22,7 @@ public class Shop {
     private User ShopFounder;
     private List<User> ShopOwners;
     private List<User> ShopManagers;
-    Map<ShopManagersPermissions, List<Integer>> ShopManagersPermissionsMap;
+    private Map<ShopManagersPermissions, List<String>> ShopManagersPermissionsMap;
     private List<User> Shoppers;
     private final Inventory inventory;
     private DiscountPolicy discountPolicy;
@@ -32,7 +32,7 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,int founderId, int shopID) {
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String founderId, int shopID) {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
@@ -48,6 +48,34 @@ public class Shop {
         ShopManagersPermissionsMap = new HashMap<>();
         ShopManagersPermissionsInit();
     }
+
+    public void addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , int id){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)){
+            for (ShopManagersPermissions run: shopManagersPermissionsList)
+                if(!PermissionExist(ShopManagersPermissionsMap.get(run),tragetUser.getId())) {
+                    ShopManagersPermissionsMap.get(run).add(tragetUser.getId());
+                    eventLogger.logMsg(Level.INFO,String.format("add Permissions to user: %s",tragetUser.getId()));
+                }
+        }
+    }
+
+    public void removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , int id){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)){
+            for (ShopManagersPermissions run: shopManagersPermissionsList)
+                if(PermissionExist(ShopManagersPermissionsMap.get(run),tragetUser.getId())) {
+                    ShopManagersPermissionsMap.get(run).remove(tragetUser.getId());
+                }
+        }
+    }
+
+    private boolean PermissionExist(List<String> permissionlist,String userId){
+        for (String run : permissionlist){
+            if(run.equals(userId))
+                return true;
+        }
+        return false;
+    }
+
 
     private void ShopManagersPermissionsInit(){
         for (ShopManagersPermissions myVar : ShopManagersPermissions.values()){
@@ -84,23 +112,27 @@ public class Shop {
         }
     }
 
-    public boolean addListing(int prodID, double price, int quantity,int userId){
+    public boolean addListing(int prodID, double price, int quantity,String userId){
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AddProductToInventory).contains(userId))
             return inventory.addProduct(prodID, price, quantity);
         else return false;
     }
 
-    public void removeListing(int prodID,int userId){
+    public void removeListing(int prodID,String userId){
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.RemoveProductToInventory).contains(userId))
         inventory.removeProduct(prodID);
     }
 
-    public boolean editPrice(int prodID, double newPrice){
-        return inventory.setPrice(prodID, newPrice);
+    public boolean editPrice(int prodID, double newPrice,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
+            return inventory.setPrice(prodID, newPrice);
+        else return false;
     }
 
-    public boolean editQuantity(int prodID, int newQuantity){
-        return inventory.setAmount(prodID, newQuantity);
+    public boolean editQuantity(int prodID, int newQuantity,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
+            return inventory.setAmount(prodID, newQuantity);
+        else return false;
     }
 
     public List<Discount> productDiscount(int prodID){
@@ -116,8 +148,9 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public void changeProductDetail(int prodID, String description){
-        inventory.setDescription(prodID, description);
+    public void changeProductDetail(int prodID, String description,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
+            inventory.setDescription(prodID, description);
     }
 
     //todo????? needed?
@@ -190,19 +223,19 @@ public class Shop {
         return new ResponseT(o);
     }
 
-    public boolean isFounder(int id) {
-        return ShopFounder.getId() == id;
+    public boolean isFounder(String id) {
+        return ShopFounder.getId().equals(id);
     }
 
-    public boolean isOwner(int id) {
+    public boolean isOwner(String id) {
         for(User run :ShopOwners){
-            if (run.getId()==id)
+            if (run.getId().equals(id))
                 return true;
         }
         return false;
     }
 
-    public void setOwner(int id) {
+    public void setOwner(String id) {
         User newOwner =MarketSystem.getInstance().getUser(id);
         if(newOwner!=null)
             if(!ShopOwners.contains(newOwner))
@@ -213,7 +246,7 @@ public class Shop {
         return shopID;
     }
 
-    public void setManager(int id) {
+    public void setManager(String id) {
         User newManager =MarketSystem.getInstance().getUser(id);
         if(newManager!=null)
             if(!ShopManagers.contains(newManager))

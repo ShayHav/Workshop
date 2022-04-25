@@ -5,5 +5,5 @@ package domain.user;
 public class UserInfo {
     String userEncryptedPassword;
     String userSalt;
-    int userid;
+    String userid;
 }
