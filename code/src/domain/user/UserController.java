@@ -196,4 +196,9 @@ public class UserController {
         }
         return orders;
     }
+
+
+    public boolean HasUserEnteredMarket(String userID) {
+        if(!)
+    }
 }

@@ -2,7 +2,7 @@ package Service;
 
 
 import Testing_System.Result;
-import domain.market.MarketSystem;
+import domain.market.*;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.discount.Discount;
@@ -93,9 +93,9 @@ public class Services {
 
     }
 
-    public Result<Boolean, String> StartMarket()
+    public Result<Boolean, String> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)
     {
-        marketSystem.start();
+        marketSystem.start(payment,supply,userID,password);
     }
 
     public Result<Boolean, String> AddSupplyService(String path)
@@ -118,35 +118,46 @@ public class Services {
         return null;
     }
 
+    //make: shahar
     //Guest-Visitor Shop options
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo()
+    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter)
     {
-        List<ShopInfo> shop
+        Result<Boolean, List<ShopInfo>> result;
+        List<ShopInfo> shopInfo = marketSystem.getInfoOfShops(userID, filter);
+        if(shopInfo.size() > 0){
+            result = new Result<>(true,shopInfo);
+        }
+        else
+            result = new Result<>(false, shopInfo);
 
+        return result;
     }
 
     //Make:nitay
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f)
+    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f)
     {
-        List<ProductInfo> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(shopname,f);
+        List<ProductInfo> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userID,shopID,f);
         Result<Boolean, List<ProductInfo>> CreateShop;
-        if (GetProductInfoInShop.size()>=0)
+        if (GetProductInfoInShop.size()>0)
             CreateShop = new Result<>(true, GetProductInfoInShop);
         else CreateShop = new Result<>(false, GetProductInfoInShop);
         return CreateShop;
     }//display information of a product?
 
-    public Result<Boolean, String> SearchProductByName(String pName)
+
+
+    public Result<Boolean, List<ProductInfo>> SearchProductByName(String pName)
+    {
+
+
+    }
+
+    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String pName)
     {
 
     }
 
-    public Result<Boolean, String> SearchProductByCategory(String pName)
-    {
-
-    }
-
-    public Result<Boolean, String> SearchProductByKeyword(String keyword)
+    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String keyword)
     {
 
     }
