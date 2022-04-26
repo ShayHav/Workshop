@@ -70,10 +70,16 @@ public class UserController {
      */
     public String logOut(String user) {
         if (activeUser != null) {
-            if(activeUser.contains(getUser(user)))
-                eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", id));
-        } else errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
-        return activeUser.getId();
+            if(activeUser.contains(getUser(user))) {
+                User u = getUser(user);
+                u.logout();
+                eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", user));
+            }
+        } else {
+            errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
+            return null;
+        }
+        return user;
     }
 
     /***
@@ -98,11 +104,12 @@ public class UserController {
     /***
      * enter to the market - active user is now a guest
      */
-    public void enterMarket(){
+    public String enterMarket(){
         User temp = new User("-Guest");
         temp.enterMarket();
         activeUser.add(temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
+        return "-Guest";
     }
 
     public User getUser(String id) {

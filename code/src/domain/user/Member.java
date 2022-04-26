@@ -43,11 +43,11 @@ public class Member implements UserState{
      * @param ownerAppointmentList
      */
     @Override
-    public void appointOwner(String targetUser, String shop , String id, List<OwnerAppointment> ownerAppointmentList) {
+    public void appointOwner(String targetUser, int shop , String id, List<OwnerAppointment> ownerAppointmentList) {
         Shop shop1 = MarketSystem.getInstance().getShop(shop);
         User user = MarketSystem.getInstance().getUser(targetUser);
         if (shop1.isFounder(id) || shop1.isOwner(id)) {
-            user.addRole(shop,Role.ShopOwner);
+            user.addRole(shop1.getShopID(),Role.ShopOwner);
             shop1.AppointNewShopOwner(targetUser,id);
             if(isAppointedMeOwner(user,id)) {
                 OwnerAppointment newAppointment = new OwnerAppointment(shop1,id,user);
@@ -76,7 +76,7 @@ public class Member implements UserState{
      * @param managerAppointmentList
      */
     @Override
-    public void appointManager(String targetUser, String shop, String id, List<ManagerAppointment> managerAppointmentList) {
+    public void appointManager(String targetUser, int shop, String id, List<ManagerAppointment> managerAppointmentList) {
         Shop shop1 = MarketSystem.getInstance().getShop(shop);
         User user1 = MarketSystem.getInstance().getUser(targetUser);
         synchronized (this) {
@@ -112,19 +112,19 @@ public class Member implements UserState{
      * @param shopManagersPermissionsList
      * @return
      */
-    public boolean addManagerPermissions(String targetUser,String shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList) {
+    public boolean addManagerPermissions(String targetUser,int shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList) {
         synchronized (this) {
             Shop shop1 = MarketSystem.getInstance().getShop(shop);
             User user = MarketSystem.getInstance().getUser(targetUser);
-            return shop1.addPermissions(shopManagersPermissionsList, user, userId);
+            return shop1.addPermissions(shopManagersPermissionsList, targetUser, userId);
         }
     }
 
-    public boolean removeManagerPermissions(String targetUser,String shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList){
+    public boolean removeManagerPermissions(String targetUser,int shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList){
         synchronized (this) {
             Shop shop1 = MarketSystem.getInstance().getShop(shop);
             User user = MarketSystem.getInstance().getUser(targetUser);
-            return shop1.removePermissions(shopManagersPermissionsList, user, userId);
+            return shop1.removePermissions(shopManagersPermissionsList, targetUser, userId);
         }
     }
     /***
@@ -132,7 +132,7 @@ public class Member implements UserState{
      * @param shop
      */
     @Override
-    public void closeShop(String shop,String id) {
+    public void closeShop(int shop,String id) {
         Shop shop1 = MarketSystem.getInstance().getShop(shop);
         shop1.closeShop(id);
         if(!shop1.isOpen())

@@ -171,4 +171,12 @@ public class MarketSystem {
     public void setExternalConnector(ExternalConnector ec) {
         externalConnector = ec;
     }
+
+    public String RequestShopOfficialsInfo(int shopname, Filter f) {
+        return ShopController.getInstance().getShop(shopname).RequestShopOfficialsInfo(f);
+    }
+
+    public String EnterMarket() {
+        return userController.enterMarket();
+    }
 }

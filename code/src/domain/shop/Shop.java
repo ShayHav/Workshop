@@ -7,6 +7,7 @@ import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.Filter;
 import domain.user.TransactionInfo;
 import domain.user.User;
 
@@ -375,5 +376,9 @@ public class Shop {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public String RequestShopOfficialsInfo(Filter f) {
+
     }
 }

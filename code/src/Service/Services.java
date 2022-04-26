@@ -39,10 +39,13 @@ public class Services {
         Result<Boolean,Boolean> output = new Result<>(b,b);
         return output;
     }
-
+    //Make:nitay
     public Result<Boolean,String> EnterMarket()
     {
-        //TODO: happens at   MarketSystem getInstance()
+        String EnterMarket = marketSystem.EnterMarket();
+        if(EnterMarket!=null)
+            return new Result<>(true,EnterMarket);
+        else return new Result<>(false,null);
     }
     //Make:nitay
     public Result<Boolean,String> LeaveMarket() {
@@ -332,10 +335,13 @@ public class Services {
             return new Result<>(true,s);
         else return new Result<>(false, null);
     }
-
-    public Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f)
+    //Make:nitay
+    public Result<Boolean, String> RequestShopOfficialsInfo(int shopname, Filter f)
     {
-
+        String s = marketSystem.RequestShopOfficialsInfo(shopname,f);
+        if(s!=null)
+            return new Result<>(true,s);
+        else return new Result<>(false,null);
     }
     //Make:nitay
     public Result<Boolean, String> DeleteUserTest(String[] usernames) {

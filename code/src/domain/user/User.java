@@ -73,7 +73,7 @@ public class User {
         roleList.get(name).add(Role.ShopFounder);
     }
 
-    public void appointOwner(String userId, String shopName) {
+    public void appointOwner(String userId, int shopName) {
         List<Role> useRolelist = roleList.get(shopName);
         if (useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner))
             us.appointOwner(userId, shopName, this.id, ownerAppointmentList);
@@ -81,7 +81,7 @@ public class User {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", id));
     }
 
-    public void appointManager(String userId, String shopName){
+    public void appointManager(String userId, int shopName){
         List<Role> useRolelist = roleList.get(shopName);
         if (useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner))
             us.appointManager(userId, shopName, this.id, managerAppointeeList);
@@ -143,9 +143,11 @@ public class User {
     }
 
 
-    public void addRole(String shop,Role role) {
-        if (!roleList.contains(role))
-            roleList.add(role);
+    public void addRole(int shop,Role role) {
+        List<Role> useRoleList = roleList.get(shop);
+        if(useRoleList!=null)
+            if(useRoleList.contains(role))
+                useRoleList.add(role);
     }
 
     public List<OwnerAppointment> getOwnerAppointmentList() {
