@@ -6,10 +6,7 @@ import domain.market.*;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.discount.Discount;
-import domain.user.Filter;
-import domain.user.TransactionInfo;
-import domain.user.User;
-import domain.user.UserController;
+import domain.user.*;
 
 import java.util.List;
 import java.util.Map;
@@ -101,31 +98,31 @@ public class Services {
         return new Result<>(ans, ans);
     }
 
-    //make: shahar
-    public Result<Boolean, String> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)
+    public Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)
     {
-        marketSystem.start(payment,supply,userID,password);
+       boolean b = marketSystem.start(payment,supply,userID,password);
+       return new Result<>(b,b);
     }
 
-    public Result<Boolean, String> AddSupplyService(String path)
-    {
-        return null;
-    }
-
-    public Result<Boolean, Boolean> RemoveSupplyService(String path)
-    {
-        return null;
-    }
-
-    public Result<Boolean, String> AddPaymentService(String path)
-    {
-        return null;
-    }
-
-    public Result<Boolean, String> RemovePaymentService(String path)
-    {
-        return null;
-    }
+//    public Result<Boolean, String> AddSupplyService(String path)
+//    {
+//        return null;
+//    }
+//
+//    public Result<Boolean, Boolean> RemoveSupplyService(String path)
+//    {
+//        return null;
+//    }
+//
+//    public Result<Boolean, String> AddPaymentService(String path)
+//    {
+//        return null;
+//    }
+//
+//    public Result<Boolean, String> RemovePaymentService(String path)
+//    {
+//        return null;
+//    }
 
     //make: shahar
     //Guest-Visitor Shop options
@@ -233,22 +230,6 @@ public class Services {
         else return new Result<>(true,null);
     }
 
-    //Omry
-    public Result<Boolean, Double> CalculatePriceForProduct(Map<Integer, Integer> products)
-    {
-
-    }
-
-    //omry
-    public Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname)
-    {
-
-    }
-
-    public Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname)
-    {
-
-    }
 
     //shay
     public Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID)
@@ -285,36 +266,6 @@ public class Services {
         }
         Product changed= shop.changeProductDetail(p.getId(),p.getName(),p.getDescription(), p.getCategory(),username);
         return new Result<>(changed == null, changed);
-    }
-
-    public Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveBuyingShopPolicy(String shopname)
-    {
-
-    }
-
-    public Result<Boolean, String> AddDiscountShopPolicy(String shopname, Discount discount)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveDiscountShopPolicy(String shopname)
-    {
-
-    }
-
-    public Result<Boolean, String> AddBuyingProductPolicy(String shopname, PurchaseRule pr)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveBuyingProductPolicy(String shopname)
-    {
-
     }
 
     //Make:nitay
@@ -357,7 +308,7 @@ public class Services {
         else return new Result<>(false, null);
     }
     //Make:nitay
-    public Result<Boolean, String> RequestShopOfficialsInfo(int shopname, Filter f)
+    public Result<Boolean, String> RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f)
     {
         String s = marketSystem.RequestShopOfficialsInfo(shopname,f);
         if(s!=null)

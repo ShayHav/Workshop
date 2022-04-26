@@ -172,7 +172,7 @@ public class MarketSystem {
         externalConnector = ec;
     }
 
-    public String RequestShopOfficialsInfo(int shopname, Filter f) {
+    public String RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f) {
         return ShopController.getInstance().getShop(shopname).RequestShopOfficialsInfo(f);
     }
 

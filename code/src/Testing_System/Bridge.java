@@ -14,9 +14,9 @@ import java.util.Map;
 public interface Bridge {
 
     //General Guest-Visitor
-    Result<Boolean,Boolean> Login(String username, String pw);
+    Result<Boolean,Boolean> Login(String username, String pw); //done
 
-    Result<Boolean,Boolean> Register(String username, String pw);
+    Result<Boolean,Boolean> Register(String username, String pw); //done
 
     Result<Boolean,String> EnterMarket();
 
@@ -75,6 +75,7 @@ public interface Bridge {
     
     Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo);
 
+    /*
     Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr);
 
     Result<Boolean, String> RemoveBuyingShopPolicy(String shopname);
@@ -86,6 +87,8 @@ public interface Bridge {
     Result<Boolean, String> AddBuyingProductPolicy(String shopname, PurchaseRule pr);
 
     Result<Boolean, String> RemoveBuyingProductPolicy(String shopname);
+
+     */
 
     Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId);
 

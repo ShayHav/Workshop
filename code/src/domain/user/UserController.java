@@ -20,6 +20,7 @@ public class UserController {
     private List<User> activeUser; //TODO: temporary
     private static UserController instance = null;
     private User adminUser;
+    private int guestCounter = 0;
 
     private UserController() {
         memberList = new HashMap<>();
@@ -73,13 +74,14 @@ public class UserController {
             if(activeUser.contains(getUser(user))) {
                 User u = getUser(user);
                 u.logout();
+                activeUser.remove(u);
                 eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", user));
             }
         } else {
             errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
             return null;
         }
-        return user;
+        return enterMarket();
     }
 
     /***
@@ -105,11 +107,12 @@ public class UserController {
      * enter to the market - active user is now a guest
      */
     public String enterMarket(){
-        User temp = new User("-Guest");
+        User temp = new User(String.format("-Guest%d",guestCounter));
+        guestCounter++;
         temp.enterMarket();
         activeUser.add(temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
-        return "-Guest";
+        return temp.getId();
     }
 
     public User getUser(String id) {
