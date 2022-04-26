@@ -45,6 +45,7 @@ public class User {
         userCart = new Cart();
     }
 
+
     /***
      * leave market - user has no state
      */
@@ -157,8 +158,8 @@ public class User {
         return userCart.showCart();
     }
 
-    public void addProductToCart(Shop shop, int productID, int amount) {
-        userCart.addProductToCart(shop, productID, amount);
+    public void addProductToCart(int shopID, int productID, int amount) {
+        userCart.addProductToCart(shopID, productID, amount);
     }
 
     public boolean updateAmountOfProduct(int shopID, int productID, int amount) {

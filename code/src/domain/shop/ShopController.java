@@ -88,4 +88,12 @@ public class ShopController {
         }
         return f.applyFilter(products);
     }
+
+    public Shop getShop(int shopID) {
+        if(!shopList.containsKey(shopID)){
+            //log
+            return null;
+        }
+        return shopList.get(shopID);
+    }
 }
