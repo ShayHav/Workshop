@@ -1,24 +1,26 @@
 package Testing_System;
 
-import domain.market.MarketSystem;
 import domain.shop.Product;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.ShopManagersPermissions;
-import domain.shop.TransactionInfo;
 import domain.shop.discount.Discount;
 import domain.user.Filter;
+import domain.user.TransactionInfo;
 
 import java.util.List;
 import java.util.Map;
 
 public class RealBridge implements  Bridge{
+
+
+
     @Override
-    public Result<Boolean, String> Login(String username, String pw) {
+    public Result<Boolean, Boolean> Login(String username, String pw) {
         return null;
     }
 
     @Override
-    public Result<Boolean, String> Register(String username, String pw) {
+    public Result<Boolean, Boolean> Register(String username, String pw) {
         return null;
     }
 
@@ -33,7 +35,7 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, String> Logout(String username) {
+    public Result<Boolean, Boolean> Logout(String username) {
         return null;
     }
 
@@ -48,7 +50,7 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti) {
+    public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products) {
         return null;
     }
 
@@ -60,6 +62,26 @@ public class RealBridge implements  Bridge{
     @Override
     public Result<Boolean, String> StartMarket() {
         return null;    }
+
+    @Override
+    public Result<Boolean, String> AddSupplyService(String path) {
+        return null;
+    }
+
+    @Override
+    public Result<Boolean, String> RemoveSupplyService(String path) {
+        return null;
+    }
+
+    @Override
+    public Result<Boolean, String> AddPaymentService(String path) {
+        return null;
+    }
+
+    @Override
+    public Result<Boolean, String> RemovePaymentService(String path) {
+        return null;
+    }
 
     @Override
     public Result<Boolean, String> GetShopsInfo() {
@@ -122,7 +144,7 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, String> AddProductToShopInventory(Product p, String shopname) {
+    public Result<Boolean, Integer> AddProductToShopInventory(Product p,String username, String shopname) {
         return null;
     }
 
@@ -198,6 +220,11 @@ public class RealBridge implements  Bridge{
 
     @Override
     public Result<Boolean, String> DeleteUserTest(String[] usernames) {
+        return null;
+    }
+
+    @Override
+    public Result<Boolean, String> RemoveProductFromShopInventory(int id, String username, String shopname) {
         return null;
     }
 }

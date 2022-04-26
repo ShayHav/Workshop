@@ -3,9 +3,9 @@ package Testing_System;
 import domain.shop.Product;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.ShopManagersPermissions;
-import domain.shop.TransactionInfo;
 import domain.shop.discount.Discount;
 import domain.user.Filter;
+import domain.user.TransactionInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -13,9 +13,9 @@ import java.util.Map;
 public interface Bridge {
 
     //General Guest-Visitor
-    Result<Boolean,String> Login(String username, String pw);
+    Result<Boolean,Boolean> Login(String username, String pw);
 
-    Result<Boolean,String> Register(String username, String pw);
+    Result<Boolean,Boolean> Register(String username, String pw);
 
     Result<Boolean,String> EnterMarket();
 
@@ -23,7 +23,7 @@ public interface Bridge {
 
 
     //General Member-Visitor
-    Result<Boolean,String> Logout(String username);
+    Result<Boolean,Boolean> Logout(String username);
 
     Result<Boolean, String> CreateShop(String username, String shopname);
 
@@ -31,7 +31,7 @@ public interface Bridge {
     //System
     Result<Boolean, String> RealTimeNotification(List<String> users, String msg);
 
-    Result<Boolean, String> PurchaseDelivery(TransactionInfo ti); //supply
+    Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products); //supply
 
     Result<Boolean, String> Payment(TransactionInfo ti);
 
@@ -70,10 +70,8 @@ public interface Bridge {
 
     Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname);
 
-    Result<Boolean, String> AddProductToShopInventory(Product p, String shopname);
-
-    Result<Boolean, String> RemoveProductToShopInventory(Product p, String shopname);
-
+    Result<Boolean, Integer> AddProductToShopInventory(Product p, String usernmae,String shopname);
+    
     Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo);
 
     Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr);
@@ -101,4 +99,6 @@ public interface Bridge {
     Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f);
 
     Result<Boolean, String> DeleteUserTest(String[] usernames);
+
+    Result<Boolean, String> RemoveProductFromShopInventory(int id, String username, String shopname);
 }
