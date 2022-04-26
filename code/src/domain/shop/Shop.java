@@ -111,7 +111,7 @@ public class Shop {
     }
 
     public Product getProduct(int prodID){
-        Product product = inventory.getProduct(prodID);
+        Product product = inventory.findProduct(prodID);
         if(product != null) {
             eventLogger.logMsg(Level.INFO, String.format("returned product: %d", prodID));
             return product;
@@ -122,10 +122,10 @@ public class Shop {
         }
     }
 
-    public boolean addListing(int prodID, double price, int quantity,String userId){
+    public Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId){
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AddProductToInventory).contains(userId))
-            return inventory.addProduct(prodID, price, quantity);
-        else return false;
+            return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
+        return null;
     }
 
     public void removeListing(int prodID,String userId){
