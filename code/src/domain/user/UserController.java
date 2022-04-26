@@ -154,4 +154,9 @@ public class UserController {
         }
         ShopController.getInstance().DeleteShops();
     }
+
+    public List<String> checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate){
+        User user = getUser(userID);
+        return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
+    }
 }

@@ -116,6 +116,8 @@ public class MarketSystem {
         return ShopController.getInstance().getShop(shopID);
     }
 
+
+    //TODO: Services start here :)
     public boolean logIn(String username, String pw){
         return UserController.getInstance().logIn(username, pw);
     }
@@ -146,5 +148,9 @@ public class MarketSystem {
 
     public String AppointNewShopOwner(int key,String targetUser, String userId){
         return ShopController.getInstance().AppointNewShopOwner(key,targetUser,userId);
+    }
+
+    public List<String> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate){
+        return UserController.getInstance().checkout( userID, fullName,  address,  phoneNumber,  cardNumber,  expirationDate);
     }
 }

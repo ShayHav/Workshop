@@ -158,10 +158,13 @@ public class Services {
     {
 
     }
-
-    public Result<Boolean, String> Checkout()
+    //Make nitay
+    public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate)
     {
-
+        List<String> Checkout = marketSystem.Checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
+        if(Checkout.size()>0)
+            return new Result<>(false,Checkout);
+        else return new Result<>(true,null);
     }
 
     public Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname)
