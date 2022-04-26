@@ -1,6 +1,7 @@
 package Testing_System;
 
 import domain.shop.Product;
+import domain.shop.ProductInfo;
 import domain.shop.ShopManagersPermissions;
 import domain.user.Filter;
 import domain.user.TransactionInfo;
@@ -15,6 +16,12 @@ public class Tester {
     public Tester() {
         br = Selector.GetBridge();
     }
+
+    /*Result<#t | # f,  return value>
+     * t - success
+     * f - failed
+     *
+     */
 
     //Guest-Visitor General
     public Result<Boolean, Boolean> Login(String username, String pw) {
@@ -38,8 +45,8 @@ public class Tester {
         return br.GetShopsInfo();
     }
 
-    public Result<Boolean, String> GetProductInfoInShop(String shopname) {
-        return br.GetProductInfoInShop(shopname);
+    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f) {
+        return br.GetProductInfoInShop(shopname, f);
     }
 
     public Result<Boolean, String> SearchProductByName(String pName) {
@@ -87,7 +94,7 @@ public class Tester {
         return br.AddProductToShopInventory(p,username, shopname);
     }
 
-    public Result<Boolean, String> RemoveProductFromShopInventory(int id, String username, String shopname) {
+    public Result<Boolean, Integer> RemoveProductFromShopInventory(int id, String username, int shopname) {
         return br.RemoveProductFromShopInventory(id,username, shopname);
     }
 
@@ -107,24 +114,24 @@ public class Tester {
 //
 //    public Result<Boolean, String> RemoveBuyingProductPolicy(String shopname) { return br.RemoveBuyingProductPolicy(shopname);}
 
-    public Result<Boolean, String> AppointNewShopOwner(String username) {
-        return br.AppointNewShopOwner(username);
+    public Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId) {
+        return br.AppointNewShopOwner(key, targetUser, userId);
     }
 
-    public Result<Boolean, String> AppointNewShopManager(String username) {
-        return br.AppointNewShopManager(username);
+    public Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId) {
+        return br.AppointNewShopManager(key, targetUser, userId);
     }
 
-    public Result<Boolean, String> AddShopManagerPermissions(String username, List<ShopManagersPermissions> permissions) {
-        return br.AddShopMangerPermissions(username, permissions);
+    public Result<Boolean, String> AddShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID) {
+        return br.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
 
-    public Result<Boolean, String> RemoveShopManagerPermissions(String username, List<ShopManagersPermissions> permissions) {
-        return br.RemoveShopManagerPermissions(username, permissions);
+    public Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID) {
+        return br.RemoveShopManagerPermissions(key,shopManagersPermissionsList, managerUser, ownerID);
     }
 
-    public Result<Boolean, String> CloseShop(String shopname) {
-        return br.CloseShop(shopname);
+    public Result<Boolean, String> CloseShop(int shopID, String shopname) {
+        return br.CloseShop(shopID, shopname);
     }
 
     /*
@@ -140,11 +147,11 @@ public class Tester {
 
 
     //Member-Visitor General
-    public Result<Boolean, Boolean> Logout(String username) {
+    public Result<Boolean, String> Logout(String username) {
         return br.Logout(username);
     }
 
-    public Result<Boolean, String> CreateShop(String username, String shopname) {
+    public Result<Boolean, Integer> CreateShop(String username, String shopname) {
         return br.CreateShop(username, shopname);
     }
 

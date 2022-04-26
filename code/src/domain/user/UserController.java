@@ -95,6 +95,7 @@ public class UserController {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of registered for exist id %d failed.", id));
             return false;
         }
+        ShopController.getInstance().DeleteShops();
     }
 
     /***
@@ -150,13 +151,20 @@ public class UserController {
                 for(Map.Entry<String, List<Role>> run : useRoleList.entrySet()){
                     for(Role runn :run.getValue())
                         if(runn == Role.ShopFounder)
-                            ShopController.getInstance().closeShop(run.getKey(),useID);
+                            ShopController.getInstance().closeShop(run.getKey(), useID);
                 }
                 memberList.remove(entry.getKey());
             }
         }
         ShopController.getInstance().DeleteShops();
     }
+
+    public List<String> checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate){
+        User user = getUser(userID);
+        return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
+    }
+
+
 
     public boolean createSystemManager(String id, String pass){
         if(adminUser!= null)
