@@ -21,7 +21,6 @@ public class Cart {
         totalAmount = 0;
     }
 
-
     public void addProductToCart(int shopID, int productID, int amount) {
         if (!baskets.containsKey(shopID)) {
             Shop shop = MarketSystem.getInstance().getShop(shopID);

@@ -2,6 +2,8 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.market.ExternalConnector;
+import domain.market.MarketSystem;
 import domain.shop.ProductInfo;
 import domain.shop.ShopInfo;
 
@@ -16,10 +18,19 @@ public class UserController {
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
     private User activeUser; //TODO: temporary
+    private static UserController instance = null;
 
-    public UserController() {
+    private UserController() {
         memberList = new HashMap<>();
         activeUser = null;
+    }
+
+    public static UserController getInstance() {
+        if (instance == null) {
+            instance = new UserController();
+        }
+
+        return instance;
     }
 
     //TODO: add logger and validate pre condition
