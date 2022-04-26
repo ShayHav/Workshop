@@ -6,6 +6,7 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.Filter;
 import domain.user.SearchProductFilter;
+import domain.user.UserController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,10 +20,18 @@ public class ShopController {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private int shopCounter = 0;
+    private static ShopController instance = null;
 
-
-    public ShopController(){
+    private ShopController() {
         shopList = new HashMap<>();
+    }
+
+    public static ShopController getInstance() {
+        if (instance == null) {
+            instance = new ShopController();
+        }
+
+        return instance;
     }
 
     public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
