@@ -18,7 +18,7 @@ public class InitMarketCaseTest extends Tester {
     public void GoodStartTest()
     {
         MarketSystem.getInstance().setPaymentConnection(true);
-        MarketSystem.getInstance().setPaymentConnection(true);
+        MarketSystem.getInstance().setSupplierConnection(true);
         MarketSystem.getInstance().createSystemManger("MAdminM", "!@#09Pp");
         Assert.assertTrue(StartMarket().GetFirstElement());
     }
@@ -27,7 +27,7 @@ public class InitMarketCaseTest extends Tester {
     public void NoPaymentConnectionTest()
     {
         MarketSystem.getInstance().setPaymentConnection(false);
-        MarketSystem.getInstance().setPaymentConnection(true);
+        MarketSystem.getInstance().setSupplierConnection(true);
         MarketSystem.getInstance().createSystemManger("MAdminM", "!@#09Pp");
         Assert.assertFalse(StartMarket().GetFirstElement());
     }
@@ -45,7 +45,7 @@ public class InitMarketCaseTest extends Tester {
     public void NoSystemManagerTest()
     {
         MarketSystem.getInstance().setPaymentConnection(true);
-        MarketSystem.getInstance().setPaymentConnection(false);
+        MarketSystem.getInstance().setSupplierConnection(true);
         Assert.assertFalse(StartMarket().GetFirstElement());
     }
 
