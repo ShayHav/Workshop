@@ -23,7 +23,7 @@ public class Shop {
     private List<User> ShopManagers;
     private Map<ShopManagersPermissions, List<String>> ShopManagersPermissionsMap;
     private List<User> Shoppers;
-    private final Inventory inventory;
+    private Inventory inventory;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
@@ -48,13 +48,13 @@ public class Shop {
         ShopManagersPermissionsInit();
     }
 
-    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
         if (ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)) {
             for (ShopManagersPermissions run : shopManagersPermissionsList)
-                if (!PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser.getId())) {
-                    ShopManagersPermissionsMap.get(run).add(tragetUser.getId());
-                    eventLogger.logMsg(Level.INFO,String.format("add Permissions to user: %s",tragetUser.getId()));
-                    eventLogger.logMsg(Level.INFO, String.format("add Permissions to user: %s", tragetUser.getId()));
+                if (!PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser)) {
+                    ShopManagersPermissionsMap.get(run).add(tragetUser);
+                    eventLogger.logMsg(Level.INFO,String.format("add Permissions to user: %s",tragetUser));
+                    eventLogger.logMsg(Level.INFO, String.format("add Permissions to user: %s", tragetUser));
                 }
             return true;
         } else {
@@ -63,13 +63,13 @@ public class Shop {
         }
     }
 
-    public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+    public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
         if (ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)) {
             for (ShopManagersPermissions run : shopManagersPermissionsList)
-                if (PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser.getId())) {
-                    ShopManagersPermissionsMap.get(run).remove(tragetUser.getId());
-                    eventLogger.logMsg(Level.INFO,String.format("remove Permissions to user: %s",tragetUser.getId()));
-                    eventLogger.logMsg(Level.INFO, String.format("remove Permissions to user: %s", tragetUser.getId()));
+                if (PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser)) {
+                    ShopManagersPermissionsMap.get(run).remove(tragetUser);
+                    eventLogger.logMsg(Level.INFO,String.format("remove Permissions to user: %s",tragetUser));
+                    eventLogger.logMsg(Level.INFO, String.format("remove Permissions to user: %s", tragetUser));
                 }
             return true;
         } else {
@@ -151,6 +151,8 @@ public class Shop {
 
     public double productPriceAfterDiscounts(int prodID, int amount){
         double productBasePrice = inventory.getPrice(prodID);
+        if(productBasePrice < 0)
+            return 0;
         return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
     }
 
@@ -303,9 +305,10 @@ public class Shop {
     }
 
     public void closeShop(String userID){
-        if((ShopManagersPermissionsMap.get(ShopManagersPermissions.CloseShop).contains(userID)))
-            if(isOpen)
+        if((ShopManagersPermissionsMap.get(ShopManagersPermissions.CloseShop).contains(userID))) {
+            if (isOpen)
                 isOpen = false;
+        }
     }
 
     public String getName() {
@@ -355,5 +358,18 @@ public class Shop {
 
     public List<Order> getOrders() {
         return orders.getOrders();
+    }
+
+
+    public void setInventory(Inventory inventory){
+        this.inventory = inventory;
+    }
+
+    public void setDiscountPolicy(DiscountPolicy discountPolicy){
+        this.discountPolicy = discountPolicy;
+    }
+
+    public void setPurchasePolicy(PurchasePolicy purchasePolicy){
+        this.purchasePolicy = purchasePolicy;
     }
 }

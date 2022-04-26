@@ -57,10 +57,10 @@ public class Services {
 
 
     //General Member-Visitor
-    public Result<Boolean,Boolean> Logout(String username)
+    public Result<Boolean,String> Logout(String username)
     {
         boolean b = marketSystem.logOut(username);
-        Result<Boolean,Boolean> output = new Result(b,b);
+        Result<Boolean,String> output = new Result(b,b);
         return output;
     }
     //Make:nitay
@@ -74,18 +74,20 @@ public class Services {
         return CreateShop;
     }
 
-
+    //TODO: impl on later version
     //System
     public Result<Boolean, String> RealTimeNotification(List<String> users, String msg)
     {
-
+        return null;
     }
 
     public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products)
     {
 
-    }//supply
+    }
 
+
+    //supply
     public Result<Boolean, String> Payment(TransactionInfo ti)
     {
 
@@ -93,7 +95,7 @@ public class Services {
 
     public Result<Boolean, String> StartMarket()
     {
-
+        marketSystem.start();
     }
 
     public Result<Boolean, String> AddSupplyService(String path)
@@ -156,10 +158,13 @@ public class Services {
     {
 
     }
-
-    public Result<Boolean, String> Checkout()
+    //Make nitay
+    public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate)
     {
-
+        List<String> Checkout = marketSystem.Checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
+        if(Checkout.size()>0)
+            return new Result<>(false,Checkout);
+        else return new Result<>(true,null);
     }
 
     public Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname)
@@ -252,17 +257,17 @@ public class Services {
         else return new Result<>(false,null);
     }
     //Make:nitay
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id)
+    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
     {
-        String s = marketSystem.AddShopMangerPermissions(key,shopManagersPermissionsList,tragetUser,id);
+        String s = marketSystem.AddShopMangerPermissions(key,shopManagersPermissionsList,targetUser,ownerID);
         if(s!=null)
             return new Result<>(true,s);
         else return new Result<>(false,null);
     }
     //Make:nitay
-    public Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id)
+    public Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID)
     {
-        String s = marketSystem.RemoveShopManagerPermissions(key,shopManagersPermissionsList,tragetUser,id);
+        String s = marketSystem.RemoveShopManagerPermissions(key,shopManagersPermissionsList,managerUser,ownerID);
         if(s!=null)
             return new Result<>(true,s);
         else return new Result<>(false,null);

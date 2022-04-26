@@ -23,6 +23,7 @@ public class User {
     private List<ManagerAppointment> managerAppointeeList;
     private List<OwnerAppointment> ownerAppointmentList;
     private List<Order> orderHistory;
+    private boolean isSystemManager;
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
@@ -33,6 +34,7 @@ public class User {
     public User(String id) {
         this.id = id;
         loggedIn = false;
+        isSystemManager = false;
     }
 
     /***
@@ -83,13 +85,20 @@ public class User {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", id));
     }
 
-
+    public List<Order> getHistoryOfOrders(){
+        return orderHistory;
+    }
 
     /***
      * login to the system
      */
     public void login() {
-        us = new Member();
+        if(isSystemManager) {
+            us = new SystemManager();
+        }
+        else {
+            us = new Member();
+        }
         if(roleList == null)
             roleList = new HashMap<>();
         if (ownerAppointmentList == null)
@@ -190,5 +199,9 @@ public class User {
 
     public Map<String, List<Role>> getRoleList() {
         return roleList;
+    }
+
+    public void makeSystemManager() {
+        isSystemManager = true;
     }
 }

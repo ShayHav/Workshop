@@ -4,10 +4,12 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.market.ExternalConnector;
 import domain.market.MarketSystem;
+import domain.shop.Order;
 import domain.shop.ProductInfo;
 import domain.shop.ShopController;
 import domain.shop.ShopInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ public class UserController {
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
     private User activeUser; //TODO: temporary
     private static UserController instance = null;
+    private User adminUser;
 
     private UserController() {
         memberList = new HashMap<>();
@@ -92,6 +95,7 @@ public class UserController {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of registered for exist id %d failed.", id));
             return false;
         }
+        ShopController.getInstance().DeleteShops();
     }
 
     /***
@@ -147,11 +151,50 @@ public class UserController {
                 for(Map.Entry<String, List<Role>> run : useRoleList.entrySet()){
                     for(Role runn :run.getValue())
                         if(runn == Role.ShopFounder)
-                            ShopController.getInstance().closeShop(run.getKey(),useID);
+                            ShopController.getInstance().closeShop(run.getKey(), useID);
                 }
                 memberList.remove(entry.getKey());
             }
         }
         ShopController.getInstance().DeleteShops();
+    }
+
+    public List<String> checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate){
+        User user = getUser(userID);
+        return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
+    }
+
+
+
+    public boolean createSystemManager(String id, String pass){
+        if(adminUser!= null)
+            //log
+            return false;
+        else{
+            register(id,pass);
+            User u = memberList.get(id);
+            u.makeSystemManager();
+            return true;
+        }
+    }
+
+    public List<Order> getOrderHistoryForUser(List<String>  userID){
+        List<Order> orders = new ArrayList<>();
+        if(userID == null){
+            for(User user: memberList.values()){
+                orders.addAll(user.getHistoryOfOrders());
+            }
+        }
+        else{
+            for(String id: userID){
+                User user = memberList.get(id);
+                if(user == null){
+                  //log
+                  return null;
+                }
+                orders.addAll(user.getHistoryOfOrders());
+            }
+        }
+        return orders;
     }
 }

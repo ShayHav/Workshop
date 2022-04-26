@@ -42,4 +42,7 @@ public class Order {
         orderId = id;
     }
 
+    public double getTotalAmount(){
+        return totalAmount;
+    }
 }

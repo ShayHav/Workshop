@@ -17,6 +17,8 @@ public class MarketSystem {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private static MarketSystem instance = null;
     private ExternalConnector externalConnector;
+    private UserController userController = UserController.getInstance();
+    private ShopController shopController = ShopController.getInstance();
 
     private MarketSystem() {
         eventLogger.logMsg(Level.INFO,"System start");
@@ -38,8 +40,10 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    private void start() {
-        throw new UnsupportedOperationException();
+    public void start() {
+
+
+
     }
 
     /***
@@ -116,6 +120,8 @@ public class MarketSystem {
         return ShopController.getInstance().getShop(shopID);
     }
 
+
+    //TODO: Services start here :)
     public boolean logIn(String username, String pw){
         return UserController.getInstance().logIn(username, pw);
     }
@@ -132,11 +138,11 @@ public class MarketSystem {
         return ShopController.getInstance().closeShop(shopId,userId);
     }
 
-    public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
+    public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id){
         return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList,tragetUser ,id);
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id){
         return ShopController.getInstance().AddShopMangerPermissions(key,shopManagersPermissionsList,tragetUser,id);
     }
 
@@ -146,5 +152,13 @@ public class MarketSystem {
 
     public String AppointNewShopOwner(int key,String targetUser, String userId){
         return ShopController.getInstance().AppointNewShopOwner(key,targetUser,userId);
+    }
+
+    public List<String> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate){
+        return UserController.getInstance().checkout( userID, fullName,  address,  phoneNumber,  cardNumber,  expirationDate);
+    }
+
+    public void setExternalConnector(ExternalConnector ec){
+        externalConnector = ec;
     }
 }
