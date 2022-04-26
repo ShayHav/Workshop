@@ -13,7 +13,8 @@ public class BundleDiscount implements Discount {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
 
-    public BundleDiscount(int amountToBuy, int amountToGet) throws IllegalArgumentException {
+
+    public BundleDiscount(int amountToBuy, int amountToGet, int discountID) throws IllegalArgumentException {
         if(amountToBuy > 0)
             this.amountToBuyNeeded = amountToBuy;
         else {
@@ -26,6 +27,7 @@ public class BundleDiscount implements Discount {
             errorLogger.logMsg(Level.WARNING, String.format("inviable amount of products to get free: %d ", amountToGet));
             throw new IllegalArgumentException("inviable amount of items to get when discount applied");
         }
+        this.discountID = discountID;
     }
 
     public double applyDiscount(double price, int amount) {

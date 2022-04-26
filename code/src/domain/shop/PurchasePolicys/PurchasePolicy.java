@@ -13,6 +13,7 @@ public class PurchasePolicy {
 
     private Map<Integer, List<PurchaseRule>> product_purchasePolicies;
     private Map<Integer, Discount> productGroup_discounts; ///check if needed
+    private int purchaseRuleIDCounter;
 
 
     public PurchasePolicy(){
@@ -46,7 +47,7 @@ public class PurchasePolicy {
 
     public boolean addQuantityRule(int prodID, int minQuantity){
         try {
-            PurchaseRule pr = new MinimumQuantityPolicy(minQuantity);
+            PurchaseRule pr = new MinimumQuantityPolicy(minQuantity, purchaseRuleIDCounter++);
             List<PurchaseRule> prod_pr;
             if(product_purchasePolicies.containsKey(prodID))
                 return false;

@@ -5,13 +5,14 @@ public class PercentageDiscount implements Discount {
     private int discountID;
 
 
-    public PercentageDiscount(double percentageDiscount) throws IllegalArgumentException {
+    public PercentageDiscount(double percentageDiscount, int discountID) throws IllegalArgumentException {
         if(percentageDiscount > 0 && percentageDiscount < 100){
             percentage =percentageDiscount;
         }
         else {
             throw new IllegalArgumentException("percentage inviable");
         }
+        this.discountID = discountID;
     }
 
     public double applyDiscount(double price, int amount) {

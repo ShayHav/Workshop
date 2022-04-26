@@ -5,9 +5,11 @@ import java.util.List;
 
 public class BlackListPolicy implements PurchaseRule {
     private final List<String> userBlackList;
+    private int purchaseRuleID;
 
-    public BlackListPolicy(){
+    public BlackListPolicy(int purchaseRuleID){
         userBlackList = new ArrayList<>();
+        this.purchaseRuleID = purchaseRuleID;
     }
 
     @Override
@@ -27,4 +29,8 @@ public class BlackListPolicy implements PurchaseRule {
         userBlackList.removeIf(ID -> ID.equals(userID));
     }
 
+
+    public int getID(){
+        return purchaseRuleID;
+    }
 }

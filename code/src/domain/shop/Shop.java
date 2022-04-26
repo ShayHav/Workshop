@@ -39,7 +39,7 @@ public class Shop {
         ShopOwners = new LinkedList<>();
         ShopManagers = new LinkedList<>();
         Shoppers = new LinkedList<>();
-        rank = 0;
+        rank = -1;
         this.name = name;
         isOpen = true;
         ShopFounder = MarketSystem.getInstance().getUser(founderId);
@@ -160,9 +160,6 @@ public class Shop {
     //todo????? needed?
     public void changeProductDiscount(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
 
-    public double calculateTotalAmountOfOrder(Map<Integer,Integer> ProductsAndQuantity){
-        return 0.0; //TODO: impl
-    }
 
     public boolean addPercentageDiscount(int prodID, double percentage){
         return discountPolicy.addPercentageDiscount(prodID, percentage);
@@ -213,6 +210,7 @@ public class Shop {
 
 
         //calculate price
+
         Map<Integer, Double> product_PricePer = new HashMap<>();
         double product_price_single;
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
