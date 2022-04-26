@@ -212,22 +212,6 @@ public class Services {
         else return new Result<>(true,null);
     }
 
-    //Omry
-    public Result<Boolean, Double> CalculatePriceForProduct(Map<Integer, Integer> products)
-    {
-
-    }
-
-    //omry
-    public Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname)
-    {
-
-    }
-
-    public Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname)
-    {
-
-    }
 
     //shay
     public Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID)
@@ -264,36 +248,6 @@ public class Services {
         }
         Product changed= shop.changeProductDetail(p.getId(),p.getName(),p.getDescription(), p.getCategory(),username);
         return new Result<>(changed == null, changed);
-    }
-
-    public Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveBuyingShopPolicy(String shopname)
-    {
-
-    }
-
-    public Result<Boolean, String> AddDiscountShopPolicy(String shopname, Discount discount)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveDiscountShopPolicy(String shopname)
-    {
-
-    }
-
-    public Result<Boolean, String> AddBuyingProductPolicy(String shopname, PurchaseRule pr)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveBuyingProductPolicy(String shopname)
-    {
-
     }
 
     //Make:nitay
