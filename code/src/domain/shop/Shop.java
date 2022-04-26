@@ -372,4 +372,8 @@ public class Shop {
     public void setPurchasePolicy(PurchasePolicy purchasePolicy){
         this.purchasePolicy = purchasePolicy;
     }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
 }

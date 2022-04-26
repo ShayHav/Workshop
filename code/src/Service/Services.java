@@ -167,9 +167,14 @@ public class Services {
         else return new Result<>(true,null);
     }
 
-    public Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname)
+    //Shay
+    public Result<Boolean, Integer> CalculatePriceForProduct(Map<Integer, Integer>items, int shopID)
     {
-
+        Shop shop = ShopController.getInstance().getShop(shopID);
+        if(shop == null)
+            return new Result<>(false, null);
+        double totalPrice = shop.calculateTotalAmountOfOrder(items);
+        return new Result<>(true, totalPrice);
     }
 
     public Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname)
@@ -182,16 +187,23 @@ public class Services {
 
     }
 
-    public Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname)
+    //shay
+    public Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID)
     {
+        ShopController controller = ShopController.getInstance();
+        Shop shop = controller.getShop(shopID);
+        if(shop == null)
+            return new Result<>(false, null);
 
+        return new Result<>(shop.getProduct(p.getId()) != null, shop.getInventory().isInStock(p.getId()));
     }
 
     //Shay
     public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String usernmae,int shopID)
     {
         ShopController controller = ShopController.getInstance();
-        Product p  = controller.getShop(shopID).addListing(pName,pDis,pCat,price,amount,usernmae);
+        Shop shop = controller.getShop(shopID);
+        Product p  = shop.addListing(pName,pDis,pCat,price,amount,usernmae);
         if(p == null){
             return new Result<>(false, -1);
         }
