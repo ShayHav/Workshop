@@ -81,16 +81,21 @@ public class Services {
         return null;
     }
 
-    public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products)
+    //shay
+    public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products)
     {
-
+        MarketSystem m = MarketSystem.getInstance();
+        boolean ans  = m.supply(ti, products);
+        return new Result<>(ans, ans);
     }
 
 
-    //supply
-    public Result<Boolean, String> Payment(TransactionInfo ti)
+    //shay
+    public Result<Boolean, Boolean> Payment(TransactionInfo ti)
     {
-
+        MarketSystem m = MarketSystem.getInstance();
+        boolean ans = m.pay(ti);
+        return new Result<>(ans, ans);
     }
 
     public Result<Boolean, String> StartMarket()
