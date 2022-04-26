@@ -97,9 +97,9 @@ public interface Bridge {
 
     Result<Boolean, String> CloseShop(int shopID, String username);
 
-    Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f);
+    Result<Boolean, String> RequestShopOfficialsInfo(String shopName, Filter f);
 
     Result<Boolean, String> DeleteUserTest(String[] usernames);
 
-    Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname);
+    Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, String shopName);
 }

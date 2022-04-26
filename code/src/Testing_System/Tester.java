@@ -90,12 +90,12 @@ public class Tester {
     }
 
     //Shop-Owner Options
-    public Result<Boolean, Integer> AddProductToShopInventory(Product p,String username, String shopname) {
-        return br.AddProductToShopInventory(p,username, shopname);
+    public Result<Boolean, Integer> AddProductToShopInventory(Product p,String username, String shopName) {
+        return br.AddProductToShopInventory(p,username, shopName);
     }
 
-    public Result<Boolean, Integer> RemoveProductFromShopInventory(int id, String username, int shopname) {
-        return br.RemoveProductFromShopInventory(id,username, shopname);
+    public Result<Boolean, Integer> RemoveProductFromShopInventory(int id, String username, String shopName) {
+        return br.RemoveProductFromShopInventory(id,username, shopName);
     }
 
     public Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo) {

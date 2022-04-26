@@ -95,7 +95,6 @@ public class UserController {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of registered for exist id %d failed.", id));
             return false;
         }
-        ShopController.getInstance().DeleteShops();
     }
 
     /***
