@@ -119,10 +119,12 @@ public class Services {
     }
 
     //Guest-Visitor Shop options
-    public Result<Boolean, String> GetShopsInfo()
+    public Result<Boolean, List<ShopInfo>> GetShopsInfo()
     {
+        List<ShopInfo> shop
 
     }
+
     //Make:nitay
     public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f)
     {

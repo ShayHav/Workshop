@@ -162,7 +162,7 @@ public class ShopController {
         List<Order> orders = new ArrayList<>();
         if(shopId == null){
             for(Shop s: shopList.values()){
-                orders.addAll();
+                orders.addAll(s.getOrders());
             }
         }
         else{
@@ -172,7 +172,7 @@ public class ShopController {
                     //log
                     return null;
                 }
-                orders.addAll();
+                orders.addAll(s.getOrders());
             }
         }
         return orders;
