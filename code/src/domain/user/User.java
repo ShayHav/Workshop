@@ -101,24 +101,8 @@ public class User {
         return this.loggedIn;
     }
 
-    public Cart.CartInfo showCart() {
-        return us.showCart(userCart);
-    }
-
-    public void addProductToCart(Shop shop, int productID, int amount) {
-        us.addProductToCart(userCart, shop, productID, amount);
-    }
-
-    public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
-        return us.updateAmountOfProduct(userCart, shopID, productID, amount);
-    }
-
-    public boolean removeProductFromCart(int shopID, int productID) {
-        return us.removeProductFromCart(userCart, shopID, productID);
-    }
-
     public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        List<ResponseT<Order>> checkoutResult = us.checkout(id, userCart, fullName, address, phoneNumber, cardNumber, expirationDate);
+        List<ResponseT<Order>> checkoutResult = userCart.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
         List<String> errors = new ArrayList<>();
         for (ResponseT<Order> r : checkoutResult) {
             if (r.isErrorOccurred()) {
@@ -130,27 +114,6 @@ public class User {
         return errors;
     }
 
-    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
-        return us.getInfoOfShops(f);
-    }
-
-
-    public List<ProductInfo> getInfoOfProductInShop(int shopID) {
-        return us.getInfoOfProductInShop(shopID);
-    }
-
-
-    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
-        return us.searchProductByName(name, f);
-    }
-
-    public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
-        return us.searchProductByCategory(category, f);
-    }
-
-    public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
-        return us.searchProductByKeyword(keyword, f);
-    }
 
     public void addRole(Role role) {
         if (!roleList.contains(role))
@@ -164,4 +127,46 @@ public class User {
     public List<ManagerAppointment> getManagerAppointeeList() {
         return managerAppointeeList;
     }
+
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.getInfoOfShops(f);
+    }
+
+    public List<ProductInfo> getInfoOfProductInShop(int shopID) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.getInfoOfProductInShop(shopID);
+    }
+
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByName(name, f);
+    }
+
+    public List<ProductInfo>  searchProductByCategory(String category, Filter<ProductInfo> f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByCategory(category, f);
+    }
+
+    public List<ProductInfo>  searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
+        MarketSystem market = MarketSystem.getInstance();
+        return market.searchProductByKeyword(keyword, f);
+    }
+
+    public Cart.CartInfo showCart() {
+        return userCart.showCart();
+    }
+
+    public void addProductToCart(Shop shop, int productID, int amount) {
+        userCart.addProductToCart(shop, productID, amount);
+    }
+
+    public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
+        return userCart.updateAmountOfProduct(shopID, productID, amount);
+    }
+
+    public boolean removeProductFromCart(int shopID, int productID) {
+        return userCart.removeProductFromCart(shopID, productID);
+    }
+
 }
