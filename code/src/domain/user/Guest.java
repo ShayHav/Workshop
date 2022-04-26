@@ -19,22 +19,22 @@ public class Guest implements UserState {
     }
 
     @Override
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
+    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void appointOwner(User user, Shop shop, String id, List<OwnerAppointment> ownerAppointmentList) {
+    public void appointOwner(String user, String shop, String id, List<OwnerAppointment> ownerAppointmentList) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void appointManager(User user, Shop shop, String id, List<ManagerAppointment> managerAppointmentList) {
+    public void appointManager(String user, String shop, String id, List<ManagerAppointment> managerAppointmentList) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     @Override
-    public void closeShop(Shop shop, String id) {
+    public void closeShop(String  shop, String id) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 

@@ -33,7 +33,6 @@ public class MarketSystem {
         if (instance == null) {
             instance = new MarketSystem();
         }
-
         return instance;
     }
 
@@ -108,12 +107,12 @@ public class MarketSystem {
         return uc.getUser(id);
     }
 
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        sc.createShop(name,discountPolicy, purchasePolicy,id);
+    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
+        return sc.createShop(name,discountPolicy, purchasePolicy,id);
     }
 
-    public void register(String userId,String pass){
-        uc.register(userId,pass);
+    public boolean register(String userId,String pass){
+       return uc.register(userId,pass);
     }
 
     public void deleteUserTest(String[] username){
