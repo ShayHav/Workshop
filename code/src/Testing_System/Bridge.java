@@ -1,6 +1,7 @@
 package Testing_System;
 
 import domain.shop.Product;
+import domain.shop.ProductInfo;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.ShopManagersPermissions;
 import domain.shop.discount.Discount;
@@ -23,9 +24,9 @@ public interface Bridge {
 
 
     //General Member-Visitor
-    Result<Boolean,Boolean> Logout(String username);
+    Result<Boolean,String> Logout(String username);
 
-    Result<Boolean, String> CreateShop(String username, String shopname);
+    Result<Boolean, Integer> CreateShop(String username, String shopname);
 
 
     //System
@@ -48,7 +49,7 @@ public interface Bridge {
     //Guest-Visitor Shop options
     Result<Boolean, String> GetShopsInfo();
 
-    Result<Boolean, String> GetProductInfoInShop(String shopname); //display information of a product?
+    Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f); //display information of a product?
 
     Result<Boolean, String> SearchProductByName(String pName);
 
@@ -86,19 +87,19 @@ public interface Bridge {
 
     Result<Boolean, String> RemoveBuyingProductPolicy(String shopname);
 
-    Result<Boolean, String> AppointNewShopOwner(String username);
+    Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId);
 
-    Result<Boolean, String> AppointNewShopManager(String username);
+    Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId);
 
-    Result<Boolean, String> AddShopMangerPermissions(String username, List<ShopManagersPermissions> permissions);
+    Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String ownerID);
 
-    Result<Boolean, String> RemoveShopManagerPermissions(String username, List<ShopManagersPermissions> permissions);
+    Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID);
 
-    Result<Boolean, String> CloseShop(String shopname);
+    Result<Boolean, String> CloseShop(int shopID, String username);
 
     Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f);
 
     Result<Boolean, String> DeleteUserTest(String[] usernames);
 
-    Result<Boolean, String> RemoveProductFromShopInventory(int id, String username, String shopname);
+    Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname);
 }
