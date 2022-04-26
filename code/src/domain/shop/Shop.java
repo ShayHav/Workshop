@@ -228,15 +228,20 @@ public class Shop {
             return new ResponseT<>("problem with supply system");
         }
         // creating Order object to store in the Order History with unmutable copy of product
+        Order o = createOrder(products, transaction, product_PricePer);
+        return new ResponseT(o);
+    }
+
+    private Order createOrder(Map<Integer, Integer> products, TransactionInfo transaction, Map<Integer, Double> product_PricePer) {
         List<Product> boughtProducts = new ArrayList<>();
         for(Integer Product: products.keySet()){
             Product p = inventory.findProduct(Product);
             double price = product_PricePer.get(Product);
-            boughtProducts.add(new ProductHistory(p,price ,products.get(Product)));
+            boughtProducts.add(new ProductHistory(p,price , products.get(Product)));
         }
         Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID());
         orders.addOrder(o);
-        return new ResponseT(o);
+        return o;
     }
 
     public boolean isFounder(String id) {
