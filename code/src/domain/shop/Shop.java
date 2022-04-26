@@ -7,9 +7,7 @@ import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.Filter;
-import domain.user.TransactionInfo;
-import domain.user.User;
+import domain.user.*;
 
 import java.util.*;
 
@@ -378,7 +376,20 @@ public class Shop {
         return inventory;
     }
 
-    public String RequestShopOfficialsInfo(Filter f) {
-
+    public String RequestShopOfficialsInfo(SearchOfficialsFilter f) {
+        String output = "";
+        List<Role> roleList = f.getRoleList();
+        for(Role role: roleList){
+            switch (role){
+                case ShopOwner:
+                    output+= ShopOwners.toString()+'\n';
+                case ShopManager:
+                    output+= ShopManagers.toString()+'\n';
+                case ShopFounder:
+                    output+= ShopFounder.toString()+'\n';
+                //default: return ShopOwners.toString() +'\n'+ ShopManagers.toString() + '\n' + ShopFounder.toString();
+            }
+        }
+        return output;
     }
 }
