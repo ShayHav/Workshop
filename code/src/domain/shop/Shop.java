@@ -48,24 +48,34 @@ public class Shop {
         ShopManagersPermissionsInit();
     }
 
-    public void addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)){
-            for (ShopManagersPermissions run: shopManagersPermissionsList)
-                if(!PermissionExist(ShopManagersPermissionsMap.get(run),tragetUser.getId())) {
+    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+        if (ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)) {
+            for (ShopManagersPermissions run : shopManagersPermissionsList)
+                if (!PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser.getId())) {
                     ShopManagersPermissionsMap.get(run).add(tragetUser.getId());
                     eventLogger.logMsg(Level.INFO,String.format("add Permissions to user: %s",tragetUser.getId()));
+                    eventLogger.logMsg(Level.INFO, String.format("add Permissions to user: %s", tragetUser.getId()));
                 }
+            return true;
+        } else {
+            errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
+            return false;
         }
     }
 
-    public void removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)){
-            for (ShopManagersPermissions run: shopManagersPermissionsList)
-                if(PermissionExist(ShopManagersPermissionsMap.get(run),tragetUser.getId())) {
+    public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+        if (ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)) {
+            for (ShopManagersPermissions run : shopManagersPermissionsList)
+                if (PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser.getId())) {
                     ShopManagersPermissionsMap.get(run).remove(tragetUser.getId());
                     eventLogger.logMsg(Level.INFO,String.format("remove Permissions to user: %s",tragetUser.getId()));
+                    eventLogger.logMsg(Level.INFO, String.format("remove Permissions to user: %s", tragetUser.getId()));
                 }
+            return true;
+        } else {
+            errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
         }
+        return false;
     }
 
     private boolean PermissionExist(List<String> permissionList,String userId){
@@ -101,7 +111,7 @@ public class Shop {
     }
 
     public Product getProduct(int prodID){
-        Product product = inventory.getProduct(prodID);
+        Product product = inventory.findProduct(prodID);
         if(product != null) {
             eventLogger.logMsg(Level.INFO, String.format("returned product: %d", prodID));
             return product;
@@ -112,10 +122,10 @@ public class Shop {
         }
     }
 
-    public boolean addListing(int prodID, double price, int quantity,String userId){
+    public Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId){
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AddProductToInventory).contains(userId))
-            return inventory.addProduct(prodID, price, quantity);
-        else return false;
+            return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
+        return null;
     }
 
     public void removeListing(int prodID,String userId){
@@ -272,13 +282,15 @@ public class Shop {
 
     public void AppointNewShopManager(String usertraget,String userId) {
         if (ShopManagersPermissionsMap.get(ShopManagersPermissions.AppointNewShopOwner).contains(userId)) {
-            User newManager = MarketSystem.getInstance().getUser(usertraget);
-            if (newManager != null)
-                if (!ShopManagers.contains(newManager))
-                    ShopManagers.add(newManager);
-
-        eventLogger.logMsg(Level.INFO,String.format("Appoint New ShopOwner User: %s",usertraget));
+            synchronized (this) {
+                User newManager = MarketSystem.getInstance().getUser(usertraget);
+                if (newManager != null)
+                    if (!ShopManagers.contains(newManager))
+                        ShopManagers.add(newManager);
+                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", usertraget));
+            }
         }
+        errorLogger.logMsg(Level.WARNING, String.format("Appoint New ShopOwner User: %s", usertraget));
     }
 
     public void closeShop(String userID){

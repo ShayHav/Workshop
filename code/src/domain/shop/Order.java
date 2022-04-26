@@ -11,7 +11,6 @@ public class Order {
     private String userID;
     private List<Product> broughtItem;
     private double totalAmount;
-    private OrderInfo oi;
 
 
     public Order(List<Product> products,double totalAmount, String userID){
@@ -22,7 +21,6 @@ public class Order {
 
     }
 
-    public Order(OrderInfo oi) { this.oi = oi;}
 
     public LocalDateTime getBuyingTime() {
         return buyingTime;
@@ -44,5 +42,4 @@ public class Order {
         orderId = id;
     }
 
-    public OrderInfo getOrderInfo(){ return oi;}
 }

@@ -31,29 +31,32 @@ public class Member implements UserState{
      * @param id
      */
     @Override
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String id) {
-        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);
+    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String id) {
+        return MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);
     }
 
-    /***
-     *  @param user - appointed for shopOwner
-     * @param shop - relevant shop
-     * @param id - appointee id
+    /**
+     *
+     * @param targetUser
+     * @param shop
+     * @param id
      * @param ownerAppointmentList
      */
     @Override
-    public void appointOwner(User user, Shop shop,String id, List<OwnerAppointment> ownerAppointmentList) {
-        if (shop.isFounder(id) || shop.isOwner(id)) {
-            user.addRole(Role.ShopOwner);
-            shop.AppointNewShopOwner(user.getId(),id);
+    public void appointOwner(String targetUser, String shop , String id, List<OwnerAppointment> ownerAppointmentList) {
+        Shop shop1 = MarketSystem.getInstance().getShop(shop);
+        User user = MarketSystem.getInstance().getUser(targetUser);
+        if (shop1.isFounder(id) || shop1.isOwner(id)) {
+            user.addRole(shop,Role.ShopOwner);
+            shop1.AppointNewShopOwner(targetUser,id);
             if(isAppointedMeOwner(user,id)) {
-                OwnerAppointment newAppointment = new OwnerAppointment(shop,id,user);
+                OwnerAppointment newAppointment = new OwnerAppointment(shop1,id,user);
                 ownerAppointmentList.add(newAppointment);
-                eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %d , appointedId: %d , ShopId %d}", id, user.getId(), shop.getShopID()));
+                eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %s , appointedId: %s , ShopId %s}", id, user.getId(), shop));
             }
-            else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
+            else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}",id,targetUser,shop));
         }
-        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
+        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}",id,targetUser,shop));
     } //TODO: should be at upper level
 
     private boolean isAppointedMeOwner(User user,String id){
@@ -64,24 +67,31 @@ public class Member implements UserState{
         }
         return false;
     }
-    /***
+
+    /**
      *
-     * @param user - The appointed user's object
-     *               TODO: decide if need to add param Permissions or to receive permission in the
+     * @param targetUser
+     * @param shop
+     * @param id
+     * @param managerAppointmentList
      */
     @Override
-    public void appointManager(User user, Shop shop, String id, List<ManagerAppointment> managerAppointmentList) {
-        if(shop.isOwner(id)){
-            user.addRole(Role.ShopManager);
-            shop.AppointNewShopManager(user.getId(),id);
-            if(isAppointedMeManager(user,id)) {
-                ManagerAppointment newAppointment = new ManagerAppointment(shop, id, user);
-                managerAppointmentList.add(newAppointment);
-                eventLogger.logMsg(Level.INFO, String.format("appointManager = {appointeeId: %d , appointedId: %d , ShopId %d}", id, user.getId(), shop.getShopID()));
-            }
-            else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}",id,user.getId(),shop.getShopID()));
+    public void appointManager(String targetUser, String shop, String id, List<ManagerAppointment> managerAppointmentList) {
+        Shop shop1 = MarketSystem.getInstance().getShop(shop);
+        User user1 = MarketSystem.getInstance().getUser(targetUser);
+        synchronized (this) {
+            if (shop1.isOwner(id)) {
+                user1.addRole(shop, Role.ShopManager);
+                shop1.AppointNewShopManager(targetUser, id);
+                if (isAppointedMeManager(user1, id)) {
+                    ManagerAppointment newAppointment = new ManagerAppointment(shop1, id, user1);
+                    managerAppointmentList.add(newAppointment);
+                    eventLogger.logMsg(Level.INFO, String.format("appointManager = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
+                } else
+                    errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}", id, targetUser, shop));
+            } else
+                errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager without permissions = {appointeeId: %s , appointedId: %s , ShopId %d}", id,targetUser, shop));
         }
-        else errorLogger.logMsg(Level.WARNING,String.format("attempt to appointManager without permissions = {appointeeId: %s , appointedId: %s , ShopId %d}",id,user.getId(),shop.getShopID()));
     }
 
     private boolean isAppointedMeManager(User user,String id){
@@ -92,25 +102,42 @@ public class Member implements UserState{
         }
         return false;
     }
-    /***
+
+
+    /**
      *
-     * @param user - The Manager's unique id
+     * @param targetUser
+     * @param shop
+     * @param userId
+     * @param shopManagersPermissionsList
+     * @return
      */
-    public void changeManagerPermissions(User user)
-    {
-        throw new UnsupportedOperationException();
+    public boolean addManagerPermissions(String targetUser,String shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList) {
+        synchronized (this) {
+            Shop shop1 = MarketSystem.getInstance().getShop(shop);
+            User user = MarketSystem.getInstance().getUser(targetUser);
+            return shop1.addPermissions(shopManagersPermissionsList, user, userId);
+        }
     }
 
+    public boolean removeManagerPermissions(String targetUser,String shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList){
+        synchronized (this) {
+            Shop shop1 = MarketSystem.getInstance().getShop(shop);
+            User user = MarketSystem.getInstance().getUser(targetUser);
+            return shop1.removePermissions(shopManagersPermissionsList, user, userId);
+        }
+    }
     /***
      *
      * @param shop
      */
     @Override
-    public void closeShop(Shop shop,String id) {
-        shop.closeShop(id);
-        if(!shop.isOpen())
-            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %d",shop.getShopID()));
-        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %d , user id:%d",shop.getShopID(),id));
+    public void closeShop(String shop,String id) {
+        Shop shop1 = MarketSystem.getInstance().getShop(shop);
+        shop1.closeShop(id);
+        if(!shop1.isOpen())
+            eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %s",shop));
+        else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %s , user id:%s",shop,id));
     }
 
     /***
