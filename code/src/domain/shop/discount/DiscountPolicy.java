@@ -17,12 +17,15 @@ public class DiscountPolicy {
     private Map<Integer, List<Discount>> product_discounts;
     private Map<Integer, Discount> productGroup_discounts; ///check if needed
     private List<Integer> hasBundleDeal;
+    private int discountIDCounter;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
 
     public DiscountPolicy(){
         product_discounts = new HashMap<>();
+        hasBundleDeal = new ArrayList<>();
+        discountIDCounter = 1;
     }
 
     public void addDiscount(int prodID, Discount discount){
@@ -68,7 +71,7 @@ public class DiscountPolicy {
 
     public boolean addPercentageDiscount(int prodID, double percentage){
         try {
-            Discount discount = new PercentageDiscount(percentage);
+            Discount discount = new PercentageDiscount(percentage, discountIDCounter++);
             List<Discount> prod_disc;
             if(product_discounts.containsKey(prodID))
                 prod_disc = getAllDiscountsForProd(prodID);
@@ -94,7 +97,7 @@ public class DiscountPolicy {
                 return false;
             }
 
-            Discount discount = new BundleDiscount(amountGetFree, amountNeededToBuy);
+            Discount discount = new BundleDiscount(amountGetFree, amountNeededToBuy, discountIDCounter++);
             List<Discount> prod_disc;
 
             if(product_discounts.containsKey(prodID))
@@ -113,5 +116,21 @@ public class DiscountPolicy {
         }
     }
 
-
+    public boolean removeDiscount(int discountID){
+        for(Map.Entry<Integer, List<Discount>> set : product_discounts.entrySet()){
+            List<Discount> prod_discounts = set.getValue();
+            for(Discount dis: prod_discounts) {
+                if (dis.getID() == discountID) {
+                    prod_discounts.remove(dis);
+                    eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
+                    if(dis instanceof BundleDiscount){
+                        hasBundleDeal.remove(set.getKey());
+                    }
+                    return true;
+                }
+            }
+        }
+        eventLogger.logMsg(Level.INFO, String.format("no such discount in the shop: %d", discountID));
+        return false;
+    }
 }

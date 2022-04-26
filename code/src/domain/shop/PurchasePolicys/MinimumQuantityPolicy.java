@@ -2,11 +2,12 @@ package domain.shop.PurchasePolicys;
 
 public class MinimumQuantityPolicy implements PurchaseRule {
     private int minimumQuantity;
-
-    public MinimumQuantityPolicy(int minimumQuantity) throws IllegalArgumentException{
+    private int purchaseRuleID;
+    public MinimumQuantityPolicy(int minimumQuantity, int purchaseRuleID) throws IllegalArgumentException{
         if(minimumQuantity <= 0)
             throw new IllegalArgumentException("invalid minimum quantity needed");
         this.minimumQuantity = minimumQuantity;
+        this.purchaseRuleID = purchaseRuleID;
     }
 
     @Override
@@ -18,6 +19,10 @@ public class MinimumQuantityPolicy implements PurchaseRule {
         if(newMin <= 0)
             throw new IllegalArgumentException("invalid minimum quantity needed");
         minimumQuantity = newMin;
+    }
+
+    public int getID(){
+        return purchaseRuleID;
     }
 
 }

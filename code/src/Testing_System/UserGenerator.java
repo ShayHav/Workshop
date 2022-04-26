@@ -6,15 +6,16 @@ public class UserGenerator {
     username rules -
         1. Length: 4-16
         2. No spaces
-        3. a-z, A-Z, 0-9
+        3. 'a-z' | 'A-Z' | '0-9'
 
     passwords rules -
         1. Length: 4 - 16
         2. No spaces
      */
 
-    private final String[][] userNames = { {"arielr77","nitay658","chikolmoral", "Shayhav", "shaharlen"}, {"badus#r1","as","ArielOmryNitayShayShahar","ok ok ok","ainalhbo1bo1~"}, {")))))DROP TABLES", "3434@@@@$^$", "()()()()()()((((())))","CREATE TABLE 3123","NO GOOD MOF#CKER"}};
+    private final String[][] userNames = { {"arielr77","nitay658","chikolmoral", "Shayhav", "shaharlen"}, {"badus#r1","as","ArielOmryNitayShayShahar","ok ok ok",""}, {")))))DROP TABLES", "3434@@@@$^$", "()()()()()()((((())))","CREATE TABLE 3123","NO GOOD MOF#CKER"}};
     private final String[] pw = {"okokokok", "blah12blah", "!(sdor", "ylkmce812c", "9dloroororo30"};
+    private final String[] badPW = {"           ", "a d", "avg","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",""};
     private final String[] notRegisteredUser = {"omroshon", "Nitka", "Arielush", "Barrr1","Mira20"};
     private final int validUsersIndex =0;
     private final int badUsersIndex = 1;
@@ -31,5 +32,6 @@ public class UserGenerator {
     public String[] GetSadUsers() { return userNames[sadUsersIndex];}
     public String[] GetPW() { return pw;}
     public String[] GetNotRegisteredUsers() { return notRegisteredUser;}
+    public String[] GetBadPW() { return this.badPW; }
 
 }

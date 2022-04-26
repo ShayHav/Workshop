@@ -16,7 +16,7 @@ import java.util.logging.Level;
 
 public class Shop {
     private String name;
-    private int shopID;
+    private final int shopID;
     private int rank;
     private User ShopFounder;
     private List<User> ShopOwners;
@@ -39,7 +39,7 @@ public class Shop {
         ShopOwners = new LinkedList<>();
         ShopManagers = new LinkedList<>();
         Shoppers = new LinkedList<>();
-        rank = 0;
+        rank = -1;
         this.name = name;
         isOpen = true;
         ShopFounder = MarketSystem.getInstance().getUser(founderId);
@@ -160,9 +160,6 @@ public class Shop {
     //todo????? needed?
     public void changeProductDiscount(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
 
-    public double calculateTotalAmountOfOrder(Map<Integer,Integer> ProductsAndQuantity){
-        return 0.0; //TODO: impl
-    }
 
     public boolean addPercentageDiscount(int prodID, double percentage){
         return discountPolicy.addPercentageDiscount(prodID, percentage);
@@ -176,48 +173,68 @@ public class Shop {
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
-    public ResponseT checkOut(Map<Integer,Integer> Products, double totalAmount, TransactionInfo transaction){
-        for(Map.Entry<Integer, Integer> set : Products.entrySet()){
-            //check purchase policy regarding the Product
-            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
-                return new ResponseT("violates purchase policy");
-        }
-        synchronized (inventory) {
-            if (!inventory.reserveItems(Products)) {
-                inventory.restoreStock(Products);
-                return new ResponseT("not in stock");
-            }
-        }
-
-
-        //calculate price
+    public double calculateTotalAmountOfOrder(Map<Integer, Integer> productAmountList){
         Map<Integer, Double> Product_totalPricePer = new HashMap<>();
         double totalPaymentDue = 0;
         double Product_price_single;
         double Product_total;
-        for(Map.Entry<Integer, Integer> set : Products.entrySet()){
+        for(Map.Entry<Integer, Integer> set : productAmountList.entrySet()){
+            //check purchase policy regarding the Product
             Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
             Product_total = Product_price_single * set.getValue();
             Product_totalPricePer.put(set.getKey(), Product_total);
             totalPaymentDue += Product_total;
         }
+        return totalPaymentDue;
+    }
+
+    /**
+     * check out from the store the given items to a client
+     * @param products the items that the client want to buy and the amount from each
+     * @param totalAmount the total amount to pay for the tranaction. TODO to be removed
+     * @param transaction the info of the client to be charged and supply
+     * @return true if successfully created the order and add to the inventory
+     */
+    public ResponseT<Order> checkOut(Map<Integer,Integer> products, double totalAmount, TransactionInfo transaction){
+        for(Map.Entry<Integer, Integer> set : products.entrySet()){
+            //check purchase policy regarding the Product
+            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
+                return new ResponseT("violates purchase policy");
+        }
+        synchronized (inventory) {
+            if (!inventory.reserveItems(products)) {
+                inventory.restoreStock(products);
+                return new ResponseT<>("not in stock");
+            }
+        }
+
+
+        //calculate price
+
+        Map<Integer, Double> product_PricePer = new HashMap<>();
+        double product_price_single;
+        for(Map.Entry<Integer, Integer> set : products.entrySet()){
+            product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            product_PricePer.put(set.getKey(), product_price_single);
+        }
+
 
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)){
-            inventory.restoreStock(Products);
-            return new ResponseT();
+            inventory.restoreStock(products);
+            return new ResponseT<>();
         }
-        if(!market.supply(transaction)){
-            return new ResponseT("problem with supply system");
+        if(!market.supply(transaction, products)){
+            return new ResponseT<>("problem with supply system");
         }
         // creating Order object to store in the Order History with unmutable copy of product
         List<Product> boughtProducts = new ArrayList<>();
-        for(Integer Product: Products.keySet()){
+        for(Integer Product: products.keySet()){
             Product p = inventory.findProduct(Product);
-            double price = inventory.getPrice(p.getId());
-            boughtProducts.add(new ProductHistory(p,price ,Products.get(Product)));
+            double price = product_PricePer.get(Product);
+            boughtProducts.add(new ProductHistory(p,price ,products.get(Product)));
         }
-        Order o = new Order(boughtProducts, totalAmount, transaction.getUserID());
+        Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID());
         orders.addOrder(o);
         return new ResponseT(o);
     }

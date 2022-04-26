@@ -62,16 +62,6 @@ public class RealBridge implements  Bridge{
         return null;    }
 
     @Override
-    public Result<Boolean, String> AddExternalService(String path) {
-        return null;
-    }
-
-    @Override
-    public Result<Boolean, String> RemoveExternalService(String path) {
-        return null;
-    }
-
-    @Override
     public Result<Boolean, String> GetShopsInfo() {
         return null;
     }
