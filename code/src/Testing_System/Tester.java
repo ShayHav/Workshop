@@ -16,6 +16,12 @@ public class Tester {
         br = Selector.GetBridge();
     }
 
+    /*Result<#t | # f,  return value>
+     * t - success
+     * f - failed
+     *
+     */
+
     //Guest-Visitor General
     public Result<Boolean, Boolean> Login(String username, String pw) {
         return br.Login(username, pw);
