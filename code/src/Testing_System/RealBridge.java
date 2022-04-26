@@ -1,5 +1,6 @@
 package Testing_System;
 
+import Service.Services;
 import domain.shop.Product;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.ShopManagersPermissions;
@@ -13,30 +14,35 @@ import java.util.Map;
 public class RealBridge implements  Bridge{
 
 
+    private Services sv;
+    public RealBridge()
+    {
+        sv = new Services();
+    }
 
     @Override
     public Result<Boolean, Boolean> Login(String username, String pw) {
-        return null;
+        return sv.Login(username,pw);
     }
 
     @Override
     public Result<Boolean, Boolean> Register(String username, String pw) {
-        return null;
+        return sv.Register(username,pw);
     }
 
     @Override
-    public Result<Boolean, String> EnterMarket() {
-        return null;
-    }
+    public Result<Boolean,String> EnterMarket() {
+        return sv.EnterMarket();
+    } //??
 
     @Override
     public Result<Boolean, String> LeaveMarket() {
-        return null;
+        return sv.LeaveMarket();
     }
 
     @Override
     public Result<Boolean, Boolean> Logout(String username) {
-        return null;
+        return sv.Logout();
     }
 
     @Override

@@ -22,6 +22,11 @@ public class Services {
     public Services(){
     }
 
+    /*Result<#t | # f,  return value>
+     * t - success
+     * f - failed
+     *
+     */
     //General Guest-Visitor
     //Make:nitay
     public Result<Boolean,Boolean> Login(String username, String pw){
@@ -179,7 +184,7 @@ public class Services {
 
     }
 
-    public Result<Boolean, Integer> AddProductToShopInventory(Product p, String usernmae,String shopname)
+    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String usernmae,String shopname)
     {
 
     }
