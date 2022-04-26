@@ -150,18 +150,21 @@ public class Services {
     }//display information of a product?
 
 
-
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String pName)
+    //make:shahar
+    public Result<Boolean, List<ProductInfo>> SearchProductByName(String pName, Filter<ProductInfo> f)
     {
+        List<ProductInfo> products = marketSystem.searchProductByName(pName, f);
 
 
     }
 
+    //make:shahar
     public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String pName)
     {
 
     }
 
+    //make:shahar
     public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String keyword)
     {
 
