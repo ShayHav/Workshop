@@ -201,4 +201,10 @@ public class UserController {
         }
         return orders;
     }
+
+    public boolean HasUserEnteredMarket(String userID) {
+        if(!activeUser.contains(userID))
+            return false;
+        return true;
+    }
 }

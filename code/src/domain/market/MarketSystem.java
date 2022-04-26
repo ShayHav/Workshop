@@ -23,7 +23,6 @@ public class MarketSystem {
     private MarketSystem() {
         eventLogger.logMsg(Level.INFO,"System start");
         externalConnector = new ExternalConnector();
-        this.start();
     }
 
     public static MarketSystem getInstance() {
@@ -40,7 +39,7 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    public void start() {
+    public boolean start(PaymentService payment, SupplyService supply, String userID, String password) {
 
     }
 
@@ -76,11 +75,11 @@ public class MarketSystem {
     }
 
 
-    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
+    public List<ShopInfo> getInfoOfShops(String userID, Filter<ShopInfo> f) {
         return ShopController.getInstance().getInfoOfShops(f);
     }
 
-    public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f){
+    public List<ProductInfo> getInfoOfProductInShop(String userID, int shopID, Filter<ProductInfo> f){
        return ShopController.getInstance().getInfoOfProductInShop(shopID, f);
     }
 

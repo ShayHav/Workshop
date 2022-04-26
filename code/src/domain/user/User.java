@@ -24,6 +24,7 @@ public class User {
     private List<OwnerAppointment> ownerAppointmentList;
     private List<Order> orderHistory;
     private boolean isSystemManager;
+    private boolean inMarket;
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
@@ -35,6 +36,7 @@ public class User {
         this.id = id;
         loggedIn = false;
         isSystemManager = false;
+        inMarket = false;
     }
 
     /***
@@ -43,6 +45,7 @@ public class User {
     public void enterMarket() {
         us = new Guest();
         userCart = new Cart();
+        inMarket = true;
     }
 
 
@@ -52,6 +55,7 @@ public class User {
     public void leaveMarket() {
         us.leaveMarket(userCart);
         us = null;
+        inMarket = false;
     }
 
     public void closeShop(String shop) {
@@ -152,16 +156,6 @@ public class User {
 
     public List<ManagerAppointment> getManagerAppointeeList() {
         return managerAppointeeList;
-    }
-
-    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
-        MarketSystem market = MarketSystem.getInstance();
-        return market.getInfoOfShops(f);
-    }
-
-    public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f) {
-        MarketSystem market = MarketSystem.getInstance();
-        return market.getInfoOfProductInShop(shopID, f);
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
