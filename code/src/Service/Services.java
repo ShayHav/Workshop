@@ -153,20 +153,41 @@ public class Services {
     //make:shahar
     public Result<Boolean, List<ProductInfo>> SearchProductByName(String pName, Filter<ProductInfo> f)
     {
+        Result<Boolean, List<ProductInfo>> result;
         List<ProductInfo> products = marketSystem.searchProductByName(pName, f);
+        if(products.size() > 0)
+            result = new Result<>(true, products);
+        else
+            result = new Result<>(false, products);
 
+        return result;
 
     }
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String pName)
+    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String category,Filter<ProductInfo> f )
     {
+        Result<Boolean, List<ProductInfo>> result;
+        List<ProductInfo> products = marketSystem.searchProductByCategory(category, f);
+        if(products.size() > 0)
+            result = new Result<>(true, products);
+        else
+            result = new Result<>(false, products);
 
+        return result;
     }
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String keyword)
+    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String keyword, Filter<ProductInfo> f)
     {
+        Result<Boolean, List<ProductInfo>> result;
+        List<ProductInfo> products = marketSystem.searchProductByKeyword(keyword, f);
+        if(products.size() > 0)
+            result = new Result<>(true, products);
+        else
+            result = new Result<>(false, products);
+
+        return result;
 
     }
 
