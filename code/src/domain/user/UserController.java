@@ -67,7 +67,7 @@ public class UserController {
      * logout from system
      * pre-condition - user is registered and logged-in
      */
-    public boolean logOut(String user) {
+    public String logOut(String user) {
         if (activeUser != null) {
             String id = activeUser.getId();
             if(user.equals(id)) {
@@ -75,7 +75,7 @@ public class UserController {
                 eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", id));
             }
         } else errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
-        return !activeUser.isLoggedIn();
+        return activeUser.getId();
     }
 
     /***

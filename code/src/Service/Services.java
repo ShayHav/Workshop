@@ -59,7 +59,7 @@ public class Services {
     //General Member-Visitor
     public Result<Boolean,String> Logout(String username)
     {
-        boolean b = marketSystem.logOut(username);
+        String b = marketSystem.logOut(username);
         Result<Boolean,String> output = new Result(b,b);
         return output;
     }
