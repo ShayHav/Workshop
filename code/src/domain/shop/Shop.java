@@ -130,7 +130,7 @@ public class Shop {
 
     public void removeListing(int prodID,String userId){
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.RemoveProductFromInventory).contains(userId))
-        inventory.removeProduct(prodID);
+            inventory.removeProduct(prodID);
     }
 
     public boolean editPrice(int prodID, double newPrice,String userId){
@@ -160,10 +160,11 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public boolean changeProductDetail(int prodID, String description,String userId){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
-            return inventory.setDescription(prodID, description);
-        return false;
+    public Product changeProductDetail(int prodID, String name, String description, String category,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId)) {
+            return inventory.setProduct(prodID,name,description,category);
+        }
+        return null;
     }
 
     //todo????? needed?
@@ -223,7 +224,6 @@ public class Shop {
 
 
         //calculate price
-
         Map<Integer, Double> product_PricePer = new HashMap<>();
         double product_price_single;
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
@@ -231,14 +231,15 @@ public class Shop {
             product_PricePer.put(set.getKey(), product_price_single);
         }
 
-
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)){
-            inventory.restoreStock(products);
+            synchronized (inventory) {
+                inventory.restoreStock(products);
+            }
             return new ResponseT<>();
         }
         if(!market.supply(transaction, products)){
-            return new ResponseT<>("problem with supply system");
+            return new ResponseT<>("problem with supply system, please contact the company representative");
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(products, transaction, product_PricePer);
@@ -355,6 +356,9 @@ public class Shop {
 
     }
 
+    public List<Order> getOrders() {
+        return orders.getOrders();
+    }
 
 
     public void setInventory(Inventory inventory){

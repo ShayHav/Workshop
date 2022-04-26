@@ -6,6 +6,7 @@ import domain.EventLoggerSingleton;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -63,4 +64,7 @@ public class OrderHistory {
         return null;
     }
 
+    public List<Order> getOrders() {
+        return Collections.unmodifiableList(orders);
+    }
 }

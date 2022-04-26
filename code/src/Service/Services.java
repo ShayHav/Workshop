@@ -3,10 +3,8 @@ package Service;
 
 import Testing_System.Result;
 import domain.market.MarketSystem;
-import domain.shop.Product;
-import domain.shop.ProductInfo;
+import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchaseRule;
-import domain.shop.ShopManagersPermissions;
 import domain.shop.discount.Discount;
 import domain.user.Filter;
 import domain.user.TransactionInfo;
@@ -189,14 +187,27 @@ public class Services {
 
     }
 
-    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String usernmae,String shopname)
+    //Shay
+    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String usernmae,int shopID)
     {
-
+        ShopController controller = ShopController.getInstance();
+        Product p  = controller.getShop(shopID).addListing(pName,pDis,pCat,price,amount,usernmae);
+        if(p == null){
+            return new Result<>(false, -1);
+        }
+        return new Result<>(true, p.getId());
     }
 
-    public Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo)
+    //shay
+    public Result<Boolean, Product> ChangeProduct(String username, Product p, int shopID)
     {
-
+        ShopController controller = ShopController.getInstance();
+        Shop shop = controller.getShop(shopID);
+        if(shop == null){
+            return new Result<>(false, null);
+        }
+        Product changed= shop.changeProductDetail(p.getId(),p.getName(),p.getDescription(), p.getCategory(),username);
+        return new Result<>(changed == null, changed);
     }
 
     public Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr)
