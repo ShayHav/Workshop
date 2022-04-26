@@ -32,6 +32,10 @@ public class ShopController {
         return instance;
     }
 
+    public int getShopCounter() {
+        return shopCounter;
+    }
+
     public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         if(isUniqueName(name)) {
             shopCounter++;
