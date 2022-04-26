@@ -148,7 +148,7 @@ public class ShopController {
 
     public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
         Shop s = getShop(key);
-        if(s.removePermissions(shopManagersPermissionsList,tragetUser ,id))
+        if(s.removePermissions(shopManagersPermissionsList,tragetUser.getId() ,id))
             return "ShopManagerPermissionsRemove";
         else return null;
     }
@@ -162,7 +162,7 @@ public class ShopController {
         List<Order> orders = new ArrayList<>();
         if(shopId == null){
             for(Shop s: shopList.values()){
-                orders.addAll();
+                orders.addAll(s.getOrders());
             }
         }
         else{
@@ -172,7 +172,7 @@ public class ShopController {
                     //log
                     return null;
                 }
-                orders.addAll();
+                orders.addAll(s.getOrders());
             }
         }
         return orders;
