@@ -1,30 +1,44 @@
 package domain.user;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class CartTest {
 
-    @org.junit.jupiter.api.Test
+    private Cart cart;
+
+    @BeforeAll
+    void setUp() {
+        Cart cart = new Cart();
+        ShoppingBasket basket = mock(ShoppingBasket.class);
+    }
+
+    @Test
     void addProductToCart() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void updateAmountOfProduct() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void removeProductFromCart() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void getTotalAmount() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void showCart() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void checkout() {
     }
 }

@@ -1,16 +1,11 @@
 package domain.user;
 
 import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
 import domain.ResponseT;
-import domain.Tuple;
 import domain.shop.Order;
 import domain.shop.ProductInfo;
 import domain.shop.Shop;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -23,13 +18,14 @@ public class ShoppingBasket {
         failed_due_to_error
     }
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
-    private Shop shop;
-    private Map<Integer, Integer> productAmountList = new HashMap<>();
+    private final Shop shop;
+    private final Map<Integer, Integer> productAmountList;
     private double basketAmount;
 
-    public ShoppingBasket(Shop shop, int productID, int amount) {
+    public ShoppingBasket(Shop shop) {
         this.shop = shop;
-        productAmountList.put(productID, amount);
+        productAmountList = new HashMap<>();
+        basketAmount = 0;
     }
 
     /***
@@ -75,8 +71,8 @@ public class ShoppingBasket {
     /***
      * add product with product id to basket, in amount of amountToAdd
      * pre-condition - amountToAdd is positive Integer
-     * @param productID
-     * @param amountToAdd
+     * @param productID product id
+     * @param amountToAdd amount to add
      */
     public boolean addProductToBasket(int productID, int amountToAdd) {
         if (amountToAdd < 0) {
@@ -119,33 +115,11 @@ public class ShoppingBasket {
         return new BasketInfo(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
     }
 
-    public class BasketInfo{
-        private int shopId;
-        private String shopName;
-        Map<ProductInfo,Integer> productWithAmount;
-        private double totalAmount;
-
-        public BasketInfo(int shopId, String shopName, Map<ProductInfo,Integer> productWithAmount, double totalAmount){
-            this.shopId = shopId;
-            this.shopName = shopName;
-            this.productWithAmount = productWithAmount;
-            this.totalAmount = totalAmount;
-        }
-
-        public double getTotalAmount() {
-            return totalAmount;
-        }
-
-        public int getShopId() {
-            return shopId;
-        }
-
-        public Map<ProductInfo, Integer> getProductWithAmount() {
-            return productWithAmount;
-        }
-
-        public String getShopName() {
-            return shopName;
-        }
+    public Map<Integer, Integer> getProductAmountList() {
+        return productAmountList;
     }
+
+    public record BasketInfo(int shopId, String shopName,
+                             Map<ProductInfo, Integer> productWithAmount,
+                             double totalAmount) {}
 }
