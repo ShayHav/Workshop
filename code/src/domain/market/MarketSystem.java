@@ -2,11 +2,8 @@ package domain.market;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
-import domain.shop.ProductInfo;
+import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
-import domain.shop.Shop;
-import domain.shop.ShopController;
-import domain.shop.ShopInfo;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
 
@@ -18,8 +15,6 @@ import java.util.logging.Logger;
 public class MarketSystem {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
-    private UserController uc;
-    private ShopController sc;
     private static MarketSystem instance = null;
     private ExternalConnector externalConnector;
 
@@ -70,56 +65,86 @@ public class MarketSystem {
 
     }
 
-    public void setPaymentConnection(boolean b)
-    {
+    public void setPaymentConnection(boolean b) {
 
     }
 
-    public void createSystemManger(String username, String pw)
-    {
+    public void createSystemManger(String username, String pw) {
 
     }
 
 
     public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
-        return sc.getInfoOfShops(f);
+        return ShopController.getInstance().getInfoOfShops(f);
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f){
-       return sc.getInfoOfProductInShop(shopID, f);
+       return ShopController.getInstance().getInfoOfProductInShop(shopID, f);
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
-        return sc.searchProductByName(name,f);
+        return ShopController.getInstance().searchProductByName(name,f);
     }
 
 
     public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
-        return sc.searchProductByCategory(category,f);
+        return ShopController.getInstance().searchProductByCategory(category,f);
     }
 
 
     public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
-        return sc.searchProductByKeyword(keyword, f);
+        return ShopController.getInstance().searchProductByKeyword(keyword, f);
     }
 
     public User getUser(String id) {
-        return uc.getUser(id);
+        return UserController.getInstance().getUser(id);
     }
 
     public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        return sc.createShop(name,discountPolicy, purchasePolicy,id);
+        return ShopController.getInstance().createShop(name,discountPolicy, purchasePolicy,id);
     }
 
     public boolean register(String userId,String pass){
-       return uc.register(userId,pass);
+       return UserController.getInstance().register(userId,pass);
     }
 
-    public void deleteUserTest(String[] username){
-        uc.deleteUserTest(username);
+    public boolean deleteUserTest(String[] username){
+        return UserController.getInstance().deleteUserTest(username);
     }
 
     public Shop getShop(int shopID) {
-        return sc.getShop(shopID);
+        return ShopController.getInstance().getShop(shopID);
+    }
+
+    public boolean logIn(String username, String pw){
+        return UserController.getInstance().logIn(username, pw);
+    }
+    public String LeaveMarket(){return null;}
+
+    public boolean logOut(String username){
+        return UserController.getInstance().logOut(username);
+    }
+
+    public int RemoveProductFromShopInventory(int productId, String username, int shopname){
+        return ShopController.getInstance().RemoveProductFromShopInventory(productId,username,shopname);
+    }
+    public String CloseShop(int shopId,String userId){
+        return ShopController.getInstance().closeShop(shopId,userId);
+    }
+
+    public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
+        return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList,tragetUser ,id);
+    }
+
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
+        return ShopController.getInstance().AddShopMangerPermissions(key,shopManagersPermissionsList,tragetUser,id);
+    }
+
+    public String AppointNewShopManager(int key,String targetUser, String userId){
+        return ShopController.getInstance().AppointNewShopManager(key,targetUser,userId);
+    }
+
+    public String AppointNewShopOwner(int key,String targetUser, String userId){
+        return ShopController.getInstance().AppointNewShopOwner(key,targetUser,userId);
     }
 }

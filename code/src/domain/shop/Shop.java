@@ -266,31 +266,38 @@ public class Shop {
         return false;
     }
 
-    public void AppointNewShopOwner(String tragetUser, String userId) {
+    public String AppointNewShopOwner(String tragetUser, String userId) {
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AppointNewShopOwner).contains(userId)) {
-            User newOwner = MarketSystem.getInstance().getUser(tragetUser);
-            if (newOwner != null)
-                if (!ShopOwners.contains(newOwner))
-                    ShopOwners.add(newOwner);
-            eventLogger.logMsg(Level.INFO,String.format("Appoint New ShopOwner User: %s",tragetUser));
+            synchronized (this) {
+                User newOwner = MarketSystem.getInstance().getUser(tragetUser);
+                if (newOwner != null)
+                    if (!ShopOwners.contains(newOwner))
+                        ShopOwners.add(newOwner);
+                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", tragetUser));
+                return String.format("Appoint New ShopOwner User: %s", tragetUser);
+            }
         }
+        errorLogger.logMsg(Level.WARNING, String.format("Appoint New ShopOwner User: %s", tragetUser));
+        return String.format("attempt to appoint New ShopOwner User: %s filed", tragetUser);
     }
 
     public int getShopID() {
         return shopID;
     }
 
-    public void AppointNewShopManager(String usertraget,String userId) {
+    public String AppointNewShopManager(String usertarget, String userId) {
         if (ShopManagersPermissionsMap.get(ShopManagersPermissions.AppointNewShopOwner).contains(userId)) {
             synchronized (this) {
-                User newManager = MarketSystem.getInstance().getUser(usertraget);
+                User newManager = MarketSystem.getInstance().getUser(usertarget);
                 if (newManager != null)
                     if (!ShopManagers.contains(newManager))
                         ShopManagers.add(newManager);
-                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", usertraget));
+                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+                return String.format("Appoint New ShopManager User: %s", usertarget);
             }
         }
-        errorLogger.logMsg(Level.WARNING, String.format("Appoint New ShopOwner User: %s", usertraget));
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+        return String.format("attempt to appoint New ShopManager User: %s filed", usertarget);
     }
 
     public void closeShop(String userID){

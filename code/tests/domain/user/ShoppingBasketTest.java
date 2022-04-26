@@ -73,10 +73,14 @@ class ShoppingBasketTest {
 
     @Test
     void showBasket() {
-        ShoppingBasket.BasketInfo info = basket.showBasket();
         when(shop.getShopID()).thenReturn(1);
         when(shop.getName()).thenReturn("david&sons");
         when(shop.getInfoOnProduct(1)).thenReturn(productInfo);
+        when(shop.calculateTotalAmountOfOrder(basket.getProductAmountList())).thenReturn(100.0);
+        ShoppingBasket.BasketInfo info = basket.showBasket();
         assertEquals(info.shopId(),1);
+        assertEquals(info.shopName(),"david&sons");
+        assertEquals(info.productWithAmount().get(productInfo), 100);
+        assertEquals(info.totalAmount(), 100.0);
     }
 }

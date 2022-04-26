@@ -111,7 +111,7 @@ public class ShoppingBasket {
             int amount = productAmountList.get(product);
             productWithAmount.put(p,amount);
         }
-
+        basketAmount = calculateTotalAmount();
         return new BasketInfo(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
     }
 

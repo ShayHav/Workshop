@@ -19,7 +19,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userController = new UserController();
+        userController = UserController.getInstance();
         for(int i=0;i<userName.length;i++) {
             userController.register(userName[i], userPass[i]);
         }
@@ -29,7 +29,7 @@ public class UserControllerTest {
     void logIn() {
         for(int i = 0; i < userName.length; i++){
             assertTrue(userController.logIn(userName[i], userPass[i]));
-            userController.logOut();
+            userController.logOut(userName[i]);
         }
         for(int i = 0; i < userName.length; i++){
             assertFalse(userController.logIn(userName[i], badPass[i]));
@@ -40,7 +40,7 @@ public class UserControllerTest {
     void logOut() {
         for(int i = 0; i < userName.length; i++){
             userController.logIn(userName[i], userPass[i]);
-            userController.logOut();
+            userController.logOut(userName[i]);
         }
     }
 
