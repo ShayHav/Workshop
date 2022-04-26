@@ -61,7 +61,6 @@ public class Cart {
         return new CartInfo(totalAmount,basketInfoList);
     }
 
-    //TODO: figure out how to notify error per basket
     public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         LocalDate transaction_date = LocalDate.now();
         totalAmount = getTotalAmount();
@@ -85,6 +84,14 @@ public class Cart {
         public CartInfo(double totalAmount, List<BasketInfo> baskets){
             this.totalAmount = totalAmount;
             this.baskets = baskets;
+        }
+
+        public double getTotalAmount() {
+            return totalAmount;
+        }
+
+        public List<BasketInfo> getBaskets() {
+            return baskets;
         }
     }
 }

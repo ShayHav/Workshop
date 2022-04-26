@@ -45,6 +45,27 @@ public class Guest implements UserState {
         return market.searchProductByKeyword(keyword, f);
     }
 
+    //TODO:impl
+    @Override
+    public Cart.CartInfo showCart() {
+
+    }
+
+    @Override
+    public void addProductToCart(Shop shop, int productID, int amount) {
+
+    }
+
+    @Override
+    public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
+        return false;
+    }
+
+    @Override
+    public boolean removeProductFromCart(int shopID, int productID) {
+        return false;
+    }
+
 
     @Override
     public List<ResponseT<Order>> checkout(String id, Cart c, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {

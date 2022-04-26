@@ -131,5 +131,21 @@ public class ShoppingBasket {
             this.productWithAmount = productWithAmount;
             this.totalAmount = totalAmount;
         }
+
+        public double getTotalAmount() {
+            return totalAmount;
+        }
+
+        public int getShopId() {
+            return shopId;
+        }
+
+        public Map<ProductInfo, Integer> getProductWithAmount() {
+            return productWithAmount;
+        }
+
+        public String getShopName() {
+            return shopName;
+        }
     }
 }

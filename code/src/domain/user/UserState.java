@@ -4,6 +4,7 @@ import domain.ResponseT;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.Cart.CartInfo;
 
 import java.util.List;
 
@@ -40,4 +41,15 @@ public interface UserState {
     List<ProductInfo>  searchProductByCategory(String category, Filter<ProductInfo> f);
 
     List<ProductInfo>  searchProductByKeyword(String keyword, Filter<ProductInfo> f);
+
+    CartInfo showCart();
+
+    void addProductToCart(Shop shop, int productID, int amount);
+
+    boolean updateAmountOfProduct(int shopID, int productID, int amount);
+
+    boolean removeProductFromCart(int shopID, int productID);
+
+
+
 }
