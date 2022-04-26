@@ -100,22 +100,22 @@ public class Services {
 
     public Result<Boolean, String> AddSupplyService(String path)
     {
-
+        return null;
     }
 
-    public Result<Boolean, String> RemoveSupplyService(String path)
+    public Result<Boolean, Boolean> RemoveSupplyService(String path)
     {
-
+        return null;
     }
 
     public Result<Boolean, String> AddPaymentService(String path)
     {
-
+        return null;
     }
 
     public Result<Boolean, String> RemovePaymentService(String path)
     {
-
+        return null;
     }
 
     //Guest-Visitor Shop options
@@ -167,16 +167,13 @@ public class Services {
         else return new Result<>(true,null);
     }
 
-    //Shay
-    public Result<Boolean, Integer> CalculatePriceForProduct(Map<Integer, Integer>items, int shopID)
+    //Omry
+    public Result<Boolean, Double> CalculatePriceForProduct(Map<Integer, Integer> products)
     {
-        Shop shop = ShopController.getInstance().getShop(shopID);
-        if(shop == null)
-            return new Result<>(false, null);
-        double totalPrice = shop.calculateTotalAmountOfOrder(items);
-        return new Result<>(true, totalPrice);
+
     }
 
+    //omry
     public Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname)
     {
 
@@ -203,6 +200,8 @@ public class Services {
     {
         ShopController controller = ShopController.getInstance();
         Shop shop = controller.getShop(shopID);
+        if(shop == null)
+            return new Result<>(false, -1);
         Product p  = shop.addListing(pName,pDis,pCat,price,amount,usernmae);
         if(p == null){
             return new Result<>(false, -1);
@@ -308,6 +307,5 @@ public class Services {
             return new Result<>(true,productId);
         else return new Result<>(false,-1);
     }
-
 
 }
