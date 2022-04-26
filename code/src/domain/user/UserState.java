@@ -13,11 +13,11 @@ public interface UserState {
 
     int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id);
 
-    void appointOwner(String user, String shop, String id, List<OwnerAppointment> ownerAppointmentList);
+    void appointOwner(String user, int shop, String id, List<OwnerAppointment> ownerAppointmentList);
 
-    void appointManager(String user, String shop, String id, List<ManagerAppointment> managerAppointmentList);
+    void appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList);
 
-    void closeShop(String shop, String id);
+    void closeShop(int shop, String id);
 
 
 
