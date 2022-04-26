@@ -172,6 +172,17 @@ public class Inventory {
         eventLogger.logMsg(Level.INFO, "restored the stock of items");
     }
 
+    public Product setProduct(int product, String name, String description, String category) {
+        if(!keyToProduct.containsKey(product)){
+            return null;
+        }
+        ProductImp p  = keyToProduct.get(product);
+        p.setName(name);
+        p.setDescription(description);
+        p.setCategory(category);
+        return p;
+    }
+
     private class PricesAndQuantity{
         public int quantity;
         public double price;

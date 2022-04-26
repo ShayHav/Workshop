@@ -158,9 +158,11 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public void changeProductDetail(int prodID, String description,String userId){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
-            inventory.setDescription(prodID, description);
+    public Product changeProductDetail(int prodID, String name, String description, String category,String userId){
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId)) {
+            return inventory.setProduct(prodID,name,description,category);
+        }
+        return null;
     }
 
     //todo????? needed?
@@ -351,4 +353,7 @@ public class Shop {
 
     }
 
+    public List<Order> getOrders() {
+        return orders.getOrders();
+    }
 }
