@@ -18,8 +18,6 @@ import java.util.logging.Logger;
 public class MarketSystem {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
-    private UserController uc;
-    private ShopController sc;
     private static MarketSystem instance = null;
     private ExternalConnector externalConnector;
 
@@ -70,56 +68,54 @@ public class MarketSystem {
 
     }
 
-    public void setPaymentConnection(boolean b)
-    {
+    public void setPaymentConnection(boolean b) {
 
     }
 
-    public void createSystemManger(String username, String pw)
-    {
+    public void createSystemManger(String username, String pw) {
 
     }
 
 
     public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
-        return sc.getInfoOfShops(f);
+        return ShopController.getInstance().getInfoOfShops(f);
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f){
-       return sc.getInfoOfProductInShop(shopID, f);
+       return ShopController.getInstance().getInfoOfProductInShop(shopID, f);
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
-        return sc.searchProductByName(name,f);
+        return ShopController.getInstance().searchProductByName(name,f);
     }
 
 
     public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
-        return sc.searchProductByCategory(category,f);
+        return ShopController.getInstance().searchProductByCategory(category,f);
     }
 
 
     public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
-        return sc.searchProductByKeyword(keyword, f);
+        return ShopController.getInstance().searchProductByKeyword(keyword, f);
     }
 
     public User getUser(String id) {
-        return uc.getUser(id);
+        return UserController.getInstance().getUser(id);
     }
 
     public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        return sc.createShop(name,discountPolicy, purchasePolicy,id);
+        return ShopController.getInstance().createShop(name,discountPolicy, purchasePolicy,id);
     }
 
     public boolean register(String userId,String pass){
-       return uc.register(userId,pass);
+       return UserController.getInstance().register(userId,pass);
     }
 
     public void deleteUserTest(String[] username){
-        uc.deleteUserTest(username);
+        UserController.getInstance().deleteUserTest(username);
     }
 
     public Shop getShop(int shopID) {
-        return sc.getShop(shopID);
+        return ShopController.getInstance().getShop(shopID);
     }
 }
