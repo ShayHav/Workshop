@@ -101,30 +101,31 @@ public class Services {
         return new Result<>(ans, ans);
     }
 
-    public Result<Boolean, String> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)
+    public Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)
     {
-        marketSystem.start(payment,supply,userID,password);
+       boolean b = marketSystem.start(payment,supply,userID,password);
+       return new Result<>(b,b);
     }
 
-    public Result<Boolean, String> AddSupplyService(String path)
-    {
-        return null;
-    }
-
-    public Result<Boolean, Boolean> RemoveSupplyService(String path)
-    {
-        return null;
-    }
-
-    public Result<Boolean, String> AddPaymentService(String path)
-    {
-        return null;
-    }
-
-    public Result<Boolean, String> RemovePaymentService(String path)
-    {
-        return null;
-    }
+//    public Result<Boolean, String> AddSupplyService(String path)
+//    {
+//        return null;
+//    }
+//
+//    public Result<Boolean, Boolean> RemoveSupplyService(String path)
+//    {
+//        return null;
+//    }
+//
+//    public Result<Boolean, String> AddPaymentService(String path)
+//    {
+//        return null;
+//    }
+//
+//    public Result<Boolean, String> RemovePaymentService(String path)
+//    {
+//        return null;
+//    }
 
     //make: shahar
     //Guest-Visitor Shop options
