@@ -168,8 +168,6 @@ public class UserController {
         return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
     }
 
-
-
     public boolean createSystemManager(String id, String pass){
         if(adminUser!= null)
             //log
@@ -206,5 +204,29 @@ public class UserController {
         if(!activeUser.contains(userID))
             return false;
         return true;
+    }
+
+    public boolean addProductToCart(String userID, int shopID, int productId, int amount) {
+        if(!HasUserEnteredMarket(userID))
+            //log
+            return false;
+        User u = activeUser.get(userID);
+        return u.addProductToCart(shopID,productId,amount);
+    }
+
+    public boolean updateAmountOfProduct(String userID, int shopID, int productId, int amount) {
+        if(!HasUserEnteredMarket(userID))
+            //log
+            return false;
+        User u = activeUser.get(userID);
+        return u.updateAmountOfProduct(shopID,productId,amount);
+    }
+
+    public boolean removeProductFromCart(String userID, int shopID, int productId) {
+        if(!HasUserEnteredMarket(userID))
+            //log
+            return false;
+        User u = activeUser.get(userID);
+        return u.removeProductFromCart(shopID,productId);
     }
 }

@@ -101,6 +101,7 @@ public class Services {
         return new Result<>(ans, ans);
     }
 
+    //make: shahar
     public Result<Boolean, String> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)
     {
         marketSystem.start(payment,supply,userID,password);
@@ -194,15 +195,35 @@ public class Services {
 
     }
 
-    public Result<Boolean, String> AddToShoppingCart(Product p, String shopname, int amount)
+    //make: shahar
+    public Result<Boolean, Boolean> AddToShoppingCart(String userID, int shopID,int productId, int amount)
     {
-
+        boolean success = marketSystem.AddProductToCart(userID, shopID, productId, amount);
+        if(success)
+            return new Result<>(true, true);
+        else
+            return new Result<>(false, false);
     }
 
-    public Result<Boolean, String> EditShoppingCart(Product p, String shopname, int amount)
+    //make:shahar
+    public Result<Boolean, Boolean> EditShoppingCart(String userId, int shopId, int productId, int amount)
     {
-
+        boolean success = marketSystem.EditShoppingCart(userId, shopId, productId, amount);
+        if(success)
+            return new Result<>(true, true);
+        else
+            return new Result<>(false, false);
     }
+
+    //make:shahar
+    public Result<Boolean, Boolean> RemoveFromShoppingCart(String userId, int shopId, int productId){
+        boolean success = marketSystem.removeProductFromCart(userId, shopId, productId);
+        if(success)
+            return new Result<>(true, true);
+        else
+            return new Result<>(false, false);
+    }
+
     //Make nitay
     public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate)
     {

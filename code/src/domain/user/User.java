@@ -162,8 +162,8 @@ public class User {
         return userCart.showCart();
     }
 
-    public void addProductToCart(int shopID, int productID, int amount) {
-        userCart.addProductToCart(shopID, productID, amount);
+    public boolean addProductToCart(int shopID, int productID, int amount) {
+        return userCart.addProductToCart(shopID, productID, amount);
     }
 
     public boolean updateAmountOfProduct(int shopID, int productID, int amount) {

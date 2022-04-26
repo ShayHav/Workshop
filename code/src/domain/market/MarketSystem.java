@@ -165,7 +165,7 @@ public class MarketSystem {
     }
 
     public List<String> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        return UserController.getInstance().checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
+        return userController.checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
     }
 
     public void setExternalConnector(ExternalConnector ec) {
@@ -178,5 +178,18 @@ public class MarketSystem {
 
     public String EnterMarket() {
         return userController.enterMarket();
+    }
+
+    public boolean AddProductToCart(String userID, int shopID, int productId, int amount) {
+        return userController.addProductToCart(userID,shopID,productId,amount);
+    }
+
+
+    public boolean EditShoppingCart(String userId, int shopId, int productId, int amount) {
+        return userController.updateAmountOfProduct(userId,shopId,productId,amount);
+    }
+
+    public boolean removeProductFromCart(String userId, int shopId, int productId) {
+        return userController.removeProductFromCart(userId, shopId, productId);
     }
 }
