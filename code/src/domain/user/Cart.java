@@ -2,6 +2,7 @@ package domain.user;
 
 import domain.ResponseT;
 import domain.Tuple;
+import domain.market.MarketSystem;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.ShoppingBasket.BasketInfo;
@@ -21,8 +22,8 @@ public class Cart {
     }
 
 
-    public void addProductToCart(Shop shop, int productID, int amount) {
-        int shopID = shop.getShopID();
+    public void addProductToCart(int shopID, int productID, int amount) {
+        Shop shop = MarketSystem.getInstance().getShop(shopID);
         if (!baskets.containsKey(shopID)) {
             ShoppingBasket newBasket = new ShoppingBasket(shop, productID, amount);
             baskets.put(shopID, newBasket);

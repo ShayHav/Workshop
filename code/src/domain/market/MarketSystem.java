@@ -4,6 +4,7 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.shop.ProductInfo;
 import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.Shop;
 import domain.shop.ShopController;
 import domain.shop.ShopInfo;
 import domain.shop.discount.DiscountPolicy;
@@ -85,8 +86,8 @@ public class MarketSystem {
         return sc.getInfoOfShops(f);
     }
 
-    public List<ProductInfo> getInfoOfProductInShop(int shopID){
-       return sc.getInfoOfProductInShop(shopID);
+    public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f){
+       return sc.getInfoOfProductInShop(shopID, f);
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
@@ -117,5 +118,9 @@ public class MarketSystem {
 
     public void deleteUserTest(String[] username){
         uc.deleteUserTest(username);
+    }
+
+    public Shop getShop(int shopID) {
+        return sc.getShop(shopID);
     }
 }
