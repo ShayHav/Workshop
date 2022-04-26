@@ -138,7 +138,7 @@ public class MarketSystem {
         return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList,tragetUser ,id);
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id){
         return ShopController.getInstance().AddShopMangerPermissions(key,shopManagersPermissionsList,tragetUser,id);
     }
 

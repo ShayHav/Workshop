@@ -134,7 +134,7 @@ public class ShopController {
             return "ShopManagerPermissionsRemove";
         else return null;
     }
-    public String AddShopMangerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+    public String AddShopMangerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
         Shop s = getShop(key);
         if(s.addPermissions(shopManagersPermissionsList,tragetUser ,id))
             return "ShopManagerPermissionsAdd";

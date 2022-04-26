@@ -48,13 +48,13 @@ public class Shop {
         ShopManagersPermissionsInit();
     }
 
-    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
         if (ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)) {
             for (ShopManagersPermissions run : shopManagersPermissionsList)
-                if (!PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser.getId())) {
-                    ShopManagersPermissionsMap.get(run).add(tragetUser.getId());
-                    eventLogger.logMsg(Level.INFO,String.format("add Permissions to user: %s",tragetUser.getId()));
-                    eventLogger.logMsg(Level.INFO, String.format("add Permissions to user: %s", tragetUser.getId()));
+                if (!PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser)) {
+                    ShopManagersPermissionsMap.get(run).add(tragetUser);
+                    eventLogger.logMsg(Level.INFO,String.format("add Permissions to user: %s",tragetUser));
+                    eventLogger.logMsg(Level.INFO, String.format("add Permissions to user: %s", tragetUser));
                 }
             return true;
         } else {
