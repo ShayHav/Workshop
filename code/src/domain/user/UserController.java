@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class UserController {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
@@ -38,7 +37,7 @@ public class UserController {
             }
         }
         else errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
-        if(!activeUser.islog())
+        if(!activeUser.isLoggedIn())
             errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %s failed.", id));
         else eventLogger.logMsg(Level.INFO, String.format(" logIn for user: %s.", id));
     }
@@ -96,7 +95,6 @@ public class UserController {
         throw new UnsupportedOperationException();
     }
 
-
     public List<ProductInfo> getInfoOfProductInShop(String userId, int shopID){
         throw new UnsupportedOperationException();
     }
@@ -113,4 +111,16 @@ public class UserController {
         throw new UnsupportedOperationException();
     }
 
+    public void deleteUserTest(String[] userId) {
+        for (int i = 0; i < userId.length; i++) {
+            deleteUser(userId[i]);
+        }
+    }
+
+    private void deleteUser(String useID) {
+        for (Map.Entry<String, User> entry : memberList.entrySet()) {
+            if (entry.getKey().equals(useID))
+                memberList.remove(entry.getKey());
+        }
+    }
 }

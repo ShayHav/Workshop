@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Filter<T> {
 
-    List<T> applyFilter(List<T> products);
+    List<T> applyFilter(List<T> listToFilter);
 }

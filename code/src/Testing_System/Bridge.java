@@ -37,9 +37,13 @@ public interface Bridge {
 
     Result<Boolean, String> StartMarket();
 
-    Result<Boolean, String> AddExternalService(String path);
+    Result<Boolean, String> AddSupplyService(String path);
 
-    Result<Boolean, String> RemoveExternalService(String path);
+    Result<Boolean, String> RemoveSupplyService(String path);
+
+    Result<Boolean, String> AddPaymentService(String path);
+
+    Result<Boolean, String> RemovePaymentService(String path);
 
     //Guest-Visitor Shop options
     Result<Boolean, String> GetShopsInfo();
@@ -96,4 +100,5 @@ public interface Bridge {
 
     Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f);
 
+    Result<Boolean, String> DeleteUserTest(String[] usernames);
 }

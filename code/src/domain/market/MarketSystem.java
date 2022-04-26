@@ -7,12 +7,10 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.ShopController;
 import domain.shop.ShopInfo;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.SearchProductFilter;
-import domain.user.TransactionInfo;
-import domain.user.User;
-import domain.user.UserController;
+import domain.user.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,30 +61,45 @@ public class MarketSystem {
      * @param ti - should be address and maybe also date
      * @return - true if supply is approved, false otherwise
      */
-    public boolean supply(TransactionInfo ti) {
-        return externalConnector.supply(ti);
+    public boolean supply(TransactionInfo ti, Map<Integer,Integer> products) {
+        return externalConnector.supply(ti,products);
+    }
+
+    public void setSupplierConnection(boolean b)
+    {
+
+    }
+
+    public void setPaymentConnection(boolean b)
+    {
+
+    }
+
+    public void createSystemManger(String username, String pw)
+    {
+
     }
 
 
-    public List<ShopInfo> getInfoOfShops() {
-        return sc.getInfoOfShops();
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
+        return sc.getInfoOfShops(f);
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID){
        return sc.getInfoOfProductInShop(shopID);
     }
 
-    public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
         return sc.searchProductByName(name,f);
     }
 
 
-    public List<ProductInfo> searchProductByCategory(String category, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
         return sc.searchProductByCategory(category,f);
     }
 
 
-    public List<ProductInfo> searchProductByKeyword(String keyword, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
         return sc.searchProductByKeyword(keyword, f);
     }
 
@@ -96,5 +109,13 @@ public class MarketSystem {
 
     public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         sc.createShop(name,discountPolicy, purchasePolicy,id);
+    }
+
+    public void register(String userId,String pass){
+        uc.register(userId,pass);
+    }
+
+    public void deleteUserTest(String[] username){
+        uc.deleteUserTest(username);
     }
 }

@@ -4,6 +4,7 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.Filter;
 import domain.user.SearchProductFilter;
 
 import java.util.ArrayList;
@@ -42,12 +43,12 @@ public class ShopController {
         return true;
     }
 
-    public List<ShopInfo> getInfoOfShops() {
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
         List<ShopInfo> allShops = new ArrayList<>();
         for(Shop s: shopList.values()){
             allShops.add(s.getShopInfo());
         }
-        return allShops;
+        return f.applyFilter(allShops);
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID) {
@@ -60,7 +61,7 @@ public class ShopController {
         return s.getProductInfoOfShop();
     }
 
-    public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
         List<ProductInfo> products = new ArrayList<>();
         for(Shop s: shopList.values()){
             List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().equals(name)).collect(Collectors.toList());
@@ -69,7 +70,7 @@ public class ShopController {
         return f.applyFilter(products);
     }
 
-    public List<ProductInfo> searchProductByCategory(String category, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
         List<ProductInfo> products = new ArrayList<>();
         for(Shop s: shopList.values()){
             List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
@@ -78,7 +79,7 @@ public class ShopController {
         return f.applyFilter(products);
     }
 
-    public List<ProductInfo> searchProductByKeyword(String keyword, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
         List<ProductInfo> products = new ArrayList<>();
         for(Shop s: shopList.values()){
             List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().contains(keyword)).collect(Collectors.toList());

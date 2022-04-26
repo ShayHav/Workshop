@@ -168,14 +168,29 @@ public class Tester {
         return br.StartMarket();
     }
 
-    public Result<Boolean, String> AddExternalService(String path) {
-        return br.AddExternalService(path);
+    public Result<Boolean, String> AddSupplyService(String path) {
+        return br.AddSupplyService(path);
     }
 
-    public Result<Boolean, String> RemoveExternalService(String path) {
-        return br.RemoveExternalService(path);
+    public Result<Boolean, String> RemoveSupplyService(String path) {
+        return br.RemoveSupplyService(path);
     }
 
+    public Result<Boolean, String> AddPaymentService(String path) {
+        return br.AddPaymentService(path);
+    }
+
+    public Result<Boolean, String> RemovePaymentService(String path) {
+        return br.RemovePaymentService(path);
+    }
+
+
+
+
+    public Result<Boolean, String> DeleteUserTest(String[] usernames)
+    {
+        return br.DeleteUserTest(usernames);
+    }
 
 
 

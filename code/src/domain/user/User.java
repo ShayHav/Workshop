@@ -97,7 +97,7 @@ public class User {
         return this.id;
     }
 
-    public boolean islog() {
+    public boolean isLoggedIn() {
         return this.loggedIn;
     }
 
@@ -114,8 +114,8 @@ public class User {
         return errors;
     }
 
-    public List<ShopInfo> getInfoOfShops() {
-        return us.getInfoOfShops();
+    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
+        return us.getInfoOfShops(f);
     }
 
 
@@ -124,15 +124,15 @@ public class User {
     }
 
 
-    public List<ProductInfo> searchProductByName(String name, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
         return us.searchProductByName(name, f);
     }
 
-    public List<ProductInfo> searchProductByCategory(String category, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
         return us.searchProductByCategory(category, f);
     }
 
-    public List<ProductInfo> searchProductByKeyword(String keyword, SearchProductFilter f) {
+    public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
         return us.searchProductByKeyword(keyword, f);
     }
 

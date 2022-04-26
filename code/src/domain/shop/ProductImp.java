@@ -24,6 +24,10 @@ public class ProductImp implements Product{
         this.category = p.getCategory();
     }
 
+    public int getRank() {
+        return rank;
+    }
+
     @Override
     public String getName() {
         return name;

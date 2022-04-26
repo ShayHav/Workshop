@@ -59,18 +59,7 @@ public class RealBridge implements  Bridge{
 
     @Override
     public Result<Boolean, String> StartMarket() {
-        MarketSystem ms = new MarketSystem();
-    }
-
-    @Override
-    public Result<Boolean, String> AddExternalService(String path) {
-        return null;
-    }
-
-    @Override
-    public Result<Boolean, String> RemoveExternalService(String path) {
-        return null;
-    }
+        return null;    }
 
     @Override
     public Result<Boolean, String> GetShopsInfo() {
@@ -204,6 +193,11 @@ public class RealBridge implements  Bridge{
 
     @Override
     public Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f) {
+        return null;
+    }
+
+    @Override
+    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
         return null;
     }
 }

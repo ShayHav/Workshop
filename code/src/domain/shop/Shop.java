@@ -39,7 +39,7 @@ public class Shop {
         ShopOwners = new LinkedList<>();
         ShopManagers = new LinkedList<>();
         Shoppers = new LinkedList<>();
-        rank = -1;
+        rank = 0;
         this.name = name;
         isOpen = true;
         ShopFounder = MarketSystem.getInstance().getUser(founderId);
@@ -48,7 +48,7 @@ public class Shop {
         ShopManagersPermissionsInit();
     }
 
-    public void addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , int id){
+    public void addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)){
             for (ShopManagersPermissions run: shopManagersPermissionsList)
                 if(!PermissionExist(ShopManagersPermissionsMap.get(run),tragetUser.getId())) {
@@ -58,17 +58,18 @@ public class Shop {
         }
     }
 
-    public void removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , int id){
+    public void removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)){
             for (ShopManagersPermissions run: shopManagersPermissionsList)
                 if(PermissionExist(ShopManagersPermissionsMap.get(run),tragetUser.getId())) {
                     ShopManagersPermissionsMap.get(run).remove(tragetUser.getId());
+                    eventLogger.logMsg(Level.INFO,String.format("remove Permissions to user: %s",tragetUser.getId()));
                 }
         }
     }
 
-    private boolean PermissionExist(List<String> permissionlist,String userId){
-        for (String run : permissionlist){
+    private boolean PermissionExist(List<String> permissionList,String userId){
+        for (String run : permissionList){
             if(run.equals(userId))
                 return true;
         }
@@ -99,12 +100,13 @@ public class Shop {
         return inventory.getItemsInStock();
     }
 
-    public Product getProduct(int prodID) {
+    public Product getProduct(int prodID){
         Product product = inventory.getProduct(prodID);
-        if (product != null) {
+        if(product != null) {
             eventLogger.logMsg(Level.INFO, String.format("returned product: %d", prodID));
             return product;
-        } else {
+        }
+        else {
             errorLogger.logMsg(Level.WARNING, String.format("could not find product: %d", prodID));
             throw new NullPointerException("product not found");
         }
@@ -117,7 +119,7 @@ public class Shop {
     }
 
     public void removeListing(int prodID,String userId){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.RemoveProductToInventory).contains(userId))
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.RemoveProductFromInventory).contains(userId))
         inventory.removeProduct(prodID);
     }
 
@@ -133,16 +135,16 @@ public class Shop {
         else return false;
     }
 
-    public List<Discount> productDiscount(int prodID) {
+    public List<Discount> productDiscount(int prodID){
         return discountPolicy.getAllDiscountsForProd(prodID);
     }
 
-    public double productPriceAfterDiscounts(int prodID, int amount) {
+    public double productPriceAfterDiscounts(int prodID, int amount){
         double productBasePrice = inventory.getPrice(prodID);
         return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
     }
 
-    public boolean isProductIsAvailable(int prodID) {
+    public boolean isProductIsAvailable(int prodID){
         return inventory.isInStock(prodID);
     }
 
@@ -152,11 +154,15 @@ public class Shop {
     }
 
     //todo????? needed?
-    public void changeDiscountPolicy(DiscountPolicy discountPolicy){}
+    public void changeDiscountPolicy(DiscountPolicy discountPolicy){throw new UnsupportedOperationException();}
     //todo????? needed?
-    public void changePurchasePolicy(PurchasePolicy purchasePolicy){}
+    public void changePurchasePolicy(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
     //todo????? needed?
-    public void changeProductDiscount(PurchasePolicy purchasePolicy){}
+    public void changeProductDiscount(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
+
+    public double calculateTotalAmountOfOrder(Map<Integer,Integer> ProductsAndQuantity){
+        return 0.0; //TODO: impl
+    }
 
     public boolean addPercentageDiscount(int prodID, double percentage){
         return discountPolicy.addPercentageDiscount(prodID, percentage);
@@ -196,12 +202,12 @@ public class Shop {
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
             //check purchase policy regarding the Product
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
-                return new ResponseT<Order>("violates purchase policy");
+                return new ResponseT("violates purchase policy");
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
                 inventory.restoreStock(products);
-                return new ResponseT<Order>("not in stock");
+                return new ResponseT<>("not in stock");
             }
         }
 
@@ -216,17 +222,14 @@ public class Shop {
 
 
         MarketSystem market = MarketSystem.getInstance();
-        if(!market.pay(transaction)) {
-            inventory.restoreStock(products);
-        }
         if(!market.pay(transaction)){
             inventory.restoreStock(products);
-            return new ResponseT<Order>();
+            return new ResponseT<>();
         }
-        if(!market.supply(transaction)){
-            return new ResponseT<Order>("problem with supply system");
+        if(!market.supply(transaction, products)){
+            return new ResponseT<>("problem with supply system");
         }
-        // creating Order object to store in the Order History with immutable copy of product
+        // creating Order object to store in the Order History with unmutable copy of product
         List<Product> boughtProducts = new ArrayList<>();
         for(Integer Product: products.keySet()){
             Product p = inventory.findProduct(Product);
@@ -235,9 +238,8 @@ public class Shop {
         }
         Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID());
         orders.addOrder(o);
-        return new ResponseT<Order>(o);
+        return new ResponseT(o);
     }
-
 
     public boolean isFounder(String id) {
         return ShopFounder.getId().equals(id);
@@ -251,27 +253,35 @@ public class Shop {
         return false;
     }
 
-    public void setOwner(String id) {
-        User newOwner =MarketSystem.getInstance().getUser(id);
-        if(newOwner!=null)
-            if(!ShopOwners.contains(newOwner))
-                ShopOwners.add(newOwner);
+    public void AppointNewShopOwner(String tragetUser, String userId) {
+        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AppointNewShopOwner).contains(userId)) {
+            User newOwner = MarketSystem.getInstance().getUser(tragetUser);
+            if (newOwner != null)
+                if (!ShopOwners.contains(newOwner))
+                    ShopOwners.add(newOwner);
+            eventLogger.logMsg(Level.INFO,String.format("Appoint New ShopOwner User: %s",tragetUser));
+        }
     }
 
     public int getShopID() {
         return shopID;
     }
 
-    public void setManager(String id) {
-        User newManager =MarketSystem.getInstance().getUser(id);
-        if(newManager!=null)
-            if(!ShopManagers.contains(newManager))
-                ShopManagers.add(newManager);
+    public void AppointNewShopManager(String usertraget,String userId) {
+        if (ShopManagersPermissionsMap.get(ShopManagersPermissions.AppointNewShopOwner).contains(userId)) {
+            User newManager = MarketSystem.getInstance().getUser(usertraget);
+            if (newManager != null)
+                if (!ShopManagers.contains(newManager))
+                    ShopManagers.add(newManager);
+
+        eventLogger.logMsg(Level.INFO,String.format("Appoint New ShopOwner User: %s",usertraget));
+        }
     }
 
-    public void closeShop(){
-        if(isOpen)
-            isOpen = false;
+    public void closeShop(String userID){
+        if((ShopManagersPermissionsMap.get(ShopManagersPermissions.CloseShop).contains(userID)))
+            if(isOpen)
+                isOpen = false;
     }
 
     public String getName() {
@@ -282,17 +292,41 @@ public class Shop {
         return isOpen;
     }
 
+    public void RequestInformationOnShopsOfficials(){
+        throw new UnsupportedOperationException();
+    }
+
+    public void RequestInformationOfShopsSalesHistory(){
+        throw new UnsupportedOperationException();
+    }
+
     public ShopInfo getShopInfo() {
         return new ShopInfo(name, rank);
     }
 
     public List<ProductInfo> getProductInfoOfShop() {
-        List<ProductInfo> info = inventory.getProductInfo();
+        List<ProductInfo> info = inventory.getAllProductInfo();
         for (ProductInfo p : info) {
             p.setShopName(name);
             p.setShopRank(rank);
         }
         return info;
+    }
+
+    public ProductInfo getInfoOnProduct(int productId){
+        ProductInfo p;
+        synchronized (inventory){
+            p = inventory.getProductInfo(productId);
+        }
+        if(p == null){
+            //log
+            return null;
+        }
+
+        p.setShopName(name);
+        p.setShopRank(rank);
+        return p;
+
     }
 
 }
