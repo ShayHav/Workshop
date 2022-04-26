@@ -156,21 +156,6 @@ public class User {
         return managerAppointeeList;
     }
 
-    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
-        MarketSystem market = MarketSystem.getInstance();
-        return market.searchProductByName(name, f);
-    }
-
-    public List<ProductInfo>  searchProductByCategory(String category, Filter<ProductInfo> f) {
-        MarketSystem market = MarketSystem.getInstance();
-        return market.searchProductByCategory(category, f);
-    }
-
-    public List<ProductInfo>  searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
-        MarketSystem market = MarketSystem.getInstance();
-        return market.searchProductByKeyword(keyword, f);
-    }
-
     public Cart.CartInfo showCart() {
         return userCart.showCart();
     }
