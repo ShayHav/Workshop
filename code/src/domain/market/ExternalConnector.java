@@ -31,6 +31,14 @@ public class ExternalConnector {
         return false;
     }
 
+    public boolean removePaymentService(PaymentService service){
+        return paymentServices.remove(service);
+    }
+
+    public boolean removeSupplyService(SupplyService service){
+        return supplyServices.remove(service);
+    }
+
     public boolean pay(TransactionInfo ti){
         for(PaymentService service: paymentServices){
             boolean processed = service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(),

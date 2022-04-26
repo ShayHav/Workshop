@@ -1,9 +1,10 @@
 package domain.shop;
 
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,8 +25,8 @@ class InventoryTest {
         ProductImp p2 = new ProductImp(2,"Galaxy s22", "Samsung new overpriced smartphone", "smartphone");
         when(products.getProduct(1)).thenReturn( p1);
         when(products.getProduct(2)).thenReturn( p2);
-        inv.addProduct(1,3499.90, 100);
-        inv.addProduct(2,2999.90, 0);
+        inv.addProduct("Iphone13", "Apples new overpriced smartphone", "smartphone",3499.90, 100);
+        inv.addProduct("Galaxy s22", "Samsung new overpriced smartphone", "smartphone",2999.90, 0);
     }
 
     @Test
@@ -33,17 +34,6 @@ class InventoryTest {
         assertTrue(inv.isInStock(1));
         inv.setAmount(1, 0);
         assertFalse(inv.isInStock(2));
-    }
-
-    @Test
-    void addProduct() {
-        assertFalse(inv.addProduct(1, 1500, 12));
-        ProductImp p = new ProductImp(3,"Xiaomi mi19", "chines phone", "smartphone");
-        assertFalse(inv.addProduct(3, 2000.0, 50));
-        when(products.getProduct(3)).thenReturn(p);
-        assertFalse(inv.addProduct(3, -50, 1));
-        assertFalse(inv.addProduct(3, 2000, -1));
-        assertTrue(inv.addProduct(3, 2000, 1));
     }
 
     @Test
@@ -78,7 +68,33 @@ class InventoryTest {
 
     @Test
     void reduceAmount(){
-        assertEquals();
+        int currQuan = inv.getQuantity(1);
+        inv.reduceAmount(1,5);
+        assertEquals(inv.getQuantity(1) - 5, currQuan - 5);
+    }
+
+    @Test
+    void reservedItem(){
+        Map<Integer, Integer> map = new HashMap<>();
+        int p1Quan = inv.getQuantity(1), p2Quan = inv.getQuantity(2);
+        map.put(2,3);
+        assertFalse(inv.reserveItems(map));
+        assertEquals(inv.getQuantity(2),p2Quan);
+        map.put(2,0);
+        map.put(1, 3);
+        assertTrue(inv.reserveItems(map));
+        assertEquals(inv.getQuantity(1) ,p1Quan - 3);
+        assertEquals(inv.getQuantity(2) ,p1Quan);
+    }
+
+    @Test
+    void restoreStock(){
+        Map<Integer, Integer> map = new HashMap<>();
+        int p1Quan = inv.getQuantity(1), p2Quan = inv.getQuantity(2);
+        map.put(1,3);
+        map.put(2, 3);
+        assertEquals(inv.getQuantity(1), p1Quan + 3);
+        assertEquals(inv.getQuantity(2), p2Quan + 3);
     }
 
 
