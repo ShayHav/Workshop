@@ -23,7 +23,7 @@ public class Shop {
     private List<User> ShopManagers;
     private Map<ShopManagersPermissions, List<String>> ShopManagersPermissionsMap;
     private List<User> Shoppers;
-    private final Inventory inventory;
+    private Inventory inventory;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
@@ -141,6 +141,8 @@ public class Shop {
 
     public double productPriceAfterDiscounts(int prodID, int amount){
         double productBasePrice = inventory.getPrice(prodID);
+        if(productBasePrice < 0)
+            return 0;
         return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
     }
 
@@ -148,9 +150,10 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public void changeProductDetail(int prodID, String description,String userId){
+    public boolean changeProductDetail(int prodID, String description,String userId){
         if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
-            inventory.setDescription(prodID, description);
+            return inventory.setDescription(prodID, description);
+        return false;
     }
 
     //todo????? needed?
@@ -282,9 +285,10 @@ public class Shop {
     }
 
     public void closeShop(String userID){
-        if((ShopManagersPermissionsMap.get(ShopManagersPermissions.CloseShop).contains(userID)))
-            if(isOpen)
+        if((ShopManagersPermissionsMap.get(ShopManagersPermissions.CloseShop).contains(userID))) {
+            if (isOpen)
                 isOpen = false;
+        }
     }
 
     public String getName() {
@@ -332,4 +336,17 @@ public class Shop {
 
     }
 
+
+
+    public void setInventory(Inventory inventory){
+        this.inventory = inventory;
+    }
+
+    public void setDiscountPolicy(DiscountPolicy discountPolicy){
+        this.discountPolicy = discountPolicy;
+    }
+
+    public void setPurchasePolicy(PurchasePolicy purchasePolicy){
+        this.purchasePolicy = purchasePolicy;
+    }
 }

@@ -76,10 +76,7 @@ class InventoryTest {
         assertEquals(inv.getItemsInStock().size(),0);
     }
 
-    @Test
-    void reduceAmount(){
-        assertEquals();
-    }
+
 
 
 }

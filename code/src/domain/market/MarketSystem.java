@@ -118,4 +118,8 @@ public class MarketSystem {
     public void deleteUserTest(String[] username){
         uc.deleteUserTest(username);
     }
+
+    public void setExternalConnector(ExternalConnector ec){
+        externalConnector = ec;
+    }
 }
