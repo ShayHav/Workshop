@@ -185,7 +185,10 @@ public class User {
     }
 
     public void addManagerPermissions(String targetUser,String shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList) {
-        us.
+
     }
 
+    public Map<String, List<Role>> getRoleList() {
+        return roleList;
+    }
 }

@@ -107,4 +107,12 @@ public class ShopController {
         }
         return shopList.get(shopID);
     }
+
+    public void closeShop(int key,String user) {
+        getShop(key).closeShop(user);
+    }
+
+    public void DeleteShops(){
+        shopList = new HashMap<>();
+    }
 }

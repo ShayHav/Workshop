@@ -2,36 +2,51 @@ package Service;
 
 
 import Testing_System.Result;
+import domain.market.MarketSystem;
 import domain.shop.Product;
+import domain.shop.ProductInfo;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.ShopManagersPermissions;
 import domain.shop.discount.Discount;
 import domain.user.Filter;
 import domain.user.TransactionInfo;
+import domain.user.UserController;
 
 import java.util.List;
 import java.util.Map;
 
 public class Services {
+    MarketSystem marketSystem = MarketSystem.getInstance();
 
+    public Services(){
+    }
 
     //General Guest-Visitor
     public Result<Boolean,Boolean> Login(String username, String pw){
-
+        boolean b = marketSystem.logIn(username,pw);
+        Result<Boolean,Boolean> output = new Result<>(b,b);
+        return output;
     }
 
     public Result<Boolean,Boolean> Register(String username, String pw)
     {
-
+        boolean b = marketSystem.register(username,pw);
+        Result<Boolean,Boolean> output = new Result<>(b,b);
+        return output;
     }
 
     public Result<Boolean,String> EnterMarket()
     {
-
+        //TODO: happens at   MarketSystem getInstance()
     }
 
-    public Result<Boolean,String> LeaveMarket()
-    {
+    public Result<Boolean,String> LeaveMarket() {
+        String output = marketSystem.LeaveMarket();
+        Result<Boolean, String> leaveMarket;
+        if (output != null)
+            leaveMarket = new Result<>(true, output);
+        else leaveMarket = new Result<>(false, null);
+        return leaveMarket;
 
     }
 
@@ -39,12 +54,19 @@ public class Services {
     //General Member-Visitor
     public Result<Boolean,Boolean> Logout(String username)
     {
-
+        boolean b = marketSystem.logOut(username);
+        Result<Boolean,Boolean> output = new Result(b,b);
+        return output;
     }
 
-    public Result<Boolean, String> CreateShop(String username, String shopname)
+    public Result<Boolean, Integer> CreateShop(String username, String shopname)
     {
-
+        Integer output = marketSystem.createShop(username,null,null,username);
+        Result<Boolean, Integer> CreateShop;
+        if (output != -1)
+            CreateShop = new Result<>(true, output);
+        else CreateShop = new Result<>(false, output);
+        return CreateShop;
     }
 
 
@@ -95,9 +117,14 @@ public class Services {
 
     }
 
-    public Result<Boolean, String> GetProductInfoInShop(String shopname)
+    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f)
     {
-
+        List<ProductInfo> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(shopname,f);
+        Result<Boolean, List<ProductInfo>> CreateShop;
+        if (GetProductInfoInShop.size()>=0)
+            CreateShop = new Result<>(true, GetProductInfoInShop);
+        else CreateShop = new Result<>(false, GetProductInfoInShop);
+        return CreateShop;
     }//display information of a product?
 
     public Result<Boolean, String> SearchProductByName(String pName)
@@ -222,10 +249,11 @@ public class Services {
 
     public Result<Boolean, String> DeleteUserTest(String[] usernames)
     {
-
+        marketSystem.deleteUserTest(usernames);
+        return new Result<>(true,null);
     }
 
-    public Result<Boolean, String> RemoveProductFromShopInventory(int id, String username, String shopname)
+    public Result<Boolean, String> RemoveProductFromShopInventory(int productId, String username, String shopname)
     {
 
     }

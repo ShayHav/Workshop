@@ -111,11 +111,22 @@ public class MarketSystem {
        return UserController.getInstance().register(userId,pass);
     }
 
-    public void deleteUserTest(String[] username){
-        UserController.getInstance().deleteUserTest(username);
+    public boolean deleteUserTest(String[] username){
+        return UserController.getInstance().deleteUserTest(username);
     }
 
     public Shop getShop(int shopID) {
         return ShopController.getInstance().getShop(shopID);
     }
+
+    public boolean logIn(String username, String pw){
+        return UserController.getInstance().logIn(username, pw);
+    }
+    public String LeaveMarket(){return null;}
+
+    public boolean logOut(String username){
+        return UserController.getInstance().logOut(username);
+    }
+
+    public
 }

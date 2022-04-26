@@ -5,6 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.market.ExternalConnector;
 import domain.market.MarketSystem;
 import domain.shop.ProductInfo;
+import domain.shop.ShopController;
 import domain.shop.ShopInfo;
 
 import java.util.HashMap;
@@ -63,13 +64,14 @@ public class UserController {
      * logout from system
      * pre-condition - user is registered and logged-in
      */
-    public boolean logOut() {
+    public boolean logOut(String user) {
         if (activeUser != null) {
             String id = activeUser.getId();
-            activeUser.logout();
-            eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", id));
+            if(user.equals(id)) {
+                activeUser.logout();
+                eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", id));
+            }
         } else errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
-
         return !activeUser.isLoggedIn();
     }
 
@@ -131,18 +133,25 @@ public class UserController {
         throw new UnsupportedOperationException();
     }
 
-    public void deleteUserTest(String[] userId) {
+    public boolean deleteUserTest(String[] userId) {
         for (int i = 0; i < userId.length; i++) {
             deleteUser(userId[i]);
         }
+        return true;
     }
 
     private void deleteUser(String useID) {
         for (Map.Entry<String, User> entry : memberList.entrySet()) {
             if (entry.getKey().equals(useID)) {
-
+                Map<String, List<Role>> useRoleList = entry.getValue().getRoleList();
+                for(Map.Entry<String, List<Role>> run : useRoleList.entrySet()){
+                    for(Role runn :run.getValue())
+                        if(runn == Role.ShopFounder)
+                            ShopController.getInstance().closeShop(run.getKey(),useID);
+                }
                 memberList.remove(entry.getKey());
             }
         }
+        ShopController.getInstance().DeleteShops();
     }
 }
