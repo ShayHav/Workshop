@@ -20,6 +20,8 @@ public class MarketSystem {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private static MarketSystem instance = null;
     private ExternalConnector externalConnector;
+    private UserController userController = UserController.getInstance();
+    private ShopController shopController = ShopController.getInstance();
 
     private MarketSystem() {
         eventLogger.logMsg(Level.INFO,"System start");
@@ -41,8 +43,10 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    private void start() {
-        throw new UnsupportedOperationException();
+    public void start() {
+
+
+
     }
 
     /***
@@ -128,5 +132,4 @@ public class MarketSystem {
         return UserController.getInstance().logOut(username);
     }
 
-    public
 }

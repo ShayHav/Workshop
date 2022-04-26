@@ -69,18 +69,20 @@ public class Services {
         return CreateShop;
     }
 
-
+    //TODO: impl on later version
     //System
     public Result<Boolean, String> RealTimeNotification(List<String> users, String msg)
     {
-
+        return null;
     }
 
     public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products)
     {
 
-    }//supply
+    }
 
+
+    //supply
     public Result<Boolean, String> Payment(TransactionInfo ti)
     {
 
@@ -88,7 +90,7 @@ public class Services {
 
     public Result<Boolean, String> StartMarket()
     {
-
+        marketSystem.start();
     }
 
     public Result<Boolean, String> AddSupplyService(String path)
@@ -253,7 +255,7 @@ public class Services {
         return new Result<>(true,null);
     }
 
-    public Result<Boolean, String> RemoveProductFromShopInventory(int productId, String username, String shopname)
+    public Result<Boolean, String> RemoveProductFromShopInventory(int productId, String username, String shopName)
     {
 
     }

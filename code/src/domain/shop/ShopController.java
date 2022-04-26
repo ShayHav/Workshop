@@ -6,6 +6,7 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.Filter;
 import domain.user.SearchProductFilter;
+import domain.user.User;
 import domain.user.UserController;
 
 import java.util.ArrayList;
@@ -115,4 +116,25 @@ public class ShopController {
     public void DeleteShops(){
         shopList = new HashMap<>();
     }
+
+    public List<Order> getOrderHistoryForShops(List<Integer> shopId){
+        List<Order> orders = new ArrayList<>();
+        if(shopId == null){
+            for(Shop s: shopList.values()){
+                orders.addAll();
+            }
+        }
+        else{
+            for(Integer id: shopId){
+                Shop s = shopList.get(id);
+                if(s == null){
+                    //log
+                    return null;
+                }
+                orders.addAll();
+            }
+        }
+        return orders;
+    }
+
 }
