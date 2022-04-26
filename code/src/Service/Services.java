@@ -6,10 +6,7 @@ import domain.market.*;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.discount.Discount;
-import domain.user.Filter;
-import domain.user.TransactionInfo;
-import domain.user.User;
-import domain.user.UserController;
+import domain.user.*;
 
 import java.util.List;
 import java.util.Map;
@@ -291,7 +288,7 @@ public class Services {
         else return new Result<>(false, null);
     }
     //Make:nitay
-    public Result<Boolean, String> RequestShopOfficialsInfo(int shopname, Filter f)
+    public Result<Boolean, String> RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f)
     {
         String s = marketSystem.RequestShopOfficialsInfo(shopname,f);
         if(s!=null)
