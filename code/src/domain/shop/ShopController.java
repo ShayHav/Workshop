@@ -150,4 +150,57 @@ public class ShopController {
         Shop s = getShop(key);
         return s.AppointNewShopOwner(targetUser,userId);
     }
+
+    public Shop getShop(int shopID) {
+        if(!shopList.containsKey(shopID)){
+            //log
+            return null;
+        }
+        return shopList.get(shopID);
+    }
+
+    public String closeShop(int key,String user) {
+        Shop s = getShop(key);
+        if(s!=null){
+            s.closeShop(user);
+            return s.getName();
+        }
+        return null;
+    }
+
+    public void DeleteShops(){
+        shopList = new HashMap<>();
+    }
+
+    public int RemoveProductFromShopInventory(int productId, String username, int shopname) {
+        Shop s = getShop(shopname);
+        if(s!=null){
+            s.removeListing(productId,username);
+            return productId;
+        }
+        return -1;
+    }
+
+    public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+        Shop s = getShop(key);
+        if(s.removePermissions(shopManagersPermissionsList,tragetUser ,id))
+            return "ShopManagerPermissionsRemove";
+        else return null;
+    }
+    public String AddShopMangerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
+        Shop s = getShop(key);
+        if(s.addPermissions(shopManagersPermissionsList,tragetUser ,id))
+            return "ShopManagerPermissionsAdd";
+        else return null;
+    }
+
+    public String AppointNewShopManager(int key,String targetUser, String userId){
+        Shop s = getShop(key);
+        return s.AppointNewShopManager(targetUser,userId);
+    }
+
+    public String AppointNewShopOwner(int key,String targetUser, String userId){
+        Shop s = getShop(key);
+        return s.AppointNewShopOwner(targetUser,userId);
+    }
 }

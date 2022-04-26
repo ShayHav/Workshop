@@ -92,6 +92,7 @@ public class UserController {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of registered for exist id %d failed.", id));
             return false;
         }
+        ShopController.getInstance().DeleteShops();
     }
 
     /***
@@ -147,7 +148,7 @@ public class UserController {
                 for(Map.Entry<String, List<Role>> run : useRoleList.entrySet()){
                     for(Role runn :run.getValue())
                         if(runn == Role.ShopFounder)
-                            ShopController.getInstance().closeShop(run.getKey(),useID);
+                            ShopController.getInstance().closeShop(run.getKey(), useID);
                 }
                 memberList.remove(entry.getKey());
             }
@@ -159,4 +160,6 @@ public class UserController {
         User user = getUser(userID);
         return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
     }
+
+
 }

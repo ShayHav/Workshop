@@ -42,9 +42,9 @@ public class ShopTest {
         ExternalConnector ec = mock(ExternalConnector.class);
         when(p1.getId()).thenReturn(1);
         when(p2.getId()).thenReturn(2);
-        when(inventory.getProduct(1)).thenReturn(p1);
+        when(inventory.findProduct(1)).thenReturn(p1);
         /*when(ec.pay()).thenReturn(true);*/
-        when(inventory.getProduct(2)).thenReturn(p2);
+        when(inventory.findProduct(2)).thenReturn(p2);
         when(inventory.getPrice(1)).thenReturn(5.0);
         when(inventory.getPrice(2)).thenReturn(12.0);
         when(discountPolicy.calcPricePerProduct(1, 5.0, 3)).thenReturn(4.0);
