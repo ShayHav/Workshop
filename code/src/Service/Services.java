@@ -100,22 +100,22 @@ public class Services {
 
     public Result<Boolean, String> AddSupplyService(String path)
     {
-
+        return null;
     }
 
-    public Result<Boolean, String> RemoveSupplyService(String path)
+    public Result<Boolean, Boolean> RemoveSupplyService(String path)
     {
-
+        return null;
     }
 
     public Result<Boolean, String> AddPaymentService(String path)
     {
-
+        return null;
     }
 
     public Result<Boolean, String> RemovePaymentService(String path)
     {
-
+        return null;
     }
 
     //Guest-Visitor Shop options
@@ -167,11 +167,13 @@ public class Services {
         else return new Result<>(true,null);
     }
 
-    public Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname)
+    //Omry
+    public Result<Boolean, Double> CalculatePriceForProduct(Map<Integer, Integer> products)
     {
 
     }
 
+    //omry
     public Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname)
     {
 
@@ -296,6 +298,5 @@ public class Services {
             return new Result<>(true,productId);
         else return new Result<>(false,-1);
     }
-
 
 }
