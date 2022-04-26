@@ -9,10 +9,7 @@ import domain.shop.ProductInfo;
 import domain.shop.ShopController;
 import domain.shop.ShopInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public class UserController {
@@ -20,13 +17,13 @@ public class UserController {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
-    private User activeUser; //TODO: temporary
+    private List<User> activeUser; //TODO: temporary
     private static UserController instance = null;
     private User adminUser;
 
     private UserController() {
         memberList = new HashMap<>();
-        activeUser = null;
+        activeUser = new LinkedList<>();
     }
 
     public static UserController getInstance() {
@@ -45,13 +42,13 @@ public class UserController {
      * @param pass password given by the user
      */
     public boolean logIn(String id, String pass) {
-        if (!activeUser.isLoggedIn()) {
+        if (!isUserisLog(id)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %s failed.", id));
             return false;
         } else if (memberList.get(id) != null) {
             if (securePasswordStorage.passwordCheck(id, pass)) {
-                activeUser = memberList.get(id);
-                activeUser.login();
+                activeUser.add(memberList.get(id));
+                getUser(id).login();
                 eventLogger.logMsg(Level.INFO, String.format(" logIn for user: %s.", id));
                 return true;
             } else {
@@ -62,20 +59,21 @@ public class UserController {
         return false;
     }
 
+    private boolean isUserisLog(String id){
+        return activeUser.contains(id);
+    }
+
     //TODO: add logger and validate user is registered and logged in- when transferring to concurrency
     /***
      * logout from system
      * pre-condition - user is registered and logged-in
      */
-    public boolean logOut(String user) {
+    public String logOut(String user) {
         if (activeUser != null) {
-            String id = activeUser.getId();
-            if(user.equals(id)) {
-                activeUser.logout();
+            if(activeUser.contains(getUser(user)))
                 eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", id));
-            }
         } else errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
-        return !activeUser.isLoggedIn();
+        return activeUser.getId();
     }
 
     /***
@@ -101,9 +99,9 @@ public class UserController {
      * enter to the market - active user is now a guest
      */
     public void enterMarket(){
-        User temp = new User();
+        User temp = new User("-Guest");
         temp.enterMarket();
-        this.activeUser = temp;
+        activeUser.add(temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
     }
 
@@ -146,8 +144,8 @@ public class UserController {
     private void deleteUser(String useID) {
         for (Map.Entry<String, User> entry : memberList.entrySet()) {
             if (entry.getKey().equals(useID)) {
-                Map<String, List<Role>> useRoleList = entry.getValue().getRoleList();
-                for(Map.Entry<String, List<Role>> run : useRoleList.entrySet()){
+                Map<Integer, List<Role>> useRoleList = entry.getValue().getRoleList();
+                for(Map.Entry<Integer, List<Role>> run : useRoleList.entrySet()){
                     for(Role runn :run.getValue())
                         if(runn == Role.ShopFounder)
                             ShopController.getInstance().closeShop(run.getKey(), useID);

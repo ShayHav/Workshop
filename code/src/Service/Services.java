@@ -59,7 +59,7 @@ public class Services {
     //General Member-Visitor
     public Result<Boolean,String> Logout(String username)
     {
-        boolean b = marketSystem.logOut(username);
+        String b = marketSystem.logOut(username);
         Result<Boolean,String> output = new Result(b,b);
         return output;
     }
@@ -81,16 +81,21 @@ public class Services {
         return null;
     }
 
-    public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products)
+    //shay
+    public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products)
     {
-
+        MarketSystem m = MarketSystem.getInstance();
+        boolean ans  = m.supply(ti, products);
+        return new Result<>(ans, ans);
     }
 
 
-    //supply
-    public Result<Boolean, String> Payment(TransactionInfo ti)
+    //shay
+    public Result<Boolean, Boolean> Payment(TransactionInfo ti)
     {
-
+        MarketSystem m = MarketSystem.getInstance();
+        boolean ans = m.pay(ti);
+        return new Result<>(ans, ans);
     }
 
     public Result<Boolean, String> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)

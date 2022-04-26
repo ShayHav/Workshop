@@ -17,7 +17,7 @@ public class User {
     private static final String ca = "command approve";
     private String id;
     private UserState us;
-    private Map<String,List<Role>> roleList;
+    private Map<Integer,List<Role>> roleList;
     private Cart userCart;
     private boolean loggedIn;
     private List<ManagerAppointment> managerAppointeeList;
@@ -68,9 +68,9 @@ public class User {
     }
 
     public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy) {
-        roleList.put(name,new LinkedList<>());
-        roleList.get(name).add(Role.ShopFounder);
         us.createShop(name, discountPolicy, purchasePolicy, this.id);
+        roleList.put(ShopController.getInstance().getShopCounter(),new LinkedList<>());
+        roleList.get(name).add(Role.ShopFounder);
     }
 
     public void appointOwner(String userId, String shopName) {
@@ -191,7 +191,7 @@ public class User {
 
     }
 
-    public Map<String, List<Role>> getRoleList() {
+    public Map<Integer, List<Role>> getRoleList() {
         return roleList;
     }
 

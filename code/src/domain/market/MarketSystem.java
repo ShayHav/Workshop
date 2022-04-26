@@ -41,8 +41,6 @@ public class MarketSystem {
      */
     public boolean start(PaymentService payment, SupplyService supply, String userID, String password) {
 
-
-
     }
 
     /***
@@ -126,7 +124,7 @@ public class MarketSystem {
     }
     public String LeaveMarket(){return null;}
 
-    public boolean logOut(String username){
+    public String logOut(String username){
         return UserController.getInstance().logOut(username);
     }
 

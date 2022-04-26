@@ -32,6 +32,10 @@ public class ShopController {
         return instance;
     }
 
+    public int getShopCounter() {
+        return shopCounter;
+    }
+
     public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
         if(isUniqueName(name)) {
             shopCounter++;
@@ -148,7 +152,7 @@ public class ShopController {
 
     public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
         Shop s = getShop(key);
-        if(s.removePermissions(shopManagersPermissionsList,tragetUser ,id))
+        if(s.removePermissions(shopManagersPermissionsList,tragetUser.getId() ,id))
             return "ShopManagerPermissionsRemove";
         else return null;
     }
