@@ -32,7 +32,7 @@ public class User {
         us = null;
     }
 
-    public User(String id){
+    public User(String id) {
         this.id = id;
         loggedIn = false;
     }
@@ -48,7 +48,7 @@ public class User {
     /***
      * leave market - user has no state
      */
-    public void leaveMarket(){
+    public void leaveMarket() {
         us.leaveMarket(userCart);
         us = null;
     }
@@ -99,6 +99,22 @@ public class User {
 
     public boolean isLoggedIn() {
         return this.loggedIn;
+    }
+
+    public Cart.CartInfo showCart() {
+        return us.showCart(userCart);
+    }
+
+    public void addProductToCart(Shop shop, int productID, int amount) {
+        us.addProductToCart(userCart, shop, productID, amount);
+    }
+
+    public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
+        return us.updateAmountOfProduct(userCart, shopID, productID, amount);
+    }
+
+    public boolean removeProductFromCart(int shopID, int productID) {
+        return us.removeProductFromCart(userCart, shopID, productID);
     }
 
     public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
