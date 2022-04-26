@@ -2,11 +2,8 @@ package domain.market;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
-import domain.shop.ProductInfo;
+import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
-import domain.shop.Shop;
-import domain.shop.ShopController;
-import domain.shop.ShopInfo;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
 
@@ -128,5 +125,26 @@ public class MarketSystem {
         return UserController.getInstance().logOut(username);
     }
 
-    public
+    public int RemoveProductFromShopInventory(int productId, String username, int shopname){
+        return ShopController.getInstance().RemoveProductFromShopInventory(productId,username,shopname);
+    }
+    public String CloseShop(int shopId,String userId){
+        return ShopController.getInstance().closeShop(shopId,userId);
+    }
+
+    public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
+        return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList,tragetUser ,id);
+    }
+
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id){
+        return ShopController.getInstance().AddShopMangerPermissions(key,shopManagersPermissionsList,tragetUser,id);
+    }
+
+    public String AppointNewShopManager(int key,String targetUser, String userId){
+        return ShopController.getInstance().AppointNewShopManager(key,targetUser,userId);
+    }
+
+    public String AppointNewShopOwner(int key,String targetUser, String userId){
+        return ShopController.getInstance().AppointNewShopOwner(key,targetUser,userId);
+    }
 }

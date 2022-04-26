@@ -10,6 +10,7 @@ import domain.shop.ShopManagersPermissions;
 import domain.shop.discount.Discount;
 import domain.user.Filter;
 import domain.user.TransactionInfo;
+import domain.user.User;
 import domain.user.UserController;
 
 import java.util.List;
@@ -22,12 +23,13 @@ public class Services {
     }
 
     //General Guest-Visitor
+    //Make:nitay
     public Result<Boolean,Boolean> Login(String username, String pw){
         boolean b = marketSystem.logIn(username,pw);
         Result<Boolean,Boolean> output = new Result<>(b,b);
         return output;
     }
-
+    //Make:nitay
     public Result<Boolean,Boolean> Register(String username, String pw)
     {
         boolean b = marketSystem.register(username,pw);
@@ -39,7 +41,7 @@ public class Services {
     {
         //TODO: happens at   MarketSystem getInstance()
     }
-
+    //Make:nitay
     public Result<Boolean,String> LeaveMarket() {
         String output = marketSystem.LeaveMarket();
         Result<Boolean, String> leaveMarket;
@@ -58,7 +60,7 @@ public class Services {
         Result<Boolean,Boolean> output = new Result(b,b);
         return output;
     }
-
+    //Make:nitay
     public Result<Boolean, Integer> CreateShop(String username, String shopname)
     {
         Integer output = marketSystem.createShop(username,null,null,username);
@@ -116,7 +118,7 @@ public class Services {
     {
 
     }
-
+    //Make:nitay
     public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f)
     {
         List<ProductInfo> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(shopname,f);
@@ -217,45 +219,61 @@ public class Services {
 
     }
 
-    public Result<Boolean, String> AppointNewShopOwner(String username)
+    //Make:nitay
+    public Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId)
     {
-
+        String s = marketSystem.AppointNewShopOwner(key,targetUser,userId);
+        if(s!=null)
+            return new Result<>(true,s);
+        else return new Result<>(false,null);
     }
-
-    public Result<Boolean, String> AppointNewShopManager(String username)
+    //Make:nitay
+    public Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId)
     {
-
+        String s = marketSystem.AppointNewShopManager(key,targetUser,userId);
+        if(s!=null)
+            return new Result<>(true,s);
+        else return new Result<>(false,null);
     }
-
-    public Result<Boolean, String> AddShopMangerPermissions(String username, List<ShopManagersPermissions> permissions)
+    //Make:nitay
+    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id)
     {
-
+        String s = marketSystem.AddShopMangerPermissions(key,shopManagersPermissionsList,tragetUser,id);
+        if(s!=null)
+            return new Result<>(true,s);
+        else return new Result<>(false,null);
     }
-
-    public Result<Boolean, String> RemoveShopManagerPermissions(String username, List<ShopManagersPermissions> permissions)
+    //Make:nitay
+    public Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id)
     {
-
+        String s = marketSystem.RemoveShopManagerPermissions(key,shopManagersPermissionsList,tragetUser,id);
+        if(s!=null)
+            return new Result<>(true,s);
+        else return new Result<>(false,null);
     }
-
-    public Result<Boolean, String> CloseShop(String shopname)
-    {
-
+    //Make:nitay
+    public Result<Boolean, String> CloseShop(int shopId,String userId) {
+        String s = marketSystem.CloseShop(shopId, userId);
+        if(s!=null)
+            return new Result<>(true,s);
+        else return new Result<>(false, null);
     }
 
     public Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f)
     {
 
     }
-
-    public Result<Boolean, String> DeleteUserTest(String[] usernames)
-    {
+    //Make:nitay
+    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
         marketSystem.deleteUserTest(usernames);
-        return new Result<>(true,null);
+        return new Result<>(true, null);
     }
-
-    public Result<Boolean, String> RemoveProductFromShopInventory(int productId, String username, String shopname)
+    //Make:nitay
+    public Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname)
     {
-
+        if(marketSystem.RemoveProductFromShopInventory(productId, username, shopname)!=-1)
+            return new Result<>(true,productId);
+        else return new Result<>(false,-1);
     }
 
 

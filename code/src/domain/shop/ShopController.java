@@ -6,12 +6,10 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.Filter;
 import domain.user.SearchProductFilter;
+import domain.user.User;
 import domain.user.UserController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -108,11 +106,48 @@ public class ShopController {
         return shopList.get(shopID);
     }
 
-    public void closeShop(int key,String user) {
-        getShop(key).closeShop(user);
+    public String closeShop(int key,String user) {
+        Shop s = getShop(key);
+        if(s!=null){
+            s.closeShop(user);
+            return s.getName();
+        }
+        return null;
     }
 
     public void DeleteShops(){
         shopList = new HashMap<>();
+    }
+
+    public int RemoveProductFromShopInventory(int productId, String username, int shopname) {
+        Shop s = getShop(shopname);
+        if(s!=null){
+            s.removeListing(productId,username);
+            return productId;
+        }
+        return -1;
+    }
+
+    public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+        Shop s = getShop(key);
+        if(s.removePermissions(shopManagersPermissionsList,tragetUser ,id))
+            return "ShopManagerPermissionsRemove";
+        else return null;
+    }
+    public String AddShopMangerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+        Shop s = getShop(key);
+        if(s.addPermissions(shopManagersPermissionsList,tragetUser ,id))
+            return "ShopManagerPermissionsAdd";
+        else return null;
+    }
+
+    public String AppointNewShopManager(int key,String targetUser, String userId){
+        Shop s = getShop(key);
+        return s.AppointNewShopManager(targetUser,userId);
+    }
+
+    public String AppointNewShopOwner(int key,String targetUser, String userId){
+        Shop s = getShop(key);
+        return s.AppointNewShopOwner(targetUser,userId);
     }
 }
