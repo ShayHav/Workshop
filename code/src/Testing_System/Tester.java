@@ -24,18 +24,22 @@ public class Tester {
      */
 
     //Guest-Visitor General
+    //done
     public Result<Boolean, Boolean> Login(String username, String pw) {
         return br.Login(username, pw);
     }
 
+    //done
     public Result<Boolean, Boolean> Register(String username, String pw) {
         return br.Register(username, pw);
     }
 
+    //done
     public Result<Boolean, String> EnterMarket() {
         return br.EnterMarket();
     }
 
+    //done
     public Result<Boolean, String> LeaveMarket() {
         return br.LeaveMarket();
     }

@@ -129,11 +129,11 @@ public class Services {
     {
         Result<Boolean, List<ShopInfo>> result;
         List<ShopInfo> shopInfo = marketSystem.getInfoOfShops(userID, filter);
-        if(shopInfo.size() > 0){
-            result = new Result<>(true,shopInfo);
+        if(shopInfo == null || shopInfo.size() == 0){
+            result = new Result<>(false,shopInfo);
         }
         else
-            result = new Result<>(false, shopInfo);
+            result = new Result<>(true, shopInfo);
 
         return result;
     }
@@ -143,18 +143,18 @@ public class Services {
     {
         List<ProductInfo> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userID,shopID,f);
         Result<Boolean, List<ProductInfo>> CreateShop;
-        if (GetProductInfoInShop.size()>0)
-            CreateShop = new Result<>(true, GetProductInfoInShop);
-        else CreateShop = new Result<>(false, GetProductInfoInShop);
+        if (GetProductInfoInShop == null || GetProductInfoInShop.size() == 0)
+            CreateShop = new Result<>(false, GetProductInfoInShop);
+        else CreateShop = new Result<>(true, GetProductInfoInShop);
         return CreateShop;
     }//display information of a product?
 
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String pName, Filter<ProductInfo> f)
+    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f)
     {
         Result<Boolean, List<ProductInfo>> result;
-        List<ProductInfo> products = marketSystem.searchProductByName(pName, f);
+        List<ProductInfo> products = marketSystem.searchProductByName(userID ,pName, f);
         if(products.size() > 0)
             result = new Result<>(true, products);
         else
@@ -165,10 +165,10 @@ public class Services {
     }
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String category,Filter<ProductInfo> f )
+    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f )
     {
         Result<Boolean, List<ProductInfo>> result;
-        List<ProductInfo> products = marketSystem.searchProductByCategory(category, f);
+        List<ProductInfo> products = marketSystem.searchProductByCategory(userID ,category, f);
         if(products.size() > 0)
             result = new Result<>(true, products);
         else
@@ -178,10 +178,10 @@ public class Services {
     }
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String keyword, Filter<ProductInfo> f)
+    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f)
     {
         Result<Boolean, List<ProductInfo>> result;
-        List<ProductInfo> products = marketSystem.searchProductByKeyword(keyword, f);
+        List<ProductInfo> products = marketSystem.searchProductByKeyword(userID ,keyword, f);
         if(products.size() > 0)
             result = new Result<>(true, products);
         else
@@ -209,22 +209,6 @@ public class Services {
         else return new Result<>(true,null);
     }
 
-    //Omry
-    public Result<Boolean, Double> CalculatePriceForProduct(Map<Integer, Integer> products)
-    {
-
-    }
-
-    //omry
-    public Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname)
-    {
-
-    }
-
-    public Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname)
-    {
-
-    }
 
     //shay
     public Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID)
@@ -261,36 +245,6 @@ public class Services {
         }
         Product changed= shop.changeProductDetail(p.getId(),p.getName(),p.getDescription(), p.getCategory(),username);
         return new Result<>(changed == null, changed);
-    }
-
-    public Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveBuyingShopPolicy(String shopname)
-    {
-
-    }
-
-    public Result<Boolean, String> AddDiscountShopPolicy(String shopname, Discount discount)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveDiscountShopPolicy(String shopname)
-    {
-
-    }
-
-    public Result<Boolean, String> AddBuyingProductPolicy(String shopname, PurchaseRule pr)
-    {
-
-    }
-
-    public Result<Boolean, String> RemoveBuyingProductPolicy(String shopname)
-    {
-
     }
 
     //Make:nitay
