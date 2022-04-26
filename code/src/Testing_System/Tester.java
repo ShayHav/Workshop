@@ -1,11 +1,9 @@
 package Testing_System;
 
 import domain.shop.Product;
-import domain.shop.PurchasePolicys.PurchaseRule;
-import domain.shop.TransactionInfo;
-import domain.shop.discount.Discount;
 import domain.shop.ShopManagersPermissions;
 import domain.user.Filter;
+import domain.user.TransactionInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -18,12 +16,18 @@ public class Tester {
         br = Selector.GetBridge();
     }
 
+    /*Result<#t | # f,  return value>
+     * t - success
+     * f - failed
+     *
+     */
+
     //Guest-Visitor General
-    public Result<Boolean, String> Login(String username, String pw) {
+    public Result<Boolean, Boolean> Login(String username, String pw) {
         return br.Login(username, pw);
     }
 
-    public Result<Boolean, String> Register(String username, String pw) {
+    public Result<Boolean, Boolean> Register(String username, String pw) {
         return br.Register(username, pw);
     }
 
@@ -85,12 +89,12 @@ public class Tester {
     }
 
     //Shop-Owner Options
-    public Result<Boolean, String> AddProductToShopInventory(Product p, String shopname) {
-        return br.AddProductToShopInventory(p, shopname);
+    public Result<Boolean, Integer> AddProductToShopInventory(Product p,String username, String shopname) {
+        return br.AddProductToShopInventory(p,username, shopname);
     }
 
-    public Result<Boolean, String> RemoveProductToShopInventory(Product p, String shopname) {
-        return br.RemoveProductToShopInventory(p, shopname);
+    public Result<Boolean, String> RemoveProductFromShopInventory(int id, String username, String shopname) {
+        return br.RemoveProductFromShopInventory(id,username, shopname);
     }
 
     public Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo) {
@@ -142,7 +146,7 @@ public class Tester {
 
 
     //Member-Visitor General
-    public Result<Boolean, String> Logout(String username) {
+    public Result<Boolean, Boolean> Logout(String username) {
         return br.Logout(username);
     }
 
@@ -156,8 +160,8 @@ public class Tester {
         return br.RealTimeNotification(users, msg);
     }
 
-    public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti) /*supply*/ {
-        return br.PurchaseDelivery(ti);
+    public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products) /*supply*/ {
+        return br.PurchaseDelivery(ti, products);
     }
 
     public Result<Boolean, String> Payment(TransactionInfo ti) {

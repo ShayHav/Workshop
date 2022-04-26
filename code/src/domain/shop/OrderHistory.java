@@ -44,8 +44,8 @@ public class OrderHistory {
      * @param userID the id of the user to search by
      * @return List of all the Order that were paid by and supplied to the user
      */
-    public List<Order> searchByUser(int userID){
-        return orders.stream().filter((Order o) -> o.getUserID() == userID).collect(Collectors.toList());
+    public List<Order> searchByUser(String userID){
+        return orders.stream().filter((Order o) -> o.getUserID().equals(userID)).collect(Collectors.toList());
     }
 
     /**

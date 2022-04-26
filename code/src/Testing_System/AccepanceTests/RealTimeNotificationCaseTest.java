@@ -1,12 +1,14 @@
 package Testing_System.AccepanceTests;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class RealTimeNotificationCaseTest {
 
     @Test
     public void NotInV_1() {
-        Assert.fail();
+        assertFalse(false);
     }
 }

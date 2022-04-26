@@ -12,11 +12,13 @@ public class Inventory {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private Products productList;
+    private int productIdGen;
 
     public Inventory(){
         items = new HashMap<>();
         keyToProduct = new HashMap<>();
         productList = Products.getInstance();
+        productIdGen = Integer.MIN_VALUE;
     }
 
     /**
@@ -45,25 +47,27 @@ public class Inventory {
     }
 
     /**
-     * adding a product to the store inventrory
-     * @param prodID
+     * adding a product to the store inventory
      * @param price
      * @param quantity
      * @return
      */
-    public boolean addProduct(int prodID, double price, int quantity) {
-        Product product = productList.getProduct(prodID);
-        if(product == null || keyToProduct.containsKey(prodID)){
+    public Product addProduct(String productName, String productDesc, String productCategory, double price, int quantity) {
+        int prodID = productIdGen;
+        productIdGen++;
+        if(keyToProduct.containsKey(prodID)){
             errorLogger.logMsg(Level.WARNING, String.format("No product with the id %d exist", prodID));
-            return false;
+            return null;
         }
         if(price < 0.0 || quantity < 0) {
             errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", prodID));
-            return false;
+            return null;
         }
-        items.put(new ProductImp(product),new PricesAndQuantity(quantity, price));
+        ProductImp p = new ProductImp(prodID, productName, productDesc, productCategory);
+        items.put(p,new PricesAndQuantity(quantity, price));
+        keyToProduct.put(prodID,p);
         eventLogger.logMsg(Level.INFO, String.format("product with id %d added to the store inventory", prodID));
-        return true;
+        return p;
     }
 
     public boolean setPrice(int product, double newPrice){
@@ -118,10 +122,6 @@ public class Inventory {
         }
         eventLogger.logMsg(Level.INFO, "return all the items in stock");
         return products;
-    }
-
-    public Product getProduct(int productID){
-        return keyToProduct.get(productID);
     }
 
     public Product findProduct(int productID){

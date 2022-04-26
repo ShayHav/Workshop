@@ -2,6 +2,7 @@ package domain.user;
 
 import domain.ResponseT;
 import domain.Tuple;
+import domain.market.MarketSystem;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.ShoppingBasket.BasketInfo;
@@ -20,11 +21,11 @@ public class Cart {
         totalAmount = 0;
     }
 
-
-    public void addProductToCart(Shop shop, int productID, int amount) {
-        int shopID = shop.getShopID();
+    public void addProductToCart(int shopID, int productID, int amount) {
         if (!baskets.containsKey(shopID)) {
-            ShoppingBasket newBasket = new ShoppingBasket(shop, productID, amount);
+            Shop shop = MarketSystem.getInstance().getShop(shopID);
+            ShoppingBasket newBasket = new ShoppingBasket(shop);
+            newBasket.addProductToBasket(productID, amount);
             baskets.put(shopID, newBasket);
         } else {
             baskets.get(shopID).addProductToBasket(productID, amount);
@@ -77,21 +78,5 @@ public class Cart {
         return orders;
     }
 
-    public class CartInfo{
-        private double totalAmount;
-        private List<BasketInfo> baskets;
-
-        public CartInfo(double totalAmount, List<BasketInfo> baskets){
-            this.totalAmount = totalAmount;
-            this.baskets = baskets;
-        }
-
-        public double getTotalAmount() {
-            return totalAmount;
-        }
-
-        public List<BasketInfo> getBaskets() {
-            return baskets;
-        }
-    }
+    public record CartInfo(double totalAmount,List<BasketInfo> baskets){}
 }

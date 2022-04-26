@@ -2,11 +2,12 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.user.User;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
+
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoginCaseTest extends Tester {
 
@@ -15,14 +16,14 @@ public class LoginCaseTest extends Tester {
     String[] passwords = ug.GetPW();
     String[] notRegisteredUsers = ug.GetNotRegisteredUsers();
 
-    @Before
+    @BeforeAll
     public void SetUp()
     {
         for(int i = 0; i< ug.getNumOfUser(); i++)
             Register(validUsernames[i], passwords[i]);
     }
 
-    @After
+    @AfterAll
     public void CleanCase()
     {
         DeleteUserTest(validUsernames);
@@ -33,7 +34,7 @@ public class LoginCaseTest extends Tester {
     public void GoodLogin()
     {
         for (int i = 0; i < ug.getNumOfUser(); i++)
-            Assert.assertTrue(Login(validUsernames[i], passwords[i]).GetFirstElement());
+            assertTrue(Login(validUsernames[i], passwords[i]).GetFirstElement());
 
     }
 
@@ -41,7 +42,7 @@ public class LoginCaseTest extends Tester {
     public void MissMatchUserPWTest()
     {
         for (int i = 1; i < ug.getNumOfUser(); i++)
-            Assert.assertFalse(Login(validUsernames[i], passwords[i-1]).GetFirstElement());
+            assertFalse(Login(validUsernames[i], passwords[i-1]).GetFirstElement());
     }
 
     @Test
@@ -49,8 +50,8 @@ public class LoginCaseTest extends Tester {
     {
         for (int i = 0; i < ug.getNumOfUser(); i++)
         {
-            Assert.assertTrue(Login(validUsernames[i], passwords[i]).GetFirstElement());
-            Assert.assertFalse(Login(validUsernames[i], passwords[i]).GetFirstElement());
+           assertTrue(Login(validUsernames[i], passwords[i]).GetFirstElement());
+           assertFalse(Login(validUsernames[i], passwords[i]).GetFirstElement());
 
         }
     }
@@ -59,7 +60,7 @@ public class LoginCaseTest extends Tester {
     public void UserDoesNotExist()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            Assert.assertTrue(Login(notRegisteredUsers[i], passwords[i]).GetFirstElement());
+            assertTrue(Login(notRegisteredUsers[i], passwords[i]).GetFirstElement());
 
     }
 
