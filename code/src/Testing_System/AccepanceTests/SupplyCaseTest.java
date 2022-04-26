@@ -6,14 +6,16 @@ import Testing_System.UserGenerator;
 import domain.market.MarketSystem;
 import domain.shop.Order;
 import domain.user.User;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class SupplyCaseTest extends Tester {
 
@@ -34,7 +36,7 @@ public class SupplyCaseTest extends Tester {
 
     }
 
-    @Before
+    @BeforeAll
     public void SetUp() {
         order_1 = new Order(null, 0, null); //should find supply even if order is dead
         order_2 = new Order(null, 0, null);
@@ -70,12 +72,11 @@ public class SupplyCaseTest extends Tester {
     }
 
 
-    @After
+    @AfterAll
     public void CleanUp()
     {
         for (int i = 0; i < ug.getNumOfUser(); i++)
             Logout(validUserNames[i]);
-
         DeleteUserTest(validUserNames);
     }
 
@@ -83,7 +84,7 @@ public class SupplyCaseTest extends Tester {
     public void ConfirmedSupplyTest()
     {
         for(Order o : orderList)
-            Assert.assertTrue(PurchaseDelivery(o));
+           assertTrue(PurchaseDelivery(o));
     }
 
     @Test
@@ -91,14 +92,14 @@ public class SupplyCaseTest extends Tester {
     {
         MarketSystem.getInstance().setSupplierConnection(false);
         for(Order o : orderList)
-            Assert.assertFalse(PurchaseDelivery(o));
+            assertFalse(PurchaseDelivery(o));
     }
 
     @Test
     public void CantFindSupplyDateTest()
     {
         for(Order o : orderList)
-            Assert.assertFalse(PurchaseDelivery(o));
+            assertFalse(PurchaseDelivery(o));
     }
 
 
