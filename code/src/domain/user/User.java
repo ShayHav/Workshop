@@ -133,9 +133,9 @@ public class User {
         return market.getInfoOfShops(f);
     }
 
-    public List<ProductInfo> getInfoOfProductInShop(int shopID) {
+    public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f) {
         MarketSystem market = MarketSystem.getInstance();
-        return market.getInfoOfProductInShop(shopID);
+        return market.getInfoOfProductInShop(shopID, f);
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {

@@ -51,14 +51,15 @@ public class ShopController {
         return f.applyFilter(allShops);
     }
 
-    public List<ProductInfo> getInfoOfProductInShop(int shopID) {
+    public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f) {
         if(!shopList.containsKey(shopID)){
             //log
             return null;
         }
 
         Shop s = shopList.get(shopID);
-        return s.getProductInfoOfShop();
+        List<ProductInfo> info = s.getProductInfoOfShop();
+        return f.applyFilter(info);
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {

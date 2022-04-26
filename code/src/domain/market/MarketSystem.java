@@ -85,8 +85,8 @@ public class MarketSystem {
         return sc.getInfoOfShops(f);
     }
 
-    public List<ProductInfo> getInfoOfProductInShop(int shopID){
-       return sc.getInfoOfProductInShop(shopID);
+    public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f){
+       return sc.getInfoOfProductInShop(shopID,  f);
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
