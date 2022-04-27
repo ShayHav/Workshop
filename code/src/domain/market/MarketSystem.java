@@ -10,7 +10,6 @@ import domain.user.*;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MarketSystem {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
@@ -39,15 +38,14 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    public boolean start(PaymentService payment, SupplyService supply, String userID, String password) throws Exception {
+    public boolean start(PaymentService payment, SupplyService supply, String userID, String password){
         if(!userController.createSystemManger(userID,password)){
             return false;
         }
-
-        if(!externalConnector.connectToSupplyService(new SupplyServiceImp())){
+        if(!externalConnector.connectToSupplyService(supply)){
             return false;
         }
-        return externalConnector.connectToPaymentService(new PaymentServiceImp());
+        return externalConnector.connectToPaymentService(payment);
     }
 
     /***
@@ -67,6 +65,9 @@ public class MarketSystem {
      * @return - true if supply is approved, false otherwise
      */
     public boolean supply(TransactionInfo ti, Map<Integer, Integer> products) {
+        if(ti == null || products == null){
+            return false;
+        }
         return externalConnector.supply(ti, products);
     }
 
@@ -77,11 +78,6 @@ public class MarketSystem {
     public void setPaymentConnection(boolean b) {
 
     }
-
-    public void createSystemManger(String username, String pw) {
-
-    }
-
 
     public List<ShopInfo> getInfoOfShops(String userID, Filter<ShopInfo> f) {
         if (userID == null || f == null || !userController.HasUserEnteredMarket(userID))
@@ -109,18 +105,28 @@ public class MarketSystem {
     }
 
     public User getUser(String id) {
+        if(id == null || id.isEmpty())
+            return null;
         return UserController.getInstance().getUser(id);
     }
 
-    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, id);
+    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) {
+        if(name == null || discountPolicy == null || purchasePolicy == null || foundId == null)
+            return -1;
+        return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, foundId);
     }
 
     public boolean register(String userId, String pass) {
+        if(userId == null || pass == null)
+            return false;
         return UserController.getInstance().register(userId, pass);
     }
 
     public boolean deleteUserTest(String[] username) {
+        for(String user: username){
+            if(user == null)
+                return false;
+        }
         return UserController.getInstance().deleteUserTest(username);
     }
 
@@ -131,6 +137,9 @@ public class MarketSystem {
 
     //TODO: Services start here :)
     public boolean logIn(String username, String pw) {
+        if(username == null || pw == null){
+            return false;
+        }
         return UserController.getInstance().logIn(username, pw);
     }
 
@@ -138,35 +147,53 @@ public class MarketSystem {
         return null;
     }
 
-    public String logOut(String username) {
+    public String logout(String username) {
+        if(username == null){
+            return null;
+        }
         return UserController.getInstance().logOut(username);
     }
 
     public int RemoveProductFromShopInventory(int productId, String username, int shopname) {
+        if(username == null)
+            return -1;
         return ShopController.getInstance().RemoveProductFromShopInventory(productId, username, shopname);
     }
 
     public String CloseShop(int shopId, String userId) {
+        if(userId == null)
+            return null;
         return ShopController.getInstance().closeShop(shopId, userId);
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
-        return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, tragetUser, id);
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
+        if(shopManagersPermissionsList == null || targetUser == null || id == null)
+            return null;
+        return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, targetUser, id);
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
-        return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, tragetUser, id);
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
+        if(shopManagersPermissionsList == null || targetUser == null || id == null)
+            return null;
+        return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, id);
     }
 
     public String AppointNewShopManager(int key, String targetUser, String userId) {
+        if(targetUser == null || userId == null)
+            return null;
         return ShopController.getInstance().AppointNewShopManager(key, targetUser, userId);
     }
 
     public String AppointNewShopOwner(int key, String targetUser, String userId) {
+        if(targetUser == null || userId == null)
+            return null;
         return ShopController.getInstance().AppointNewShopOwner(key, targetUser, userId);
     }
 
     public List<String> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        if(userID == null || fullName == null || address == null || phoneNumber == null || cardNumber == null ||
+        expirationDate == null)
+            return null;
         return userController.checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
     }
 

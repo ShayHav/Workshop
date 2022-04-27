@@ -4,8 +4,6 @@ package Service;
 import Testing_System.Result;
 import domain.market.*;
 import domain.shop.*;
-import domain.shop.PurchasePolicys.PurchaseRule;
-import domain.shop.discount.Discount;
 import domain.user.*;
 
 import java.util.List;
@@ -59,7 +57,7 @@ public class Services {
     //General Member-Visitor
     public Result<Boolean,String> Logout(String username)
     {
-        String b = marketSystem.logOut(username);
+        String b = marketSystem.logout(username);
         Result<Boolean,String> output = new Result(b,b);
         return output;
     }
