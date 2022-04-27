@@ -166,19 +166,6 @@ public class Services {
     }
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f )
-    {
-        Result<Boolean, List<ProductInfo>> result;
-        List<ProductInfo> products = marketSystem.searchProductByCategory(userID ,category, f);
-        if(products == null)
-            result = new Result<>(true, null);
-        else
-            result = new Result<>(false, products);
-
-        return result;
-    }
-
-    //make:shahar
     public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f)
     {
         Result<Boolean, List<ProductInfo>> result;

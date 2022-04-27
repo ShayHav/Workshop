@@ -93,14 +93,6 @@ public class MarketSystem {
         return ShopController.getInstance().searchProductByName(name, f);
     }
 
-
-    public List<ProductInfo> searchProductByCategory(String userID, String category, Filter<ProductInfo> f) {
-        if (userID == null || category == null || f == null || !userController.HasUserEnteredMarket(userID))
-            return null;
-        return ShopController.getInstance().searchProductByCategory(category, f);
-    }
-
-
     public List<ProductInfo> searchProductByKeyword(String userID, String keyword, Filter<ProductInfo> f) {
         if (userID == null || keyword == null || f == null || !userController.HasUserEnteredMarket(userID))
             return null;
