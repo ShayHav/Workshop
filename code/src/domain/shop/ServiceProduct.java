@@ -34,5 +34,11 @@ public class ServiceProduct implements Product{
         return null;
     }
 
+    public double getPrice() {
+        return price;
+    }
 
+    public int getAmount() {
+        return amount;
+    }
 }

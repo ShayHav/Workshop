@@ -249,8 +249,8 @@ public class Services {
         if(shop == null){
             return new Result<>(false, null);
         }
-        int newAmount = ((ProductService)p).getAmount();
-        double newPrice = ((ProductService)p).getPrice();
+        int newAmount = ((ServiceProduct)p).getAmount();
+        double newPrice = ((ServiceProduct)p).getPrice();
         Product changed= shop.changeProductDetail(p.getId(),p.getName(),p.getDescription(), p.getCategory(),username, newAmount, newPrice);
         return new Result<>(changed == null, changed);
     }
