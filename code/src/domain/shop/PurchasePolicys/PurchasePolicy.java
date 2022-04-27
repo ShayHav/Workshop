@@ -45,19 +45,19 @@ public class PurchasePolicy {
         return allowed;
     }
 
-    public boolean addQuantityRule(int prodID, int minQuantity){
+    public int addQuantityRule(int prodID, int minQuantity){
         try {
             PurchaseRule pr = new MinimumQuantityPolicy(minQuantity, purchaseRuleIDCounter++);
             List<PurchaseRule> prod_pr;
             if(product_purchasePolicies.containsKey(prodID))
-                return false;
+                return -1;
             else
                 prod_pr = new ArrayList<>();
             prod_pr.add(pr);
-            return true;
+            return pr.getID();
         }
         catch (IllegalArgumentException iae){
-            return false;
+            return -1;
         }
     }
 
