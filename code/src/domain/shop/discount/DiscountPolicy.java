@@ -69,7 +69,7 @@ public class DiscountPolicy {
         return totalPrice;
     }
 
-    public boolean addPercentageDiscount(int prodID, double percentage){
+    public int addPercentageDiscount(int prodID, double percentage){
         try {
             Discount discount = new PercentageDiscount(percentage, discountIDCounter++);
             List<Discount> prod_disc;
@@ -79,22 +79,22 @@ public class DiscountPolicy {
                 prod_disc = new ArrayList<>();
             eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %d ", prodID));
             prod_disc.add(discount);
-            return true;
+            return discount.getID();
         }
         catch (IllegalArgumentException iae){
             errorLogger.logMsg(Level.WARNING, String.format("percentage: %d is an illegal value ", percentage));
-            return false;
+            return -1;
         }
     }
 
 
 
 
-    public boolean addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
+    public int addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
         try {
             if (hasBundleDeal.contains(prodID)){
                 eventLogger.logMsg(Level.INFO, String.format("product: %d already has a Bundle discount", prodID));
-                return false;
+                return -1;
             }
 
             Discount discount = new BundleDiscount(amountGetFree, amountNeededToBuy, discountIDCounter++);
@@ -109,10 +109,10 @@ public class DiscountPolicy {
             hasBundleDeal.add(prodID);
             eventLogger.logMsg(Level.INFO, String.format("added Bundle discount to product: %d ", prodID));
             prod_disc.add(discount);
-            return true;
+            return discount.getID();
         }
         catch (IllegalArgumentException iae){
-            return false;
+            return -1;
         }
     }
 

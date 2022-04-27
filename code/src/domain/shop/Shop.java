@@ -32,7 +32,7 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy,String founderId, int shopID) {
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String founderId, int shopID) {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
@@ -140,7 +140,6 @@ public class Shop {
         }
         return null;
     }
-
     //todo????? needed?
     public void changeDiscountPolicy(DiscountPolicy discountPolicy){throw new UnsupportedOperationException();}
     //todo????? needed?
@@ -149,11 +148,11 @@ public class Shop {
     public void changeProductDiscount(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
 
 
-    public boolean addPercentageDiscount(int prodID, double percentage){
+    public int addPercentageDiscount(int prodID, double percentage){
         return discountPolicy.addPercentageDiscount(prodID, percentage);
     }
 
-    public boolean addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
+    public int addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
         return discountPolicy.addBundleDiscount(prodID, amountNeededToBuy, amountGetFree);
     }
 

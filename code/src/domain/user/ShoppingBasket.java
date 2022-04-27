@@ -1,6 +1,7 @@
 package domain.user;
 
 import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
 import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.ProductInfo;
@@ -18,6 +19,7 @@ public class ShoppingBasket {
         failed_due_to_error
     }
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final Shop shop;
     private final Map<Integer, Integer> productAmountList;
     private double basketAmount;
@@ -40,14 +42,17 @@ public class ShoppingBasket {
             errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
             return false;
         } else if (amount < 0) {
-            errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - tried to update to negative amount.", shop.getShopID()));
+            errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - tried to update to negative amount.",productID, shop.getShopID()));
             return false;
         } else {
             if (amount == 0) {
                 productAmountList.remove(productID);
+                eventLogger.logMsg(Level.INFO,String.format("product %d removed from basket %d", productID, shop.getShopID()));
             } else {
                 productAmountList.replace(productID, amount);
+                eventLogger.logMsg(Level.INFO,String.format("product %d amount in basket %d was updated to amount %d", productID, shop.getShopID(),amount));
             }
+
             return true;
         }
     }
@@ -64,6 +69,7 @@ public class ShoppingBasket {
             return false;
         } else {
             productAmountList.remove(productID);
+            eventLogger.logMsg(Level.INFO, String.format("product %d removed successfully from basket", productID));
             return true;
         }
     }
@@ -80,9 +86,11 @@ public class ShoppingBasket {
             return false;
         } else if (!productAmountList.containsKey(productID)) {
             productAmountList.put(productID, amountToAdd);
+            eventLogger.logMsg(Level.INFO,String.format("product %d with amount %d added to basket successfully", productID, amountToAdd));
         } else {
             int currAmount = productAmountList.get(productID);
             productAmountList.replace(productID, (currAmount + amountToAdd));
+            eventLogger.logMsg(Level.INFO,String.format("product %d with amount %d added to basket successfully", productID, currAmount));
         }
         return true;
     }

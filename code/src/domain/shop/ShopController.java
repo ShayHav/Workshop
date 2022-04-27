@@ -67,14 +67,12 @@ public class ShopController {
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f) {
-        if (!shopList.containsKey(shopID)) {
-            //log
-            return null;
+        Shop s = getShop(shopID);
+        if(s != null) {
+            List<ProductInfo> info = s.getProductInfoOfShop();
+            return f.applyFilter(info);
         }
-
-        Shop s = shopList.get(shopID);
-        List<ProductInfo> info = s.getProductInfoOfShop();
-        return f.applyFilter(info);
+        return null;
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
@@ -99,7 +97,7 @@ public class ShopController {
 
     public Shop getShop(int shopID) {
         if (!shopList.containsKey(shopID)) {
-            //log
+            errorLogger.logMsg(Level.WARNING,String.format("shopId %d isn't a valid shop in market", shopID));
             return null;
         }
         return shopList.get(shopID);
@@ -109,6 +107,7 @@ public class ShopController {
         Shop s = getShop(key);
         if (s != null) {
             s.closeShop(user);
+            eventLogger.logMsg(Level.INFO, "close shop succeeded");
             return s.getName();
         }
         return null;
