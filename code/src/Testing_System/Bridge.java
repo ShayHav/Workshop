@@ -1,8 +1,11 @@
 package Testing_System;
 
+import domain.market.PaymentService;
+import domain.market.SupplyService;
 import domain.shop.Product;
 import domain.shop.ProductInfo;
 import domain.shop.PurchasePolicys.PurchaseRule;
+import domain.shop.ShopInfo;
 import domain.shop.ShopManagersPermissions;
 import domain.shop.discount.Discount;
 import domain.user.Filter;
@@ -14,29 +17,29 @@ import java.util.Map;
 public interface Bridge {
 
     //General Guest-Visitor
-    Result<Boolean,Boolean> Login(String username, String pw); //done
+    Result<Boolean, Boolean> Login(String username, String pw); //done
 
-    Result<Boolean,Boolean> Register(String username, String pw); //done
+    Result<Boolean, Boolean> Register(String username, String pw); //done
 
-    Result<Boolean,String> EnterMarket();
+    Result<Boolean, String> EnterMarket();
 
-    Result<Boolean,String> LeaveMarket();
+    Result<Boolean, String> LeaveMarket();
 
 
     //General Member-Visitor
-    Result<Boolean,String> Logout(String username);
+    Result<Boolean, String> Logout(String username); //done
 
-    Result<Boolean, Integer> CreateShop(String username, String shopname);
+    Result<Boolean, Integer> CreateShop(String username, String shopname); //done
 
 
     //System
     Result<Boolean, String> RealTimeNotification(List<String> users, String msg);
 
-    Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products); //supply
+    Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products); //supply
 
     Result<Boolean, String> Payment(TransactionInfo ti);
 
-    Result<Boolean, String> StartMarket();
+    Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password); //done
 
     Result<Boolean, String> AddSupplyService(String path);
 
@@ -46,8 +49,8 @@ public interface Bridge {
 
     Result<Boolean, String> RemovePaymentService(String path);
 
-    //Guest-Visitor Shop options
-    Result<Boolean, String> GetShopsInfo();
+    //Guest-Visitor Shop option
+    Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter); //done
 
     Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f); //display information of a product?
 
@@ -71,8 +74,8 @@ public interface Bridge {
 
     Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname);
 
-    Result<Boolean, Integer> AddProductToShopInventory(Product p, String usernmae,String shopname);
-    
+    Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID); //done
+
     Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo);
 
     /*
@@ -90,19 +93,19 @@ public interface Bridge {
 
      */
 
+    Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname);
+
     Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId);
 
     Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId);
 
-    Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String ownerID);
+    Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);
 
-    Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID);
+    Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser, String ownerID);
 
     Result<Boolean, String> CloseShop(int shopID, String username);
 
     Result<Boolean, String> RequestShopOfficialsInfo(String shopName, Filter f);
 
     Result<Boolean, String> DeleteUserTest(String[] usernames);
-
-    Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, String shopName);
 }

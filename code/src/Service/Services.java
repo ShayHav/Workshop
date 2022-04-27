@@ -130,7 +130,7 @@ public class Services {
     {
         Result<Boolean, List<ShopInfo>> result;
         List<ShopInfo> shopInfo = marketSystem.getInfoOfShops(userID, filter);
-        if(shopInfo == null || shopInfo.size() == 0){
+        if(shopInfo == null){
             result = new Result<>(false,shopInfo);
         }
         else
@@ -223,13 +223,13 @@ public class Services {
     }
 
     //Shay
-    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String usernmae,int shopID)
+    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop = controller.getShop(shopID);
         if(shop == null)
             return new Result<>(false, -1);
-        Product p  = shop.addListing(pName,pDis,pCat,price,amount,usernmae);
+        Product p  = shop.addListing(pName,pDis,pCat,price,amount,username);
         if(p == null){
             return new Result<>(false, -1);
         }

@@ -1,7 +1,10 @@
 package Testing_System;
 
+import domain.market.PaymentService;
+import domain.market.SupplyService;
 import domain.shop.Product;
 import domain.shop.ProductInfo;
+import domain.shop.ShopInfo;
 import domain.shop.ShopManagersPermissions;
 import domain.user.Filter;
 import domain.user.TransactionInfo;
@@ -34,19 +37,20 @@ public class Tester {
         return br.Register(username, pw);
     }
 
-    //done
+    //done - not needed
     public Result<Boolean, String> EnterMarket() {
         return br.EnterMarket();
     }
 
-    //done
+    //done - not needed
     public Result<Boolean, String> LeaveMarket() {
         return br.LeaveMarket();
     }
 
     //Guest-Visitor Purchase
-    public Result<Boolean, String> GetShopsInfo() {
-        return br.GetShopsInfo();
+    //
+    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter) {
+        return br.GetShopsInfo(userID, filter);
     }
 
     public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f) {
@@ -94,12 +98,13 @@ public class Tester {
     }
 
     //Shop-Owner Options
-    public Result<Boolean, Integer> AddProductToShopInventory(Product p,String username, String shopName) {
-        return br.AddProductToShopInventory(p,username, shopName);
+    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
+    {
+        return br.AddProductToShopInventory(pName,pDis, pCat, price, amount, username, shopID);
     }
 
-    public Result<Boolean, Integer> RemoveProductFromShopInventory(int id, String username, String shopName) {
-        return br.RemoveProductFromShopInventory(id,username, shopName);
+    public  Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname) {
+        return br.RemoveProductFromShopInventory(productId,username, shopname);
     }
 
     public Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo) {
@@ -126,7 +131,8 @@ public class Tester {
         return br.AppointNewShopManager(key, targetUser, userId);
     }
 
-    public Result<Boolean, String> AddShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID) {
+    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
+    {
         return br.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
 
@@ -134,8 +140,8 @@ public class Tester {
         return br.RemoveShopManagerPermissions(key,shopManagersPermissionsList, managerUser, ownerID);
     }
 
-    public Result<Boolean, String> CloseShop(int shopID, String shopname) {
-        return br.CloseShop(shopID, shopname);
+    public Result<Boolean, String> CloseShop(int shopID, String userID) {
+        return br.CloseShop(shopID, userID);
     }
 
     /*
@@ -151,10 +157,12 @@ public class Tester {
 
 
     //Member-Visitor General
+    //DONE
     public Result<Boolean, String> Logout(String username) {
         return br.Logout(username);
     }
 
+    //done
     public Result<Boolean, Integer> CreateShop(String username, String shopname) {
         return br.CreateShop(username, shopname);
     }
@@ -173,8 +181,9 @@ public class Tester {
         return br.Payment(ti);
     }
 
-    public Result<Boolean, String> StartMarket() {
-        return br.StartMarket();
+    //done
+    public Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
+        return br.StartMarket(payment, supply, userID, password);
     }
 
     public Result<Boolean, String> AddSupplyService(String path) {

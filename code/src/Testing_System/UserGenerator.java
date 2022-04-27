@@ -1,6 +1,10 @@
 package Testing_System;
 
-public class UserGenerator {
+import domain.market.MarketSystem;
+import domain.market.PaymentServiceImp;
+import domain.market.SupplyServiceImp;
+
+public class UserGenerator extends Tester {
 
     /*
     username rules -
@@ -22,6 +26,8 @@ public class UserGenerator {
     private final int sadUsersIndex = 2;
     private final int numOfUsers = 5;
     private final int numOfPw = 5;
+    private final String adminID = "MAdminM";
+    private final String adminPW = "!@PP348m";
 
     public UserGenerator () {}
 
@@ -33,5 +39,14 @@ public class UserGenerator {
     public String[] GetPW() { return pw;}
     public String[] GetNotRegisteredUsers() { return notRegisteredUser;}
     public String[] GetBadPW() { return this.badPW; }
+    public String GetAdminID() { return this.adminID;}
+    public String GetAdminPW() { return this.adminPW;}
+    public void InitTest() {
+        StartMarket(new PaymentServiceImp(),new SupplyServiceImp(),adminID,adminPW);
+    }
+    public void DeleteAdmin(){
+        String[] arr = {adminID};
+        DeleteUserTest(arr);
+    }
 
 }

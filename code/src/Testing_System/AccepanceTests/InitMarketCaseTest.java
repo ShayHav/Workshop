@@ -1,10 +1,12 @@
 package Testing_System.AccepanceTests;
 
+import Testing_System.Result;
 import Testing_System.Tester;
-import domain.market.MarketSystem;
+import domain.market.*;
 import org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,9 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InitMarketCaseTest extends Tester {
 
+    /*Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)*/
+    private PaymentService payment;
+    private SupplyService supply;
+    private final String userID = "MAdminM";
+    private final String pw = "!@AQgb75";
+
     @AfterEach
     public void CleanAdminUser()
     {
+
         String[] admin = {"MAdminM"};
         DeleteUserTest(admin);
     }
@@ -22,37 +31,33 @@ public class InitMarketCaseTest extends Tester {
     @Test
     public void GoodStartTest()
     {
-        MarketSystem.getInstance().setPaymentConnection(true);
-        MarketSystem.getInstance().setSupplierConnection(true);
-        MarketSystem.getInstance().createSystemManger("MAdminM", "!@#09Pp");
-        assertTrue(StartMarket().GetFirstElement());
-
+        payment = new PaymentServiceImp();
+        supply = new SupplyServiceImp();
+        assertTrue(StartMarket(payment,supply,userID,pw).GetFirstElement());
     }
 
     @Test
     public void NoPaymentConnectionTest()
     {
-        MarketSystem.getInstance().setPaymentConnection(false);
-        MarketSystem.getInstance().setSupplierConnection(true);
-        MarketSystem.getInstance().createSystemManger("MAdminM", "!@#09Pp");
-        assertFalse(StartMarket().GetFirstElement());
+        payment = null;
+        supply = new SupplyServiceImp();
+        assertFalse(StartMarket(payment,supply,userID,pw).GetFirstElement());
     }
 
     @Test
     public void NoSupplyConnectionTest()
     {
-        MarketSystem.getInstance().setPaymentConnection(true);
-        MarketSystem.getInstance().setPaymentConnection(false);
-        MarketSystem.getInstance().createSystemManger("MAdminM", "!@#09Pp");
-        assertFalse(StartMarket().GetFirstElement());
+        payment = new PaymentServiceImp();
+        supply = null;
+        assertFalse(StartMarket(payment,supply,userID,pw).GetFirstElement());
     }
 
     @Test
     public void NoSystemManagerTest()
     {
-        MarketSystem.getInstance().setPaymentConnection(true);
-        MarketSystem.getInstance().setSupplierConnection(true);
-        assertFalse(StartMarket().GetFirstElement());
+        payment = new PaymentServiceImp();
+        supply = new SupplyServiceImp();
+        assertFalse(StartMarket(payment,supply,userID,null).GetFirstElement());
     }
 
 }
