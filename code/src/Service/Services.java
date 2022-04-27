@@ -288,9 +288,9 @@ public class Services {
         else return new Result<>(false, null);
     }
     //Make:nitay
-    public Result<Boolean, String> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userId)
+    public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userId)
     {
-        String s = marketSystem.RequestShopOfficialsInfo(shopName,f,userId);
+        List<UserSearchInfo> s = marketSystem.RequestShopOfficialsInfo(shopName,f,userId);
         if(s!=null)
             return new Result<>(true,s);
         else return new Result<>(false,null);

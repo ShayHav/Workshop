@@ -185,4 +185,8 @@ public class User {
     public void makeSystemManager() {
         isSystemManager = true;
     }
+
+    public UserSearchInfo getUserInfo(){
+        return new UserSearchInfo(id);
+    }
 }
