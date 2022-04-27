@@ -3,6 +3,7 @@ package domain.shop;
 import domain.ErrorLoggerSingleton;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -106,6 +107,17 @@ public class ShopManagersPermissionsController {
                 output = false;
                 errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
             }
+        return output;
+    }
+
+    public void testRestart(){
+        shopManagersPermissionsMap.put("SystemManager",ArrayToListConversion(ShopManagersPermissions.values()));
+    }
+    private List<ShopManagersPermissions> ArrayToListConversion(ShopManagersPermissions[] shopManagersPermissions){
+        List<ShopManagersPermissions> output  = new LinkedList<>();
+        for(ShopManagersPermissions run :shopManagersPermissions)
+            output.add(run);
+
         return output;
     }
 }

@@ -20,8 +20,8 @@ public class Shop {
     private final int shopID;
     private int rank;
     private User ShopFounder;
-    private List<User> ShopOwners;
-    private List<User> ShopManagers;
+    private Map<String,User> ShopOwners;
+    private Map<String,User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
     private List<User> Shoppers;
     private Inventory inventory;
@@ -37,8 +37,8 @@ public class Shop {
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
         orders = new OrderHistory();
-        ShopOwners = new LinkedList<>();
-        ShopManagers = new LinkedList<>();
+        ShopOwners = new HashMap<>();
+        ShopManagers = new HashMap<>();
         Shoppers = new LinkedList<>();
         rank = -1;
         this.name = name;
@@ -49,7 +49,7 @@ public class Shop {
     }
 
     public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
-        if (shopManagersPermissionsController.canChangeShopManagersPermissions(id))
+        if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id))
             return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
         else {
             errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
@@ -58,7 +58,7 @@ public class Shop {
     }
 
     public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
-        if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)) {
+        if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id)) {
             return shopManagersPermissionsController.removePermissions(shopManagersPermissionsList, tragetUser);
         } else {
             errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
@@ -97,24 +97,24 @@ public class Shop {
     }
 
     public Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId){
-        if(shopManagersPermissionsController.canAddProductToInventory(userId))
+        if(shopManagersPermissionsController.canAddProductToInventory(userId)| ShopOwners.containsKey(userId))
             return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
         return null;
     }
 
     public void removeListing(int prodID,String userId){
-        if(shopManagersPermissionsController.canRemoveProductFromInventory(userId))
+        if(shopManagersPermissionsController.canRemoveProductFromInventory(userId)| ShopOwners.containsKey(userId))
             inventory.removeProduct(prodID);
     }
 
     public boolean editPrice(int prodID, double newPrice,String userId){
-        if(shopManagersPermissionsController.canChangeProductsDetail(userId))
+        if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId))
             return inventory.setPrice(prodID, newPrice);
         else return false;
     }
 
     public boolean editQuantity(int prodID, int newQuantity,String userId){
-        if(shopManagersPermissionsController.canChangeProductsDetail(userId))
+        if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId))
             return inventory.setAmount(prodID, newQuantity);
         else return false;
     }
@@ -135,7 +135,7 @@ public class Shop {
     }
 
     public Product changeProductDetail(int prodID, String name, String description, String category,String userId){
-        if(shopManagersPermissionsController.canChangeProductsDetail(userId)) {
+        if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId)) {
             return inventory.setProduct(prodID,name,description,category);
         }
         return null;
@@ -237,20 +237,16 @@ public class Shop {
     }
 
     public boolean isOwner(String id) {
-        for(User run :ShopOwners){
-            if (run.getId().equals(id))
-                return true;
-        }
-        return false;
+        return ShopOwners.containsKey(id);
     }
 
     public String AppointNewShopOwner(String targetUser, String userId) {
-        if(shopManagersPermissionsController.canAppointNewShopOwner(userId)) {
+        if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId) | isFounder(userId)) {
             synchronized (this) {
                 User newOwner = MarketSystem.getInstance().getUser(targetUser);
                 if (newOwner != null)
-                    if (!ShopOwners.contains(newOwner))
-                        ShopOwners.add(newOwner);
+                    if (ShopOwners.get(targetUser) == null)
+                        ShopOwners.put(targetUser, newOwner);
                 eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", targetUser));
                 return String.format("Appoint New ShopOwner User: %s", targetUser);
             }
@@ -264,12 +260,12 @@ public class Shop {
     }
 
     public String AppointNewShopManager(String usertarget, String userId) {
-        if (shopManagersPermissionsController.canAppointNewShopManager(userId)) {
+        if (shopManagersPermissionsController.canAppointNewShopManager(userId)| ShopOwners.containsKey(userId)) {
             synchronized (this) {
                 User newManager = MarketSystem.getInstance().getUser(usertarget);
                 if (newManager != null)
-                    if (!ShopManagers.contains(newManager))
-                        ShopManagers.add(newManager);
+                    if (ShopManagers.get(usertarget)==null)
+                        ShopManagers.put(usertarget,newManager);
                 eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                 return String.format("Appoint New ShopManager User: %s", usertarget);
             }
@@ -351,15 +347,23 @@ public class Shop {
     }
 
     public List<UserSearchInfo> RequestShopOfficialsInfo(SearchOfficialsFilter f,String userId) {
-        if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)) {
-            return f.applyFilter(Stream.concat(ShopOwners.stream(),ShopManagers.stream()).collect(Collectors.toList()),shopID);
+        if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)| ShopOwners.containsKey(userId)) {
+            return f.applyFilter(getUserList(),shopID);
         }
         return null;
     }
     public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f,String userId) {
-        if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId))
+        if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId) | ShopOwners.containsKey(userId))
             return f.applyFilter(orders.getOrders());
         else return null;
     }
 
+    private List<User> getUserList(){
+        return Stream.concat(hashMapToList(ShopOwners).stream(),hashMapToList(ShopManagers).stream()).collect(Collectors.toList());
+    }
+
+    private List<User> hashMapToList(Map<String,User> hashMap) {
+        return new LinkedList(hashMap.values());
+
+    }
 }
