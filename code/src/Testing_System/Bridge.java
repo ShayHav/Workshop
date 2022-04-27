@@ -93,11 +93,11 @@ public interface Bridge {
 
      */
 
-    Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname);
+    Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname); //done
 
-    Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId);
+    Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId); //done
 
-    Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId);
+    Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId);//done
 
     Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);
 

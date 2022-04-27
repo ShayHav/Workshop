@@ -186,6 +186,10 @@ public class User {
         isSystemManager = true;
     }
 
+    public UserSearchInfo getUserInfo(){
+        return new UserSearchInfo(id);
+    }
+
     public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID){
         return us.getOrderHistoryForShops(f,shopID);
     }

@@ -12,6 +12,8 @@ import domain.user.*;
 import java.util.*;
 
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Shop {
     private String name;
@@ -346,22 +348,11 @@ public class Shop {
         return inventory;
     }
 
-    public String RequestShopOfficialsInfo(SearchOfficialsFilter f,String userId) {
-        String output = "";
+    public List<UserSearchInfo> RequestShopOfficialsInfo(SearchOfficialsFilter f,String userId) {
         if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)) {
-            List<Role> roleList = f.getRoleList();
-            for (Role role : roleList) {
-                switch (role) {
-                    case ShopOwner:
-                        output += ShopOwners.toString() + '\n';
-                    case ShopManager:
-                        output += ShopManagers.toString() + '\n';
-                    case ShopFounder:
-                        output += ShopFounder.toString() + '\n';
-                }
-            }
+            return f.applyFilter(Stream.concat(ShopOwners.stream(),ShopManagers.stream()).collect(Collectors.toList()),shopID);
         }
-        return output;
+        return null;
     }
     public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f,String userId) {
         if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId))
