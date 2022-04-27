@@ -2,14 +2,10 @@ package Testing_System;
 
 import domain.market.PaymentService;
 import domain.market.SupplyService;
-import domain.shop.Product;
-import domain.shop.ProductInfo;
+import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchaseRule;
-import domain.shop.ShopInfo;
-import domain.shop.ShopManagersPermissions;
 import domain.shop.discount.Discount;
-import domain.user.Filter;
-import domain.user.TransactionInfo;
+import domain.user.*;
 
 import java.util.List;
 import java.util.Map;
@@ -35,9 +31,9 @@ public interface Bridge {
     //System
     Result<Boolean, String> RealTimeNotification(List<String> users, String msg);
 
-    Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products); //supply
+    Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products); //supply
 
-    Result<Boolean, String> Payment(TransactionInfo ti);
+    Result<Boolean, Boolean> Payment(TransactionInfo ti);
 
     Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password); //done
 
@@ -52,19 +48,17 @@ public interface Bridge {
     //Guest-Visitor Shop option
     Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter); //done
 
-    Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f); //display information of a product?
+    Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f);
 
     Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f); //done
 
-    Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f );  //done
-
     Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f);    //done
 
-    Result<Boolean, String> AddToShoppingCart(Product p, String shopname, int amount);
+    Result<Boolean, Boolean> AddToShoppingCart(String userID, int shopID,int productId, int amount);
 
-    Result<Boolean, String> EditShoppingCart(Product p, String shopname, int amount);
+    Result<Boolean, Boolean> EditShoppingCart(String userId, int shopId, int productId, int amount);
 
-    Result<Boolean, String> Checkout();
+    Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
 
     Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname);
 
@@ -72,7 +66,7 @@ public interface Bridge {
 
     Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname);
 
-    Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname);
+    Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID);
 
     Result<Boolean, Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID); //done
 
@@ -104,7 +98,9 @@ public interface Bridge {
 
     Result<Boolean, String> CloseShop(int shopID, String username);//done
 
-    Result<Boolean, String> RequestShopOfficialsInfo(String shopName, Filter f);
+    Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userId);
 
     Result<Boolean, String> DeleteUserTest(String[] usernames);
+
+    Result<Boolean, List<Order>> RequestShopSalesInfo(int shopName, SearchOrderFilter f, String userId);
 }

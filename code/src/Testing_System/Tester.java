@@ -2,12 +2,8 @@ package Testing_System;
 
 import domain.market.PaymentService;
 import domain.market.SupplyService;
-import domain.shop.Product;
-import domain.shop.ProductInfo;
-import domain.shop.ShopInfo;
-import domain.shop.ShopManagersPermissions;
-import domain.user.Filter;
-import domain.user.TransactionInfo;
+import domain.shop.*;
+import domain.user.*;
 
 import java.util.List;
 import java.util.Map;
@@ -53,8 +49,8 @@ public class Tester {
         return br.GetShopsInfo(userID, filter);
     }
 
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f) {
-        return br.GetProductInfoInShop(shopname, f);
+    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f) {
+        return br.GetProductInfoInShop(userID, shopID, f);
     }
 
     public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f) {
@@ -69,16 +65,16 @@ public class Tester {
         return br.SearchProductByKeyword(userID, keyword, f);
     }
 
-    public Result<Boolean, String> AddToShoppingCart(Product p, String shopname, int amount) {
-        return br.AddToShoppingCart(p, shopname, amount);
+    public Result<Boolean, Boolean> AddToShoppingCart(String userID, int shopID,int productId, int amount) {
+        return br.AddToShoppingCart(userID, shopID, productId, amount);
     }
 
-    public Result<Boolean, String> EditShoppingCart(Product p, String shopname, int amount) {
-        return br.EditShoppingCart(p, shopname, amount);
+    public Result<Boolean, Boolean> EditShoppingCart(String userId, int shopId, int productId, int amount) {
+        return br.EditShoppingCart(userId, shopId, productId, amount);
     }
 
-    public Result<Boolean, String> Checkout() {
-        return br.Checkout();
+    public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        return br.Checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
     }//???
 
     public Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname) {
@@ -93,8 +89,8 @@ public class Tester {
         return br.CheckDiscountForProduct(p, shopname);
     }
 
-    public Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname) {
-        return br.CheckIfProductAvailable(p, shopname);
+    public Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID) {
+        return br.CheckIfProductAvailable(p, shopID);
     }
 
     //Shop-Owner Options
@@ -147,12 +143,12 @@ public class Tester {
     /*
     the following tests cover both cases for system manager as well
      */
-    public Result<Boolean, String> RequestShopOfficialsInfo(String shopname, Filter f) {
-        return br.RequestShopOfficialsInfo(shopname, f);
+    public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userId) {
+        return br.RequestShopOfficialsInfo(shopName, f, userId);
     }
 
-    public Result<Boolean, String> RequestShopSalesInfo(String shopname, Filter f) {
-        return br.RequestShopOfficialsInfo(shopname, f);
+    public Result<Boolean, List<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userId) {
+        return br.RequestShopSalesInfo(shopName, f, userId);
     }
 
 
@@ -173,11 +169,11 @@ public class Tester {
         return br.RealTimeNotification(users, msg);
     }
 
-    public Result<Boolean, String> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products) /*supply*/ {
+    public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products) /*supply*/ {
         return br.PurchaseDelivery(ti, products);
     }
 
-    public Result<Boolean, String> Payment(TransactionInfo ti) {
+    public Result<Boolean, Boolean> Payment(TransactionInfo ti) {
         return br.Payment(ti);
     }
 

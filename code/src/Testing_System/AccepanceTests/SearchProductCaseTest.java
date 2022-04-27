@@ -154,7 +154,9 @@ public class SearchProductCaseTest extends Tester {
     {
         Filter<ProductInfo> f_4 = new SearchProductFilter(3.0,100.0,null,null,null);
         assertTrue(SearchProductByKeyword(guestID,"",f_4).GetFirstElement() && SearchProductByKeyword(guestID, "", f_4).GetSecondElement().size() == 2);
-        Product newP = new ServicePr(p_1.)
-        ChangeProduct(user_1,p_1,shopID_1);
+        Product newP = new ServiceProduct(p_1.getId(), p_1.getName(),p_1.getDescription(),p_1.getCategory(),1.0,90);
+        ChangeProduct(user_1,newP,shopID_1);
+        assertTrue(SearchProductByKeyword(guestID,"",f_4).GetFirstElement() && SearchProductByKeyword(guestID, "", f_4).GetSecondElement().size() == 1);
+
     }
 }
