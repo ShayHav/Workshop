@@ -288,11 +288,19 @@ public class Services {
         else return new Result<>(false, null);
     }
     //Make:nitay
-    public Result<Boolean, String> RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f)
+    public Result<Boolean, String> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userId)
     {
-        String s = marketSystem.RequestShopOfficialsInfo(shopname,f);
+        String s = marketSystem.RequestShopOfficialsInfo(shopName,f,userId);
         if(s!=null)
             return new Result<>(true,s);
+        else return new Result<>(false,null);
+    }
+    //Make:nitay
+    public Result<Boolean, List<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f,String userId)
+    {
+        List<Order> orders = marketSystem.RequestInformationOfShopsSalesHistory(shopName,f,userId);
+        if(orders!=null)
+            return new Result<>(true,orders);
         else return new Result<>(false,null);
     }
     //Make:nitay

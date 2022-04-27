@@ -291,9 +291,6 @@ public class Shop {
         return isOpen;
     }
 
-    public void RequestInformationOnShopsOfficials(){
-        throw new UnsupportedOperationException();
-    }
 
     public void RequestInformationOfShopsSalesHistory(){
         throw new UnsupportedOperationException();
@@ -349,20 +346,27 @@ public class Shop {
         return inventory;
     }
 
-    public String RequestShopOfficialsInfo(SearchOfficialsFilter f) {
+    public String RequestShopOfficialsInfo(SearchOfficialsFilter f,String userId) {
         String output = "";
-        List<Role> roleList = f.getRoleList();
-        for(Role role: roleList){
-            switch (role){
-                case ShopOwner:
-                    output+= ShopOwners.toString()+'\n';
-                case ShopManager:
-                    output+= ShopManagers.toString()+'\n';
-                case ShopFounder:
-                    output+= ShopFounder.toString()+'\n';
+        if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)) {
+            List<Role> roleList = f.getRoleList();
+            for (Role role : roleList) {
+                switch (role) {
+                    case ShopOwner:
+                        output += ShopOwners.toString() + '\n';
+                    case ShopManager:
+                        output += ShopManagers.toString() + '\n';
+                    case ShopFounder:
+                        output += ShopFounder.toString() + '\n';
+                }
             }
         }
         return output;
+    }
+    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f,String userId) {
+        if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId))
+            return f.applyFilter(orders.getOrders());
+        else return null;
     }
 
 }
