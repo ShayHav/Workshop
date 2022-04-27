@@ -241,7 +241,7 @@ public class Shop {
     }
 
     public String AppointNewShopOwner(String targetUser, String userId) {
-        if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId)) {
+        if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId) | isFounder(userId)) {
             synchronized (this) {
                 User newOwner = MarketSystem.getInstance().getUser(targetUser);
                 if (newOwner != null)

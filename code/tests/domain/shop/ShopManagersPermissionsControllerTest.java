@@ -6,87 +6,42 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShopManagersPermissionsControllerTest {
     private ShopManagersPermissionsController shopManagersPermissionsController;
-    private UserController userController;
     private UserGenerator userGenerator = new UserGenerator();
     private String[] userName = userGenerator.GetValidUsers();
-    private String[] userPass = userGenerator.GetPW();
-    private String[] badPass = userGenerator.GetBadPW();
+    private String systemManager = "SystemManager";
+    private List<ShopManagersPermissions> shopManagersPermissionsList;
+
 
     @BeforeEach
     void setUp(){
         shopManagersPermissionsController = new ShopManagersPermissionsController();
-        userController = UserController.getInstance();
-        for(int i=0;i<userName.length;i++) {
-            userController.register(userName[i], userPass[i]);
-        }
+        shopManagersPermissionsController.testRestart();
+        shopManagersPermissionsList = new LinkedList<>();
     }
 
-    @Test
-    void canAddProductToInventory() {
-    }
-
-    @Test
-    void canRemoveProductFromInventory() {
-    }
-
-    @Test
-    void canChangeProductsDetail() {
-    }
-
-    @Test
-    void canChangeBuyingShopPolicy() {
-    }
-
-    @Test
-    void canChangeDiscountShopPolicy() {
-    }
-
-    @Test
-    void canChangeProductsBuyingShopPolicy() {
-    }
-
-    @Test
-    void canChangeProductsDiscountShopPolicy() {
-    }
-
-    @Test
-    void canAppointNewShopOwner() {
-    }
-
-    @Test
-    void canAppointNewShopManager() {
-    }
-
-    @Test
-    void canChangeManagerPrivileges() {
-    }
-
-    @Test
-    void canChangeShopManagersPermissions() {
-    }
-
-    @Test
-    void canCloseShop() {
-    }
-
-    @Test
-    void canRequestInformationOnShopsOfficials() {
-    }
-
-    @Test
-    void canRequestInformationOfShopsSalesHistory() {
-    }
 
     @Test
     void removePermissions() {
+        shopManagersPermissionsList.add(ShopManagersPermissions.AppointNewShopManager);
+        shopManagersPermissionsController.removePermissions(shopManagersPermissionsList,systemManager);
+        assertFalse(shopManagersPermissionsController.canAppointNewShopManager(systemManager));
     }
 
     @Test
     void addPermissions() {
-        shopManagersPermissionsController.
+        shopManagersPermissionsList.add(ShopManagersPermissions.AddProductToInventory);
+        shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, userName[0]);
+        assertTrue(shopManagersPermissionsController.canAddProductToInventory(userName[0]));
+        assertFalse(shopManagersPermissionsController.canAppointNewShopManager(userName[0]));
     }
 }
