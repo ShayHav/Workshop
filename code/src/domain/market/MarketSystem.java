@@ -75,35 +75,36 @@ public class MarketSystem {
 
 
     public List<ShopInfo> getInfoOfShops(String userID, Filter<ShopInfo> f) {
-        if (userController.HasUserEnteredMarket(userID))
-            return ShopController.getInstance().getInfoOfShops(f);
-        return null;
+        if (userID == null || f == null || !userController.HasUserEnteredMarket(userID))
+            return null;
+        return ShopController.getInstance().getInfoOfShops(f);
+
     }
 
     public List<ProductInfo> getInfoOfProductInShop(String userID, int shopID, Filter<ProductInfo> f) {
-        if (userController.HasUserEnteredMarket(userID))
-            return ShopController.getInstance().getInfoOfProductInShop(shopID, f);
-        return null;
+        if (userID == null || f == null || !userController.HasUserEnteredMarket(userID))
+            return null;
+        return ShopController.getInstance().getInfoOfProductInShop(shopID, f);
     }
 
-    public List<ProductInfo> searchProductByName(String UserID, String name, Filter<ProductInfo> f) {
-        if(userController.HasUserEnteredMarket(UserID))
-            return ShopController.getInstance().searchProductByName(name, f);
-        return null;
-    }
-
-
-    public List<ProductInfo> searchProductByCategory(String UserID,String category, Filter<ProductInfo> f) {
-        if(userController.HasUserEnteredMarket(UserID))
-            return ShopController.getInstance().searchProductByCategory(category, f);
-        return null;
+    public List<ProductInfo> searchProductByName(String userID, String name, Filter<ProductInfo> f) {
+        if (userID == null || name == null || f == null || !userController.HasUserEnteredMarket(userID))
+            return null;
+        return ShopController.getInstance().searchProductByName(name, f);
     }
 
 
-    public List<ProductInfo> searchProductByKeyword(String UserID, String keyword, Filter<ProductInfo> f) {
-        if(userController.HasUserEnteredMarket(UserID))
-            return ShopController.getInstance().searchProductByKeyword(keyword, f);
-        return null;
+    public List<ProductInfo> searchProductByCategory(String userID, String category, Filter<ProductInfo> f) {
+        if (userID == null || category == null || f == null || !userController.HasUserEnteredMarket(userID))
+            return null;
+        return ShopController.getInstance().searchProductByCategory(category, f);
+    }
+
+
+    public List<ProductInfo> searchProductByKeyword(String userID, String keyword, Filter<ProductInfo> f) {
+        if (userID == null || keyword == null || f == null || !userController.HasUserEnteredMarket(userID))
+            return null;
+        return ShopController.getInstance().searchProductByKeyword(keyword, f);
     }
 
     public User getUser(String id) {
@@ -173,10 +174,11 @@ public class MarketSystem {
     }
 
     public List<UserSearchInfo> RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f, String userId) {
-        return ShopController.getInstance().getShop(shopname).RequestShopOfficialsInfo(f,userId);
+        return ShopController.getInstance().getShop(shopname).RequestShopOfficialsInfo(f, userId);
     }
+
     public List<Order> RequestInformationOfShopsSalesHistory(int shopname, SearchOrderFilter f, String userId) {
-        return ShopController.getInstance().getShop(shopname).RequestInformationOfShopsSalesHistory(f,userId);
+        return ShopController.getInstance().getShop(shopname).RequestInformationOfShopsSalesHistory(f, userId);
     }
 
     public String EnterMarket() {
@@ -184,23 +186,23 @@ public class MarketSystem {
     }
 
     public boolean AddProductToCart(String userID, int shopID, int productId, int amount) {
-        return userController.addProductToCart(userID,shopID,productId,amount);
+        return userController.addProductToCart(userID, shopID, productId, amount);
     }
 
 
     public boolean EditShoppingCart(String userId, int shopId, int productId, int amount) {
-        return userController.updateAmountOfProduct(userId,shopId,productId,amount);
+        return userController.updateAmountOfProduct(userId, shopId, productId, amount);
     }
 
     public boolean removeProductFromCart(String userId, int shopId, int productId) {
         return userController.removeProductFromCart(userId, shopId, productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID){
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) {
         return userController.getOrderHistoryForShops(userID, f, shopID);
     }
 
-    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs){
+    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String> userIDs) {
         return userController.getOrderHistoryForUser(userID, f, userIDs);
     }
 }

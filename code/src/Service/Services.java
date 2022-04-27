@@ -156,8 +156,8 @@ public class Services {
     {
         Result<Boolean, List<ProductInfo>> result;
         List<ProductInfo> products = marketSystem.searchProductByName(userID ,pName, f);
-        if(products.size() > 0)
-            result = new Result<>(true, products);
+        if(products == null)
+            result = new Result<>(true, null);
         else
             result = new Result<>(false, products);
 
@@ -170,8 +170,8 @@ public class Services {
     {
         Result<Boolean, List<ProductInfo>> result;
         List<ProductInfo> products = marketSystem.searchProductByCategory(userID ,category, f);
-        if(products.size() > 0)
-            result = new Result<>(true, products);
+        if(products == null)
+            result = new Result<>(true, null);
         else
             result = new Result<>(false, products);
 
@@ -183,8 +183,8 @@ public class Services {
     {
         Result<Boolean, List<ProductInfo>> result;
         List<ProductInfo> products = marketSystem.searchProductByKeyword(userID ,keyword, f);
-        if(products.size() > 0)
-            result = new Result<>(true, products);
+        if(products == null)
+            result = new Result<>(true, null);
         else
             result = new Result<>(false, products);
 

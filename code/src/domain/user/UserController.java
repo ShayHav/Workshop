@@ -116,12 +116,9 @@ public class UserController {
     }
 
     public User getUser(String id) {
-        User getUser = null;
-        for (Map.Entry<String, User> entry : memberList.entrySet()){
-            if(entry.getKey().equals(id))
-                getUser = entry.getValue();
-        }
-        return getUser;
+        if(id == null)
+            return null;
+        return memberList.getOrDefault(id, null);
     }
 
     public List<ShopInfo> getInfoOfShops(String id){
