@@ -78,27 +78,20 @@ public class ShopController {
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
+        String lowerName = name.toLowerCase();
         List<ProductInfo> products = new ArrayList<>();
         for (Shop s : shopList.values()) {
-            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().equals(name)).collect(Collectors.toList());
-            products.addAll(shopProducts);
-        }
-        return f.applyFilter(products);
-    }
-
-    public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
-        List<ProductInfo> products = new ArrayList<>();
-        for (Shop s : shopList.values()) {
-            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
+            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().toLowerCase().equals(lowerName)).collect(Collectors.toList());
             products.addAll(shopProducts);
         }
         return f.applyFilter(products);
     }
 
     public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
+        String lowerKeyword = keyword.toLowerCase();
         List<ProductInfo> products = new ArrayList<>();
         for (Shop s : shopList.values()) {
-            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().contains(keyword)).collect(Collectors.toList());
+            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().toLowerCase().contains(lowerKeyword)).collect(Collectors.toList());
             products.addAll(shopProducts);
         }
         return f.applyFilter(products);
