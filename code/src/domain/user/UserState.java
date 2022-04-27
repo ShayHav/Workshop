@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserState {
 
-    void leaveMarket(Cart cart);
+    boolean saveCart(Cart cart);
 
     int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id);
 

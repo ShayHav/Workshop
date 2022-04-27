@@ -17,9 +17,8 @@ public class Member implements UserState{
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
 
-    @Override
-    public void leaveMarket(Cart cart) {
-        //TODO: impl,shahar need to add method save cart when we manage DB
+    public boolean saveCart(Cart cart) {
+        throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
 

@@ -299,7 +299,9 @@ public class Shop {
     }
 
     public ShopInfo getShopInfo() {
-        return new ShopInfo(name, rank);
+        if(this.isOpen)
+            return new ShopInfo(name, rank);
+        return null;
     }
 
     public List<ProductInfo> getProductInfoOfShop() {

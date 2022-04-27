@@ -37,35 +37,37 @@ public class ShopController {
     }
 
     public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        if(isUniqueName(name)) {
+        if (isUniqueName(name)) {
             shopCounter++;
-            Shop newShop = new Shop(name, discountPolicy, purchasePolicy, id,shopCounter);
-            shopList.put(shopCounter,newShop);
-            eventLogger.logMsg(Level.INFO,String.format("create new shop. FounderId: %s , ShopName: %s",id,name));
+            Shop newShop = new Shop(name, discountPolicy, purchasePolicy, id, shopCounter);
+            shopList.put(shopCounter, newShop);
+            eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", id, name));
             return shopCounter;
         }
-        errorLogger.logMsg(Level.WARNING,String.format("attempt to create a shop with exist name. id: %s , name: %s",id,name));
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to create a shop with exist name. id: %s , name: %s", id, name));
         return -1;
     }
 
     private boolean isUniqueName(String name) {
-        for (Map.Entry<Integer, Shop> entry : shopList.entrySet()){
-           if(entry.getValue().getName().equals(name))
-               return false;
+        for (Map.Entry<Integer, Shop> entry : shopList.entrySet()) {
+            if (entry.getValue().getName().equals(name))
+                return false;
         }
         return true;
     }
 
     public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
         List<ShopInfo> allShops = new ArrayList<>();
-        for(Shop s: shopList.values()){
-            allShops.add(s.getShopInfo());
+        for (Shop s : shopList.values()) {
+            ShopInfo info = s.getShopInfo();
+            if (info != null) //means, if the shop is open
+                allShops.add(s.getShopInfo());
         }
         return f.applyFilter(allShops);
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f) {
-        if(!shopList.containsKey(shopID)){
+        if (!shopList.containsKey(shopID)) {
             //log
             return null;
         }
@@ -77,7 +79,7 @@ public class ShopController {
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
         List<ProductInfo> products = new ArrayList<>();
-        for(Shop s: shopList.values()){
+        for (Shop s : shopList.values()) {
             List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().equals(name)).collect(Collectors.toList());
             products.addAll(shopProducts);
         }
@@ -86,7 +88,7 @@ public class ShopController {
 
     public List<ProductInfo> searchProductByCategory(String category, Filter<ProductInfo> f) {
         List<ProductInfo> products = new ArrayList<>();
-        for(Shop s: shopList.values()){
+        for (Shop s : shopList.values()) {
             List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
             products.addAll(shopProducts);
         }
@@ -95,7 +97,7 @@ public class ShopController {
 
     public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
         List<ProductInfo> products = new ArrayList<>();
-        for(Shop s: shopList.values()){
+        for (Shop s : shopList.values()) {
             List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().contains(keyword)).collect(Collectors.toList());
             products.addAll(shopProducts);
         }
@@ -103,76 +105,76 @@ public class ShopController {
     }
 
     public Shop getShop(int shopID) {
-        if(!shopList.containsKey(shopID)){
+        if (!shopList.containsKey(shopID)) {
             //log
             return null;
         }
         return shopList.get(shopID);
     }
 
-    public String closeShop(int key,String user) {
+    public String closeShop(int key, String user) {
         Shop s = getShop(key);
-        if(s!=null){
+        if (s != null) {
             s.closeShop(user);
             return s.getName();
         }
         return null;
     }
 
-    public void DeleteShops(){
+    public void DeleteShops() {
         shopList = new HashMap<>();
     }
 
     public int RemoveProductFromShopInventory(int productId, String username, int shopname) {
         Shop s = getShop(shopname);
-        if(s!=null){
-            s.removeListing(productId,username);
+        if (s != null) {
+            s.removeListing(productId, username);
             return productId;
         }
         return -1;
     }
 
-    public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
         Shop s = getShop(key);
-        if(s.removePermissions(shopManagersPermissionsList,tragetUser ,id))
+        if (s.removePermissions(shopManagersPermissionsList, tragetUser, id))
             return "ShopManagerPermissionsRemove";
         else return null;
     }
-    public String AddShopMangerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
+
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
         Shop s = getShop(key);
-        if(s.addPermissions(shopManagersPermissionsList,tragetUser ,id))
+        if (s.addPermissions(shopManagersPermissionsList, tragetUser, id))
             return "ShopManagerPermissionsAdd";
         else return null;
     }
 
-    public String AppointNewShopManager(int key,String targetUser, String userId){
+    public String AppointNewShopManager(int key, String targetUser, String userId) {
         Shop s = getShop(key);
-        return s.AppointNewShopManager(targetUser,userId);
+        return s.AppointNewShopManager(targetUser, userId);
     }
 
-    public String RemoveShopManagerPermissions(int key,List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser , String id) {
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
         Shop s = getShop(key);
-        if(s.removePermissions(shopManagersPermissionsList,tragetUser.getId() ,id))
+        if (s.removePermissions(shopManagersPermissionsList, tragetUser.getId(), id))
             return "ShopManagerPermissionsRemove";
         else return null;
     }
 
-    public String AppointNewShopOwner(int key,String targetUser, String userId){
+    public String AppointNewShopOwner(int key, String targetUser, String userId) {
         Shop s = getShop(key);
-        return s.AppointNewShopOwner(targetUser,userId);
+        return s.AppointNewShopOwner(targetUser, userId);
     }
 
-    public List<Order> getOrderHistoryForShops(List<Integer> shopId){
+    public List<Order> getOrderHistoryForShops(List<Integer> shopId) {
         List<Order> orders = new ArrayList<>();
-        if(shopId == null){
-            for(Shop s: shopList.values()){
+        if (shopId == null) {
+            for (Shop s : shopList.values()) {
                 orders.addAll(s.getOrders());
             }
-        }
-        else{
-            for(Integer id: shopId){
+        } else {
+            for (Integer id : shopId) {
                 Shop s = shopList.get(id);
-                if(s == null){
+                if (s == null) {
                     //log
                     return null;
                 }

@@ -1,5 +1,7 @@
 package domain.user;
 
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
 import domain.ResponseT;
 import domain.Tuple;
 import domain.market.MarketSystem;
@@ -8,14 +10,15 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 
 import java.util.List;
+import java.util.logging.Level;
 
 public class Guest implements UserState {
 
     private static MarketSystem market = MarketSystem.getInstance();
-
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     @Override
-    public int leaveMarket(Cart cart) {
-        //log
+    public boolean saveCart(Cart cart) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 

@@ -24,7 +24,6 @@ public class User {
     private List<OwnerAppointment> ownerAppointmentList;
     private List<Order> orderHistory;
     private boolean isSystemManager;
-    private boolean inMarket;
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
@@ -36,7 +35,6 @@ public class User {
         this.id = id;
         loggedIn = false;
         isSystemManager = false;
-        inMarket = false;
     }
 
     /***
@@ -45,7 +43,6 @@ public class User {
     public void enterMarket() {
         us = new Guest();
         userCart = new Cart();
-        inMarket = true;
     }
 
 
@@ -53,16 +50,14 @@ public class User {
      * leave market - user has no state
      */
     public void leaveMarket() {
-        us.leaveMarket(userCart);
         us = null;
-        inMarket = false;
     }
 
-    public void closeShop(String shop) {
-        List<Role> useRoleList = roleList.get(shop);
+    public void closeShop(int shopId) {
+        List<Role> useRoleList = roleList.get(shopId);
         if (useRoleList!=null) {
             if(useRoleList.contains(Role.ShopFounder))
-                us.closeShop(shop, this.id);
+                us.closeShop(shopId, this.id);
         }
         else errorLogger.logMsg(Level.WARNING, String.format("Not Founder shop try to close shop. user: %s", this.id));
     }
@@ -118,6 +113,7 @@ public class User {
      *  logout from the system
      */
     public void logout() {
+        //TODO: save the user cart
         loggedIn = false;
     }
 
