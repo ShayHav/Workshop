@@ -39,8 +39,15 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    public boolean start(PaymentService payment, SupplyService supply, String userID, String password) {
-        return false;
+    public boolean start(PaymentService payment, SupplyService supply, String userID, String password) throws Exception {
+        if(!userController.createSystemManger(userID,password)){
+            return false;
+        }
+
+        if(!externalConnector.connectToSupplyService(new SupplyServiceImp())){
+            return false;
+        }
+        return externalConnector.connectToPaymentService(new PaymentServiceImp());
     }
 
     /***
@@ -49,6 +56,8 @@ public class MarketSystem {
      * @return true if approve, false if otherwise
      */
     public boolean pay(TransactionInfo ti) {
+        if(ti == null)
+            return false;
         return externalConnector.pay(ti);
     }
 
