@@ -41,6 +41,7 @@ public class SearchProductFilter implements Filter<ProductInfo> {
             result = result.stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
         }
 
+
         return result;
     }
 
