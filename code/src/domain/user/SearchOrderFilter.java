@@ -19,16 +19,19 @@ public class SearchOrderFilter implements Filter<Order> {
     public SearchOrderFilter(Double minPrice, Double maxPrice, LocalDate minDate, LocalDate maxDate) {
         this.minPrice = Objects.requireNonNullElse(minPrice, 0d);
         this.maxPrice = Objects.requireNonNullElse(maxPrice, Double.MAX_VALUE);
-        if (minDate.isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("min date cannot be later than today");
         this.minDate = minDate;
-        if (maxDate.isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("max date cannot be later than today");
         this.maxDate = maxDate;
     }
 
     public List<Order> applyFilter(List<Order> orders) {
         List<Order> result = new ArrayList<>();
+
+        if(minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice
+            || minDate.isAfter(LocalDate.now()) || maxDate.isAfter(LocalDate.now())
+            || maxDate.isBefore(minDate)) {
+            return result;
+        }
+
         result = orders.stream().filter(o -> (o.getTotalAmount() >= minPrice & o.getTotalAmount() <= maxPrice)).collect(Collectors.toList());
 
         if (minDate != null) {

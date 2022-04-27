@@ -25,6 +25,10 @@ public class SearchProductFilter implements Filter<ProductInfo> {
 
     public List<ProductInfo> applyFilter(List<ProductInfo> products) {
         List<ProductInfo> result = new ArrayList<>();
+
+        if(minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice)
+            return result;
+
         result = products.stream().filter(p -> (p.getPrice() >= minPrice & p.getPrice() <= maxPrice)).collect(Collectors.toList());
 
         if (productRank != null) {
