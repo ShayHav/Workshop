@@ -14,7 +14,8 @@ public class Guest implements UserState {
     private static MarketSystem market = MarketSystem.getInstance();
 
     @Override
-    public void leaveMarket(Cart cart) {
+    public int leaveMarket(Cart cart) {
+        //log
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
@@ -35,6 +36,16 @@ public class Guest implements UserState {
 
     @Override
     public void closeShop(int shop, String id) {
+        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+    }
+
+    @Override
+    public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String> userID) {
+        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+    }
+
+    @Override
+    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 }

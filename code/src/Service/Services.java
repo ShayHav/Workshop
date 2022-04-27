@@ -336,4 +336,24 @@ public class Services {
         else return new Result<>(false,-1);
     }
 
+    //make:shahar
+    public Result<Boolean,List<Order>> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID){
+        List<Order> result = marketSystem.getOrderHistoryForShops(userID, f, shopID);
+        if(result == null){
+            return new Result<>(false,null);
+        }
+
+        return new Result<>(true,result);
+    }
+
+    //make:shahar
+    public Result<Boolean,List<Order>> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs){
+        List<Order> result = marketSystem.getOrderHistoryForUser(userID, f, userIDs);
+        if(result == null){
+            return new Result<>(false,null);
+        }
+
+        return new Result<>(true,result);
+    }
+
 }

@@ -185,4 +185,12 @@ public class User {
     public void makeSystemManager() {
         isSystemManager = true;
     }
+
+    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID){
+        return us.getOrderHistoryForShops(f,shopID);
+    }
+
+    public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID){
+        return us.getOrderHistoryForUser(f,userID);
+    }
 }

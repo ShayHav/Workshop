@@ -19,6 +19,10 @@ public interface UserState {
 
     void closeShop(int shop, String id);
 
+    List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID);
+
+    List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID);
+
 
 
 

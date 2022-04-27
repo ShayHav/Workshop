@@ -40,7 +40,7 @@ public class MarketSystem {
      * Ensures there is at least 1 System manager
      */
     public boolean start(PaymentService payment, SupplyService supply, String userID, String password) {
-
+        return false;
     }
 
     /***
@@ -194,5 +194,13 @@ public class MarketSystem {
 
     public boolean removeProductFromCart(String userId, int shopId, int productId) {
         return userController.removeProductFromCart(userId, shopId, productId);
+    }
+
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID){
+        return userController.getOrderHistoryForShops(userID, f, shopID);
+    }
+
+    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs){
+        return userController.getOrderHistoryForUser(userID, f, userIDs);
     }
 }

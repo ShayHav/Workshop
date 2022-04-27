@@ -140,6 +140,16 @@ public class Member implements UserState{
         else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %s , user id:%s",shop,id));
     }
 
+    @Override
+    public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String> userID) {
+        throw new UnsupportedOperationException("member is not allowed to perform this action");
+    }
+
+    @Override
+    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
+        throw new UnsupportedOperationException("member is not allowed to perform this action");
+    }
+
     /***
      * The function will display information on the shop, and shop's officials.
      * The function can be called only by Shop Owner

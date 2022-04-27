@@ -17,14 +17,14 @@ public class UserController {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
-    private List<User> activeUser; //TODO: temporary
+    private Map<String,User> activeUser; //TODO: temporary
     private static UserController instance = null;
     private User adminUser;
     private int guestCounter = 0;
 
     private UserController() {
         memberList = new HashMap<>();
-        activeUser = new LinkedList<>();
+        activeUser = new HashMap<>();
     }
 
     public static UserController getInstance() {
@@ -48,7 +48,7 @@ public class UserController {
             return false;
         } else if (memberList.get(id) != null) {
             if (securePasswordStorage.passwordCheck(id, pass)) {
-                activeUser.add(memberList.get(id));
+                activeUser.put(id,memberList.get(id));
                 getUser(id).login();
                 eventLogger.logMsg(Level.INFO, String.format(" logIn for user: %s.", id));
                 return true;
@@ -61,7 +61,7 @@ public class UserController {
     }
 
     private boolean isUserisLog(String id){
-        return activeUser.contains(id);
+        return activeUser.containsKey(id);
     }
 
     //TODO: add logger and validate user is registered and logged in- when transferring to concurrency
@@ -69,16 +69,16 @@ public class UserController {
      * logout from system
      * pre-condition - user is registered and logged-in
      */
-    public String logOut(String user) {
+    public String logOut(String userId) {
         if (activeUser != null) {
-            if(activeUser.contains(getUser(user))) {
-                User u = getUser(user);
+            if(activeUser.containsKey(userId)) {
+                User u = getUser(userId);
                 u.logout();
-                activeUser.remove(u);
-                eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", user));
+                activeUser.remove(userId);
+                eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", userId));
             }
         } else {
-            errorLogger.logMsg(Level.WARNING, "attempt of logOut for unlog user.");
+            errorLogger.logMsg(Level.WARNING, "attempt of logOut for user who is not logged in.");
             return null;
         }
         return enterMarket();
@@ -110,7 +110,7 @@ public class UserController {
         User temp = new User(String.format("-Guest%d",guestCounter));
         guestCounter++;
         temp.enterMarket();
-        activeUser.add(temp);
+        activeUser.put(temp.getId(), temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
         return temp.getId();
     }
@@ -204,9 +204,7 @@ public class UserController {
     }
 
     public boolean HasUserEnteredMarket(String userID) {
-        if(!activeUser.contains(userID))
-            return false;
-        return true;
+        return activeUser.containsKey(userID);
     }
 
     public boolean addProductToCart(String userID, int shopID, int productId, int amount) {
@@ -231,5 +229,21 @@ public class UserController {
             return false;
         User u = activeUser.get(userID);
         return u.removeProductFromCart(shopID,productId);
+    }
+
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID){
+        if(!activeUser.containsKey(userID)){
+            errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
+        }
+        User u = activeUser.get(userID);
+        return u.getOrderHistoryForShops(f,shopID);
+    }
+
+    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs){
+        if(!activeUser.containsKey(userID)){
+            errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
+        }
+        User u = activeUser.get(userID);
+        return u.getOrderHistoryForUser(f,userIDs);
     }
 }
