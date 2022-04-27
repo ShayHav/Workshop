@@ -133,28 +133,40 @@ public class MarketSystem {
         return UserController.getInstance().logOut(username);
     }
 
-    public int RemoveProductFromShopInventory(int productId, String username, int shopname) {
-        return ShopController.getInstance().RemoveProductFromShopInventory(productId, username, shopname);
+    public int RemoveProductFromShopInventory(int productId, String userID, int shopname) {
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().RemoveProductFromShopInventory(productId, userID, shopname);
+        else return -1;
     }
 
-    public String CloseShop(int shopId, String userId) {
-        return ShopController.getInstance().closeShop(shopId, userId);
+    public String CloseShop(int shopId, String userID) {
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().closeShop(shopId, userID);
+        else return null;
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
-        return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, tragetUser, id);
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userID){
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, tragetUser, userID);
+        else return null;
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
-        return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, tragetUser, id);
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userID) {
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, tragetUser, userID);
+        else return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userId) {
-        return ShopController.getInstance().AppointNewShopManager(key, targetUser, userId);
+    public String AppointNewShopManager(int key, String targetUser, String userID) {
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().AppointNewShopManager(key, targetUser, userID);
+        else return null;
     }
 
-    public String AppointNewShopOwner(int key, String targetUser, String userId) {
-        return ShopController.getInstance().AppointNewShopOwner(key, targetUser, userId);
+    public String AppointNewShopOwner(int key, String targetUser, String userID) {
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().AppointNewShopOwner(key, targetUser, userID);
+        else return null;
     }
 
     public List<String> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
@@ -165,12 +177,16 @@ public class MarketSystem {
         externalConnector = ec;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f, String userId) {
-        return ShopController.getInstance().getShop(shopname).RequestShopOfficialsInfo(f, userId);
+    public List<UserSearchInfo> RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f, String userID) {
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().getShop(shopname).RequestShopOfficialsInfo(f, userID);
+        else return null;
     }
 
-    public List<Order> RequestInformationOfShopsSalesHistory(int shopname, SearchOrderFilter f, String userId) {
-        return ShopController.getInstance().getShop(shopname).RequestInformationOfShopsSalesHistory(f, userId);
+    public List<Order> RequestInformationOfShopsSalesHistory(int shopname, SearchOrderFilter f, String userID) {
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().getShop(shopname).RequestInformationOfShopsSalesHistory(f, userID);
+        else return null;
     }
 
     public String EnterMarket() {
@@ -191,10 +207,14 @@ public class MarketSystem {
     }
 
     public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) {
-        return userController.getOrderHistoryForShops(userID, f, shopID);
+        if(userController.isLogin(userID))
+            return userController.getOrderHistoryForShops(userID, f, shopID);
+        else return null;
     }
 
     public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String> userIDs) {
-        return userController.getOrderHistoryForUser(userID, f, userIDs);
+        if(userController.isLogin(userID))
+            return userController.getOrderHistoryForUser(userID, f, userIDs);
+        else return null;
     }
 }

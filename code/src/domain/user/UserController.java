@@ -220,4 +220,8 @@ public class UserController {
         User u = activeUser.get(userID);
         return u.getOrderHistoryForUser(f,userIDs);
     }
+
+    public boolean isLogin(String userID) {
+        return getUser(userID).isLoggedIn();
+    }
 }
