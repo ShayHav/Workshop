@@ -108,4 +108,8 @@ public class ShopManagersPermissionsController {
             }
         return output;
     }
+
+    public void testRestart(){
+
+    }
 }
