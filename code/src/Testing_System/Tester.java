@@ -57,16 +57,16 @@ public class Tester {
         return br.GetProductInfoInShop(shopname, f);
     }
 
-    public Result<Boolean, String> SearchProductByName(String pName) {
-        return br.SearchProductByName(pName);
+    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f) {
+        return br.SearchProductByName(userID, pName, f);
     }
 
-    public Result<Boolean, String> SearchProductByCategory(String catName) {
-        return br.SearchProductByCategory(catName);
+    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f ) {
+        return br.SearchProductByCategory(userID, category,f);
     }
 
-    public Result<Boolean, String> SearchProductByKeyword(String keyword) {
-        return br.SearchProductByKeyword(keyword);
+    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f) {
+        return br.SearchProductByKeyword(userID, keyword, f);
     }
 
     public Result<Boolean, String> AddToShoppingCart(Product p, String shopname, int amount) {
@@ -98,7 +98,7 @@ public class Tester {
     }
 
     //Shop-Owner Options
-    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
+    public Result<Boolean,Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
     {
         return br.AddProductToShopInventory(pName,pDis, pCat, price, amount, username, shopID);
     }
@@ -107,8 +107,8 @@ public class Tester {
         return br.RemoveProductFromShopInventory(productId,username, shopname);
     }
 
-    public Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo) {
-        return br.ChangeProductDetail(p, shopname, newinfo);
+    public Result<Boolean, Product> ChangeProduct(String username, Product p, int shopID) {
+        return br.ChangeProductDetail(username, p, shopID);
     }
 
 //    public Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr) { return br.AddBuyingShopPolicy(shopname,pr); }

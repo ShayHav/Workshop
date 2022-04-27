@@ -40,7 +40,7 @@ public class MarketSystem {
      * Ensures there is at least 1 System manager
      */
     public boolean start(PaymentService payment, SupplyService supply, String userID, String password){
-        if(!userController.createSystemManger(userID,password)){
+        if(!userController.createSystemManager(userID,password)){
             return false;
         }
         if(!externalConnector.connectToSupplyService(supply)){

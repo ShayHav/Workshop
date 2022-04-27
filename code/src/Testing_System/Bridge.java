@@ -54,11 +54,11 @@ public interface Bridge {
 
     Result<Boolean, List<ProductInfo>> GetProductInfoInShop(int shopname, Filter<ProductInfo> f); //display information of a product?
 
-    Result<Boolean, String> SearchProductByName(String pName);
+    Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f); //done
 
-    Result<Boolean, String> SearchProductByCategory(String pName);
+    Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f );  //done
 
-    Result<Boolean, String> SearchProductByKeyword(String keyword);
+    Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f);    //done
 
     Result<Boolean, String> AddToShoppingCart(Product p, String shopname, int amount);
 
@@ -74,10 +74,9 @@ public interface Bridge {
 
     Result<Boolean, String> CheckIfProductAvailable(Product p, String shopname);
 
-    Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID); //done
+    Result<Boolean, Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID); //done
 
-    Result<Boolean, String> ChangeProductDetail(Product p, String shopname, Map<String, String> newinfo);
-
+    Result<Boolean, Product> ChangeProduct(String username, Product p, int shopID);
     /*
     Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr);
 
@@ -99,11 +98,11 @@ public interface Bridge {
 
     Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId);//done
 
-    Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);
+    Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);//done
 
-    Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser, String ownerID);
+    Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser, String ownerID); //done
 
-    Result<Boolean, String> CloseShop(int shopID, String username);
+    Result<Boolean, String> CloseShop(int shopID, String username);//done
 
     Result<Boolean, String> RequestShopOfficialsInfo(String shopName, Filter f);
 

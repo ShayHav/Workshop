@@ -28,6 +28,7 @@ public class UserGenerator extends Tester {
     private final int numOfPw = 5;
     private final String adminID = "MAdminM";
     private final String adminPW = "!@PP348m";
+    private final String[] sadInputs = {"DROP TABLE", ""};
 
     public UserGenerator () {}
 

@@ -98,7 +98,7 @@ public class Services {
 
     public Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)
     {
-       boolean b = marketSystem.start(payment,supply,userID,password);
+        boolean b = marketSystem.start(payment, supply, userID, password);
        return new Result<>(b,b);
     }
 
@@ -150,7 +150,7 @@ public class Services {
 
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f)
+    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f) //done
     {
         Result<Boolean, List<ProductInfo>> result;
         List<ProductInfo> products = marketSystem.searchProductByName(userID ,pName, f);
@@ -174,7 +174,6 @@ public class Services {
             result = new Result<>(false, products);
 
         return result;
-
     }
 
     //make: shahar
@@ -228,17 +227,18 @@ public class Services {
     }
 
     //Shay
-    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
+    //done
+    public Result<Boolean, Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop = controller.getShop(shopID);
         if(shop == null)
-            return new Result<>(false, -1);
+            return new Result<>(false, null);
         Product p  = shop.addListing(pName,pDis,pCat,price,amount,username);
         if(p == null){
-            return new Result<>(false, -1);
+            return new Result<>(false, null);
         }
-        return new Result<>(true, p.getId());
+        return new Result<>(true, p);
     }
 
     //shay
@@ -254,6 +254,7 @@ public class Services {
     }
 
     //Make:nitay
+    //done
     public Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId)
     {
         String s = marketSystem.AppointNewShopOwner(key,targetUser,userId);
@@ -262,6 +263,7 @@ public class Services {
         else return new Result<>(false,null);
     }
     //Make:nitay
+    //done
     public Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId)
     {
         String s = marketSystem.AppointNewShopManager(key,targetUser,userId);
@@ -270,6 +272,7 @@ public class Services {
         else return new Result<>(false,null);
     }
     //Make:nitay
+    //done
     public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
     {
         String s = marketSystem.AddShopMangerPermissions(key,shopManagersPermissionsList,targetUser,ownerID);
@@ -278,6 +281,7 @@ public class Services {
         else return new Result<>(false,null);
     }
     //Make:nitay
+    //done
     public Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID)
     {
         String s = marketSystem.RemoveShopManagerPermissions(key,shopManagersPermissionsList,managerUser,ownerID);
@@ -286,6 +290,7 @@ public class Services {
         else return new Result<>(false,null);
     }
     //Make:nitay
+    //done
     public Result<Boolean, String> CloseShop(int shopId,String userId) {
         String s = marketSystem.CloseShop(shopId, userId);
         if(s!=null)
