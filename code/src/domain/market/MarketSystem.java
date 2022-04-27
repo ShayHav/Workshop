@@ -155,48 +155,48 @@ public class MarketSystem {
         return UserController.getInstance().logOut(username);
     }
 
-    public int RemoveProductFromShopInventory(int productId, String username, int shopname) {
-        if(username == null)
+    public int RemoveProductFromShopInventory(int productId, String userID, int shopname) {
+        if(userID == null)
             return -1;
         if(userController.isLogin(userID))
             return ShopController.getInstance().RemoveProductFromShopInventory(productId, userID, shopname);
         return -1;
     }
 
-    public String CloseShop(int shopId, String userId) {
-        if(userId == null)
+    public String CloseShop(int shopId, String userID) {
+        if(userID == null)
             return null;
         if(userController.isLogin(userID))
             return ShopController.getInstance().closeShop(shopId, userID);
         return null;
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
-        if(shopManagersPermissionsList == null || targetUser == null || id == null)
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String userID) {
+        if(shopManagersPermissionsList == null || targetUser == null || userID == null)
             return null;
         if(userController.isLogin(userID))
-            return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, tragetUser, userID);
+            return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, targetUser, userID);
         return null;
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
-        if(shopManagersPermissionsList == null || targetUser == null || id == null)
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String userID) {
+        if(shopManagersPermissionsList == null || targetUser == null || userID == null)
             return null;
         if(userController.isLogin(userID))
-            return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, tragetUser, userID);
+            return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, userID);
         return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userId) {
-        if(targetUser == null || userId == null)
+    public String AppointNewShopManager(int key, String targetUser, String userID) {
+        if(targetUser == null || userID == null)
             return null;
         if(userController.isLogin(userID))
             return ShopController.getInstance().AppointNewShopManager(key, targetUser, userID);
         return null;
     }
 
-    public String AppointNewShopOwner(int key, String targetUser, String userId) {
-        if(targetUser == null || userId == null)
+    public String AppointNewShopOwner(int key, String targetUser, String userID) {
+        if(targetUser == null || userID == null)
             return null;
         if(userController.isLogin(userID))
             return ShopController.getInstance().AppointNewShopOwner(key, targetUser, userID);
