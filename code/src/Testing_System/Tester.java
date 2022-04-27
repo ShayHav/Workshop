@@ -108,7 +108,7 @@ public class Tester {
     }
 
     public Result<Boolean, Product> ChangeProduct(String username, Product p, int shopID) {
-        return br.ChangeProductDetail(username, p, shopID);
+        return br.ChangeProduct(username,p,shopID);
     }
 
 //    public Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr) { return br.AddBuyingShopPolicy(shopname,pr); }
