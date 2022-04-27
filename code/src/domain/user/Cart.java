@@ -1,5 +1,7 @@
 package domain.user;
 
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
 import domain.ResponseT;
 import domain.Tuple;
 import domain.market.MarketSystem;
@@ -11,10 +13,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Cart {
     private Map<Integer, ShoppingBasket> baskets;
     private double totalAmount;
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
     public Cart() {
         baskets = new HashMap<>();
@@ -28,22 +33,31 @@ public class Cart {
             ShoppingBasket newBasket = new ShoppingBasket(shop);
             result = newBasket.addProductToBasket(productID, amount);
             baskets.put(shopID, newBasket);
+
         } else {
             result = baskets.get(shopID).addProductToBasket(productID, amount);
 
         }
+        if(result)
+            eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
+        else
+            errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
         return result;
     }
 
     public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
-        if (!baskets.containsKey(shopID))
+        if (!baskets.containsKey(shopID)) {
+            errorLogger.logMsg(Level.WARNING, String.format("cannot update amount of product %d because cart doesn't contain basket with shop %d", productID, shopID));
             return false;
+        }
         return baskets.get(shopID).updateAmount(productID, amount);
     }
 
     public boolean removeProductFromCart(int shopID, int productID) {
-        if (!baskets.containsKey(shopID))
+        if (!baskets.containsKey(shopID)) {
+            errorLogger.logMsg(Level.WARNING, String.format("cannot remove product %d because cart doesn't contain basket with shop %d", productID, shopID));
             return false;
+        }
         return baskets.get(shopID).removeProduct(productID);
     }
 
@@ -76,6 +90,10 @@ public class Cart {
             orders.add(result);
             if (!result.isErrorOccurred()) {
                 baskets.remove(shopId);
+                eventLogger.logMsg(Level.INFO, String.format("basket of shop %d checkout successfully.", shopId));
+            }
+            else{
+                errorLogger.logMsg(Level.WARNING, String.format("basket of shop %d failed in checkout.", shopId));
             }
         }
         return orders;

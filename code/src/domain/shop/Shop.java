@@ -134,8 +134,11 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public Product changeProductDetail(int prodID, String name, String description, String category,String userId){
+    public Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price){
         if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId)) {
+            if(inventory.setPrice(prodID, amount))
+                return null;
+            inventory.setPrice(prodID,price);
             return inventory.setProduct(prodID,name,description,category);
         }
         return null;
