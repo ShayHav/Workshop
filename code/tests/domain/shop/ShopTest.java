@@ -57,14 +57,6 @@ public class ShopTest {
 
 
 
-    private boolean PermissionExist(List<String> permissionList,String userId){
-        for (String run : permissionList){
-            if(run.equals(userId))
-                return true;
-        }
-        return false;
-    }
-
 
     @Test
     void getProduct(){
