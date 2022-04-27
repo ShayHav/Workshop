@@ -130,7 +130,7 @@ public class Services {
     {
         Result<Boolean, List<ShopInfo>> result;
         List<ShopInfo> shopInfo = marketSystem.getInfoOfShops(userID, filter);
-        if(shopInfo == null || shopInfo.size() == 0){
+        if(shopInfo == null){
             result = new Result<>(false,shopInfo);
         }
         else
@@ -243,13 +243,13 @@ public class Services {
     }
 
     //Shay
-    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String usernmae,int shopID)
+    public Result<Boolean, Integer> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop = controller.getShop(shopID);
         if(shop == null)
             return new Result<>(false, -1);
-        Product p  = shop.addListing(pName,pDis,pCat,price,amount,usernmae);
+        Product p  = shop.addListing(pName,pDis,pCat,price,amount,username);
         if(p == null){
             return new Result<>(false, -1);
         }
@@ -308,11 +308,19 @@ public class Services {
         else return new Result<>(false, null);
     }
     //Make:nitay
-    public Result<Boolean, String> RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f)
+    public Result<Boolean, String> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userId)
     {
-        String s = marketSystem.RequestShopOfficialsInfo(shopname,f);
+        String s = marketSystem.RequestShopOfficialsInfo(shopName,f,userId);
         if(s!=null)
             return new Result<>(true,s);
+        else return new Result<>(false,null);
+    }
+    //Make:nitay
+    public Result<Boolean, List<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f,String userId)
+    {
+        List<Order> orders = marketSystem.RequestInformationOfShopsSalesHistory(shopName,f,userId);
+        if(orders!=null)
+            return new Result<>(true,orders);
         else return new Result<>(false,null);
     }
     //Make:nitay

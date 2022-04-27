@@ -20,7 +20,7 @@ public class Shop {
     private User ShopFounder;
     private List<User> ShopOwners;
     private List<User> ShopManagers;
-    private Map<ShopManagersPermissions, List<String>> ShopManagersPermissionsMap;
+    private ShopManagersPermissionsController shopManagersPermissionsController;
     private List<User> Shoppers;
     private Inventory inventory;
     private DiscountPolicy discountPolicy;
@@ -43,54 +43,27 @@ public class Shop {
         isOpen = true;
         ShopFounder = MarketSystem.getInstance().getUser(founderId);
         this.shopID = shopID;
-        ShopManagersPermissionsMap = new HashMap<>();
-        ShopManagersPermissionsInit();
+        shopManagersPermissionsController = new ShopManagersPermissionsController();
     }
 
-    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
-        if (ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)) {
-            for (ShopManagersPermissions run : shopManagersPermissionsList)
-                if (!PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser)) {
-                    ShopManagersPermissionsMap.get(run).add(tragetUser);
-                    eventLogger.logMsg(Level.INFO,String.format("add Permissions to user: %s",tragetUser));
-                    eventLogger.logMsg(Level.INFO, String.format("add Permissions to user: %s", tragetUser));
-                }
-            return true;
-        } else {
+    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
+        if (shopManagersPermissionsController.canChangeShopManagersPermissions(id))
+            return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
+        else {
             errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
             return false;
         }
     }
 
     public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
-        if (ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeShopManagersPermissions).contains(id)) {
-            for (ShopManagersPermissions run : shopManagersPermissionsList)
-                if (PermissionExist(ShopManagersPermissionsMap.get(run), tragetUser)) {
-                    ShopManagersPermissionsMap.get(run).remove(tragetUser);
-                    eventLogger.logMsg(Level.INFO,String.format("remove Permissions to user: %s",tragetUser));
-                    eventLogger.logMsg(Level.INFO, String.format("remove Permissions to user: %s", tragetUser));
-                }
-            return true;
+        if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)) {
+            return shopManagersPermissionsController.removePermissions(shopManagersPermissionsList, tragetUser);
         } else {
             errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
-        }
-        return false;
-    }
-
-    private boolean PermissionExist(List<String> permissionList,String userId){
-        for (String run : permissionList){
-            if(run.equals(userId))
-                return true;
-        }
-        return false;
-    }
-
-
-    private void ShopManagersPermissionsInit(){
-        for (ShopManagersPermissions myVar : ShopManagersPermissions.values()){
-            ShopManagersPermissionsMap.put(myVar, new LinkedList<>());
+            return false;
         }
     }
+
 
     public String getProductInfo(int prodID){
         try{
@@ -122,24 +95,24 @@ public class Shop {
     }
 
     public Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AddProductToInventory).contains(userId))
+        if(shopManagersPermissionsController.canAddProductToInventory(userId))
             return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
         return null;
     }
 
     public void removeListing(int prodID,String userId){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.RemoveProductFromInventory).contains(userId))
+        if(shopManagersPermissionsController.canRemoveProductFromInventory(userId))
             inventory.removeProduct(prodID);
     }
 
     public boolean editPrice(int prodID, double newPrice,String userId){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
+        if(shopManagersPermissionsController.canChangeProductsDetail(userId))
             return inventory.setPrice(prodID, newPrice);
         else return false;
     }
 
     public boolean editQuantity(int prodID, int newQuantity,String userId){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId))
+        if(shopManagersPermissionsController.canChangeProductsDetail(userId))
             return inventory.setAmount(prodID, newQuantity);
         else return false;
     }
@@ -160,7 +133,7 @@ public class Shop {
     }
 
     public Product changeProductDetail(int prodID, String name, String description, String category,String userId){
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.ChangeProductsDetail).contains(userId)) {
+        if(shopManagersPermissionsController.canChangeProductsDetail(userId)) {
             return inventory.setProduct(prodID,name,description,category);
         }
         return null;
@@ -269,19 +242,19 @@ public class Shop {
         return false;
     }
 
-    public String AppointNewShopOwner(String tragetUser, String userId) {
-        if(ShopManagersPermissionsMap.get(ShopManagersPermissions.AppointNewShopOwner).contains(userId)) {
+    public String AppointNewShopOwner(String targetUser, String userId) {
+        if(shopManagersPermissionsController.canAppointNewShopOwner(userId)) {
             synchronized (this) {
-                User newOwner = MarketSystem.getInstance().getUser(tragetUser);
+                User newOwner = MarketSystem.getInstance().getUser(targetUser);
                 if (newOwner != null)
                     if (!ShopOwners.contains(newOwner))
                         ShopOwners.add(newOwner);
-                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", tragetUser));
-                return String.format("Appoint New ShopOwner User: %s", tragetUser);
+                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", targetUser));
+                return String.format("Appoint New ShopOwner User: %s", targetUser);
             }
         }
-        errorLogger.logMsg(Level.WARNING, String.format("Appoint New ShopOwner User: %s", tragetUser));
-        return String.format("attempt to appoint New ShopOwner User: %s filed", tragetUser);
+        errorLogger.logMsg(Level.WARNING, String.format("Appoint New ShopOwner User: %s", targetUser));
+        return String.format("attempt to appoint New ShopOwner User: %s filed", targetUser);
     }
 
     public int getShopID() {
@@ -289,7 +262,7 @@ public class Shop {
     }
 
     public String AppointNewShopManager(String usertarget, String userId) {
-        if (ShopManagersPermissionsMap.get(ShopManagersPermissions.AppointNewShopOwner).contains(userId)) {
+        if (shopManagersPermissionsController.canAppointNewShopManager(userId)) {
             synchronized (this) {
                 User newManager = MarketSystem.getInstance().getUser(usertarget);
                 if (newManager != null)
@@ -304,7 +277,7 @@ public class Shop {
     }
 
     public void closeShop(String userID){
-        if((ShopManagersPermissionsMap.get(ShopManagersPermissions.CloseShop).contains(userID))) {
+        if(shopManagersPermissionsController.canCloseShop(userID)) {
             if (isOpen)
                 isOpen = false;
         }
@@ -318,9 +291,6 @@ public class Shop {
         return isOpen;
     }
 
-    public void RequestInformationOnShopsOfficials(){
-        throw new UnsupportedOperationException();
-    }
 
     public void RequestInformationOfShopsSalesHistory(){
         throw new UnsupportedOperationException();
@@ -376,20 +346,27 @@ public class Shop {
         return inventory;
     }
 
-    public String RequestShopOfficialsInfo(SearchOfficialsFilter f) {
+    public String RequestShopOfficialsInfo(SearchOfficialsFilter f,String userId) {
         String output = "";
-        List<Role> roleList = f.getRoleList();
-        for(Role role: roleList){
-            switch (role){
-                case ShopOwner:
-                    output+= ShopOwners.toString()+'\n';
-                case ShopManager:
-                    output+= ShopManagers.toString()+'\n';
-                case ShopFounder:
-                    output+= ShopFounder.toString()+'\n';
-                //default: return ShopOwners.toString() +'\n'+ ShopManagers.toString() + '\n' + ShopFounder.toString();
+        if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)) {
+            List<Role> roleList = f.getRoleList();
+            for (Role role : roleList) {
+                switch (role) {
+                    case ShopOwner:
+                        output += ShopOwners.toString() + '\n';
+                    case ShopManager:
+                        output += ShopManagers.toString() + '\n';
+                    case ShopFounder:
+                        output += ShopFounder.toString() + '\n';
+                }
             }
         }
         return output;
     }
+    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f,String userId) {
+        if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId))
+            return f.applyFilter(orders.getOrders());
+        else return null;
+    }
+
 }

@@ -2,6 +2,7 @@ package domain.shop;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.user.SearchOrderFilter;
 
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDateTime;
@@ -67,4 +68,6 @@ public class OrderHistory {
     public List<Order> getOrders() {
         return Collections.unmodifiableList(orders);
     }
+
+    public List<Order> getOrders(SearchOrderFilter f){}
 }
