@@ -19,7 +19,7 @@ public class UserController {
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
     private Map<String,User> activeUser; //TODO: temporary
     private static UserController instance = null;
-    private User adminUser;
+    private List<User> adminUser;
     private int guestCounter = 0;
 
     private UserController() {
@@ -116,32 +116,9 @@ public class UserController {
     }
 
     public User getUser(String id) {
-        User getUser = null;
-        for (Map.Entry<String, User> entry : memberList.entrySet()){
-            if(entry.getKey().equals(id))
-                getUser = entry.getValue();
-        }
-        return getUser;
-    }
-
-    public List<ShopInfo> getInfoOfShops(String id){
-        throw new UnsupportedOperationException();
-    }
-
-    public List<ProductInfo> getInfoOfProductInShop(String userId, int shopID){
-        throw new UnsupportedOperationException();
-    }
-
-    public List<ProductInfo>  searchProductByName(String userId, String name, SearchProductFilter f){
-        throw new UnsupportedOperationException();
-    }
-
-    public List<ProductInfo>  searchProductByCategory(String userId, String category, SearchProductFilter f){
-        throw new UnsupportedOperationException();
-    }
-
-    public List<ProductInfo>  searchProductByKeyword(String userId, String keyword, SearchProductFilter f){
-        throw new UnsupportedOperationException();
+        if(id == null)
+            return null;
+        return memberList.getOrDefault(id, null);
     }
 
     public boolean deleteUserTest(String[] userId) {
@@ -172,15 +149,12 @@ public class UserController {
     }
 
     public boolean createSystemManager(String id, String pass){
-        if(adminUser!= null)
-            //log
-            return false;
-        else{
-            register(id,pass);
-            User u = memberList.get(id);
-            u.makeSystemManager();
-            return true;
-        }
+        register(id,pass);
+        User u = memberList.get(id);
+        adminUser.add(u);
+        u.makeSystemManager();
+        return true;
+
     }
 
     public List<Order> getOrderHistoryForUser(List<String>  userID){
@@ -245,5 +219,9 @@ public class UserController {
         }
         User u = activeUser.get(userID);
         return u.getOrderHistoryForUser(f,userIDs);
+    }
+
+    public boolean isLogin(String userID) {
+        return getUser(userID).isLoggedIn();
     }
 }

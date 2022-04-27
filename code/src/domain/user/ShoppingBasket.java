@@ -101,7 +101,7 @@ public class ShoppingBasket {
      * @param billingInfo all the relevant information to complete the transaction.
      */
     public ResponseT<Order> checkout(TransactionInfo billingInfo) {
-        return shop.checkOut(productAmountList, basketAmount, billingInfo);
+        return shop.checkout(productAmountList, basketAmount, billingInfo);
     }
 
     public BasketInfo showBasket() {

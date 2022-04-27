@@ -13,11 +13,11 @@ public interface UserState {
 
     int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id);
 
-    void appointOwner(String user, int shop, String id, List<OwnerAppointment> ownerAppointmentList);
+    boolean appointOwner(String user, int shop, String id, List<OwnerAppointment> ownerAppointmentList);
 
-    void appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList);
+    boolean appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList);
 
-    void closeShop(int shop, String id);
+    boolean closeShop(int shop, String id);
 
     List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID);
 

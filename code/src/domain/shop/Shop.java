@@ -182,7 +182,7 @@ public class Shop {
      * @param transaction the info of the client to be charged and supply
      * @return true if successfully created the order and add to the inventory
      */
-    public ResponseT<Order> checkOut(Map<Integer,Integer> products, double totalAmount, TransactionInfo transaction){
+    public ResponseT<Order> checkout(Map<Integer,Integer> products, double totalAmount, TransactionInfo transaction){
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
             //check purchase policy regarding the Product
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
@@ -240,7 +240,7 @@ public class Shop {
     }
 
     public String AppointNewShopOwner(String targetUser, String userId) {
-        if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId)) {
+        if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId) | isFounder(userId)) {
             synchronized (this) {
                 User newOwner = MarketSystem.getInstance().getUser(targetUser);
                 if (newOwner != null)

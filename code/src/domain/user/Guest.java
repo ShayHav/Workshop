@@ -24,31 +24,37 @@ public class Guest implements UserState {
 
     @Override
     public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+        return -1;
     }
 
     @Override
-    public void appointOwner(String user, int shop, String id, List<OwnerAppointment> ownerAppointmentList) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+    public boolean appointOwner(String user, int shop, String id, List<OwnerAppointment> ownerAppointmentList) {
+        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+        return false;
     }
 
     @Override
-    public void appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+    public boolean appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList) {
+        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+        return false;
     }
 
     @Override
-    public void closeShop(int shop, String id) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+    public boolean closeShop(int shop, String id) {
+        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+        return false;
     }
 
     @Override
     public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String> userID) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+        return null;
     }
 
     @Override
     public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+        return null;
     }
 }

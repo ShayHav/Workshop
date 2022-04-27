@@ -4,8 +4,6 @@ package Service;
 import Testing_System.Result;
 import domain.market.*;
 import domain.shop.*;
-import domain.shop.PurchasePolicys.PurchaseRule;
-import domain.shop.discount.Discount;
 import domain.user.*;
 
 import java.util.List;
@@ -59,7 +57,7 @@ public class Services {
     //General Member-Visitor
     public Result<Boolean,String> Logout(String username)
     {
-        String b = marketSystem.logOut(username);
+        String b = marketSystem.logout(username);
         Result<Boolean,String> output = new Result(b,b);
         return output;
     }
@@ -156,26 +154,13 @@ public class Services {
     {
         Result<Boolean, List<ProductInfo>> result;
         List<ProductInfo> products = marketSystem.searchProductByName(userID ,pName, f);
-        if(products.size() > 0)
-            result = new Result<>(true, products);
+        if(products == null)
+            result = new Result<>(true, null);
         else
             result = new Result<>(false, products);
 
         return result;
 
-    }
-
-    //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f )
-    {
-        Result<Boolean, List<ProductInfo>> result;
-        List<ProductInfo> products = marketSystem.searchProductByCategory(userID ,category, f);
-        if(products.size() > 0)
-            result = new Result<>(true, products);
-        else
-            result = new Result<>(false, products);
-
-        return result;
     }
 
     //make:shahar
@@ -183,8 +168,8 @@ public class Services {
     {
         Result<Boolean, List<ProductInfo>> result;
         List<ProductInfo> products = marketSystem.searchProductByKeyword(userID ,keyword, f);
-        if(products.size() > 0)
-            result = new Result<>(true, products);
+        if(products == null)
+            result = new Result<>(true, null);
         else
             result = new Result<>(false, products);
 
