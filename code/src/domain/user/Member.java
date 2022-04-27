@@ -17,9 +17,8 @@ public class Member implements UserState{
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
 
-    @Override
-    public void leaveMarket(Cart cart) {
-        //TODO: impl,shahar need to add method save cart when we manage DB
+    public boolean saveCart(Cart cart) {
+        throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
 
@@ -138,6 +137,16 @@ public class Member implements UserState{
         if(!shop1.isOpen())
             eventLogger.logMsg(Level.INFO,String.format("close shop protocol shop id: %s",shop));
         else eventLogger.logMsg(Level.WARNING,String.format("attempt to close shop filed shop id: %s , user id:%s",shop,id));
+    }
+
+    @Override
+    public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String> userID) {
+        throw new UnsupportedOperationException("member is not allowed to perform this action");
+    }
+
+    @Override
+    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
+        throw new UnsupportedOperationException("member is not allowed to perform this action");
     }
 
     /***

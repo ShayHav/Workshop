@@ -119,7 +119,34 @@ public class ShoppingBasket {
         return productAmountList;
     }
 
-    public record BasketInfo(int shopId, String shopName,
-                             Map<ProductInfo, Integer> productWithAmount,
-                             double totalAmount) {}
+    public class BasketInfo{
+
+        private int shopId;
+        private String shopName;
+        private Map<ProductInfo,Integer> productWithAmount;
+        private double totalAmount;
+
+        public BasketInfo(int shopId, String shopName, Map<ProductInfo, Integer> productWithAmount, double totalAmount){
+            this.shopId = shopId;
+            this.shopName = shopName;
+            this.productWithAmount = productWithAmount;
+            this.totalAmount = totalAmount;
+        }
+
+        public double getTotalAmount() {
+            return totalAmount;
+        }
+
+        public int getShopId() {
+            return shopId;
+        }
+
+        public Map<ProductInfo, Integer> getProductWithAmount() {
+            return productWithAmount;
+        }
+
+        public String getShopName() {
+            return shopName;
+        }
+    }
 }

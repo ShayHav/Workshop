@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserState {
 
-    void leaveMarket(Cart cart);
+    boolean saveCart(Cart cart);
 
     int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id);
 
@@ -18,6 +18,10 @@ public interface UserState {
     void appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList);
 
     void closeShop(int shop, String id);
+
+    List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID);
+
+    List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID);
 
 
 

@@ -40,7 +40,7 @@ public class MarketSystem {
      * Ensures there is at least 1 System manager
      */
     public boolean start(PaymentService payment, SupplyService supply, String userID, String password) {
-
+        return false;
     }
 
     /***
@@ -165,7 +165,7 @@ public class MarketSystem {
     }
 
     public List<String> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        return UserController.getInstance().checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
+        return userController.checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
     }
 
     public void setExternalConnector(ExternalConnector ec) {
@@ -181,5 +181,26 @@ public class MarketSystem {
 
     public String EnterMarket() {
         return userController.enterMarket();
+    }
+
+    public boolean AddProductToCart(String userID, int shopID, int productId, int amount) {
+        return userController.addProductToCart(userID,shopID,productId,amount);
+    }
+
+
+    public boolean EditShoppingCart(String userId, int shopId, int productId, int amount) {
+        return userController.updateAmountOfProduct(userId,shopId,productId,amount);
+    }
+
+    public boolean removeProductFromCart(String userId, int shopId, int productId) {
+        return userController.removeProductFromCart(userId, shopId, productId);
+    }
+
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID){
+        return userController.getOrderHistoryForShops(userID, f, shopID);
+    }
+
+    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs){
+        return userController.getOrderHistoryForUser(userID, f, userIDs);
     }
 }
