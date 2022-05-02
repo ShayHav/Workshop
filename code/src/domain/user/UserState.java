@@ -1,37 +1,29 @@
 package domain.user;
 
-import domain.shop.Product;
+import domain.ResponseT;
+import domain.shop.*;
+import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.discount.DiscountPolicy;
+
+import java.util.List;
 
 public interface UserState {
 
-    /***
-     *
-     * @param f
-     */
-    void getInfo(Filter f);
+    boolean saveCart(Cart cart);
 
-    /***
-     *
-     * @param f
-     */
-    void searchProduct(Filter f);
+    int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id);
 
-    /***
-     *
-     * @param shop
-     * @param p
-     * @param amount
-     */
-    void addProductToCart(String shop, Product p, int amount);
+    boolean appointOwner(String user, int shop, String id, List<OwnerAppointment> ownerAppointmentList);
 
-    /***
-     *
-     */
-    void checkCart();
+    boolean appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList);
 
-    /***
-     *
-     */
-    void checkout();
+    boolean closeShop(int shop, String id);
 
-   }
+    List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID);
+
+    List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID);
+
+
+
+
+}

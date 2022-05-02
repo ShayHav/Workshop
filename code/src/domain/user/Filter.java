@@ -1,4 +1,8 @@
 package domain.user;
 
-public class Filter {
+import java.util.List;
+
+public interface Filter<T> {
+
+    List<T> applyFilter(List<T> listToFilter);
 }
