@@ -117,9 +117,9 @@ public class MarketSystem {
         return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, foundId);
     }
 
-    public boolean register(String userId, String pass) {
+    public User register(String userId, String pass) {
         if(userId == null || pass == null)
-            return false;
+            return null;
         return UserController.getInstance().register(userId, pass);
     }
 

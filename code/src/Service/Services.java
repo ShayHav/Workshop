@@ -28,11 +28,10 @@ public class Services {
         return output;
     }
     //Make:nitay
-    public Result<Boolean,Boolean> Register(String username, String pw)
+    public Result<Boolean,User> Register(String username, String pw)
     {
-        boolean b = marketSystem.register(username,pw);
-        Result<Boolean,Boolean> output = new Result<>(b,b);
-        return output;
+        User b = marketSystem.register(username,pw);
+        return new Result<>(false,b);
     }
     //Make:nitay
     public Result<Boolean,String> EnterMarket()

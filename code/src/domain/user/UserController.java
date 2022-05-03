@@ -11,6 +11,8 @@ import domain.shop.ShopInfo;
 
 import java.util.*;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserController {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
@@ -25,13 +27,13 @@ public class UserController {
     private UserController() {
         memberList = new HashMap<>();
         activeUser = new HashMap<>();
+        adminUser = new LinkedList<>();
     }
 
     public static UserController getInstance() {
         if (instance == null) {
             instance = new UserController();
         }
-
         return instance;
     }
 
@@ -90,23 +92,30 @@ public class UserController {
      * @param id the unique identifier of the user
      * @param pass password given by the user
      */
-    public boolean register(String id, String pass) {
-        if (!memberList.containsKey(id)) {
-            User user = new User(id);
-            memberList.put(id, user);
-            SecurePasswordStorage.getSecurePasswordStorage_singleton().inRole(id, pass);
-            eventLogger.logMsg(Level.INFO, String.format("Registered for user: %d.", id));
-            return true;
-        } else {
-            errorLogger.logMsg(Level.WARNING, String.format("attempt of registered for exist id %d failed.", id));
-            return false;
+    public User register(String id, String pass) {
+        if(isValidPassword(pass,id) && isValidUsername(id)) {
+            if (!memberList.containsKey(id)) {
+                User user = new User(id);
+                memberList.put(id, user);
+                SecurePasswordStorage.getSecurePasswordStorage_singleton().inRole(id, pass);
+                eventLogger.logMsg(Level.INFO, String.format("Registered for user: %d.", id));
+                return user;
+            } else {
+                errorLogger.logMsg(Level.WARNING, String.format("attempt of registered for exist id %d failed.", id));
+                return null;
+            }
         }
+        else return null;
     }
 
     /***
      * enter to the market - active user is now a guest
      */
     public String enterMarket(){
+        if(adminUser.size()==0) { //generalSystemManager
+            adminUser.add(register("adminUser", "AdminUser123456"));
+            adminUser.get(0).makeSystemManager();
+        }
         User temp = new User(String.format("-Guest%d",guestCounter));
         guestCounter++;
         temp.enterMarket();
@@ -223,5 +232,65 @@ public class UserController {
 
     public boolean isLogin(String userID) {
         return getUser(userID).isLoggedIn();
+    }
+    //https://java2blog.com/validate-password-java/
+    public boolean isValidPassword(String password,String userID)
+    {
+        boolean isValid = true;
+        if (password.length() > 15 || password.length() < 8)
+        {
+            eventLogger.logMsg(Level.WARNING,String.format("User: %s filed to registered: Password must be less than 20 and more than 8 characters in length.",userID));
+            isValid = false;
+        }
+        String upperCaseChars = "(.*[A-Z].*)";
+        if (!password.matches(upperCaseChars ))
+        {
+            eventLogger.logMsg(Level.WARNING,String.format("User: %s filed to registered: Password must have atleast one uppercase character.",userID));
+            isValid = false;
+        }
+        String lowerCaseChars = "(.*[a-z].*)";
+        if (!password.matches(lowerCaseChars ))
+        {
+            eventLogger.logMsg(Level.WARNING,String.format("User: %s filed to registered: Password must have atleast one lowercase character.",userID));
+            isValid = false;
+        }
+        String numbers = "(.*[0-9].*)";
+        if (!password.matches(numbers ))
+        {
+            eventLogger.logMsg(Level.WARNING,String.format("User: %s filed to registered: Password must have atleast one number.",userID));
+            isValid = false;
+        }
+        String specialChars = "(.*[@,#,$,%].*$)";
+        if (!password.matches(specialChars ))
+        {
+            eventLogger.logMsg(Level.WARNING,String.format("User: %s filed to registered: Password must have atleast one special character among @#$%.",userID));
+            isValid = false;
+        }
+        return isValid;
+    }
+    //https://www.geeksforgeeks.org/how-to-validate-a-username-using-regular-expressions-in-java/
+    public boolean isValidUsername(String name)
+    {
+
+        // Regex to check valid username.
+        String regex = "^[A-Za-z]\\w{5,29}$";
+
+        // Compile the ReGex
+        Pattern p = Pattern.compile(regex);
+
+        // If the username is empty
+        // return false
+        if (name == null) {
+            return false;
+        }
+
+        // Pattern class contains matcher() method
+        // to find matching between given username
+        // and regular expression.
+        Matcher m = p.matcher(name);
+
+        // Return if the username
+        // matched the ReGex
+        return m.matches();
     }
 }
