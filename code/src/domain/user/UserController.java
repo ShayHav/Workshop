@@ -205,15 +205,16 @@ public class UserController {
         return u.removeProductFromCart(shopID,productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID){
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
         if(!activeUser.containsKey(userID)){
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
+
         }
         User u = activeUser.get(userID);
-        return u.getOrderHistoryForShops(f,shopID);
+            return u.getOrderHistoryForShops(f, shopID);
     }
 
-    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs){
+    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs) throws InvalidAuthorizationException {
         if(!activeUser.containsKey(userID)){
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
         }

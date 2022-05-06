@@ -4,10 +4,7 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.Filter;
-import domain.user.SearchProductFilter;
-import domain.user.User;
-import domain.user.UserController;
+import domain.user.*;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -67,12 +64,15 @@ public class ShopController {
     }
 
     public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f) {
-        Shop s = getShop(shopID);
-        if(s != null) {
-            List<ProductInfo> info = s.getProductInfoOfShop();
-            return f.applyFilter(info);
+        Shop s;
+        try {
+            s = getShop(shopID);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
         }
-        return null;
+        List<ProductInfo> info = s.getProductInfoOfShop();
+        return f.applyFilter(info);
     }
 
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
@@ -95,65 +95,103 @@ public class ShopController {
         return f.applyFilter(products);
     }
 
-    public Shop getShop(int shopID) {
+    public Shop getShop(int shopID) throws ShopNotFoundException {
         if (!shopList.containsKey(shopID)) {
             errorLogger.logMsg(Level.WARNING,String.format("shopId %d isn't a valid shop in market", shopID));
-            return null;
+            throw new ShopNotFoundException("shop does not exist in market");
         }
         return shopList.get(shopID);
     }
 
     public String closeShop(int key, String user) {
-        Shop s = getShop(key);
-        if (s != null) {
-            s.closeShop(user);
-            eventLogger.logMsg(Level.INFO, "close shop succeeded");
-            return s.getName();
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
         }
-        return null;
+        s.closeShop(user);
+        eventLogger.logMsg(Level.INFO, "close shop succeeded");
+        return s.getName();
     }
 
     public void DeleteShops() {
         shopList = new HashMap<>();
     }
 
-    public int RemoveProductFromShopInventory(int productId, String username, int shopname) {
-        Shop s = getShop(shopname);
-        if (s != null) {
-            s.removeListing(productId, username);
-            return productId;
+    public int RemoveProductFromShopInventory(int productId, String username, int shopID) throws InvalidAuthorizationException {
+        Shop s;
+        try {
+            s = getShop(shopID);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return -1;
         }
-        return -1;
+        s.removeListing(productId, username);
+        return productId;
     }
 
     public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
-        Shop s = getShop(key);
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
         if (s.removePermissions(shopManagersPermissionsList, tragetUser, id))
-            return "ShopManagerPermissionsRemove";
-        else return null;
+            return "Shop Manager Permissions Removed";
+        else
+            return null;
     }
 
     public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
-        Shop s = getShop(key);
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
         if (s.addPermissions(shopManagersPermissionsList, tragetUser, id))
             return "ShopManagerPermissionsAdd";
-        else return null;
+        else
+            return null;
     }
 
     public String AppointNewShopManager(int key, String targetUser, String userId) {
-        Shop s = getShop(key);
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
         return s.AppointNewShopManager(targetUser, userId);
     }
 
     public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
-        Shop s = getShop(key);
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
         if (s.removePermissions(shopManagersPermissionsList, tragetUser.getId(), id))
             return "ShopManagerPermissionsRemove";
         else return null;
     }
 
     public String AppointNewShopOwner(int key, String targetUser, String userId) {
-        Shop s = getShop(key);
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
         return s.AppointNewShopOwner(targetUser, userId);
     }
 

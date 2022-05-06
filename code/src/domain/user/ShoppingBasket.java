@@ -5,6 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.ProductInfo;
+import domain.shop.ProductNotFoundException;
 import domain.shop.Shop;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +116,13 @@ public class ShoppingBasket {
     public BasketInfo showBasket() {
         Map<ProductInfo,Integer> productWithAmount = new HashMap<>();
         for(Integer product: productAmountList.keySet()){
-            ProductInfo p = shop.getInfoOnProduct(product);
+            ProductInfo p;
+            try {
+                p = shop.getInfoOnProduct(product);
+            }catch (ProductNotFoundException pnfe){
+                removeProduct(product);
+                continue;
+            }
             int amount = productAmountList.get(product);
             productWithAmount.put(p,amount);
         }

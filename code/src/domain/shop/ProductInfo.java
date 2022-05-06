@@ -16,6 +16,13 @@ public class ProductInfo {
         this.productRank = rank;
     }
 
+    public ProductInfo(){
+        this.productName = "---";
+        this.description = "this product does not exist";
+        this.category = "---";
+        this.productRank = -1000;
+    }
+
     public String getProductName() {
         return productName;
     }

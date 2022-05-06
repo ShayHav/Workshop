@@ -7,6 +7,7 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -131,7 +132,7 @@ public class MarketSystem {
         return UserController.getInstance().deleteUserTest(username);
     }
 
-    public Shop getShop(int shopID) {
+    public Shop getShop(int shopID) throws ShopNotFoundException {
         return ShopController.getInstance().getShop(shopID);
     }
 
@@ -155,7 +156,7 @@ public class MarketSystem {
         return UserController.getInstance().logOut(username);
     }
 
-    public int RemoveProductFromShopInventory(int productId, String userID, int shopname) {
+    public int RemoveProductFromShopInventory(int productId, String userID, int shopname) throws InvalidAuthorizationException {
         if(userID == null)
             return -1;
         if(userController.isLogin(userID))
@@ -214,16 +215,34 @@ public class MarketSystem {
         externalConnector = ec;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(int shopname, SearchOfficialsFilter f, String userID) {
-        if(userController.isLogin(userID))
-            return ShopController.getInstance().getShop(shopname).RequestShopOfficialsInfo(f, userID);
-        else return null;
+    public List<UserSearchInfo> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) {
+        if(userController.isLogin(userID)) {
+            Shop shop1;
+            try{
+                shop1 = getShop(shopID);
+            }catch (ShopNotFoundException snfe){
+                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shopID));
+                return null;
+            }
+            return shop1.RequestShopOfficialsInfo(f, userID);
+        }
+        else
+            return null;
     }
 
-    public List<Order> RequestInformationOfShopsSalesHistory(int shopname, SearchOrderFilter f, String userID) {
-        if(userController.isLogin(userID))
-            return ShopController.getInstance().getShop(shopname).RequestInformationOfShopsSalesHistory(f, userID);
-        else return null;
+    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userID) {
+        if(userController.isLogin(userID)) {
+            Shop shop1;
+            try{
+                shop1 = getShop(shopID);
+            }catch (ShopNotFoundException snfe){
+                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shopID));
+                return null;
+            }
+            return shop1.RequestInformationOfShopsSalesHistory(f, userID);
+        }
+        else
+            return null;
     }
 
     public String EnterMarket() {
@@ -243,13 +262,13 @@ public class MarketSystem {
         return userController.removeProductFromCart(userId, shopId, productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) {
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
         if(userController.isLogin(userID))
             return userController.getOrderHistoryForShops(userID, f, shopID);
         else return null;
     }
 
-    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String> userIDs) {
+    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String> userIDs) throws InvalidAuthorizationException {
         if(userController.isLogin(userID))
             return userController.getOrderHistoryForUser(userID, f, userIDs);
         else return null;

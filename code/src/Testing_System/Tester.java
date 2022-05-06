@@ -57,9 +57,9 @@ public class Tester {
         return br.SearchProductByName(userID, pName, f);
     }
 
-    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f ) {
-        return br.SearchProductByCategory(userID, category,f);
-    }
+//    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f ) {
+//        return br.SearchProductByCategory(userID, category,f);
+//    }
 
     public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f) {
         return br.SearchProductByKeyword(userID, keyword, f);

@@ -23,7 +23,6 @@ public class Shop {
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
-    private List<User> Shoppers;
     private Inventory inventory;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
@@ -39,7 +38,6 @@ public class Shop {
         orders = new OrderHistory();
         ShopOwners = new HashMap<>();
         ShopManagers = new HashMap<>();
-        Shoppers = new LinkedList<>();
         rank = -1;
         this.name = name;
         isOpen = true;
@@ -96,27 +94,32 @@ public class Shop {
         }
     }
 
-    public Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId){
+    public Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
         if(shopManagersPermissionsController.canAddProductToInventory(userId)| ShopOwners.containsKey(userId))
             return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
-        return null;
+        else
+            throw new InvalidAuthorizationException("you do not have permission to list a product to this shop");
     }
 
-    public void removeListing(int prodID,String userId){
+    public void removeListing(int prodID,String userId) throws InvalidAuthorizationException {
         if(shopManagersPermissionsController.canRemoveProductFromInventory(userId)| ShopOwners.containsKey(userId))
             inventory.removeProduct(prodID);
+        else
+            throw new InvalidAuthorizationException("you do not have permission to unlist a product from this shop");
     }
 
-    public boolean editPrice(int prodID, double newPrice,String userId){
-        if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId))
-            return inventory.setPrice(prodID, newPrice);
-        else return false;
+    public void editPrice(int prodID, double newPrice,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
+        if (shopManagersPermissionsController.canChangeProductsDetail(userId) | ShopOwners.containsKey(userId))
+            inventory.setPrice(prodID, newPrice);
+        else
+            throw new InvalidAuthorizationException("you do not have permission to unlist a product from this shop");
     }
 
-    public boolean editQuantity(int prodID, int newQuantity,String userId){
+    public void editQuantity(int prodID, int newQuantity,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
         if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId))
-            return inventory.setAmount(prodID, newQuantity);
-        else return false;
+            inventory.setAmount(prodID, newQuantity);
+        else
+            throw new InvalidAuthorizationException("you can edit quantity of a product in this shop");
     }
 
     public List<Discount> productDiscount(int prodID){
@@ -134,21 +137,14 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price){
+    public Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price) throws InvalidProductInfoException, ProductNotFoundException {
         if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId)) {
-            if(inventory.setPrice(prodID, amount))
-                return null;
-            inventory.setPrice(prodID,price);
-            return inventory.setProduct(prodID,name,description,category);
+            inventory.setAmount(prodID, amount);
+            inventory.setPrice(prodID, price);
+            return inventory.setProduct(prodID, name, description, category);
         }
         return null;
     }
-    //todo????? needed?
-    public void changeDiscountPolicy(DiscountPolicy discountPolicy){throw new UnsupportedOperationException();}
-    //todo????? needed?
-    public void changePurchasePolicy(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
-    //todo????? needed?
-    public void changeProductDiscount(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
 
 
     public int addPercentageDiscount(int prodID, double percentage){
@@ -193,7 +189,12 @@ public class Shop {
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
-                inventory.restoreStock(products);
+                try{
+                    inventory.restoreStock(products);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return new ResponseT<>("not in stock");
             }
         }
@@ -210,7 +211,11 @@ public class Shop {
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)){
             synchronized (inventory) {
-                inventory.restoreStock(products);
+                try {
+                    inventory.restoreStock(products);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             return new ResponseT<>();
         }
@@ -311,16 +316,11 @@ public class Shop {
         return info;
     }
 
-    public ProductInfo getInfoOnProduct(int productId){
+    public ProductInfo getInfoOnProduct(int productId) throws ProductNotFoundException {
         ProductInfo p;
         synchronized (inventory){
             p = inventory.getProductInfo(productId);
         }
-        if(p == null){
-            //log
-            return null;
-        }
-
         p.setShopName(name);
         p.setShopRank(rank);
         return p;

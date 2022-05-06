@@ -69,5 +69,8 @@ public class OrderHistory {
         return Collections.unmodifiableList(orders);
     }
 
-    public List<Order> getOrders(SearchOrderFilter f){}
+    public List<Order> getOrders(SearchOrderFilter f){
+        //todo::
+        return new ArrayList<>();
+    }
 }

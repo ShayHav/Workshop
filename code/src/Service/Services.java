@@ -234,7 +234,15 @@ public class Services {
         Shop shop = controller.getShop(shopID);
         if(shop == null)
             return new Result<>(false, null);
-        Product p  = shop.addListing(pName,pDis,pCat,price,amount,username);
+        Product p;
+        try {
+            p = shop.addListing(pName, pDis, pCat, price, amount, username);
+        }catch (InvalidAuthorizationException iae){
+            return new Result<>(false, null);
+        }catch (InvalidProductInfoException ipie){
+            //todo prints????
+            return new Result<>(false, null);
+        }
         if(p == null){
             return new Result<>(false, null);
         }
@@ -330,21 +338,25 @@ public class Services {
 
     //make:shahar
     public Result<Boolean,List<Order>> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID){
-        List<Order> result = marketSystem.getOrderHistoryForShops(userID, f, shopID);
-        if(result == null){
+        List<Order> result;
+        try {
+             result = marketSystem.getOrderHistoryForShops(userID, f, shopID);
+        }
+        catch (InvalidAuthorizationException iae){
             return new Result<>(false,null);
         }
-
-        return new Result<>(true,result);
+        return new Result<>(true, result);
     }
 
     //make:shahar
     public Result<Boolean,List<Order>> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs){
-        List<Order> result = marketSystem.getOrderHistoryForUser(userID, f, userIDs);
-        if(result == null){
+        List<Order> result;
+        try {
+            result = marketSystem.getOrderHistoryForUser(userID, f, userIDs);
+        }
+        catch (InvalidAuthorizationException iae){
             return new Result<>(false,null);
         }
-
         return new Result<>(true,result);
     }
 
