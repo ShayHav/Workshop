@@ -154,7 +154,6 @@ public class UserController {
         adminUser.add(u);
         u.makeSystemManager();
         return true;
-
     }
 
     public List<Order> getOrderHistoryForUser(List<String>  userID){

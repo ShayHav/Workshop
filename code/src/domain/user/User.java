@@ -40,11 +40,84 @@ public class User {
         isSystemManager = false;
     }
 
+
+    public String getUserMenu() throws IllegalStateException {
+        int i = 1;
+        StringBuilder buildStr = new StringBuilder();
+
+        if(us == UserState2.guest){
+            ArrayList<String> guestActions = guestActions();
+            buildStr.append(String.format("%d. login \n", i++));
+            for(String guesta: guestActions)
+                buildStr.append(String.format("%d. ", i++)).append(guesta).append("\n");
+            return buildStr.toString();
+        }
+
+        else if (us == UserState2.member){
+            if(isSystemManager){
+                ArrayList<String> smActions = systemManagerActions();
+                for(String sma: smActions)
+                    buildStr.append(String.format("%d. ", i++)).append(sma).append("\n");
+            }
+
+            ArrayList<String> memActions = memberActions();
+            for(String mema: memActions)
+                buildStr.append(String.format("%d. ", i++)).append(mema).append("\n");
+
+            ArrayList<String> guestActions = guestActions();
+            for(String guesta: guestActions)
+                buildStr.append(String.format("%d. ", i++)).append(guesta).append("\n");
+            return buildStr.toString();
+        }
+
+        else if(us == UserState2.disconnected){
+            ArrayList<String> disActions = disconnectedActions();
+            for(String disa: disActions)
+                buildStr.append(String.format("%d. ", i++)).append(disa).append("\n");
+            return buildStr.toString();
+        }
+
+        else{
+            throw new IllegalStateException();
+        }
+    }
+
+
+    private ArrayList<String> systemManagerActions(){
+        ArrayList<String> systemManagerActions = new ArrayList<>();
+        systemManagerActions.add("get order history of a user");
+        systemManagerActions.add("get order history of a shop");
+        return systemManagerActions;
+    }
+
+    private ArrayList<String> memberActions(){
+        ArrayList<String> memberActions = new ArrayList<>();
+        memberActions.add("create a new shop");
+        return memberActions;
+    }
+
+    private ArrayList<String> guestActions(){
+        ArrayList<String> guestActions = new ArrayList<>();
+        guestActions.add("my order history");
+        guestActions.add("show cart");
+        guestActions.add("change amount of product in cart");
+        guestActions.add("remove product from cart");
+        guestActions.add("checkout");
+        guestActions.add("leave marketplace");
+        return guestActions;
+    }
+
+    private ArrayList<String> disconnectedActions(){
+        ArrayList<String> guestActions = new ArrayList<>();
+        guestActions.add("enter marketplace");
+        return guestActions;
+    }
+
     /***
      * enter market - user state is now guest, with empty cart
      */
     public void enterMarket() {
-        us = UserState2.disconnected;
+        us = UserState2.guest;
         userCart = new Cart();
     }
 
@@ -53,7 +126,7 @@ public class User {
      * leave market - user has no state
      */
     public void leaveMarket() {
-        us = null;
+        us = UserState2.disconnected;
     }
 
     public void closeShop(int shopId) {
@@ -91,15 +164,19 @@ public class User {
             errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
     }
 
-    private int memberCreateShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        return MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);
+
+
+
+
+    private void memberCreateShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
+        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);
     }
 
 
 
     public void appointOwner(String userId, int shopName) {
         List<Role> useRolelist = roleList.get(shopName);
-        if (useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner))
+        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
             memberAppointOwner(userId, shopName, this.id, ownerAppointmentList);
         else
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner with out appropriate role by user: %s", id));
@@ -107,32 +184,28 @@ public class User {
 
 
     private boolean memberAppointOwner(String targetUser, int shop, String id, List<OwnerAppointment> ownerAppointmentList) {
-        if(us == UserState2.member){
-            Shop shop1;
-            try{
-                shop1 = getShop(shop);
-            }catch (ShopNotFoundException snfe){
-                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-                return false;
-            }
-            User user = getUser(targetUser);
-            if (shop1.isFounder(id) || shop1.isOwner(id)) {
-                user.addRole(shop1.getShopID(), Role.ShopOwner);
-                shop1.AppointNewShopOwner(targetUser, id);
-                if (isAppointedMeOwner(user, id)) {
-                    OwnerAppointment newAppointment = new OwnerAppointment(shop1, id, user);
-                    ownerAppointmentList.add(newAppointment);
-                    eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %s , appointedId: %s , ShopId %s}", id, user.getId(), shop));
-                    return true;
-                }
-                else
-                    errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
+        Shop shop1;
+        try{
+            shop1 = getShop(shop);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
+            return false;
+        }
+        User user = getUser(targetUser);
+        if (shop1.isFounder(id) || shop1.isOwner(id)) {
+            user.addRole(shop1.getShopID(), Role.ShopOwner);
+            shop1.AppointNewShopOwner(targetUser, id);
+            if (isAppointedMeOwner(user, id)) {
+                OwnerAppointment newAppointment = new OwnerAppointment(shop1, id, user);
+                ownerAppointmentList.add(newAppointment);
+                eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %s , appointedId: %s , ShopId %s}", id, user.getId(), shop));
+                return true;
             }
             else
                 errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
-            return false;
         }
-        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+        else
+            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
         return false;
     }
 
@@ -147,14 +220,14 @@ public class User {
 
     public void appointManager(String userId, int shopName){
         List<Role> useRolelist = roleList.get(shopName);
-        if (useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner))
+        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
             memberAppointManager(userId, shopName, this.id, managerAppointeeList);
         else
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", id));
     }
 
 
-    public boolean memberAppointManager(String targetUser, int shop, String id, List<ManagerAppointment> managerAppointmentList) {
+    private boolean memberAppointManager(String targetUser, int shop, String id, List<ManagerAppointment> managerAppointmentList) {
         Shop shop1;
         try{
             shop1 = getShop(shop);
@@ -229,6 +302,7 @@ public class User {
      */
     public void logout() {
         //TODO: save the user cart
+        us = UserState2.disconnected;
         loggedIn = false;
     }
 
@@ -239,7 +313,7 @@ public class User {
     public boolean isLoggedIn() {
         return this.loggedIn;
     }
-
+//added
     public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         List<ResponseT<Order>> checkoutResult = userCart.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
         List<String> errors = new ArrayList<>();
@@ -268,7 +342,7 @@ public class User {
     public List<ManagerAppointment> getManagerAppointeeList() {
         return managerAppointeeList;
     }
-
+//added
     public Cart.CartInfo showCart() {
         return userCart.showCart();
     }
@@ -276,11 +350,11 @@ public class User {
     public boolean addProductToCart(int shopID, int productID, int amount) {
         return userCart.addProductToCart(shopID, productID, amount);
     }
-
+//added
     public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
         return userCart.updateAmountOfProduct(shopID, productID, amount);
     }
-
+//added
     public boolean removeProductFromCart(int shopID, int productID) {
         return userCart.removeProductFromCart(shopID, productID);
     }
@@ -300,18 +374,18 @@ public class User {
     public UserSearchInfo getUserInfo(){
         return new UserSearchInfo(id);
     }
-
+//added
     public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
-        if(isSystemManager)
+        if(isSystemManager && us == UserState2.member)
             return systemManagerGetOrderHistoryForShops(f,shopID);
         else {
             errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
             throw new InvalidAuthorizationException("SystemManager", us.toString());
         }
     }
-
+//added
     public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
-        if(isSystemManager)
+        if(isSystemManager && us == UserState2.member)
             return systemManagerGetOrderHistoryForUser(f,userID);
         else {
             errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
@@ -319,14 +393,14 @@ public class User {
         }
     }
 
-
-    public List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
+//added
+    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
         ShopController sc = ShopController.getInstance();
         List<Order> result = sc.getOrderHistoryForShops(shopID);
         return f.applyFilter(result);
     }
-
-    public List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID){
+//added
+    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID){
         UserController uc = UserController.getInstance();
         List<Order> result = uc.getOrderHistoryForUser(userID);
         return f.applyFilter(result);

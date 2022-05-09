@@ -219,10 +219,12 @@ public class Services {
     public Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID)
     {
         ShopController controller = ShopController.getInstance();
-        Shop shop = controller.getShop(shopID);
-        if(shop == null)
+        Shop shop;
+        try{
+            shop = controller.getShop(shopID);
+        }catch (ShopNotFoundException snfe){
             return new Result<>(false, null);
-
+        }
         return new Result<>(shop.getProduct(p.getId()) != null, shop.getInventory().isInStock(p.getId()));
     }
 
@@ -231,9 +233,12 @@ public class Services {
     public Result<Boolean, Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
     {
         ShopController controller = ShopController.getInstance();
-        Shop shop = controller.getShop(shopID);
-        if(shop == null)
+        Shop shop;
+        try{
+            shop = controller.getShop(shopID);
+        }catch (ShopNotFoundException snfe){
             return new Result<>(false, null);
+        }
         Product p;
         try {
             p = shop.addListing(pName, pDis, pCat, price, amount, username);
@@ -253,13 +258,23 @@ public class Services {
     public Result<Boolean, Product> ChangeProduct(String username, Product p, int shopID)
     {
         ShopController controller = ShopController.getInstance();
-        Shop shop = controller.getShop(shopID);
-        if(shop == null){
+        Shop shop;
+        try{
+            shop = controller.getShop(shopID);
+        }catch (ShopNotFoundException snfe){
             return new Result<>(false, null);
         }
         int newAmount = ((ServiceProduct)p).getAmount();
         double newPrice = ((ServiceProduct)p).getPrice();
-        Product changed= shop.changeProductDetail(p.getId(),p.getName(),p.getDescription(), p.getCategory(),username, newAmount, newPrice);
+        Product changed;
+        try{
+            changed = shop.changeProductDetail(p.getId(),p.getName(),p.getDescription(), p.getCategory(),username, newAmount, newPrice);
+        }catch (ProductNotFoundException pnfe){
+            return new Result<>(false, null);
+        }
+        catch (InvalidProductInfoException ipie){
+            return new Result<>(false, null);
+        }
         return new Result<>(changed == null, changed);
     }
 
@@ -331,7 +346,13 @@ public class Services {
     //Make:nitay
     public Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname)
     {
-        if(marketSystem.RemoveProductFromShopInventory(productId, username, shopname)!=-1)
+        int removedProductID;
+        try {
+            removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopname);
+        }catch (InvalidAuthorizationException iae){
+            return new Result<>(false, -1);
+        }
+        if(removedProductID != -1)
             return new Result<>(true,productId);
         else return new Result<>(false,-1);
     }
