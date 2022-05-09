@@ -1,5 +1,6 @@
 package domain.shop;
 
+import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.ResponseT;
@@ -31,7 +32,7 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String founderId, int shopID) {
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String founderId, int shopID) throws IncorrectIdentification, BlankDataExc {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
@@ -41,7 +42,7 @@ public class Shop {
         rank = -1;
         this.name = name;
         isOpen = true;
-        ShopFounder = MarketSystem.getInstance().getUser(founderId);
+        ShopFounder = ControllersBridge.getInstance().getUser(founderId);
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
     }
@@ -247,10 +248,10 @@ public class Shop {
         return ShopOwners.containsKey(id);
     }
 
-    public String AppointNewShopOwner(String targetUser, String userId) {
+    public String AppointNewShopOwner(String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
         if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId) | isFounder(userId)) {
             synchronized (this) {
-                User newOwner = MarketSystem.getInstance().getUser(targetUser);
+                User newOwner = ControllersBridge.getInstance().getUser(targetUser);
                 if (newOwner != null)
                     if (ShopOwners.get(targetUser) == null)
                         ShopOwners.put(targetUser, newOwner);
@@ -266,10 +267,10 @@ public class Shop {
         return shopID;
     }
 
-    public String AppointNewShopManager(String usertarget, String userId) {
+    public String AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc {
         if (shopManagersPermissionsController.canAppointNewShopManager(userId)| ShopOwners.containsKey(userId)) {
             synchronized (this) {
-                User newManager = MarketSystem.getInstance().getUser(usertarget);
+                User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 if (newManager != null)
                     if (ShopManagers.get(usertarget)==null)
                         ShopManagers.put(usertarget,newManager);

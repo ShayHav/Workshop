@@ -11,13 +11,13 @@ public interface UserState {
 
     boolean saveCart(Cart cart);
 
-    int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id);
+    int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws BlankDataExc, IncorrectIdentification;
 
-    boolean appointOwner(String user, int shop, String id, List<OwnerAppointment> ownerAppointmentList);
+    boolean appointOwner(String user, int shop, String id, List<OwnerAppointment> ownerAppointmentList) throws IncorrectIdentification, BlankDataExc, ShopNotFoundException;
 
-    boolean appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList);
+    boolean appointManager(String user, int shop, String id, List<ManagerAppointment> managerAppointmentList) throws ShopNotFoundException, IncorrectIdentification, BlankDataExc;
 
-    boolean closeShop(int shop, String id);
+    boolean closeShop(int shop, String id) throws ShopNotFoundException;
 
     List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID);
 

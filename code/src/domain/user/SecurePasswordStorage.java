@@ -1,7 +1,7 @@
 package domain.user;
 
 import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
+
 
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
@@ -20,7 +20,7 @@ import javax.crypto.spec.PBEKeySpec;
 public class SecurePasswordStorage {
     private static SecurePasswordStorage securePasswordStorage_singleton = null;
     // Simulates database of users!
-    private Map<String, UserInfo> userDatabase = new HashMap<>();
+    private final Map<String, UserInfo> userDatabase = new HashMap<>();
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
 
     private SecurePasswordStorage(){}
@@ -41,7 +41,10 @@ public class SecurePasswordStorage {
     }
 
     private boolean authenticateUser(String inputUser, String inputPass) throws Exception {
-        UserInfo user = userDatabase.get(inputUser);
+        UserInfo user;
+        synchronized (this) {
+            user = userDatabase.get(inputUser);
+        }
         if (user == null) {
             return false;
         } else {
@@ -55,7 +58,7 @@ public class SecurePasswordStorage {
         catch (Exception e){ errorLogger.logMsg(Level.WARNING,String.format("Cryptographic Hash password of %d failed.: "+e.getMessage(),userid)); }
     }
 
-    private void signUp(String userid, String password) throws Exception {
+    private synchronized void signUp(String userid, String password) throws Exception {
         String salt = getNewSalt();
         String encryptedPassword = getEncryptedPassword(password, salt);
         UserInfo user = new UserInfo();
@@ -89,7 +92,7 @@ public class SecurePasswordStorage {
         return Base64.getEncoder().encodeToString(salt);
     }
 
-    private void saveUser(UserInfo user) {
+    private synchronized void saveUser(UserInfo user) {
         userDatabase.put(user.userid, user);
     }
 

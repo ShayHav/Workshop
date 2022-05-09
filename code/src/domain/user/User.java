@@ -1,6 +1,7 @@
 package domain.user;
 
 
+import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.ResponseT;
@@ -14,7 +15,6 @@ import java.util.logging.Level;
 
 
 public class User {
-    private static final String ca = "command approve";
     private String id;
     private UserState2 us;
     private Map<Integer,List<Role>> roleList;
@@ -40,84 +40,11 @@ public class User {
         isSystemManager = false;
     }
 
-
-    public String getUserMenu() throws IllegalStateException {
-        int i = 1;
-        StringBuilder buildStr = new StringBuilder();
-
-        if(us == UserState2.guest){
-            ArrayList<String> guestActions = guestActions();
-            buildStr.append(String.format("%d. login \n", i++));
-            for(String guesta: guestActions)
-                buildStr.append(String.format("%d. ", i++)).append(guesta).append("\n");
-            return buildStr.toString();
-        }
-
-        else if (us == UserState2.member){
-            if(isSystemManager){
-                ArrayList<String> smActions = systemManagerActions();
-                for(String sma: smActions)
-                    buildStr.append(String.format("%d. ", i++)).append(sma).append("\n");
-            }
-
-            ArrayList<String> memActions = memberActions();
-            for(String mema: memActions)
-                buildStr.append(String.format("%d. ", i++)).append(mema).append("\n");
-
-            ArrayList<String> guestActions = guestActions();
-            for(String guesta: guestActions)
-                buildStr.append(String.format("%d. ", i++)).append(guesta).append("\n");
-            return buildStr.toString();
-        }
-
-        else if(us == UserState2.disconnected){
-            ArrayList<String> disActions = disconnectedActions();
-            for(String disa: disActions)
-                buildStr.append(String.format("%d. ", i++)).append(disa).append("\n");
-            return buildStr.toString();
-        }
-
-        else{
-            throw new IllegalStateException();
-        }
-    }
-
-
-    private ArrayList<String> systemManagerActions(){
-        ArrayList<String> systemManagerActions = new ArrayList<>();
-        systemManagerActions.add("get order history of a user");
-        systemManagerActions.add("get order history of a shop");
-        return systemManagerActions;
-    }
-
-    private ArrayList<String> memberActions(){
-        ArrayList<String> memberActions = new ArrayList<>();
-        memberActions.add("create a new shop");
-        return memberActions;
-    }
-
-    private ArrayList<String> guestActions(){
-        ArrayList<String> guestActions = new ArrayList<>();
-        guestActions.add("my order history");
-        guestActions.add("show cart");
-        guestActions.add("change amount of product in cart");
-        guestActions.add("remove product from cart");
-        guestActions.add("checkout");
-        guestActions.add("leave marketplace");
-        return guestActions;
-    }
-
-    private ArrayList<String> disconnectedActions(){
-        ArrayList<String> guestActions = new ArrayList<>();
-        guestActions.add("enter marketplace");
-        return guestActions;
-    }
-
     /***
      * enter market - user state is now guest, with empty cart
      */
     public void enterMarket() {
-        us = UserState2.guest;
+        us = UserState2.disconnected;
         userCart = new Cart();
     }
 
@@ -126,7 +53,7 @@ public class User {
      * leave market - user has no state
      */
     public void leaveMarket() {
-        us = UserState2.disconnected;
+        us = null;
     }
 
     public void closeShop(int shopId) {
@@ -141,7 +68,7 @@ public class User {
     private void founderCloseShop(int shop, String id) {
         Shop shop1;
         try{
-            shop1 = MarketSystem.getInstance().getShop(shop);
+            shop1 = ControllersBridge.getInstance().getShop(shop); //TODO: new class
         }catch (ShopNotFoundException snfe){
             errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
             return;
@@ -153,28 +80,30 @@ public class User {
             eventLogger.logMsg(Level.WARNING, String.format("attempt to close shop failed shop id: %s , user id:%s", shop, id));
         }
     }
-
-    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy) {
+    //TODO: not in use
+    /*
+    public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy) throws BlankDataExc, IncorrectIdentification {
         if(us == UserState2.member){
             memberCreateShop(name, discountPolicy, purchasePolicy, this.id);
-            roleList.put(ShopController.getInstance().getShopCounter(),new LinkedList<>());
+            roleList.put(ControllersBridge.getInstance().getShopCounter(),new LinkedList<>());
             roleList.get(name).add(Role.ShopFounder);
         }
         else
             errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
     }
+     */
 
 
 
 
 
-    private void memberCreateShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
-        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);
+    private void memberCreateShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws BlankDataExc, IncorrectIdentification {
+        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);  //TODO: new class
     }
 
 
 
-    public void appointOwner(String userId, int shopName) {
+    public void appointOwner(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
         List<Role> useRolelist = roleList.get(shopName);
         if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
             memberAppointOwner(userId, shopName, this.id, ownerAppointmentList);
@@ -183,13 +112,13 @@ public class User {
     }
 
 
-    private boolean memberAppointOwner(String targetUser, int shop, String id, List<OwnerAppointment> ownerAppointmentList) {
+    private void memberAppointOwner(String targetUser, int shop, String id, List<OwnerAppointment> ownerAppointmentList) throws IncorrectIdentification, BlankDataExc {
         Shop shop1;
         try{
             shop1 = getShop(shop);
         }catch (ShopNotFoundException snfe){
             errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-            return false;
+            return;
         }
         User user = getUser(targetUser);
         if (shop1.isFounder(id) || shop1.isOwner(id)) {
@@ -199,14 +128,14 @@ public class User {
                 OwnerAppointment newAppointment = new OwnerAppointment(shop1, id, user);
                 ownerAppointmentList.add(newAppointment);
                 eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %s , appointedId: %s , ShopId %s}", id, user.getId(), shop));
-                return true;
+                //return true;
             }
             else
                 errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
         }
         else
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
-        return false;
+        //return false;
     }
 
     private boolean isAppointedMeOwner(User user, String id) {
@@ -218,7 +147,7 @@ public class User {
         return false;
     }
 
-    public void appointManager(String userId, int shopName){
+    public void appointManager(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
         List<Role> useRolelist = roleList.get(shopName);
         if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
             memberAppointManager(userId, shopName, this.id, managerAppointeeList);
@@ -227,13 +156,13 @@ public class User {
     }
 
 
-    private boolean memberAppointManager(String targetUser, int shop, String id, List<ManagerAppointment> managerAppointmentList) {
+    private void memberAppointManager(String targetUser, int shop, String id, List<ManagerAppointment> managerAppointmentList) throws IncorrectIdentification, BlankDataExc {
         Shop shop1;
         try{
             shop1 = getShop(shop);
         }catch (ShopNotFoundException snfe){
             errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-            return false;
+            return;
         }
         User user1 = getUser(targetUser);
         synchronized (this) {
@@ -244,14 +173,14 @@ public class User {
                     ManagerAppointment newAppointment = new ManagerAppointment(shop1, id, user1);
                     managerAppointmentList.add(newAppointment);
                     eventLogger.logMsg(Level.INFO, String.format("appointManager = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
-                    return true;
+                    //return true;
                 } else
                     errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}", id, targetUser, shop));
             } else
                 errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager without permissions = {appointeeId: %s , appointedId: %s , ShopId %d}", id, targetUser, shop));
         }
         errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
-        return false;
+        //return false;
     }
 
     private boolean isAppointedMeManager(User user, String id) {
@@ -263,12 +192,12 @@ public class User {
         return false;
     }
 
-    private User getUser(String targetUser) {
-        return MarketSystem.getInstance().getUser(targetUser);
+    private User getUser(String targetUser) throws IncorrectIdentification, BlankDataExc {
+        return ControllersBridge.getInstance().getUser(targetUser); //TODO: new class
     }
 
     private Shop getShop(int shop) throws ShopNotFoundException {
-        return MarketSystem.getInstance().getShop(shop);
+        return ControllersBridge.getInstance().getShop(shop); //TODO: new class
     }
 
     public List<Order> getHistoryOfOrders(){
@@ -313,7 +242,7 @@ public class User {
     public boolean isLoggedIn() {
         return this.loggedIn;
     }
-//added
+
     public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         List<ResponseT<Order>> checkoutResult = userCart.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
         List<String> errors = new ArrayList<>();
@@ -342,19 +271,19 @@ public class User {
     public List<ManagerAppointment> getManagerAppointeeList() {
         return managerAppointeeList;
     }
-//added
+
     public Cart.CartInfo showCart() {
         return userCart.showCart();
     }
 
-    public boolean addProductToCart(int shopID, int productID, int amount) {
+    public boolean addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
         return userCart.addProductToCart(shopID, productID, amount);
     }
-//added
+
     public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
         return userCart.updateAmountOfProduct(shopID, productID, amount);
     }
-//added
+
     public boolean removeProductFromCart(int shopID, int productID) {
         return userCart.removeProductFromCart(shopID, productID);
     }
@@ -374,7 +303,7 @@ public class User {
     public UserSearchInfo getUserInfo(){
         return new UserSearchInfo(id);
     }
-//added
+
     public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
         if(isSystemManager && us == UserState2.member)
             return systemManagerGetOrderHistoryForShops(f,shopID);
@@ -383,7 +312,7 @@ public class User {
             throw new InvalidAuthorizationException("SystemManager", us.toString());
         }
     }
-//added
+
     public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
         if(isSystemManager && us == UserState2.member)
             return systemManagerGetOrderHistoryForUser(f,userID);
@@ -393,13 +322,13 @@ public class User {
         }
     }
 
-//added
+
     private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
-        ShopController sc = ShopController.getInstance();
-        List<Order> result = sc.getOrderHistoryForShops(shopID);
+        ControllersBridge cb = ControllersBridge.getInstance();
+        List<Order> result = cb.getOrderHistoryForShops(shopID);
         return f.applyFilter(result);
     }
-//added
+
     private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID){
         UserController uc = UserController.getInstance();
         List<Order> result = uc.getOrderHistoryForUser(userID);
@@ -414,7 +343,7 @@ public class User {
      * @param shopManagersPermissionsList
      * @return
      */
-    public boolean addManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) {
+    public boolean addManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
         synchronized (this) {
             Shop shop1;
             try{
@@ -423,12 +352,12 @@ public class User {
                 errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
                 return false;
             }
-            User user = MarketSystem.getInstance().getUser(targetUser);
+            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
             return shop1.addPermissions(shopManagersPermissionsList, targetUser, userId);
         }
     }
 
-    public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) {
+    public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
         synchronized (this) {
             Shop shop1;
             try{
@@ -437,7 +366,7 @@ public class User {
                 errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
                 return false;
             }
-            User user = MarketSystem.getInstance().getUser(targetUser);
+            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
             return shop1.removePermissions(shopManagersPermissionsList, targetUser, userId);
         }
     }

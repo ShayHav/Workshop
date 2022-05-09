@@ -19,7 +19,7 @@ class InventoryTest {
     Products products;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InvalidProductInfoException {
         inv = new Inventory();
         products = mock(Products.class);
         inv.setProductList(products);
@@ -32,21 +32,21 @@ class InventoryTest {
     }
 
     @Test
-    void isInStock() {
+    void isInStock() throws InvalidProductInfoException, ProductNotFoundException {
         assertTrue(inv.isInStock(1));
         inv.setAmount(1, 0);
         assertFalse(inv.isInStock(2));
     }
 
     @Test
-    void setPrice() {
+    void setPrice() throws InvalidProductInfoException, ProductNotFoundException {
         assertFalse(inv.setPrice(-1,1));
         assertFalse(inv.setPrice(1, -1));
         assertTrue(inv.setPrice(1,3399.90));
     }
 
     @Test
-    void setAmount() {
+    void setAmount() throws InvalidProductInfoException, ProductNotFoundException {
         assertFalse(inv.setAmount(-1,1));
         assertFalse(inv.setAmount(1, -1));
         assertTrue(inv.setAmount(1,500));
@@ -60,7 +60,7 @@ class InventoryTest {
     }
 
     @Test
-    void getItemsInStock(){
+    void getItemsInStock() throws InvalidProductInfoException, ProductNotFoundException {
         assertEquals(inv.getItemsInStock().size(),2);
         inv.setAmount(1,0);
         assertEquals(inv.getItemsInStock().size(),1);
