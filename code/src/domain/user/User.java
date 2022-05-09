@@ -43,6 +43,7 @@ public class User {
 
     public String getUserMenu() throws IllegalStateException {
         int i = 1;
+        
         StringBuilder buildStr = new StringBuilder();
 
         if(us == UserState2.guest){
