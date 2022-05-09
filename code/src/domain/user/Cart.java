@@ -1,12 +1,10 @@
 package domain.user;
 
-import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
-import domain.ResponseT;
-import domain.Tuple;
+import domain.*;
 import domain.market.MarketSystem;
 import domain.shop.Order;
 import domain.shop.Shop;
+import domain.shop.ShopNotFoundException;
 import domain.user.ShoppingBasket.BasketInfo;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,10 +24,10 @@ public class Cart {
         totalAmount = 0;
     }
 
-    public boolean addProductToCart(int shopID, int productID, int amount) {
+    public boolean addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
         boolean result;
         if (!baskets.containsKey(shopID)) {
-            Shop shop = MarketSystem.getInstance().getShop(shopID);
+            Shop shop = ControllersBridge.getInstance().getShop(shopID);
             ShoppingBasket newBasket = new ShoppingBasket(shop);
             result = newBasket.addProductToBasket(productID, amount);
             baskets.put(shopID, newBasket);

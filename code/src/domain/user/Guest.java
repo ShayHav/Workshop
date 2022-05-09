@@ -14,9 +14,9 @@ import java.util.logging.Level;
 
 public class Guest implements UserState {
 
-    private static MarketSystem market = MarketSystem.getInstance();
+    //TODO:private static MarketSystem market = MarketSystem.getInstance();
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
-    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    //TODO:private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     @Override
     public boolean saveCart(Cart cart) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");

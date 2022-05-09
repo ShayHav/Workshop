@@ -33,7 +33,7 @@ public class ShopController {
         return shopCounter;
     }
 
-    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) {
+    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws IncorrectIdentification, BlankDataExc {
         if (isUniqueName(name)) {
             shopCounter++;
             Shop newShop = new Shop(name, discountPolicy, purchasePolicy, id, shopCounter);
@@ -160,7 +160,7 @@ public class ShopController {
             return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userId) {
+    public String AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
         Shop s;
         try {
             s = getShop(key);
@@ -184,7 +184,7 @@ public class ShopController {
         else return null;
     }
 
-    public String AppointNewShopOwner(int key, String targetUser, String userId) {
+    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
         Shop s;
         try {
             s = getShop(key);

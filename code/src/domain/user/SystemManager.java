@@ -5,7 +5,7 @@ import domain.shop.ShopController;
 
 import java.util.List;
 
-public class SystemManager extends Member {
+public class SystemManager extends User {
 
     public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
         ShopController sc = ShopController.getInstance();
