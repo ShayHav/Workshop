@@ -40,6 +40,82 @@ public class User {
         isSystemManager = false;
     }
 
+
+
+    public String getUserMenu() throws IllegalStateException {
+        int i = 1;
+        
+        StringBuilder buildStr = new StringBuilder();
+
+        if(us == UserState2.guest){
+            ArrayList<String> guestActions = guestActions();
+            buildStr.append(String.format("%d. login \n", i++));
+            for(String guesta: guestActions)
+                buildStr.append(String.format("%d. ", i++)).append(guesta).append("\n");
+            return buildStr.toString();
+        }
+
+        else if (us == UserState2.member){
+            if(isSystemManager){
+                ArrayList<String> smActions = systemManagerActions();
+                for(String sma: smActions)
+                    buildStr.append(String.format("%d. ", i++)).append(sma).append("\n");
+            }
+
+            ArrayList<String> memActions = memberActions();
+            for(String mema: memActions)
+                buildStr.append(String.format("%d. ", i++)).append(mema).append("\n");
+
+            ArrayList<String> guestActions = guestActions();
+            for(String guesta: guestActions)
+                buildStr.append(String.format("%d. ", i++)).append(guesta).append("\n");
+            return buildStr.toString();
+        }
+
+        else if(us == UserState2.disconnected){
+            ArrayList<String> disActions = disconnectedActions();
+            for(String disa: disActions)
+                buildStr.append(String.format("%d. ", i++)).append(disa).append("\n");
+            return buildStr.toString();
+        }
+
+        else{
+            throw new IllegalStateException();
+        }
+    }
+
+
+    private ArrayList<String> systemManagerActions(){
+        ArrayList<String> systemManagerActions = new ArrayList<>();
+        systemManagerActions.add("get order history of a user");
+        systemManagerActions.add("get order history of a shop");
+        return systemManagerActions;
+    }
+
+    private ArrayList<String> memberActions(){
+        ArrayList<String> memberActions = new ArrayList<>();
+        memberActions.add("create a new shop");
+        return memberActions;
+    }
+
+    private ArrayList<String> guestActions(){
+        ArrayList<String> guestActions = new ArrayList<>();
+        guestActions.add("my order history");
+        guestActions.add("show cart");
+        guestActions.add("change amount of product in cart");
+        guestActions.add("remove product from cart");
+        guestActions.add("checkout");
+        guestActions.add("leave marketplace");
+        return guestActions;
+    }
+
+    private ArrayList<String> disconnectedActions(){
+        ArrayList<String> guestActions = new ArrayList<>();
+        guestActions.add("enter marketplace");
+        return guestActions;
+    }
+
+
     /***
      * enter market - user state is now guest, with empty cart
      */
