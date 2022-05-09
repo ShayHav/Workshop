@@ -65,7 +65,7 @@ public class Inventory {
         return p;
     }
 
-    public void setPrice(int product, double newPrice) throws InvalidProductInfoException, ProductNotFoundException {
+    public boolean setPrice(int product, double newPrice) throws InvalidProductInfoException, ProductNotFoundException {
         if(newPrice < 0.0){
             errorLogger.logMsg(Level.WARNING, String.format("illegal argument at set price to product %d", product));
             throw new InvalidProductInfoException("illegal argument at set price to product");
@@ -76,9 +76,10 @@ public class Inventory {
         }
         Product p = keyToProduct.get(product);
         items.get(p).price = newPrice;
+        return true;
     }
 
-    public void setAmount(int product, int newAmount) throws InvalidProductInfoException, ProductNotFoundException {
+    public boolean setAmount(int product, int newAmount) throws InvalidProductInfoException, ProductNotFoundException {
         if(newAmount < 0) {
             errorLogger.logMsg(Level.WARNING, String.format("illegal argument at set price to product %d", product));
             throw new InvalidProductInfoException("invalid new amount");
@@ -88,6 +89,7 @@ public class Inventory {
             throw new ProductNotFoundException("this product does not exist in the inventory");
         }
         items.get(keyToProduct.get(product)).quantity = newAmount;
+        return true;
     }
 
     /**

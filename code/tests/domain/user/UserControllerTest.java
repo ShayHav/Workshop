@@ -18,7 +18,7 @@ public class UserControllerTest {
 
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InvalidSequenceOperationsExc {
         userController = UserController.getInstance();
         for(int i=0;i<userName.length;i++) {
             userController.register(userName[i], userPass[i]);
@@ -26,7 +26,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void logIn() {
+    void logIn() throws IncorrectIdentification, InvalidSequenceOperationsExc, InvalidAuthorizationException {
         for(int i = 0; i < userName.length; i++){
             assertTrue(userController.logIn(userName[i], userPass[i]));
             userController.logOut(userName[i]);
@@ -37,7 +37,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void logOut() {
+    void logOut() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
         for(int i = 0; i < userName.length; i++){
             userController.logIn(userName[i], userPass[i]);
             userController.logOut(userName[i]);
@@ -45,7 +45,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void register() {
+    void register() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         userController.deleteUserTest(userName);
         for (int i = 0; i < userName.length; i++) {
             assertTrue(userController.register(userName[i], userPass[i]));
@@ -55,7 +55,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void getUser() {
+    void getUser() throws IncorrectIdentification {
         for (int i = 0; i < userName.length; i++){
             assertTrue(userController.getUser(userName[i]).getId().equals(userName[i]));
         }
