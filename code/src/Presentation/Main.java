@@ -1,6 +1,7 @@
 package Presentation;
 
 import Presentation.Model.PresentationShop;
+import Presentation.Model.PresentationUser;
 import Service.Services;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
@@ -23,7 +24,7 @@ public class Main {
 
         app.get("/", ctx ->{
 
-            List<PresentationShop> shops = services.getShops();
+            List<PresentationShop> shops = services.GetShopsInfo();
             ctx.render("index.jte", );
         });
 
@@ -35,8 +36,8 @@ public class Main {
 
         app.before(ctx->{
             if(ctx.cookie("uid") != null){
-                //enter market from servic;
-                ctx.cookie("uid", )
+                PresentationUser user = services.EnterMarket();
+                ctx.cookie("uid",user.getUsername());
             }
         });
 
