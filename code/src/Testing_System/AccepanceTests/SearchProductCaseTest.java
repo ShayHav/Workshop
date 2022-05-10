@@ -2,9 +2,11 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.ResponseT;
 import domain.shop.*;
 import domain.user.Filter;
 import domain.user.SearchProductFilter;
+import domain.user.User;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -63,10 +65,18 @@ public class SearchProductCaseTest extends Tester {
             Register(validUsers[i], pws[i]);
             Login(validUsers[i],pws[i]);
         }
-        shopID_1 = CreateShop(user_1, "TestShop").GetSecondElement();
-        p_1 = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1).GetSecondElement();
-        p_2 = AddProductToShopInventory(pName_2,pDis_2,pCat_2, price_2,amountToAdd_2,user_1,shopID_1).GetSecondElement();
-        guestID = EnterMarket().GetSecondElement();
+        ResponseT<Shop> shopResponseT = CreateShop(user_1, "TestShop");
+        if(!shopResponseT.isErrorOccurred())
+            shopID_1 = shopResponseT.getValue().getShopID();
+        ResponseT<Product> productResponseT = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1);
+        if (!productResponseT.isErrorOccurred())
+            p_1 = productResponseT.getValue();
+        productResponseT = AddProductToShopInventory(pName_2,pDis_2,pCat_2, price_2,amountToAdd_2,user_1,shopID_1);
+        if(!productResponseT.isErrorOccurred())
+            p_2 = productResponseT.getValue();
+        ResponseT<User> userResponseT = EnterMarket();
+        if(!userResponseT.isErrorOccurred())
+            guestID = userResponseT.getValue().getId();
     }
 
     @AfterAll

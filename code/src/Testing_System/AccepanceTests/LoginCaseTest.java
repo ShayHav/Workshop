@@ -34,7 +34,7 @@ public class LoginCaseTest extends Tester {
     public void GoodLogin()
     {
         for (int i = 0; i < ug.getNumOfUser(); i++)
-            assertTrue(Login(validUsernames[i], passwords[i]).GetFirstElement());
+            assertTrue(!Login(validUsernames[i], passwords[i]).isErrorOccurred());
 
     }
 
@@ -42,7 +42,7 @@ public class LoginCaseTest extends Tester {
     public void MissMatchUserPWTest()
     {
         for (int i = 1; i < ug.getNumOfUser(); i++)
-            assertFalse(Login(validUsernames[i], passwords[i-1]).GetFirstElement());
+            assertFalse(Login(validUsernames[i], passwords[i-1]).isErrorOccurred());
     }
 
     @Test
@@ -50,8 +50,8 @@ public class LoginCaseTest extends Tester {
     {
         for (int i = 0; i < ug.getNumOfUser(); i++)
         {
-           assertTrue(Login(validUsernames[i], passwords[i]).GetFirstElement());
-           assertFalse(Login(validUsernames[i], passwords[i]).GetFirstElement());
+           assertTrue(!Login(validUsernames[i], passwords[i]).isErrorOccurred());
+           assertFalse(Login(validUsernames[i], passwords[i]).isErrorOccurred());
 
         }
     }
@@ -60,7 +60,7 @@ public class LoginCaseTest extends Tester {
     public void UserDoesNotExist()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertTrue(Login(notRegisteredUsers[i], passwords[i]).GetFirstElement());
+            assertTrue(!Login(notRegisteredUsers[i], passwords[i]).isErrorOccurred());
 
     }
 

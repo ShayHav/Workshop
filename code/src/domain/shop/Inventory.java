@@ -25,7 +25,7 @@ public class Inventory {
      * @param product the id of the product querying
      * @return true if there is at least one item in the inventory
      */
-    public boolean isInStock(int product){
+    public synchronized boolean isInStock(int product){
         return getQuantity(product) > 0;
     }
 
@@ -52,8 +52,11 @@ public class Inventory {
      * @return
      */
     public Product addProduct(String productName, String productDesc, String productCategory, double price, int quantity) throws InvalidProductInfoException {
-        int prodID = productIdGen;
-        productIdGen++;
+        int prodID;
+        synchronized (this) {
+            prodID = productIdGen;
+            productIdGen++;
+        }
         if(price < 0.0 || quantity < 0) {
             errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", prodID));
             throw new InvalidProductInfoException();
@@ -74,8 +77,10 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("product: %d does not exist", product));
             throw new ProductNotFoundException("product does not exist");
         }
-        Product p = keyToProduct.get(product);
-        items.get(p).price = newPrice;
+        synchronized (items) {
+            Product p = keyToProduct.get(product);
+            items.get(p).price = newPrice;
+        }
         return true;
     }
 
@@ -88,7 +93,9 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("product:%d does not exist", product));
             throw new ProductNotFoundException("this product does not exist in the inventory");
         }
-        items.get(keyToProduct.get(product)).quantity = newAmount;
+        synchronized (items) {
+            items.get(keyToProduct.get(product)).quantity = newAmount;
+        }
         return true;
     }
 
@@ -104,7 +111,9 @@ public class Inventory {
         Product p = keyToProduct.get(product);
         if(items.get(p).quantity < amount)
             return false;
-        items.get(p).quantity -= amount;
+        synchronized (items) {
+            items.get(p).quantity -= amount;
+        }
         return true;
     }
 
@@ -112,7 +121,9 @@ public class Inventory {
         if(keyToProduct.containsKey(product)){
             Product p = keyToProduct.get(product);
             keyToProduct.remove(product);
-            items.remove(p);
+            synchronized (items) {
+                items.remove(p);
+            }
         }
     }
 
@@ -140,7 +151,7 @@ public class Inventory {
         return true;
     }
 
-    public void setProductList(Products productList) {
+    public synchronized void setProductList(Products productList) {
         this.productList = productList;
     }
 

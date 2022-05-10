@@ -1,6 +1,7 @@
 package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import domain.shop.ShopPermissions;
@@ -38,7 +39,9 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
         pw_1 = pws[0];
         Register(user_1, pw_1);
         Login(user_1, pw_1);
-        shopID_1 = CreateShop(user_1, "TestShop").GetSecondElement();
+        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        if(!shopResponseT.isErrorOccurred())
+            shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
         owner_pw = pws[1];
         Register(owner,owner_pw);
@@ -82,7 +85,7 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     {
         Login(manager,manager_pw);
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        assertTrue(RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).GetFirstElement());
+        assertTrue(!RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).isErrorOccurred());
     }
 
     @Test
@@ -90,7 +93,7 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
         pToRemove.add(ShopManagersPermissions.RemoveProductFromInventory);
-        assertTrue(RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).GetFirstElement());
+        assertTrue(!RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).isErrorOccurred());
 
     }
 
@@ -98,9 +101,9 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     public void TwoStepRemoveSuccessTest()
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        assertTrue(RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).GetFirstElement());
+        assertTrue(!RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).isErrorOccurred());
         pToRemove.add(ShopManagersPermissions.RemoveProductFromInventory);
-        assertTrue(RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).GetFirstElement());
+        assertTrue(!RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).isErrorOccurred());
 
     }
 
@@ -109,21 +112,21 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     {
         Login(owner,owner_pw);
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        assertTrue(RemoveShopManagerPermissions(shopID_1,ls, manager,owner).GetFirstElement());
+        assertTrue(!RemoveShopManagerPermissions(shopID_1,ls, manager,owner).isErrorOccurred());
     }
 
     @Test
     public void ManagerNotLoggedGoodTest()
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        assertTrue(RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).GetFirstElement());
+        assertTrue(!RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).isErrorOccurred());
     }
 
     @Test
     public void NotLoggedInCaseFailTest()
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, manager,owner).GetFirstElement());
+        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, manager,owner).isErrorOccurred());
     }
 
     @Test
@@ -131,8 +134,8 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
         Register(validUsers[3],pws[3]);
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).GetFirstElement());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, owner,user_1).GetFirstElement());
+        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, owner,user_1).isErrorOccurred());
 
     }
 
@@ -140,7 +143,7 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     public void RemoveNotRegisteredTest()
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).GetFirstElement());
+        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).isErrorOccurred());
     }
 
     @Test
@@ -150,12 +153,12 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
         List<ShopManagersPermissions> ls_2 = new ArrayList<ShopManagersPermissions>();
         Register(validUsers[3],pws[3]);
         AppointNewShopManager(shopID_1,validUsers[2],user_1);
-        assertFalse(RemoveShopManagerPermissions(shopID_1+1,pToRemove, validUsers[3], user_1).GetFirstElement());
-        assertFalse(RemoveShopManagerPermissions(-1,pToRemove, validUsers[3], user_1).GetFirstElement());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,ls_2, validUsers[3], user_1).GetFirstElement());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,null, validUsers[3], user_1).GetFirstElement());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, null, user_1).GetFirstElement());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], null).GetFirstElement());
+        assertFalse(RemoveShopManagerPermissions(shopID_1+1,pToRemove, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(RemoveShopManagerPermissions(-1,pToRemove, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(RemoveShopManagerPermissions(shopID_1,ls_2, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(RemoveShopManagerPermissions(shopID_1,null, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, null, user_1).isErrorOccurred());
+        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], null).isErrorOccurred());
 
 
     }

@@ -42,7 +42,7 @@ public class SecurePasswordStorage {
 
     private boolean authenticateUser(String inputUser, String inputPass) throws Exception {
         UserInfo user;
-        synchronized (this) {
+        synchronized (userDatabase) {
             user = userDatabase.get(inputUser);
         }
         if (user == null) {

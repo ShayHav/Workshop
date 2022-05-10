@@ -2,21 +2,23 @@ package Service;
 
 
 import Testing_System.Result;
+import domain.Response;
+import domain.ResponseT;
 import domain.market.*;
 import domain.shop.*;
-import domain.user.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import domain.user.*;
+import domain.user.TransactionInfo;
+
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Services implements Runnable {
-    String userName = "";
-    UtilP utilP = new UtilP();
+public class Services {
+/*    UtilP utilP = new UtilP();
     BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
+ */
     MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Services(){
@@ -29,87 +31,84 @@ public class Services implements Runnable {
      */
     //General Guest-Visitor
     //Make:nitay InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification
-    public Result<Boolean,Boolean> Login(String username, String pw) {
+    public ResponseT<User> Login(String username, String pw) {
+        ResponseT<User> output;
         try {
-            boolean b = marketSystem.logIn(username, pw);
-            Result<Boolean, Boolean> output = new Result<>(b, b);
+            User b = marketSystem.logIn(username, pw);
+            output = new ResponseT<>(b);
             return output;
         } catch (BlankDataExc blankDataExc) {
-            return new Result<>(false, false);
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Result<>(false, false);
+            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
         } catch (IncorrectIdentification incorrectIdentification) {
-            return new Result<>(false, false);
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         } catch (InvalidAuthorizationException invalidAuthorizationException) {
-            return new Result<>(false, false);
+            return new ResponseT<>(null, invalidAuthorizationException.actualAuthorization);
         }
     }
     //Make:nitay
-    public Result<Boolean,Boolean> Register(String username, String pw) {
+    public Response Register(String username, String pw) {
         try {
-            boolean b = marketSystem.register(username, pw);
-            Result<Boolean, Boolean> output = new Result<>(b, b);
-            return output;
+            if(marketSystem.register(username, pw))
+                return new Response();
         } catch (BlankDataExc blankDataExc) {
-            return new Result<>(false, false);
+            return new Response(blankDataExc.getLocalizedMessage());
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Result<>(false, false);
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         }
+        return new Response();
     }
     //Make:nitay
-    public Result<Boolean,String> EnterMarket() {
-        String EnterMarket = marketSystem.EnterMarket();
+    public ResponseT<User> EnterMarket() { //
+        User EnterMarket = marketSystem.EnterMarket();
         if (EnterMarket != null)
-            return new Result<>(true, EnterMarket);
-        else return new Result<>(false, null);
+            return new ResponseT<>(EnterMarket);
+        else return new ResponseT<>();
     }
     //Make:nitay   IncorrectIdentification, InvalidSequenceOperationsExc
     //TODO: need to check
-    public Result<Boolean,String> LeaveMarket() {
+    public Response LeaveMarket() {
         try {
-            String output = marketSystem.LeaveMarket(userName);
-            Result<Boolean, String> leaveMarket;
+            User output = marketSystem.LeaveMarket("");
             if (output != null)
-                leaveMarket = new Result<>(true, output);
-            else leaveMarket = new Result<>(false, null);
-            return leaveMarket;
+                return new Response();
+            else return null;
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,incorrectIdentification.getLocalizedMessage());
+            return new Response(incorrectIdentification.getLocalizedMessage());
         }
         catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Result<>(false,invalidSequenceOperationsExc.getLocalizedMessage());
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
 
 
     //General Member-Visitor
-    public Result<Boolean,String> Logout(String username) {
+    public ResponseT<User> Logout(String username) {
+        User output;
         try {
-            String b = marketSystem.logout(username);
-            Result<Boolean, String> output = new Result(b, b);
-            return output;
+            output = marketSystem.logout(username);
+            return new ResponseT<>(output);
         } catch (BlankDataExc blankDataExc) {
-            return new Result<>(false, blankDataExc.getLocalizedMessage());
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Result<>(false, invalidSequenceOperationsExc.getLocalizedMessage());
+            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
         } catch (IncorrectIdentification incorrectIdentification) {
-            return new Result<>(false, incorrectIdentification.getLocalizedMessage());
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
     }
     //Make:nitay BlankDataExc  BlankDataExc, IncorrectIdentification
-    public Result<Boolean, Integer> CreateShop(String username, String shopName) {
+    public ResponseT<Shop> CreateShop(String username, String shopName) {
         try {
-            Integer output = marketSystem.createShop(shopName, null, null, username);
-            Result<Boolean, Integer> CreateShop;
-            if (output != -1)
-                CreateShop = new Result<>(true, output);
-            else CreateShop = new Result<>(false, output);
-            return CreateShop;
+            Shop output = marketSystem.createShop(shopName, null, null, username);
+            if (output != null)
+                return new ResponseT<>(output);
+            else return new ResponseT<>();
         } catch (BlankDataExc blankDataExc) {
-            return new Result<>(false, -1);
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         } catch (IncorrectIdentification incorrectIdentification) {
-            return new Result<>(false, -1);
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
     }
 
@@ -136,14 +135,12 @@ public class Services implements Runnable {
         return new Result<>(ans, ans);
     }
 
-    public Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)
-    {
+    public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password) {
         try {
-            boolean b = marketSystem.start(payment, supply, userID, password);
-            return new Result<>(b, b);
-        }
-        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Result<>(false,false);
+            boolean b = marketSystem.start(payment, supply, userName, password);
+            return new Response();
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
 
@@ -169,169 +166,168 @@ public class Services implements Runnable {
 
     //make: shahar
     //Guest-Visitor Shop options
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter) {
+    public List<ResponseT<ShopInfo>> GetShopsInfo(String userName, Filter<ShopInfo> filter) {
         try {
-            Result<Boolean, List<ShopInfo>> result;
-            List<ShopInfo> shopInfo = marketSystem.getInfoOfShops(userID, filter);
-            if (shopInfo == null) {
-                result = new Result<>(false, shopInfo);
-            } else
-                result = new Result<>(true, shopInfo);
-
-            return result;
+            List<ResponseT<ShopInfo>> list = new LinkedList<>();
+            List<ShopInfo> shopInfo = marketSystem.getInfoOfShops(userName, filter);
+            for (ShopInfo shopInfo1 : shopInfo){
+                list.add(new ResponseT<>(shopInfo1));
+            }
+            return list;
         } catch (BlankDataExc blankDataExc) {
-            return new Result<>(false, null);
+            return null;
         }
     }
 
     //Make:nitay
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f)
+    public List<ResponseT<ProductInfo>> GetProductInfoInShop(String userName ,int shopID, Filter<ProductInfo> f)
     {
-        List<ProductInfo> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userID,shopID,f);
-        Result<Boolean, List<ProductInfo>> CreateShop;
+        List<ProductInfo> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userName,shopID,f);
+        List<ResponseT<ProductInfo>> CreateShop = new LinkedList<>();
         if (GetProductInfoInShop == null || GetProductInfoInShop.size() == 0)
-            CreateShop = new Result<>(false, GetProductInfoInShop);
-        else CreateShop = new Result<>(true, GetProductInfoInShop);
+            return null;
+        for(ProductInfo productInfo:GetProductInfoInShop){
+            CreateShop.add(new ResponseT<>(productInfo));
+        }
         return CreateShop;
     }//display information of a product?
 
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f) //done
+    public List<ResponseT<ProductInfo>> SearchProductByName(String userName ,String pName, Filter<ProductInfo> f) //done
     {
-        Result<Boolean, List<ProductInfo>> result;
-        List<ProductInfo> products = marketSystem.searchProductByName(userID ,pName, f);
-        if(products == null)
-            result = new Result<>(true, null);
-        else
-            result = new Result<>(false, products);
-
+        List<ResponseT<ProductInfo>> result = new LinkedList<>();
+        List<ProductInfo> products = marketSystem.searchProductByName(userName ,pName, f);
+        for(ProductInfo productInfo: products){
+            result.add(new ResponseT<>(productInfo));
+        }
         return result;
-
     }
 
     //make:shahar
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f)
+    public List<ResponseT<ProductInfo>> SearchProductByKeyword(String userName ,String keyword, Filter<ProductInfo> f)
     {
-        Result<Boolean, List<ProductInfo>> result;
-        List<ProductInfo> products = marketSystem.searchProductByKeyword(userID ,keyword, f);
-        if(products == null)
-            result = new Result<>(true, null);
-        else
-            result = new Result<>(false, products);
-
+        List<ResponseT<ProductInfo>> result = new LinkedList<>();
+        List<ProductInfo> products = marketSystem.searchProductByKeyword(userName ,keyword, f);
+        for(ProductInfo productInfo: products){
+            result.add(new ResponseT<>(productInfo));
+        }
         return result;
     }
 
     //make: shahar
-    public Result<Boolean, Boolean> AddToShoppingCart(String userID, int shopID,int productId, int amount)
+    public Response AddToShoppingCart(String userName, int shopID,int productId, int amount)
     {
         try {
-
-            boolean success = marketSystem.AddProductToCart(userID, shopID, productId, amount);
+            boolean success = marketSystem.AddProductToCart(userName, shopID, productId, amount);
             if (success)
-                return new Result<>(true, true);
+                return new Response();
             else
-                return new Result<>(false, false);
+                return new Response();
         }
         catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Result<>(false,null);
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         }
         catch (ShopNotFoundException shopNotFoundException){
-            return new Result<>(false,null);
+            return new Response(shopNotFoundException.getLocalizedMessage());
         }
     }
 
     //make:shahar
-    public Result<Boolean, Boolean> EditShoppingCart(String userId, int shopId, int productId, int amount)
+    public Response EditShoppingCart(String userName, int shopId, int productId, int amount)
     {
         try {
-            boolean success = marketSystem.EditShoppingCart(userId, shopId, productId, amount);
+            boolean success = marketSystem.EditShoppingCart(userName, shopId, productId, amount);
             if (success)
-                return new Result<>(true, true);
+                return new Response();
             else
-                return new Result<>(false, false);
+                return new Response();
         }
         catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Result<>(false,null);
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
 
     //make:shahar
-    public Result<Boolean, Boolean> RemoveFromShoppingCart(String userId, int shopId, int productId) throws InvalidSequenceOperationsExc {
-        boolean success = marketSystem.removeProductFromCart(userId, shopId, productId);
+
+    //TODO:
+    public Response RemoveFromShoppingCart(String userName, int shopId, int productId) throws InvalidSequenceOperationsExc {
+        boolean success = marketSystem.removeProductFromCart(userName, shopId, productId);
         if(success)
-            return new Result<>(true, true);
+            return new Response();
         else
-            return new Result<>(false, false);
+            return new Response();
     }
 
     //Make nitay  IncorrectIdentification, BlankDataExc
-    public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        List<String> checkout = new LinkedList<>();
+    public List<Response> Checkout(String userName,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        List<Response> checkout = new LinkedList<>();
         try {
-            checkout = marketSystem.Checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
-            if (checkout.size() > 0)
-                return new Result<>(false, checkout);
-            else return new Result<>(true, null);
+            List<String> temp = marketSystem.Checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
+            if (temp.size() > 0) {
+                for (String s : temp)
+                    checkout.add(new Response(s));
+                return checkout;
+            }
+            return null;
         } catch (IncorrectIdentification incorrectIdentification) {
-            checkout.add(incorrectIdentification.getLocalizedMessage());
-            return new Result<>(false, checkout);
+            checkout.add(new Response(incorrectIdentification.getLocalizedMessage()));
+            return checkout;
         } catch (BlankDataExc blankDataExc) {
-            checkout.add(blankDataExc.getLocalizedMessage());
-            return new Result<>(false, checkout);
+            checkout.add(new Response(blankDataExc.getLocalizedMessage()));
+            return checkout;
         }
     }
 
 
     //shay
-    public Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID)
+    public ResponseT<Boolean> CheckIfProductAvailable(Product p, int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop;
         try{
             shop = controller.getShop(shopID);
         }catch (ShopNotFoundException snfe){
-            return new Result<>(false, null);
+            return new ResponseT<>(null,snfe.getLocalizedMessage());
         }
-        return new Result<>(shop.getProduct(p.getId()) != null, shop.getInventory().isInStock(p.getId()));
+        return new ResponseT<>(shop.getProduct(p.getId()) != null);
     }
 
     //Shay
     //done
-    public Result<Boolean, Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
+    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop;
         try{
             shop = controller.getShop(shopID);
         }catch (ShopNotFoundException snfe){
-            return new Result<>(false, null);
+            return new ResponseT<>(null,snfe.getLocalizedMessage());
         }
         Product p;
         try {
             p = shop.addListing(pName, pDis, pCat, price, amount, username);
         }catch (InvalidAuthorizationException iae){
-            return new Result<>(false, null);
+            return new ResponseT<>(null,iae.getLocalizedMessage());
         }catch (InvalidProductInfoException ipie){
             //todo prints????
-            return new Result<>(false, null);
+            return new ResponseT<>(null,ipie.getLocalizedMessage());
         }
         if(p == null){
-            return new Result<>(false, null);
+            return null;
         }
-        return new Result<>(true, p);
+        return new ResponseT<>(p);
     }
 
     //shay
-    public Result<Boolean, Product> ChangeProduct(String username, Product p, int shopID)
+    public ResponseT<Product> ChangeProduct(String username, Product p, int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop;
         try{
             shop = controller.getShop(shopID);
         }catch (ShopNotFoundException snfe){
-            return new Result<>(false, null);
+            return new ResponseT<>(null,snfe.getLocalizedMessage());
         }
         int newAmount = ((ServiceProduct)p).getAmount();
         double newPrice = ((ServiceProduct)p).getPrice();
@@ -339,173 +335,203 @@ public class Services implements Runnable {
         try{
             changed = shop.changeProductDetail(p.getId(),p.getName(),p.getDescription(), p.getCategory(),username, newAmount, newPrice);
         }catch (ProductNotFoundException pnfe){
-            return new Result<>(false, null);
+            return new ResponseT<>(null,pnfe.getLocalizedMessage());
         }
         catch (InvalidProductInfoException ipie){
-            return new Result<>(false, null);
+            return new ResponseT<>(null,ipie.getLocalizedMessage());
         }
-        return new Result<>(changed == null, changed);
+        return new ResponseT<>(changed);
     }
 
     //Make:nitay
     //done IncorrectIdentification, BlankDataExc
-    public Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId)
+    public Response AppointNewShopOwner(int key,String targetUser, String userName)
     {
         try {
-            String s = marketSystem.AppointNewShopOwner(key, targetUser, userId);
+            String s = marketSystem.AppointNewShopOwner(key, targetUser, userName);
             if (s != null)
-                return new Result<>(true, s);
-            else return new Result<>(false, null);
+                return new Response(s);
+            return null;
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,incorrectIdentification.getLocalizedMessage());
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
         catch (BlankDataExc blankDataExc){
-            return new Result<>(false,blankDataExc.getLocalizedMessage());
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     //Make:nitay
     //done  IncorrectIdentification, BlankDataExc
-    public Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId) {
+    public Response AppointNewShopManager(int key,String targetUser, String userName) {
         try {
-            String s = marketSystem.AppointNewShopManager(key, targetUser, userId);
+            String s = marketSystem.AppointNewShopManager(key, targetUser, userName);
             if (s != null)
-                return new Result<>(true, s);
-            else return new Result<>(false, null);
+                return new Response(s);
+            return null;
         } catch (IncorrectIdentification incorrectIdentification) {
-            return new Result<>(false, incorrectIdentification.getLocalizedMessage());
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
-            return new Result<>(false, blankDataExc.getLocalizedMessage());
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     //Make:nitay
     //done  IncorrectIdentification, BlankDataExc
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID) {
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID) {
         try {
             String s = marketSystem.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
             if (s != null)
-                return new Result<>(true, s);
-            else return new Result<>(false, null);
+                return new Response(s);
+            return null;
         } catch (IncorrectIdentification incorrectIdentification) {
-            return new Result<>(false, incorrectIdentification.getLocalizedMessage());
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
-            return new Result<>(false, blankDataExc.getLocalizedMessage());
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     //Make:nitay
     //done  IncorrectIdentification, BlankDataExc
-    public Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID)
+    public Response RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID)
     {
         try {
             String s = marketSystem.RemoveShopManagerPermissions(key, shopManagersPermissionsList, managerUser, ownerID);
             if (s != null)
-                return new Result<>(true, s);
-            else return new Result<>(false, null);
+                return new Response(s);
+            return null;
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,incorrectIdentification.getLocalizedMessage());
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
         catch (BlankDataExc blankDataExc){
-            return new Result<>(false,blankDataExc.getLocalizedMessage());
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     //Make:nitay
     //done  IncorrectIdentification, BlankDataExc
-    public Result<Boolean, String> CloseShop(int shopId,String userId) {
+    public Response CloseShop(int shopId,String userName) {
         try {
-            String s = marketSystem.CloseShop(shopId, userId);
+            String s = marketSystem.CloseShop(shopId, userName);
             if (s != null)
-                return new Result<>(true, s);
-            else return new Result<>(false, null);
+                return new Response(s);
+            return null;
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,incorrectIdentification.getLocalizedMessage());
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
         catch (BlankDataExc blankDataExc){
-            return new Result<>(false,blankDataExc.getLocalizedMessage());
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     //Make:nitay  IncorrectIdentification
-    public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userId)
+    public List<ResponseT<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userName)
     {
+        List<ResponseT<UserSearchInfo>> responseTList = new LinkedList<>();
         try {
-            List<UserSearchInfo> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userId);
+            List<UserSearchInfo> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
             if (s != null)
-                return new Result<>(true, s);
-            else return new Result<>(false, null);
+                for(UserSearchInfo userSearchInfo: s)
+                    responseTList.add(new ResponseT<>(userSearchInfo));
+            return responseTList;
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,null);
+            responseTList.add(new ResponseT<>(null,incorrectIdentification.getLocalizedMessage()));
+            return responseTList;
         }
     }
     //Make:nitay  IncorrectIdentification
-    public Result<Boolean, List<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f,String userId)
+    public List<ResponseT<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f,String userName)
     {
+        List<ResponseT<Order>> output = new LinkedList<>();
         try {
-            List<Order> orders = marketSystem.RequestInformationOfShopsSalesHistory(shopName, f, userId);
+            List<Order> orders = marketSystem.RequestInformationOfShopsSalesHistory(shopName, f, userName);
             if (orders != null)
-                return new Result<>(true, orders);
-            else return new Result<>(false, null);
+                for(Order order:orders)
+                    output.add(new ResponseT<>(order));
+
+            return output;
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,null);
+            output.add(new ResponseT<>(null,incorrectIdentification.getLocalizedMessage()));
+            return output;
         }
     }
     //Make:nitay
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
+    public Response DeleteUserTest(String[] usernames) {
         marketSystem.deleteUserTest(usernames);
-        return new Result<>(true, null);
+        return new Response();
+    }
+    //TODO:
+    public Response DeleteUser(String usernames) {
+        try {
+            if(marketSystem.deleteUser(usernames))
+                return new Response();
+        }
+        catch (BlankDataExc blankDataExc){
+            return new Response(blankDataExc.getLocalizedMessage());
+        }
+        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        }
+        return null;
     }
     //Make:nitay  InvalidAuthorizationException, IncorrectIdentification, BlankDataExc
-    public Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname)
+    public Response RemoveProductFromShopInventory(int productId, String username, int shopname)
     {
         int removedProductID;
         try {
             removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopname);
         }catch (InvalidAuthorizationException iae){
-            return new Result<>(false, -1);
+            return new Response(iae.getLocalizedMessage());
         }
         catch (BlankDataExc blankDataExc){
-            return new Result<>(false,null);
+            return new Response(blankDataExc.getLocalizedMessage());
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,null);
+            return new Response(incorrectIdentification.getLocalizedMessage());
         }
         if(removedProductID != -1)
-            return new Result<>(true,productId);
-        else return new Result<>(false,-1);
+            return new Response();
+        return null;
     }
 
     //make:shahar   InvalidAuthorizationException, IncorrectIdentification
-    public Result<Boolean,List<Order>> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID){
-        List<Order> result;
+    public List<ResponseT<Order>> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID){
+        List<ResponseT<Order>> output = new LinkedList<>();
         try {
-             result = marketSystem.getOrderHistoryForShops(userID, f, shopID);
+             List<Order> result = marketSystem.getOrderHistoryForShops(userName, f, shopID);
+             for(Order o :result)
+                 output.add(new ResponseT<>(o));
         }
         catch (InvalidAuthorizationException iae){
-            return new Result<>(false,null);
+            output.add(new ResponseT(iae.getLocalizedMessage()));
+            return output;
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,null);
+            output.add(new ResponseT(incorrectIdentification.getLocalizedMessage()));
+            return output;
         }
-        return new Result<>(true, result);
+        return output;
     }
 
     //make:shahar   InvalidAuthorizationException, IncorrectIdentification
-    public Result<Boolean,List<Order>> getOrderHistoryForUser(String userID, Filter<Order> f, List<String>  userIDs){
+    public List<ResponseT<Order>> getOrderHistoryForUser(String userName, Filter<Order> f, List<String>  userNames){
+        List<ResponseT<Order>> output= new LinkedList<>();
         List<Order> result;
         try {
-            result = marketSystem.getOrderHistoryForUser(userID, f, userIDs);
+            result = marketSystem.getOrderHistoryForUser(userName, f, userNames);
+            for(Order order:result)
+                output.add(new ResponseT<>(order));
         }
         catch (InvalidAuthorizationException iae){
-            return new Result<>(false,null);
+            output.add(new ResponseT(iae.getLocalizedMessage()));
+            return output;
         }
         catch (IncorrectIdentification incorrectIdentification){
-            return new Result<>(false,null);
+            output.add(new ResponseT(incorrectIdentification.getLocalizedMessage()));
+            return output;
         }
-        return new Result<>(true,result);
+        return output;
     }
-
+/*
     @Override
     public void run() {
         try {
@@ -562,4 +588,5 @@ public class Services implements Runnable {
             }
         }
     }
+ */
 }

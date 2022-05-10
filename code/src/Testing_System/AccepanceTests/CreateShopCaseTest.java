@@ -51,48 +51,48 @@ public class CreateShopCaseTest extends Tester {
     @Test
     public void GoodCreationTest()
     {
-        assertTrue(CreateShop(validUsers[0], "TestShop").GetFirstElement());
-        assertTrue(CreateShop(validUsers[1], "TestShop_2").GetFirstElement());
-        assertTrue(CreateShop(validUsers[2], "TestShop_3").GetFirstElement());
+        assertTrue(!CreateShop(validUsers[0], "TestShop").isErrorOccurred());
+        assertTrue(!CreateShop(validUsers[1], "TestShop_2").isErrorOccurred());
+        assertTrue(!CreateShop(validUsers[2], "TestShop_3").isErrorOccurred());
     }
 
     @Test
     public void SameUserMultipleShops()
     {
-        assertTrue(CreateShop(validUsers[0], "TestShop").GetFirstElement());
-        assertTrue(CreateShop(validUsers[0], "TestShop_2").GetFirstElement());
-        assertTrue(CreateShop(validUsers[0], "TestShop_3").GetFirstElement());
+        assertTrue(!CreateShop(validUsers[0], "TestShop").isErrorOccurred());
+        assertTrue(!CreateShop(validUsers[0], "TestShop_2").isErrorOccurred());
+        assertTrue(!CreateShop(validUsers[0], "TestShop_3").isErrorOccurred());
     }
 
 
     @Test
     public void BadNameShopTest()
     {
-        assertFalse(CreateShop(validUsers[0], "T#$hop").GetFirstElement());
-        assertFalse(CreateShop(validUsers[1], "Tes%&%p_2").GetFirstElement());
-        assertFalse(CreateShop(validUsers[2], "A").GetFirstElement());
-        assertFalse(CreateShop(validUsers[3], null).GetFirstElement());
+        assertFalse(CreateShop(validUsers[0], "T#$hop").isErrorOccurred());
+        assertFalse(CreateShop(validUsers[1], "Tes%&%p_2").isErrorOccurred());
+        assertFalse(CreateShop(validUsers[2], "A").isErrorOccurred());
+        assertFalse(CreateShop(validUsers[3], null).isErrorOccurred());
 
     }
 
     @Test
     public void DuplicateNames()
     {
-        assertTrue(CreateShop(validUsers[0], "TestShop").GetFirstElement());
-        assertFalse(CreateShop(validUsers[1], "TestShop").GetFirstElement());
+        assertTrue(!CreateShop(validUsers[0], "TestShop").isErrorOccurred());
+        assertFalse(CreateShop(validUsers[1], "TestShop").isErrorOccurred());
     }
 
     @Test
     public void NotRegisteredUser()
     {
-        assertFalse(CreateShop("notregis", "ValidName").GetFirstElement());
+        assertFalse(CreateShop("notregis", "ValidName").isErrorOccurred());
     }
 
     @Test
     public void NotLoggedUser()
     {
         Logout(validUsers[0]);
-        assertFalse(CreateShop(validUsers[0], "TestShop").GetFirstElement());
+        assertFalse(CreateShop(validUsers[0], "TestShop").isErrorOccurred());
 
     }
 

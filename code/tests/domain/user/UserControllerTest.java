@@ -28,11 +28,11 @@ public class UserControllerTest {
     @Test
     void logIn() throws IncorrectIdentification, InvalidSequenceOperationsExc, InvalidAuthorizationException {
         for(int i = 0; i < userName.length; i++){
-            assertTrue(userController.logIn(userName[i], userPass[i]));
+            assertTrue(userController.logIn(userName[i], userPass[i])!=null);
             userController.logOut(userName[i]);
         }
         for(int i = 0; i < userName.length; i++){
-            assertFalse(userController.logIn(userName[i], badPass[i]));
+            assertFalse(userController.logIn(userName[i], badPass[i])!=null);
         }
     }
 

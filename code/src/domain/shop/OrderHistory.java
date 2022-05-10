@@ -24,7 +24,7 @@ public class OrderHistory {
      * adding a finished order to the store's History
      * @param o an order the ended which mean that the user paid to and successfully sent to supply
      */
-    public void addOrder(Order o){
+    public synchronized void addOrder(Order o){
         orders.add(o);
         o.setOrderId(orderIdGen);
         orderIdGen++;

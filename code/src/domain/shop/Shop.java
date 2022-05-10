@@ -47,7 +47,7 @@ public class Shop {
         shopManagersPermissionsController = new ShopManagersPermissionsController();
     }
 
-    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
+    public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
         if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id))
             return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
         else {
@@ -56,7 +56,7 @@ public class Shop {
         }
     }
 
-    public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
+    public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
         if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id)) {
             return shopManagersPermissionsController.removePermissions(shopManagersPermissionsList, tragetUser);
         } else {
@@ -95,28 +95,28 @@ public class Shop {
         }
     }
 
-    public Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
+    public synchronized Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
         if(shopManagersPermissionsController.canAddProductToInventory(userId)| ShopOwners.containsKey(userId))
             return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
         else
             throw new InvalidAuthorizationException("you do not have permission to list a product to this shop");
     }
 
-    public void removeListing(int prodID,String userId) throws InvalidAuthorizationException {
+    public synchronized void removeListing(int prodID,String userId) throws InvalidAuthorizationException {
         if(shopManagersPermissionsController.canRemoveProductFromInventory(userId)| ShopOwners.containsKey(userId))
             inventory.removeProduct(prodID);
         else
             throw new InvalidAuthorizationException("you do not have permission to unlist a product from this shop");
     }
 
-    public void editPrice(int prodID, double newPrice,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
+    public synchronized void editPrice(int prodID, double newPrice,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
         if (shopManagersPermissionsController.canChangeProductsDetail(userId) | ShopOwners.containsKey(userId))
             inventory.setPrice(prodID, newPrice);
         else
             throw new InvalidAuthorizationException("you do not have permission to unlist a product from this shop");
     }
 
-    public void editQuantity(int prodID, int newQuantity,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
+    public synchronized void editQuantity(int prodID, int newQuantity,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
         if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId))
             inventory.setAmount(prodID, newQuantity);
         else
@@ -138,7 +138,7 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price) throws InvalidProductInfoException, ProductNotFoundException {
+    public synchronized Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price) throws InvalidProductInfoException, ProductNotFoundException {
         if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId)) {
             inventory.setAmount(prodID, amount);
             inventory.setPrice(prodID, price);
@@ -148,11 +148,11 @@ public class Shop {
     }
 
 
-    public int addPercentageDiscount(int prodID, double percentage){
+    public synchronized int addPercentageDiscount(int prodID, double percentage){
         return discountPolicy.addPercentageDiscount(prodID, percentage);
     }
 
-    public int addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
+    public synchronized int addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
         return discountPolicy.addBundleDiscount(prodID, amountNeededToBuy, amountGetFree);
     }
 
@@ -282,7 +282,7 @@ public class Shop {
         return String.format("attempt to appoint New ShopManager User: %s filed", usertarget);
     }
 
-    public void closeShop(String userID){
+    public synchronized void closeShop(String userID){
         if(shopManagersPermissionsController.canCloseShop(userID)) {
             if (isOpen)
                 isOpen = false;

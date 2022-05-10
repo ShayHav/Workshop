@@ -33,7 +33,7 @@ public class InitMarketCaseTest extends Tester {
     {
         payment = new PaymentServiceImp();
         supply = new SupplyServiceImp();
-        assertTrue(StartMarket(payment,supply,userID,pw).GetFirstElement());
+        assertTrue(!StartMarket(payment,supply,userID,pw).isErrorOccurred());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class InitMarketCaseTest extends Tester {
     {
         payment = null;
         supply = new SupplyServiceImp();
-        assertFalse(StartMarket(payment,supply,userID,pw).GetFirstElement());
+        assertFalse(StartMarket(payment,supply,userID,pw).isErrorOccurred());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class InitMarketCaseTest extends Tester {
     {
         payment = new PaymentServiceImp();
         supply = null;
-        assertFalse(StartMarket(payment,supply,userID,pw).GetFirstElement());
+        assertFalse(StartMarket(payment,supply,userID,pw).isErrorOccurred());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class InitMarketCaseTest extends Tester {
     {
         payment = new PaymentServiceImp();
         supply = new SupplyServiceImp();
-        assertFalse(StartMarket(payment,supply,userID,null).GetFirstElement());
+        assertFalse(StartMarket(payment,supply,userID,null).isErrorOccurred());
     }
 
 }

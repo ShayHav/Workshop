@@ -33,16 +33,17 @@ public class ShopController {
         return shopCounter;
     }
 
-    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws IncorrectIdentification, BlankDataExc {
+    public synchronized Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws IncorrectIdentification, BlankDataExc {
+        Shop newShop;
         if (isUniqueName(name)) {
             shopCounter++;
-            Shop newShop = new Shop(name, discountPolicy, purchasePolicy, id, shopCounter);
+            newShop = new Shop(name, discountPolicy, purchasePolicy, id, shopCounter);
             shopList.put(shopCounter, newShop);
             eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", id, name));
-            return shopCounter;
+            return newShop;
         }
         errorLogger.logMsg(Level.WARNING, String.format("attempt to create a shop with exist name. id: %s , name: %s", id, name));
-        return -1;
+        return null;
     }
 
     private boolean isUniqueName(String name) {
@@ -55,10 +56,12 @@ public class ShopController {
 
     public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
         List<ShopInfo> allShops = new ArrayList<>();
-        for (Shop s : shopList.values()) {
-            ShopInfo info = s.getShopInfo();
-            if (info != null) //means, if the shop is open
-                allShops.add(s.getShopInfo());
+        synchronized (this) {
+            for (Shop s : shopList.values()) {
+                ShopInfo info = s.getShopInfo();
+                if (info != null) //means, if the shop is open
+                    allShops.add(s.getShopInfo());
+            }
         }
         return f.applyFilter(allShops);
     }
@@ -78,9 +81,11 @@ public class ShopController {
     public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
         String lowerName = name.toLowerCase();
         List<ProductInfo> products = new ArrayList<>();
-        for (Shop s : shopList.values()) {
-            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().toLowerCase().equals(lowerName)).collect(Collectors.toList());
-            products.addAll(shopProducts);
+        synchronized (shopList) {
+            for (Shop s : shopList.values()) {
+                List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().toLowerCase().equals(lowerName)).collect(Collectors.toList());
+                products.addAll(shopProducts);
+            }
         }
         return f.applyFilter(products);
     }
@@ -88,9 +93,11 @@ public class ShopController {
     public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
         String lowerKeyword = keyword.toLowerCase();
         List<ProductInfo> products = new ArrayList<>();
-        for (Shop s : shopList.values()) {
-            List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().toLowerCase().contains(lowerKeyword)).collect(Collectors.toList());
-            products.addAll(shopProducts);
+        synchronized (shopList) {
+            for (Shop s : shopList.values()) {
+                List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().toLowerCase().contains(lowerKeyword)).collect(Collectors.toList());
+                products.addAll(shopProducts);
+            }
         }
         return f.applyFilter(products);
     }
@@ -140,10 +147,10 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        if (s.removePermissions(shopManagersPermissionsList, tragetUser, id))
-            return "Shop Manager Permissions Removed";
-        else
-            return null;
+            if (s.removePermissions(shopManagersPermissionsList, tragetUser, id))
+                return "Shop Manager Permissions Removed";
+            else
+                return null;
     }
 
     public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
@@ -168,7 +175,7 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        return s.AppointNewShopManager(targetUser, userId);
+            return s.AppointNewShopManager(targetUser, userId);
     }
 
     public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
@@ -179,9 +186,11 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        if (s.removePermissions(shopManagersPermissionsList, tragetUser.getId(), id))
-            return "ShopManagerPermissionsRemove";
-        else return null;
+        synchronized (this) {
+            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getId(), id))
+                return "ShopManagerPermissionsRemove";
+            else return null;
+        }
     }
 
     public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {

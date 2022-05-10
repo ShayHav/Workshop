@@ -1,9 +1,12 @@
 package Testing_System;
 
+import domain.Response;
+import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
 import domain.shop.*;
 import domain.user.*;
+import domain.user.TransactionInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -24,22 +27,22 @@ public class Tester {
 
     //Guest-Visitor General
     //done
-    public Result<Boolean, Boolean> Login(String username, String pw) {
+    public ResponseT<User> Login(String username, String pw) {
         return br.Login(username, pw);
     }
 
     //done
-    public Result<Boolean, Boolean> Register(String username, String pw) {
+    public Response Register(String username, String pw) {
         return br.Register(username, pw);
     }
 
     //done - not needed
-    public Result<Boolean, String> EnterMarket() {
+    public ResponseT<User> EnterMarket() {
         return br.EnterMarket();
     }
 
     //done - not needed
-    public Result<Boolean, String> LeaveMarket() {
+    public Response LeaveMarket() {
         return br.LeaveMarket();
     }
 
@@ -65,11 +68,11 @@ public class Tester {
         return br.SearchProductByKeyword(userID, keyword, f);
     }
 
-    public Result<Boolean, Boolean> AddToShoppingCart(String userID, int shopID,int productId, int amount) {
+    public Response AddToShoppingCart(String userID, int shopID, int productId, int amount) {
         return br.AddToShoppingCart(userID, shopID, productId, amount);
     }
 
-    public Result<Boolean, Boolean> EditShoppingCart(String userId, int shopId, int productId, int amount) {
+    public Response EditShoppingCart(String userId, int shopId, int productId, int amount) {
         return br.EditShoppingCart(userId, shopId, productId, amount);
     }
 
@@ -89,21 +92,21 @@ public class Tester {
         return br.CheckDiscountForProduct(p, shopname);
     }
 
-    public Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID) {
+    public ResponseT<Boolean> CheckIfProductAvailable(Product p, int shopID) {
         return br.CheckIfProductAvailable(p, shopID);
     }
 
     //Shop-Owner Options
-    public Result<Boolean,Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
+    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID)
     {
         return br.AddProductToShopInventory(pName,pDis, pCat, price, amount, username, shopID);
     }
 
-    public  Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname) {
+    public Response RemoveProductFromShopInventory(int productId, String username, int shopname) {
         return br.RemoveProductFromShopInventory(productId,username, shopname);
     }
 
-    public Result<Boolean, Product> ChangeProduct(String username, Product p, int shopID) {
+    public ResponseT<Product> ChangeProduct(String username, Product p, int shopID) {
         return br.ChangeProduct(username,p,shopID);
     }
 
@@ -119,11 +122,11 @@ public class Tester {
 //
 //    public Result<Boolean, String> RemoveBuyingProductPolicy(String shopname) { return br.RemoveBuyingProductPolicy(shopname);}
 
-    public Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId) {
+    public Response AppointNewShopOwner(int key, String targetUser, String userId) {
         return br.AppointNewShopOwner(key, targetUser, userId);
     }
 
-    public Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId) {
+    public Response AppointNewShopManager(int key, String targetUser, String userId) {
         return br.AppointNewShopManager(key, targetUser, userId);
     }
 
@@ -132,11 +135,11 @@ public class Tester {
         return br.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
 
-    public Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID) {
+    public Response RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID) {
         return br.RemoveShopManagerPermissions(key,shopManagersPermissionsList, managerUser, ownerID);
     }
 
-    public Result<Boolean, String> CloseShop(int shopID, String userID) {
+    public Response CloseShop(int shopID, String userID) {
         return br.CloseShop(shopID, userID);
     }
 
@@ -154,12 +157,12 @@ public class Tester {
 
     //Member-Visitor General
     //DONE
-    public Result<Boolean, String> Logout(String username) {
+    public ResponseT<User> Logout(String username) {
         return br.Logout(username);
     }
 
     //done
-    public Result<Boolean, Integer> CreateShop(String username, String shopname) {
+    public ResponseT<Shop> CreateShop(String username, String shopname) {
         return br.CreateShop(username, shopname);
     }
 
@@ -178,7 +181,7 @@ public class Tester {
     }
 
     //done
-    public Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
+    public Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
         return br.StartMarket(payment, supply, userID, password);
     }
 

@@ -62,17 +62,19 @@ public class ShopManagersPermissionsController {
         return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.RequestInformationOfShopsSalesHistory);
     }
     public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser) {
-        if(shopManagersPermissionsList!=null || shopManagersPermissionsList.size() > 0) {
+        if (shopManagersPermissionsList != null || shopManagersPermissionsList.size() > 0) {
             List<ShopManagersPermissions> userShopManagersPermissionsList = shopManagersPermissionsMap.get(targetUser);
+
             if (userShopManagersPermissionsList != null) {
                 for (ShopManagersPermissions run : shopManagersPermissionsList) {
                     if (userShopManagersPermissionsList.contains(run))
                         userShopManagersPermissionsList.remove(run);
                 }
-            } else shopManagersPermissionsMap.put(targetUser, shopManagersPermissionsList);
+            } else synchronized (shopManagersPermissionsMap) {
+                shopManagersPermissionsMap.put(targetUser, shopManagersPermissionsList);
+            }
             return PermissionNotExist(shopManagersPermissionsList, targetUser);
-        }
-        else return false;
+        } else return false;
     }
 
     private boolean PermissionNotExist(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser){
@@ -94,7 +96,7 @@ public class ShopManagersPermissionsController {
                     if (!userShopManagersPermissionsList.contains(run))
                         userShopManagersPermissionsList.add(run);
                 }
-            } else shopManagersPermissionsMap.put(targetUser, shopManagersPermissionsList);
+            } else synchronized (shopManagersPermissionsMap){shopManagersPermissionsMap.put(targetUser, shopManagersPermissionsList);}
             return PermissionExist(shopManagersPermissionsList, targetUser);
         } else return false;
     }
@@ -110,14 +112,13 @@ public class ShopManagersPermissionsController {
         return output;
     }
 
-    public void testRestart(){
+    public synchronized void testRestart(){
         shopManagersPermissionsMap.put("SystemManager",ArrayToListConversion(ShopManagersPermissions.values()));
     }
-    private List<ShopManagersPermissions> ArrayToListConversion(ShopManagersPermissions[] shopManagersPermissions){
-        List<ShopManagersPermissions> output  = new LinkedList<>();
-        for(ShopManagersPermissions run :shopManagersPermissions)
+    private synchronized List<ShopManagersPermissions> ArrayToListConversion(ShopManagersPermissions[] shopManagersPermissions) {
+        List<ShopManagersPermissions> output = new LinkedList<>();
+        for (ShopManagersPermissions run : shopManagersPermissions)
             output.add(run);
-
         return output;
     }
 }

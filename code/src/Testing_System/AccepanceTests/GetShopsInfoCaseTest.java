@@ -3,6 +3,8 @@ package Testing_System.AccepanceTests;
 import Testing_System.Result;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.ResponseT;
+import domain.shop.Shop;
 import domain.shop.ShopInfo;
 import domain.user.Filter;
 import domain.user.SearchShopFilter;
@@ -35,7 +37,9 @@ public class GetShopsInfoCaseTest extends Tester {
         ug.InitTest();
         Register(validUsers[0],pws[0]);
         Login(validUsers[0],pws[0]);
-        shopID = CreateShop(validUsers[0],"TestShop").GetSecondElement();
+        ResponseT<Shop> shopResponseT = CreateShop(validUsers[0],"TestShop");
+        if(!shopResponseT.isErrorOccurred())
+            shopID = shopResponseT.getValue().getShopID();
         f_1 = new SearchShopFilter("TestShop",null);
         f_2= new SearchShopFilter(null,null);
         f_3 = new SearchShopFilter("Tepop",null);

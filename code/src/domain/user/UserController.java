@@ -39,24 +39,26 @@ public class UserController {
      * @param id the unique identifier of the user
      * @param pass password given by the user
      */
-    public boolean logIn(String id, String pass) throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
+    public User logIn(String id, String pass) throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
+        User output;
         if (isUserisLog(id)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %s failed. user is already logged in", id));
             throw new InvalidSequenceOperationsExc("attempt of logIn for logged in user");
         } else if (memberList.get(id) != null) {
             if (securePasswordStorage.passwordCheck(id, pass)) {
-                synchronized (this) {
+                synchronized (activeUser) {
                     activeUser.put(id, memberList.get(id));
-                    getUser(id).login();
+                    output = getUser(id);
+                    output.login();
                 }
                 eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", id));
-                return true;
+                return output;
             } else {
                 throw new InvalidAuthorizationException("Identifier not correct");
             }
         } else
             errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
-        return false;
+        throw new InvalidAuthorizationException();
     }
 
     private synchronized boolean isUserisLog(String id){
@@ -68,10 +70,10 @@ public class UserController {
      * logout from system
      * pre-condition - user is registered and logged-in
      */
-    public String logOut(String userId) throws IncorrectIdentification, InvalidSequenceOperationsExc {
+    public User logOut(String userId) throws IncorrectIdentification, InvalidSequenceOperationsExc {
         if (activeUser != null) {
             if(activeUser.containsKey(userId)) {
-                synchronized (this) {
+                synchronized (activeUser) {
                     User u = getUser(userId);
                     u.logout();
                     activeUser.remove(userId);
@@ -95,7 +97,7 @@ public class UserController {
         if (!memberList.containsKey(id)) {
             System.out.println("97");
             User user = new User(id);
-            synchronized (this) {
+            synchronized (memberList) {
                 memberList.put(id, user);
             }
             SecurePasswordStorage.getSecurePasswordStorage_singleton().inRole(id, pass);
@@ -110,13 +112,13 @@ public class UserController {
     /***
      * enter to the market - active user is now a guest
      */
-    public String enterMarket(){
+    public User enterMarket(){
         User temp = new User(String.format("-Guest%d",guestCounter));
         guestCounter++;
         temp.enterMarket();
         activeUser.put(temp.getId(), temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
-        return temp.getId();
+        return temp;
     }
 
     public User getUser(String id) throws IncorrectIdentification {
@@ -131,6 +133,12 @@ public class UserController {
         }
         return true;
     }
+    public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc {
+        if(!memberList.containsKey(s))
+            throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s",s));
+        deleteUser(s);
+        return memberList.containsKey(s);
+    }
 
     private void deleteUser(String useID) {
         for (Map.Entry<String, User> entry : memberList.entrySet()) {
@@ -144,7 +152,6 @@ public class UserController {
                 memberList.remove(entry.getKey());
             }
         }
-        ShopController.getInstance().DeleteShops();
     }
 
     public List<String> checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification {
@@ -155,7 +162,7 @@ public class UserController {
     public boolean createSystemManager(String id, String pass) throws InvalidSequenceOperationsExc {
         register(id,pass);
         User u = memberList.get(id);
-        synchronized (this) {
+        synchronized (adminUser) {
             adminUser.add(u);
         }
         u.makeSystemManager();
@@ -165,7 +172,7 @@ public class UserController {
     public List<Order> getOrderHistoryForUser(List<String>  userID){
         List<Order> orders = new ArrayList<>();
         if(userID == null) {
-            synchronized (this) {
+            synchronized (memberList) {
                 for (User user : memberList.values()) {
                     orders.addAll(user.getHistoryOfOrders());
                 }

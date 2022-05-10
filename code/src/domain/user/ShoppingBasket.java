@@ -47,10 +47,14 @@ public class ShoppingBasket {
             return false;
         } else {
             if (amount == 0) {
-                productAmountList.remove(productID);
+                synchronized (productAmountList) {
+                    productAmountList.remove(productID);
+                }
                 eventLogger.logMsg(Level.INFO,String.format("product %d removed from basket %d", productID, shop.getShopID()));
             } else {
-                productAmountList.replace(productID, amount);
+                synchronized (productAmountList) {
+                    productAmountList.replace(productID, amount);
+                }
                 eventLogger.logMsg(Level.INFO,String.format("product %d amount in basket %d was updated to amount %d", productID, shop.getShopID(),amount));
             }
 
@@ -69,7 +73,9 @@ public class ShoppingBasket {
             errorLogger.logMsg(Level.WARNING, String.format("remove product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
             return false;
         } else {
-            productAmountList.remove(productID);
+            synchronized (productAmountList) {
+                productAmountList.remove(productID);
+            }
             eventLogger.logMsg(Level.INFO, String.format("product %d removed successfully from basket", productID));
             return true;
         }
@@ -86,11 +92,15 @@ public class ShoppingBasket {
             errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
             return false;
         } else if (!productAmountList.containsKey(productID)) {
-            productAmountList.put(productID, amountToAdd);
+            synchronized (productAmountList) {
+                productAmountList.put(productID, amountToAdd);
+            }
             eventLogger.logMsg(Level.INFO,String.format("product %d with amount %d added to basket successfully", productID, amountToAdd));
         } else {
             int currAmount = productAmountList.get(productID);
-            productAmountList.replace(productID, (currAmount + amountToAdd));
+            synchronized (productAmountList) {
+                productAmountList.replace(productID, (currAmount + amountToAdd));
+            }
             eventLogger.logMsg(Level.INFO,String.format("product %d with amount %d added to basket successfully", productID, currAmount));
         }
         return true;

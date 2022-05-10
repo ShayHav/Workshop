@@ -1,6 +1,7 @@
 package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.ResponseT;
 import domain.shop.*;
 import org.junit.jupiter.api.*;
 
@@ -59,7 +60,9 @@ public class ChangeProductInfoCaseTest extends Tester{
         AppointNewShopOwner(shopID_1,owner,user_1);
         ls = new ArrayList<ShopManagersPermissions>();
         ls.add(ShopManagersPermissions.ChangeProductsDetail);
-        shopID_1 = CreateShop(user_1, "TestShop").GetSecondElement();
+        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        if(!shopResponseT.isErrorOccurred())
+            shopID_1 = shopResponseT.getValue().getShopID();
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
         pCat_1 = "Sex";
@@ -70,8 +73,12 @@ public class ChangeProductInfoCaseTest extends Tester{
         pCat_2 = "Sex";
         price_2 = 99.9;
         amountToAdd_2 = 50;
-        pID_1 = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1).GetSecondElement();
-        pID_2 = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,user_1,shopID_1).GetSecondElement();
+        ResponseT<Product> productResponseT = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1);
+        if (!productResponseT.isErrorOccurred())
+            pID_1 = productResponseT.getValue();
+        productResponseT = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,user_1,shopID_1);
+        if(!productResponseT.isErrorOccurred())
+            pID_2 = productResponseT.getValue();
     }
 
     @BeforeEach
@@ -84,24 +91,24 @@ public class ChangeProductInfoCaseTest extends Tester{
     @Test
     public void ChangeProductAmountGoodTest()
     {
-        assertTrue(ChangeProduct(user_1,pID_1,shopID_1).GetFirstElement());
-        assertTrue(ChangeProduct(owner,pID_1,shopID_1).GetFirstElement());
-        assertTrue(ChangeProduct(manager,pID_1,shopID_1).GetFirstElement());
+        assertTrue(!ChangeProduct(user_1,pID_1,shopID_1).isErrorOccurred());
+        assertTrue(!ChangeProduct(owner,pID_1,shopID_1).isErrorOccurred());
+        assertTrue(!ChangeProduct(manager,pID_1,shopID_1).isErrorOccurred());
         RemoveShopManagerPermissions(shopID_1,ls,manager,user_1);
-        assertFalse(ChangeProduct(manager,pID_1,shopID_1).GetFirstElement());
+        assertFalse(ChangeProduct(manager,pID_1,shopID_1).isErrorOccurred());
     }
 
     @Test
     public void NotLoggedInTest()
     {
         Logout(owner);
-        assertFalse(ChangeProduct(owner,pID_1,shopID_1).GetFirstElement());
+        assertFalse(ChangeProduct(owner,pID_1,shopID_1).isErrorOccurred());
 
     }
 
     @Test
     public void NotRegisteredTest()
     {
-        assertFalse(ChangeProduct(validUsers[3],pID_1,shopID_1).GetFirstElement());
+        assertFalse(ChangeProduct(validUsers[3],pID_1,shopID_1).isErrorOccurred());
     }
 }

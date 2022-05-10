@@ -1,6 +1,8 @@
 package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.ResponseT;
+import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import domain.shop.ShopPermissions;
 import org.junit.jupiter.api.*;
@@ -35,7 +37,9 @@ public class CloseShopCaseTest extends Tester {
         pw_1 = pws[0];
         Register(user_1, pw_1);
         Login(user_1, pw_1);
-        shopID_1 = CreateShop(user_1, "TestShop").GetSecondElement();
+        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        if(!shopResponseT.isErrorOccurred())
+            shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
         owner_pw = pws[1];
         Register(owner,owner_pw);
@@ -73,36 +77,36 @@ public class CloseShopCaseTest extends Tester {
     @Test
     public void FounderCloseShopGoodTest()
     {
-        assertTrue(CloseShop(shopID_1,user_1).GetFirstElement());
+        assertTrue(!CloseShop(shopID_1,user_1).isErrorOccurred());
     }
 
     @Test
     public void OwnerCloseShopGoodTest()
     {
-        assertTrue(CloseShop(shopID_1,owner).GetFirstElement());
+        assertTrue(!CloseShop(shopID_1,owner).isErrorOccurred());
     }
 
     @Test
     public void ManagerCloseShopBadTest()
     {
-        assertTrue(CloseShop(shopID_1,manager).GetFirstElement());
+        assertTrue(!CloseShop(shopID_1,manager).isErrorOccurred());
     }
 
     @Test
     public void ManagerClosesShopNoPermission()
     {
         RemoveShopManagerPermissions(shopID_1,ls,manager,user_1);
-        assertFalse(CloseShop(shopID_1,manager).GetFirstElement());
+        assertFalse(CloseShop(shopID_1,manager).isErrorOccurred());
 
     }
 
     @Test
     public void AlreadyClosedShopTest()
     {
-        assertTrue(CloseShop(shopID_1,user_1).GetFirstElement());
-        assertFalse(CloseShop(shopID_1,user_1).GetFirstElement());
-        assertFalse(CloseShop(shopID_1,owner).GetFirstElement());
-        assertFalse(CloseShop(shopID_1,manager).GetFirstElement());
+        assertTrue(!CloseShop(shopID_1,user_1).isErrorOccurred());
+        assertFalse(CloseShop(shopID_1,user_1).isErrorOccurred());
+        assertFalse(CloseShop(shopID_1,owner).isErrorOccurred());
+        assertFalse(CloseShop(shopID_1,manager).isErrorOccurred());
 
     }
 
@@ -110,22 +114,22 @@ public class CloseShopCaseTest extends Tester {
     public void NotLoggedInTest()
     {
         Logout(owner);
-        assertFalse(CloseShop(shopID_1,owner).GetFirstElement());
+        assertFalse(CloseShop(shopID_1,owner).isErrorOccurred());
 
     }
 
     @Test
     public void NotRegisteredTest()
     {
-        assertFalse(CloseShop(shopID_1,validUsers[ug.getNumOfUser()-1]).GetFirstElement());
+        assertFalse(CloseShop(shopID_1,validUsers[ug.getNumOfUser()-1]).isErrorOccurred());
     }
 
     @Test
     public void BadInputsTest()
     {
-        assertFalse(CloseShop(shopID_1-1,user_1).GetFirstElement());
-        assertFalse(CloseShop(-1,user_1).GetFirstElement());
-        assertFalse(CloseShop(shopID_1,null).GetFirstElement());
+        assertFalse(CloseShop(shopID_1-1,user_1).isErrorOccurred());
+        assertFalse(CloseShop(-1,user_1).isErrorOccurred());
+        assertFalse(CloseShop(shopID_1,null).isErrorOccurred());
 
     }
 

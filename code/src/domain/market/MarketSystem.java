@@ -6,6 +6,7 @@ import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
+import domain.user.TransactionInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -118,7 +119,7 @@ public class MarketSystem {
         return UserController.getInstance().getUser(id);
     }
 
-    public int createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification {
+    public Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification {
         if(name == null )
             throw new BlankDataExc("name");
         if(discountPolicy == null )
@@ -146,6 +147,11 @@ public class MarketSystem {
         }
         return UserController.getInstance().deleteUserTest(username);
     }
+    public boolean deleteUser(String username) throws BlankDataExc, InvalidSequenceOperationsExc {
+            if(username == null)
+                throw new BlankDataExc();
+        return UserController.getInstance().deleteUserName(username);
+    }
     //TODO: need to get inside  //TODO: not in use
     public Shop getShop(int shopID) throws ShopNotFoundException {
         return ShopController.getInstance().getShop(shopID);
@@ -153,7 +159,7 @@ public class MarketSystem {
 
 
     //TODO: Services start here :)
-    public boolean logIn(String username, String pw) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+    public User logIn(String username, String pw) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
         if(username == null )
             throw new BlankDataExc("username");
         if(pw == null)
@@ -161,14 +167,14 @@ public class MarketSystem {
         return UserController.getInstance().logIn(username, pw);
     }
 
-    public String LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc {
-        if(s!=null & s.isEmpty()){
+    public User LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc {
+        if(s!=null & !s.isEmpty()){
             return userController.logOut(s);
         }
         return null;
     }
 
-    public String logout(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
+    public User logout(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
         if(username == null){
             throw new BlankDataExc("username");
         }
@@ -285,7 +291,7 @@ public class MarketSystem {
             return null;
     }
 
-    public String EnterMarket() {
+    public User EnterMarket() {
         return userController.enterMarket();
     }
 
