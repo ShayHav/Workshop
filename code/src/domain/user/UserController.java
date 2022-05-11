@@ -104,7 +104,7 @@ public class UserController {
             eventLogger.logMsg(Level.INFO, String.format("Registered for user: %s.", id));
             return true;
         } else {
-            errorLogger.logMsg(Level.WARNING, String.format("attempt of registered for exist id %d failed.", id));
+            errorLogger.logMsg(Level.WARNING, String.format("attempt of registered for exist id %s failed.", id));
             throw new InvalidSequenceOperationsExc("attempt of registered for exist id");
         }
     }
@@ -141,16 +141,15 @@ public class UserController {
     }
 
     private void deleteUser(String useID) {
-        for (Map.Entry<String, User> entry : memberList.entrySet()) {
-            if (entry.getKey().equals(useID)) {
-                Map<Integer, List<Role>> useRoleList = entry.getValue().getRoleList();
-                for(Map.Entry<Integer, List<Role>> run : useRoleList.entrySet()){
-                    for(Role runn :run.getValue())
-                        if(runn == Role.ShopFounder)
-                            ShopController.getInstance().closeShop(run.getKey(), useID);
-                }
-                memberList.remove(entry.getKey());
+        User u = memberList.get(useID);
+        if (u != null) {
+            Map<Integer, List<Role>> useRoleList = u.getRoleList();
+            for (Map.Entry<Integer, List<Role>> run : useRoleList.entrySet()) {
+                for (Role runn : run.getValue())
+                    if (runn == Role.ShopFounder)
+                        ShopController.getInstance().closeShop(run.getKey(), useID);
             }
+            memberList.remove(u);
         }
     }
 

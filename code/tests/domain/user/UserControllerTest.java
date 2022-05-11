@@ -1,13 +1,10 @@
 package domain.user;
 
 import Testing_System.UserGenerator;
-import domain.shop.Inventory;
-import domain.shop.ProductImp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
     private UserController userController;
@@ -21,7 +18,12 @@ public class UserControllerTest {
     void setUp() throws InvalidSequenceOperationsExc {
         userController = UserController.getInstance();
         for(int i=0;i<userName.length;i++) {
-            userController.register(userName[i], userPass[i]);
+            try {
+                userController.register(userName[i], userPass[i]);
+            }
+            catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
+                System.out.println(invalidSequenceOperationsExc.getMessage());
+            }
         }
     }
 
@@ -32,7 +34,14 @@ public class UserControllerTest {
             userController.logOut(userName[i]);
         }
         for(int i = 0; i < userName.length; i++){
-            assertFalse(userController.logIn(userName[i], badPass[i])!=null);
+            int finalI = i;
+            try {
+                userController.logIn(userName[finalI], badPass[finalI]);
+                assertTrue(false);
+            }
+            catch (InvalidAuthorizationException invalidAuthorizationException){
+                assertTrue(true);
+            }
         }
     }
 
@@ -41,6 +50,7 @@ public class UserControllerTest {
         for(int i = 0; i < userName.length; i++){
             userController.logIn(userName[i], userPass[i]);
             userController.logOut(userName[i]);
+            assertFalse(userController.getUser(userName[i]).isLoggedIn());
         }
     }
 
@@ -48,9 +58,7 @@ public class UserControllerTest {
     void register() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         userController.deleteUserTest(userName);
         for (int i = 0; i < userName.length; i++) {
-            assertTrue(userController.register(userName[i], userPass[i]));
             assertTrue(userController.getUser(userName[i]).getId().equals(userName[i]));
-            assertFalse(userController.register(userName[i], userPass[i]));
         }
     }
 

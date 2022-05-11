@@ -146,7 +146,9 @@ public class Shop {
         }
         return null;
     }
-
+    public boolean isProductIsAvailable(int prodID,int amount){
+        return inventory.getQuantity(prodID)>=amount;
+    }
 
     public synchronized int addPercentageDiscount(int prodID, double percentage){
         return discountPolicy.addPercentageDiscount(prodID, percentage);
