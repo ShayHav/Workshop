@@ -3,9 +3,13 @@ package Presentation;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
+import domain.ResponseT;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
+
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
@@ -28,16 +32,35 @@ public class Main {
             ctx.render("index.jte", );
         });
 
-        app.ws("/user/new", ws ->{
+        app.post("/users/login", ctx->{
+            String username = ctx.formParam("username");
+            String password = ctx.formParam("password");
+            ResponseT<PresentationUser> user = services.Login(username,password);
+            if(user.isErrorOccurred()){
+                ctx.redirect("errorPage", Collections.singletonMap("error", user.errorMessage));
+            }
+            ctx.cookie("uid", username);
+            ctx.redirect("/");
+        });
+
+        app.ws("/users/new", ws ->{
             ws.onMessage(ctx->{
-                String username = ctx.message();
+                PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);
+                ResponseT<PresentationUser> response = services.Register(requestedUser.getUsername(), requestedUser.getPassword());
+                ctx.send(response);
             });
         });
 
         app.before(ctx->{
             if(ctx.cookie("uid") != null){
-                PresentationUser user = services.EnterMarket();
-                ctx.cookie("uid",user.getUsername());
+                ResponseT<PresentationUser> response = services.EnterMarket();
+                if(response.isErrorOccurred()){
+                    ctx.render("error.jte", Collections.singletonMap("error" ,response.errorMessage));
+                }
+                else {
+                    PresentationUser user = response.getValue();
+                    ctx.cookie("uid", user.getUsername());
+                }
             }
         });
 
