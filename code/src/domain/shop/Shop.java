@@ -284,10 +284,18 @@ public class Shop {
         return String.format("attempt to appoint New ShopManager User: %s filed", usertarget);
     }
 
-    public synchronized void closeShop(String userID){
+    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc {
         if(shopManagersPermissionsController.canCloseShop(userID)) {
             if (isOpen)
                 isOpen = false;
+            else throw new InvalidSequenceOperationsExc();
+        }
+    }
+    public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc {
+        if(shopManagersPermissionsController.canOpenShop(userID)) {
+            if (!isOpen)
+                isOpen = true;
+            else throw new InvalidSequenceOperationsExc();
         }
     }
 

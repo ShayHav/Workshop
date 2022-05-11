@@ -95,7 +95,7 @@ public class UserController {
      */
     public boolean register(String id, String pass) throws InvalidSequenceOperationsExc {
         if (!memberList.containsKey(id)) {
-            System.out.println("97");
+            //System.out.println("97");
             User user = new User(id);
             synchronized (memberList) {
                 memberList.put(id, user);

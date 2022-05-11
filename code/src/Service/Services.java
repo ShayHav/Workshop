@@ -420,6 +420,26 @@ public class Services {
         catch (BlankDataExc blankDataExc){
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
+        catch (InvalidSequenceOperationsExc blankDataExc){
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
+        }
+    }
+    public Response OpenShop(int shopId,String userName) {
+        try {
+            String s = marketSystem.OpenShop(shopId, userName);
+            if (s != null)
+                return new Response(s);
+            return null;
+        }
+        catch (IncorrectIdentification incorrectIdentification){
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
+        }
+        catch (BlankDataExc blankDataExc){
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
+        }
+        catch (InvalidSequenceOperationsExc blankDataExc){
+            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
+        }
     }
     //Make:nitay  IncorrectIdentification
     public List<ResponseT<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userName)

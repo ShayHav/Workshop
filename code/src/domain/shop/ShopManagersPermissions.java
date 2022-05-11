@@ -14,6 +14,7 @@ public enum ShopManagersPermissions {
         ChangeManagerPrivileges,
         ChangeShopManagersPermissions,
         CloseShop,
+        OpenShop,
         RequestInformationOnShopsOfficials,
         RequestInformationOfShopsSalesHistory,
 }

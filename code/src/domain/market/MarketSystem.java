@@ -189,11 +189,18 @@ public class MarketSystem {
         return -1;
     }
 
-    public String CloseShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc {
+    public String CloseShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if(userID == null)
             throw new BlankDataExc("userID");
         if(userController.isLogin(userID))
             return ShopController.getInstance().closeShop(shopId, userID);
+        return null;
+    }
+    public String OpenShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        if(userID == null)
+            throw new BlankDataExc("userID");
+        if(userController.isLogin(userID))
+            return ShopController.getInstance().openShop(shopId, userID);
         return null;
     }
 

@@ -110,7 +110,7 @@ public class ShopController {
         return shopList.get(shopID);
     }
 
-    public String closeShop(int key, String user) {
+    public String closeShop(int key, String user) throws InvalidSequenceOperationsExc {
         Shop s;
         try {
             s = getShop(key);
@@ -119,6 +119,18 @@ public class ShopController {
             return null;
         }
         s.closeShop(user);
+        eventLogger.logMsg(Level.INFO, "close shop succeeded");
+        return s.getName();
+    }
+    public String openShop(int key, String user) throws InvalidSequenceOperationsExc {
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
+        s.openShop(user);
         eventLogger.logMsg(Level.INFO, "close shop succeeded");
         return s.getName();
     }
