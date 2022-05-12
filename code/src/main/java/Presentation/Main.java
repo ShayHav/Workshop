@@ -1,15 +1,14 @@
 package Presentation;
 
-import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
-import domain.shop.Shop;
 import domain.shop.ShopInfo;
 import domain.user.User;
+import domain.user.filter.SearchShopFilter;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
@@ -19,20 +18,33 @@ import java.util.*;
 public class Main {
 
     static final int port = 8080;
-    static Services services;
+    static final Services services = Services.getInstance();
 
     public static void main(String[] args) {
-        services = new Services();
         services.StartMarket(new PaymentServiceImp(),new SupplyServiceImp(), "Admin","Admin");
         Javalin app =Javalin.create(JavalinConfig::enableWebjars).start(port);
+
+        app.before(ctx->{
+            if(ctx.cookieStore("uid") == null){
+                ResponseT<User> response = services.EnterMarket();
+                if(response.isErrorOccurred()){
+                    ctx.status(503);
+                    ctx.render("error.jte", Collections.singletonMap("error" ,response.errorMessage));
+                }
+                else {
+                    PresentationUser user = new PresentationUser(response.getValue());
+                    ctx.cookieStore("uid", user.getUsername());
+                }
+            }
+        });
 
         app.post("/users" , ctx ->{
             //TODO get info of user from form and send to service
         });
 
         app.get("/", ctx ->{
-            String username = ctx.cookie("uid");
-            List<ResponseT<ShopInfo>> responses = services.GetShopsInfo(username, null);
+            String username = ctx.cookieStore("uid");
+            List<ResponseT<ShopInfo>> responses = services.GetShopsInfo(username, new SearchShopFilter());
             List<ShopInfo> shops = new ArrayList<>();
             for(ResponseT<ShopInfo> response : responses){
                 if(response.isErrorOccurred()){
@@ -67,19 +79,7 @@ public class Main {
             });
         });
 
-        app.before(ctx->{
-            if(ctx.cookie("uid") != null){
-                ResponseT<User> response = services.EnterMarket();
-                if(response.isErrorOccurred()){
-                    ctx.status(503);
-                    ctx.render("error.jte", Collections.singletonMap("error" ,response.errorMessage));
-                }
-                else {
-                    PresentationUser user = new PresentationUser(response.getValue());
-                    ctx.cookie("uid", user.getUsername());
-                }
-            }
-        });
+
 
     }
 

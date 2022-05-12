@@ -16,6 +16,7 @@ public class UserController {
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
     private Map<String,User> activeUser; //TODO: temporary
+    private Map<String,User> guestUser;
     private static UserController instance = null;
     private List<User> adminUser;
     private int guestCounter = 0;
@@ -24,13 +25,15 @@ public class UserController {
         memberList = new HashMap<>();
         activeUser = new HashMap<>();
         adminUser = new LinkedList<>();
+        guestUser = new HashMap<>();
+    }
+
+    private static class UserControllerHolder{
+        private static final UserController uc = new UserController();
     }
 
     public static UserController getInstance() {
-        if (instance == null) {
-            instance = new UserController();
-        }
-        return instance;
+       return UserControllerHolder.uc;
     }
 
     //TODO: add logger and validate pre condition
@@ -118,6 +121,7 @@ public class UserController {
         guestCounter++;
         temp.enterMarket();
         activeUser.put(temp.getId(), temp);
+        guestUser.put(temp.getId(),temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
         return temp;
     }
@@ -192,7 +196,7 @@ public class UserController {
     }
 
     public synchronized boolean HasUserEnteredMarket(String userID) {
-        return activeUser.containsKey(userID);
+        return activeUser.containsKey(userID) || guestUser.containsKey(userID);
     }
 
     public boolean addProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {

@@ -29,11 +29,12 @@ public class MarketSystem {
         externalConnector = new ExternalConnector();
     }
 
+    private static class MarketHolder{
+        private static final MarketSystem market = new MarketSystem();
+    }
+
     public static MarketSystem getInstance() {
-        if (instance == null) {
-            instance = new MarketSystem();
-        }
-        return instance;
+        return MarketHolder.market;
     }
 
 

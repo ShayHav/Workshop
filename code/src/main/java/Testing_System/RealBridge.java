@@ -20,7 +20,7 @@ public class RealBridge implements  Bridge{
     private Services sv;
     public RealBridge()
     {
-        sv = new Services();
+        sv = Services.getInstance();
     }
 
     @Override

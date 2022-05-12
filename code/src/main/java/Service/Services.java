@@ -19,20 +19,21 @@ import java.util.List;
 import java.util.Map;
 
 public class Services {
-/*    UtilP utilP = new UtilP();
-    BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
- */
-    MarketSystem marketSystem = MarketSystem.getInstance();
 
-    public Services(){
+    private MarketSystem marketSystem;
 
+    private Services(){
+        marketSystem = MarketSystem.getInstance();
     }
 
-    /*Result<#t | # f,  return value>
-     * t - success
-     * f - failed
-     *
-     */
+    private static class ServicesHolder{
+        private static final Services instance = new Services();
+    }
+
+    public static Services getInstance(){
+        return ServicesHolder.instance;
+    }
+
     //General Guest-Visitor
     //Make:nitay InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification
     public ResponseT<User> Login(String username, String pw) {
