@@ -140,7 +140,7 @@ public class MarketSystem {
         return UserController.getInstance().register(username, pw);
     }
 
-    public boolean deleteUserTest(String[] username) {
+    public boolean deleteUserTest(String[] username) throws InvalidSequenceOperationsExc {
         for(String user: username){
             if(user == null)
                 return false;

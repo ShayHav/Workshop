@@ -476,8 +476,13 @@ public class Services {
     }
     //Make:nitay
     public Response DeleteUserTest(String[] usernames) {
-        marketSystem.deleteUserTest(usernames);
-        return new Response();
+        try {
+            marketSystem.deleteUserTest(usernames);
+            return new Response();
+        }
+        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
+            return new Response(invalidSequenceOperationsExc.getMessage());
+        }
     }
     //TODO:
     public Response DeleteUser(String usernames) {
