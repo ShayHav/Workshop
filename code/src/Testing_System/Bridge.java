@@ -1,11 +1,12 @@
 package Testing_System;
 
+import domain.Response;
+import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
 import domain.shop.*;
-import domain.shop.PurchasePolicys.PurchaseRule;
-import domain.shop.discount.Discount;
 import domain.user.*;
+import domain.user.TransactionInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -13,19 +14,19 @@ import java.util.Map;
 public interface Bridge {
 
     //General Guest-Visitor
-    Result<Boolean, Boolean> Login(String username, String pw); //done
+    ResponseT<User> Login(String username, String pw); //done
 
-    Result<Boolean, Boolean> Register(String username, String pw); //done
+    Response Register(String username, String pw); //done
 
-    Result<Boolean, String> EnterMarket();
+    ResponseT<User> EnterMarket();
 
-    Result<Boolean, String> LeaveMarket();
+    Response LeaveMarket();
 
 
     //General Member-Visitor
-    Result<Boolean, String> Logout(String username); //done
+    ResponseT<User> Logout(String username); //done
 
-    Result<Boolean, Integer> CreateShop(String username, String shopname); //done
+    ResponseT<Shop> CreateShop(String username, String shopname); //done
 
 
     //System
@@ -35,7 +36,7 @@ public interface Bridge {
 
     Result<Boolean, Boolean> Payment(TransactionInfo ti);
 
-    Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password); //done
+    Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password); //done
 
     Result<Boolean, String> AddSupplyService(String path);
 
@@ -54,9 +55,9 @@ public interface Bridge {
 
     Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f);    //done
 
-    Result<Boolean, Boolean> AddToShoppingCart(String userID, int shopID,int productId, int amount);
+    Response AddToShoppingCart(String userID, int shopID, int productId, int amount);
 
-    Result<Boolean, Boolean> EditShoppingCart(String userId, int shopId, int productId, int amount);
+    Response EditShoppingCart(String userId, int shopId, int productId, int amount);
 
     Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
 
@@ -66,11 +67,11 @@ public interface Bridge {
 
     Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname);
 
-    Result<Boolean, Boolean> CheckIfProductAvailable(Product p, int shopID);
+    ResponseT<Boolean> CheckIfProductAvailable(Product p, int shopID);
 
-    Result<Boolean, Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID); //done
+    ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID); //done
 
-    Result<Boolean, Product> ChangeProduct(String username, Product p, int shopID);
+    ResponseT<Product> ChangeProduct(String username, Product p, int shopID);
     /*
     Result<Boolean, String> AddBuyingShopPolicy(String shopname, PurchaseRule pr);
 
@@ -86,17 +87,17 @@ public interface Bridge {
 
      */
 
-    Result<Boolean, Integer> RemoveProductFromShopInventory(int productId, String username, int shopname); //done
+    Response RemoveProductFromShopInventory(int productId, String username, int shopname); //done
 
-    Result<Boolean, String> AppointNewShopOwner(int key,String targetUser, String userId); //done
+    Response AppointNewShopOwner(int key, String targetUser, String userId); //done
 
-    Result<Boolean, String> AppointNewShopManager(int key,String targetUser, String userId);//done
+    Response AppointNewShopManager(int key, String targetUser, String userId);//done
 
     Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);//done
 
-    Result<Boolean, String> RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser, String ownerID); //done
+    Response RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser, String ownerID); //done
 
-    Result<Boolean, String> CloseShop(int shopID, String username);//done
+    Response CloseShop(int shopID, String username);//done
 
     Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userId);
 

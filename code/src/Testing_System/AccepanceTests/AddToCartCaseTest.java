@@ -2,6 +2,9 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.ResponseT;
+import domain.shop.Shop;
+import domain.user.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -60,13 +63,19 @@ public class AddToCartCaseTest extends Tester {
         pw_user_2 = pws[1];
         pw_user_3 = pws[2];
 
-        guest = EnterMarket().GetSecondElement();
+        ResponseT<User> u = EnterMarket();
+        if(!u.isErrorOccurred())
+            guest = u.getValue().getId();
+
         Register(user_1,pw_user_1);
         Register(user_2,pw_user_2);
         Register(user_3,pw_user_3);
 
         Login(user_1,pw_user_1);
-        shopID = CreateShop(user_1,"TestShop").GetSecondElement();
+
+        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        if(!shopResponseT.isErrorOccurred())
+            shopID = shopResponseT.getValue().getShopID();
     }
 
     @BeforeEach

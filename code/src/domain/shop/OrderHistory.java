@@ -24,7 +24,7 @@ public class OrderHistory {
      * adding a finished order to the store's History
      * @param o an order the ended which mean that the user paid to and successfully sent to supply
      */
-    public void addOrder(Order o){
+    public synchronized void addOrder(Order o){
         orders.add(o);
         o.setOrderId(orderIdGen);
         orderIdGen++;
@@ -69,5 +69,8 @@ public class OrderHistory {
         return Collections.unmodifiableList(orders);
     }
 
-    public List<Order> getOrders(SearchOrderFilter f){}
+    public List<Order> getOrders(SearchOrderFilter f){
+        //todo::
+        return new ArrayList<>();
+    }
 }

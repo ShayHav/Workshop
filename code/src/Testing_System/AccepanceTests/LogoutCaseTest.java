@@ -40,23 +40,23 @@ public class LogoutCaseTest extends Tester {
     public void GoodLogoutTest()
     {
         for(int i = 0; i < ug.getNumOfUser()/2; i++)
-            assertTrue(Logout(validUserNames[i]).GetFirstElement());
+            assertTrue(!Logout(validUserNames[i]).isErrorOccurred());
     }
 
     @Test
     public void NotLoggedUsersTest()
     {
         for(int i = 0; i < ug.getNumOfUser()/2; i++)
-            assertTrue(Logout(validUserNames[i]).GetFirstElement());
+            assertTrue(!Logout(validUserNames[i]).isErrorOccurred());
         for(int i = 0; i < ug.getNumOfUser()/2; i++)
-            assertFalse(Logout(validUserNames[i]).GetFirstElement());
+            assertFalse(!Logout(validUserNames[i]).isErrorOccurred());
     }
 
     @Test
     public void NotRegisteredUsersTest()
     {
         for(int i = (ug.getNumOfUser()/2) + 1; i<ug.getNumOfUser(); i++)
-            assertFalse(Logout(validUserNames[i]).GetFirstElement());
+            assertFalse(!Logout(validUserNames[i]).isErrorOccurred());
     }
 
 

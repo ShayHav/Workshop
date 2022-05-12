@@ -8,6 +8,8 @@ import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.BlankDataExc;
+import domain.user.IncorrectIdentification;
 import domain.user.TransactionInfo;
 import domain.user.User;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +34,7 @@ public class ShopTest {
     ProductImp p2;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IncorrectIdentification, BlankDataExc {
         discountPolicy = mock(DiscountPolicy.class);
         purchasePolicy = mock(PurchasePolicy.class);
         inventory = mock(Inventory.class);

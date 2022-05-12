@@ -1,6 +1,8 @@
 package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.ResponseT;
+import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import domain.shop.ShopPermissions;
 import org.junit.jupiter.api.*;
@@ -47,7 +49,7 @@ public class AddProductToShopCaseTest extends Tester {
         user_2 = validUsers[1];
         pw_1 = pws[0];
         pw_2 = pws[1];
-        Guest_Id = EnterMarket().GetSecondElement();
+        Guest_Id = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getId() : "";
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
         pCat_1 = "Sex";
@@ -67,9 +69,16 @@ public class AddProductToShopCaseTest extends Tester {
         Login(user_1,pw_1);
         Register(user_2, pw_2);
         Login(user_2,pw_2);
-        shopID_1 = CreateShop(user_1, "TestShop_1").GetSecondElement();
-        shopID_2 = CreateShop(user_2, "TestShop_2").GetSecondElement();
-        shopID_3 = CreateShop(user_2, "TestShop_3").GetSecondElement();
+        ResponseT<Shop> shopResponseT;
+        shopResponseT= CreateShop(user_1, "TestShop_1");
+        if(!shopResponseT.isErrorOccurred())
+            shopID_1 = shopResponseT.getValue().getShopID();
+        shopResponseT= CreateShop(user_2, "TestShop_2");
+        if(!shopResponseT.isErrorOccurred())
+            shopID_2 = shopResponseT.getValue().getShopID();
+        shopResponseT= CreateShop(user_2, "TestShop_3");
+        if(!shopResponseT.isErrorOccurred())
+            shopID_3 = shopResponseT.getValue().getShopID();
 
     }
 
@@ -89,18 +98,17 @@ public class AddProductToShopCaseTest extends Tester {
     @Test
     public void GoodInsertTest()
     {
-        assertTrue(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).GetFirstElement());
-        assertTrue(AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_2).GetFirstElement());
-        assertTrue(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_2, amountToAdd_2, user_2, shopID_3).GetFirstElement());
-
+        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_2).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_2, amountToAdd_2, user_2, shopID_3).isErrorOccurred()));
     }
 
     @Test
     public void SameProductDifferentShopInsertTest()
     {
-        assertTrue(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).GetFirstElement());
-        assertTrue(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_2).GetFirstElement());
-        assertTrue(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_3).GetFirstElement());
+        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_2).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_3).isErrorOccurred()));
     }
 
     @Test
@@ -109,7 +117,7 @@ public class AddProductToShopCaseTest extends Tester {
         Register(validUsers[2],pws[2]);
         Login(validUsers[2],pws[2]);
         AppointNewShopOwner(shopID_1,validUsers[2],user_1);
-        assertTrue(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).GetFirstElement());
+        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
     }
 
     @Test
@@ -122,20 +130,20 @@ public class AddProductToShopCaseTest extends Tester {
         List<ShopManagersPermissions> ls = new ArrayList<ShopManagersPermissions>();
         ls.add(sp);
         AddShopMangerPermissions(shopID_1,ls,validUsers[2],user_1);
-        assertTrue(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).GetFirstElement());
+        assertTrue((!AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
     }
 
     @Test
     public void NotRegisteredUserTest()
     {
-        assertFalse(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).GetFirstElement());
+        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
     }
 
     @Test
     public void NotLoggedInUserTest()
     {
         Logout(user_1);
-        assertFalse(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).GetFirstElement());
+        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
     }
 
     @Test
@@ -154,27 +162,27 @@ public class AddProductToShopCaseTest extends Tester {
         ls.add(sp);
         AddShopMangerPermissions(shopID_1,ls,validUsers[2],user_1);
         AppointNewShopOwner(shopID_1, validUsers[3],user_1);
-        assertFalse(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_2).GetFirstElement());
-        assertFalse(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[3], shopID_2).GetFirstElement());
-        assertFalse(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_2).GetFirstElement());
-        assertFalse(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[ug.getNumOfUser()-1], shopID_2).GetFirstElement());
+        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_2).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[3], shopID_2).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_2).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[ug.getNumOfUser()-1], shopID_2).isErrorOccurred()));
 
     }
 
     @Test
     public void ProductAlreadyInShopTest()
     {
-        assertTrue(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).GetFirstElement());
-        assertFalse(AddProductToShopInventory(pName_1,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID_1).GetFirstElement());
+        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(pName_1,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID_1).isErrorOccurred()));
     }
 
     @Test
     public void BadProductInputsTest() {
-        assertFalse(AddProductToShopInventory(pName_1, "", pCat_1, price_1, amountToAdd_1, user_1, shopID_1).GetFirstElement());
-        assertFalse(AddProductToShopInventory(pName_1, pDis_1, "", price_1, amountToAdd_1, user_1, shopID_1).GetFirstElement());
-        assertFalse(AddProductToShopInventory(pName_1, pDis_1, pCat_1, -1, amountToAdd_1, user_1, shopID_1).GetFirstElement());
-        assertFalse(AddProductToShopInventory(pName_1, pDis_1, pCat_1, price_1, 0, user_1, shopID_1).GetFirstElement());
-        assertFalse(AddProductToShopInventory(null, pDis_1, pCat_1, price_1, amountToAdd_1, user_1, shopID_1).GetFirstElement());
+        assertFalse(!(AddProductToShopInventory(pName_1, "", pCat_1, price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(pName_1, pDis_1, "", price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(pName_1, pDis_1, pCat_1, -1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(pName_1, pDis_1, pCat_1, price_1, 0, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(null, pDis_1, pCat_1, price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
 
     }
 

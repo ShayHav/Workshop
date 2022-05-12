@@ -1,5 +1,6 @@
 package domain.shop;
 
+import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.ResponseT;
@@ -23,7 +24,6 @@ public class Shop {
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
-    private List<User> Shoppers;
     private Inventory inventory;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
@@ -32,23 +32,22 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String founderId, int shopID) {
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String founderId, int shopID) throws IncorrectIdentification, BlankDataExc {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
         orders = new OrderHistory();
         ShopOwners = new HashMap<>();
         ShopManagers = new HashMap<>();
-        Shoppers = new LinkedList<>();
         rank = -1;
         this.name = name;
         isOpen = true;
-        ShopFounder = MarketSystem.getInstance().getUser(founderId);
+        ShopFounder = ControllersBridge.getInstance().getUser(founderId);
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
     }
 
-    public boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
+    public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
         if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id))
             return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
         else {
@@ -57,7 +56,7 @@ public class Shop {
         }
     }
 
-    public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
+    public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
         if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id)) {
             return shopManagersPermissionsController.removePermissions(shopManagersPermissionsList, tragetUser);
         } else {
@@ -96,27 +95,32 @@ public class Shop {
         }
     }
 
-    public Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId){
+    public synchronized Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
         if(shopManagersPermissionsController.canAddProductToInventory(userId)| ShopOwners.containsKey(userId))
             return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
-        return null;
+        else
+            throw new InvalidAuthorizationException("you do not have permission to list a product to this shop");
     }
 
-    public void removeListing(int prodID,String userId){
+    public synchronized void removeListing(int prodID,String userId) throws InvalidAuthorizationException {
         if(shopManagersPermissionsController.canRemoveProductFromInventory(userId)| ShopOwners.containsKey(userId))
             inventory.removeProduct(prodID);
+        else
+            throw new InvalidAuthorizationException("you do not have permission to unlist a product from this shop");
     }
 
-    public boolean editPrice(int prodID, double newPrice,String userId){
-        if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId))
-            return inventory.setPrice(prodID, newPrice);
-        else return false;
+    public synchronized void editPrice(int prodID, double newPrice,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
+        if (shopManagersPermissionsController.canChangeProductsDetail(userId) | ShopOwners.containsKey(userId))
+            inventory.setPrice(prodID, newPrice);
+        else
+            throw new InvalidAuthorizationException("you do not have permission to unlist a product from this shop");
     }
 
-    public boolean editQuantity(int prodID, int newQuantity,String userId){
+    public synchronized void editQuantity(int prodID, int newQuantity,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
         if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId))
-            return inventory.setAmount(prodID, newQuantity);
-        else return false;
+            inventory.setAmount(prodID, newQuantity);
+        else
+            throw new InvalidAuthorizationException("you can edit quantity of a product in this shop");
     }
 
     public List<Discount> productDiscount(int prodID){
@@ -134,28 +138,23 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
-    public Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price){
+    public synchronized Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price) throws InvalidProductInfoException, ProductNotFoundException {
         if(shopManagersPermissionsController.canChangeProductsDetail(userId)| ShopOwners.containsKey(userId)) {
-            if(inventory.setPrice(prodID, amount))
-                return null;
-            inventory.setPrice(prodID,price);
-            return inventory.setProduct(prodID,name,description,category);
+            inventory.setAmount(prodID, amount);
+            inventory.setPrice(prodID, price);
+            return inventory.setProduct(prodID, name, description, category);
         }
         return null;
     }
-    //todo????? needed?
-    public void changeDiscountPolicy(DiscountPolicy discountPolicy){throw new UnsupportedOperationException();}
-    //todo????? needed?
-    public void changePurchasePolicy(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
-    //todo????? needed?
-    public void changeProductDiscount(PurchasePolicy purchasePolicy){throw new UnsupportedOperationException();}
+    public boolean isProductIsAvailable(int prodID,int amount){
+        return inventory.getQuantity(prodID)>=amount;
+    }
 
-
-    public int addPercentageDiscount(int prodID, double percentage){
+    public synchronized int addPercentageDiscount(int prodID, double percentage){
         return discountPolicy.addPercentageDiscount(prodID, percentage);
     }
 
-    public int addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
+    public synchronized int addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
         return discountPolicy.addBundleDiscount(prodID, amountNeededToBuy, amountGetFree);
     }
 
@@ -193,7 +192,12 @@ public class Shop {
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
-                inventory.restoreStock(products);
+                try{
+                    inventory.restoreStock(products);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return new ResponseT<>("not in stock");
             }
         }
@@ -210,7 +214,11 @@ public class Shop {
         MarketSystem market = MarketSystem.getInstance();
         if(!market.pay(transaction)){
             synchronized (inventory) {
-                inventory.restoreStock(products);
+                try {
+                    inventory.restoreStock(products);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             return new ResponseT<>();
         }
@@ -242,10 +250,10 @@ public class Shop {
         return ShopOwners.containsKey(id);
     }
 
-    public String AppointNewShopOwner(String targetUser, String userId) {
+    public String AppointNewShopOwner(String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
         if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId) | isFounder(userId)) {
             synchronized (this) {
-                User newOwner = MarketSystem.getInstance().getUser(targetUser);
+                User newOwner = ControllersBridge.getInstance().getUser(targetUser);
                 if (newOwner != null)
                     if (ShopOwners.get(targetUser) == null)
                         ShopOwners.put(targetUser, newOwner);
@@ -261,10 +269,10 @@ public class Shop {
         return shopID;
     }
 
-    public String AppointNewShopManager(String usertarget, String userId) {
+    public String AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc {
         if (shopManagersPermissionsController.canAppointNewShopManager(userId)| ShopOwners.containsKey(userId)) {
             synchronized (this) {
-                User newManager = MarketSystem.getInstance().getUser(usertarget);
+                User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 if (newManager != null)
                     if (ShopManagers.get(usertarget)==null)
                         ShopManagers.put(usertarget,newManager);
@@ -276,10 +284,18 @@ public class Shop {
         return String.format("attempt to appoint New ShopManager User: %s filed", usertarget);
     }
 
-    public void closeShop(String userID){
+    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc {
         if(shopManagersPermissionsController.canCloseShop(userID)) {
             if (isOpen)
                 isOpen = false;
+            else throw new InvalidSequenceOperationsExc();
+        }
+    }
+    public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc {
+        if(shopManagersPermissionsController.canOpenShop(userID)) {
+            if (!isOpen)
+                isOpen = true;
+            else throw new InvalidSequenceOperationsExc();
         }
     }
 
@@ -311,16 +327,11 @@ public class Shop {
         return info;
     }
 
-    public ProductInfo getInfoOnProduct(int productId){
+    public ProductInfo getInfoOnProduct(int productId) throws ProductNotFoundException {
         ProductInfo p;
         synchronized (inventory){
             p = inventory.getProductInfo(productId);
         }
-        if(p == null){
-            //log
-            return null;
-        }
-
         p.setShopName(name);
         p.setShopRank(rank);
         return p;

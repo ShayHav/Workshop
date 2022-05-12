@@ -38,37 +38,37 @@ public class RegisterCaseTest extends Tester {
     public void GoodRegisterTest()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(Register(validUserNames[i],PWs[i]).GetFirstElement());
+            assertTrue(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void UserExistTest()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(Register(validUserNames[i],PWs[i]).GetFirstElement());
+            assertTrue(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertFalse(Register(validUserNames[i],PWs[i]).GetFirstElement());
+            assertFalse(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void BadUserNameTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(Register(badUserName[i],PWs[i]).GetFirstElement());
+            assertFalse(!Register(badUserName[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void BadPWTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(Register(validUserNames[i],badPWs[i] ).GetFirstElement());
+            assertFalse(!Register(validUserNames[i],badPWs[i] ).isErrorOccurred());
     }
 
     @Test
     public void SadUsersTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(Register(sadUserNames[i],PWs[i]).GetFirstElement());
+            assertFalse(!Register(sadUserNames[i],PWs[i]).isErrorOccurred());
     }
 
 

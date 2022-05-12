@@ -1,6 +1,7 @@
 package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import domain.shop.ShopPermissions;
@@ -35,7 +36,9 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         pw_1 = pws[0];
         Register(user_1, pw_1);
         Login(user_1, pw_1);
-        shopID_1 = CreateShop(user_1, "TestShop").GetSecondElement();
+        ResponseT<Shop> shopResponseT = CreateShop(user_1, "TestShop");
+        if(!shopResponseT.isErrorOccurred())
+            shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
         owner_pw = pws[1];
         Register(owner,owner_pw);

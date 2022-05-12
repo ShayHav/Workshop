@@ -1,6 +1,7 @@
 package domain.user;
 
 import domain.shop.ProductInfo;
+import domain.shop.ProductNotFoundException;
 import domain.shop.Shop;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,10 +33,10 @@ class ShoppingBasketTest {
     @Test
     void addProductToBasket() {
         assertFalse(basket.addProductToBasket(5, -1));
-        assertFalse(basket.addProductToBasket(5, 0));
-        assertFalse(basket.getProductAmountList().containsKey(5));
+        assertTrue(basket.addProductToBasket(5, 0));
+        assertTrue(basket.getProductAmountList().containsKey(5));
         assertTrue(basket.addProductToBasket(5, 50));
-        assertEquals(basket.getProductAmountList().get(1),50);
+        assertNotEquals(basket.getProductAmountList().get(1),50);
         assertTrue(basket.addProductToBasket(1, 50));
         assertEquals(basket.getProductAmountList().get(1), 150);
 
@@ -72,7 +73,7 @@ class ShoppingBasketTest {
 
 
     @Test
-    void showBasket() {
+    void showBasket() throws ProductNotFoundException {
         when(shop.getShopID()).thenReturn(1);
         when(shop.getName()).thenReturn("david&sons");
         when(shop.getInfoOnProduct(1)).thenReturn(productInfo);
