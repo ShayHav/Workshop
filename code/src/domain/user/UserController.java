@@ -130,7 +130,7 @@ public class UserController {
         return memberList.getOrDefault(id, null);
     }
 
-    public boolean deleteUserTest(String[] userId) {
+    public boolean deleteUserTest(String[] userId) throws InvalidSequenceOperationsExc {
         for (int i = 0; i < userId.length; i++) {
             deleteUser(userId[i]);
         }
@@ -143,7 +143,7 @@ public class UserController {
         return memberList.containsKey(s);
     }
 
-    private void deleteUser(String useID) {
+    private void deleteUser(String useID) throws InvalidSequenceOperationsExc {
         User u = memberList.get(useID);
         if (u != null) {
             Map<Integer, List<Role>> useRoleList = u.getRoleList();
