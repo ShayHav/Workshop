@@ -1,10 +1,9 @@
 package domain.user;
 
 import domain.*;
-import domain.market.MarketSystem;
 import domain.shop.Order;
 import domain.shop.Shop;
-import domain.shop.ShopNotFoundException;
+import domain.Exceptions.ShopNotFoundException;
 import domain.user.ShoppingBasket.BasketInfo;
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -5,7 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.ProductInfo;
-import domain.shop.ProductNotFoundException;
+import domain.Exceptions.ProductNotFoundException;
 import domain.shop.Shop;
 import java.util.HashMap;
 import java.util.Map;

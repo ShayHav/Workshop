@@ -1,9 +1,9 @@
 package domain.shop;
 
-import org.junit.jupiter.api.extension.ExtendWith;
+import domain.Exceptions.InvalidProductInfoException;
+import domain.Exceptions.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
 
 import java.util.HashMap;
 import java.util.Map;

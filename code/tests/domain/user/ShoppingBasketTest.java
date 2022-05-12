@@ -1,7 +1,7 @@
 package domain.user;
 
 import domain.shop.ProductInfo;
-import domain.shop.ProductNotFoundException;
+import domain.Exceptions.ProductNotFoundException;
 import domain.shop.Shop;
 
 import static org.junit.jupiter.api.Assertions.*;

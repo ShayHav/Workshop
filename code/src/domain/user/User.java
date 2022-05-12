@@ -4,6 +4,8 @@ package domain.user;
 import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Exceptions.*;
+import domain.Exceptions.IllegalStateException;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.*;
@@ -15,7 +17,7 @@ import java.util.logging.Level;
 
 
 public class User {
-    private String id;
+    private String userName;
     private UserState2 us;
     private Map<Integer,List<Role>> roleList;
     private Cart userCart;
@@ -33,8 +35,8 @@ public class User {
         us = null;
     }
 
-    public User(String id) {
-        this.id = id;
+    public User(String userName) {
+        this.userName = userName;
         loggedIn = false;
         us = UserState2.disconnected;
         isSystemManager = false;
@@ -136,9 +138,9 @@ public class User {
         List<Role> useRoleList = roleList.get(shopId);
         if (useRoleList!=null) {
             if(useRoleList.contains(Role.ShopFounder))
-                founderCloseShop(shopId, this.id);
+                founderCloseShop(shopId, this.userName);
         }
-        else errorLogger.logMsg(Level.WARNING, String.format("Not Founder shop try to close shop. user: %s", this.id));
+        else errorLogger.logMsg(Level.WARNING, String.format("Not Founder shop try to close shop. user: %s", this.userName));
     }
 
     private void founderCloseShop(int shop, String id) throws InvalidSequenceOperationsExc {
@@ -149,7 +151,7 @@ public class User {
             errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
             return;
         }
-        shop1.closeShop(id);
+        shop1.closeShop(id);//todo::
         if (!shop1.isOpen()) {
             eventLogger.logMsg(Level.INFO, String.format("close shop protocol shop id: %s", shop));
         } else {
@@ -182,9 +184,9 @@ public class User {
     public void appointOwner(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
         List<Role> useRolelist = roleList.get(shopName);
         if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
-            memberAppointOwner(userId, shopName, this.id, ownerAppointmentList);
+            memberAppointOwner(userId, shopName, this.userName, ownerAppointmentList);
         else
-            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner with out appropriate role by user: %s", id));
+            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner with out appropriate role by user: %s", userName));
     }
 
 
@@ -203,7 +205,7 @@ public class User {
             if (isAppointedMeOwner(user, id)) {
                 OwnerAppointment newAppointment = new OwnerAppointment(shop1, id, user);
                 ownerAppointmentList.add(newAppointment);
-                eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %s , appointedId: %s , ShopId %s}", id, user.getId(), shop));
+                eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %s , appointedId: %s , ShopId %s}", id, user.getUserName(), shop));
                 //return true;
             }
             else
@@ -217,7 +219,7 @@ public class User {
     private boolean isAppointedMeOwner(User user, String id) {
         List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
         for (OwnerAppointment run : Appointmentusers) {
-            if (run.getAppointed().getId().equals(id))
+            if (run.getAppointed().getUserName().equals(id))
                 return true;
         }
         return false;
@@ -226,9 +228,9 @@ public class User {
     public void appointManager(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
         List<Role> useRolelist = roleList.get(shopName);
         if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
-            memberAppointManager(userId, shopName, this.id, managerAppointeeList);
+            memberAppointManager(userId, shopName, this.userName, managerAppointeeList);
         else
-            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", id));
+            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
     }
 
 
@@ -262,7 +264,7 @@ public class User {
     private boolean isAppointedMeManager(User user, String id) {
         List<ManagerAppointment> Appointmentusers = user.getManagerAppointeeList();
         for (ManagerAppointment run : Appointmentusers) {
-            if (run.getAppointed().getId().equals(id))
+            if (run.getAppointed().getUserName().equals(id))
                 return true;
         }
         return false;
@@ -311,13 +313,14 @@ public class User {
         loggedIn = false;
     }
 
-    public String getId() {
-        return this.id;
+    public String getUserName() {
+        return this.userName;
     }
 
     public boolean isLoggedIn() {
         return this.loggedIn;
     }
+
 
     public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
         List<ResponseT<Order>> checkoutResult = userCart.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
@@ -377,7 +380,7 @@ public class User {
     }
 
     public UserSearchInfo getUserInfo(){
-        return new UserSearchInfo(id);
+        return new UserSearchInfo(userName);
     }
 
     public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {

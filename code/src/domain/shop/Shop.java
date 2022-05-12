@@ -3,6 +3,7 @@ package domain.shop;
 import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Exceptions.*;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
@@ -24,7 +25,7 @@ public class Shop {
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
-    private Inventory inventory;
+    private final Inventory inventory;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
@@ -32,7 +33,7 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String founderId, int shopID) throws IncorrectIdentification, BlankDataExc {
+    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
@@ -42,16 +43,17 @@ public class Shop {
         rank = -1;
         this.name = name;
         isOpen = true;
-        ShopFounder = ControllersBridge.getInstance().getUser(founderId);
+        this.ShopFounder = shopFounder;
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
+        shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
     }
 
     public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
         if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id))
             return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
         else {
-            errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
+            errorLogger.logMsg(Level.WARNING, String.format("user: %s cannot change permissions", id) );
             return false;
         }
     }
@@ -60,7 +62,7 @@ public class Shop {
         if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id)) {
             return shopManagersPermissionsController.removePermissions(shopManagersPermissionsList, tragetUser);
         } else {
-            errorLogger.logMsg(Level.WARNING, String.format(""));//TODO
+            errorLogger.logMsg(Level.WARNING, String.format("user: %s cannot remove permissions", id));
             return false;
         }
     }
@@ -128,7 +130,12 @@ public class Shop {
     }
 
     public double productPriceAfterDiscounts(int prodID, int amount){
-        double productBasePrice = inventory.getPrice(prodID);
+        double productBasePrice;
+        try {
+            productBasePrice = inventory.getPrice(prodID);
+        }catch (ProductNotFoundException prodNotFound){
+            return 0;
+        }
         if(productBasePrice < 0)
             return 0;
         return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
@@ -163,7 +170,6 @@ public class Shop {
     }
 
     public double calculateTotalAmountOfOrder(Map<Integer, Integer> productAmountList){
-        Map<Integer, Double> Product_totalPricePer = new HashMap<>();
         double totalPaymentDue = 0;
         double Product_price_single;
         double Product_total;
@@ -171,7 +177,6 @@ public class Shop {
             //check purchase policy regarding the Product
             Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
             Product_total = Product_price_single * set.getValue();
-            Product_totalPricePer.put(set.getKey(), Product_total);
             totalPaymentDue += Product_total;
         }
         return totalPaymentDue;
@@ -180,14 +185,21 @@ public class Shop {
     /**
      * check out from the store the given items to a client
      * @param products the items that the client want to buy and the amount from each
-     * @param totalAmount the total amount to pay for the tranaction. TODO to be removed
      * @param transaction the info of the client to be charged and supply
      * @return true if successfully created the order and add to the inventory
      */
-    public ResponseT<Order> checkout(Map<Integer,Integer> products, double totalAmount, TransactionInfo transaction) throws BlankDataExc {
+
+    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction)throws BlankDataExc{
+        double productBasePrice;
+
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
             //check purchase policy regarding the Product
-            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), inventory.getPrice(set.getKey()), set.getValue()))
+            try {
+                productBasePrice = inventory.getPrice(set.getKey());
+            }catch (ProductNotFoundException prodNotFound){
+                return new ResponseT("this product does not exist");
+            }
+            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
                 return new ResponseT("violates purchase policy");
         }
         synchronized (inventory) {
@@ -243,7 +255,7 @@ public class Shop {
     }
 
     public boolean isFounder(String id) {
-        return ShopFounder.getId().equals(id);
+        return ShopFounder.getUserName().equals(id);
     }
 
     public boolean isOwner(String id) {
@@ -255,8 +267,7 @@ public class Shop {
             synchronized (this) {
                 User newOwner = ControllersBridge.getInstance().getUser(targetUser);
                 if (newOwner != null)
-                    if (ShopOwners.get(targetUser) == null)
-                        ShopOwners.put(targetUser, newOwner);
+                    ShopOwners.putIfAbsent(targetUser, newOwner);
                 eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", targetUser));
                 return String.format("Appoint New ShopOwner User: %s", targetUser);
             }
@@ -274,8 +285,7 @@ public class Shop {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 if (newManager != null)
-                    if (ShopManagers.get(usertarget)==null)
-                        ShopManagers.put(usertarget,newManager);
+                    ShopManagers.putIfAbsent(usertarget, newManager);
                 eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                 return String.format("Appoint New ShopManager User: %s", usertarget);
             }
@@ -343,10 +353,6 @@ public class Shop {
     }
 
 
-    public void setInventory(Inventory inventory){
-        this.inventory = inventory;
-    }
-
     public void setDiscountPolicy(DiscountPolicy discountPolicy){
         this.discountPolicy = discountPolicy;
     }
@@ -379,4 +385,15 @@ public class Shop {
         return new LinkedList(hashMap.values());
 
     }
+
+    private static List<ShopManagersPermissions> getAllPermissionsList()
+    {
+        ShopManagersPermissions[] SMP = ShopManagersPermissions.values();
+        List<ShopManagersPermissions> list = new LinkedList<ShopManagersPermissions>();
+        for (ShopManagersPermissions permission: SMP) {
+            list.add(permission);
+        }
+        return list;
+    }
+
 }

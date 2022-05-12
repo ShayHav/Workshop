@@ -6,13 +6,15 @@ public class ProductImp implements Product{
     private String name;
     private String description;
     private String category;
+    private double basePrice;
     private int rank;
 
-    public ProductImp(int id, String name, String description, String category){
+    public ProductImp(int id, String name, String description, String category, double basePrice){
         this.id = id;
         this.name = name;
         this.description = description;
         this.category = category;
+        this.basePrice = basePrice;
         //in the next versions, there will be a feedback from user that will change the rank initial value
         rank = -1;
     }
@@ -24,10 +26,14 @@ public class ProductImp implements Product{
         this.category = p.getCategory();
     }
 
+
+
     public int getRank() {
         return rank;
     }
 
+    public double getBasePrice() {return basePrice;}
+    public void setBasePrice(double basePrice) {this.basePrice = basePrice;}
     @Override
     public String getName() {
         return name;

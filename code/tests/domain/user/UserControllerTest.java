@@ -1,6 +1,9 @@
 package domain.user;
 
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidAuthorizationException;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,14 +61,14 @@ public class UserControllerTest {
     void register() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         userController.deleteUserTest(userName);
         for (int i = 0; i < userName.length; i++) {
-            assertTrue(userController.getUser(userName[i]).getId().equals(userName[i]));
+            assertTrue(userController.getUser(userName[i]).getUserName().equals(userName[i]));
         }
     }
 
     @Test
     void getUser() throws IncorrectIdentification {
         for (int i = 0; i < userName.length; i++){
-            assertTrue(userController.getUser(userName[i]).getId().equals(userName[i]));
+            assertTrue(userController.getUser(userName[i]).getUserName().equals(userName[i]));
         }
     }
 }

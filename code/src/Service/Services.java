@@ -5,6 +5,7 @@ import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Testing_System.Result;
+import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.*;
@@ -506,6 +507,7 @@ public class Services {
         catch (BlankDataExc blankDataExc){
             return new Response(blankDataExc.getLocalizedMessage());
         }
+
     }
     //TODO:
     public Response DeleteUser(String usernames) {

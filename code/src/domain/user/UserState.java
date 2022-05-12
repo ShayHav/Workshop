@@ -1,6 +1,8 @@
 package domain.user;
 
-import domain.ResponseT;
+import domain.Exceptions.BlankDataExc;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.ShopNotFoundException;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;

@@ -2,9 +2,12 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidAuthorizationException;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.shop.Order;
 import domain.shop.ShopController;
-import domain.shop.ShopNotFoundException;
+import domain.Exceptions.ShopNotFoundException;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -117,7 +120,7 @@ public class UserController {
         User temp = new User(String.format("-Guest%d",guestCounter));
         guestCounter++;
         temp.enterMarket();
-        activeUser.put(temp.getId(), temp);
+        activeUser.put(temp.getUserName(), temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
         return temp;
     }
