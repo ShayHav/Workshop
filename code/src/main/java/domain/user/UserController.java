@@ -129,7 +129,11 @@ public class UserController {
     public User getUser(String id) throws IncorrectIdentification {
         if(id == null)
             throw new IncorrectIdentification("id not exist");
-        return memberList.getOrDefault(id, null);
+        User u =  memberList.getOrDefault(id, null);
+        if(u == null){
+            u = guestUser.get(id);
+        }
+        return u;
     }
 
     public boolean deleteUserTest(String[] userId) throws InvalidSequenceOperationsExc {

@@ -11,6 +11,7 @@ import domain.user.User;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
+import io.javalin.http.Context;
 
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class Main {
                 ResponseT<User> response = services.EnterMarket();
                 if(response.isErrorOccurred()){
                     ctx.status(503);
-                    ctx.render("error.jte", Collections.singletonMap("error" ,response.errorMessage));
+                    ctx.render("errorPage.jte", Collections.singletonMap("errorMessage" ,response.errorMessage));
                 }
                 else {
                     PresentationUser user = new PresentationUser(response.getValue());
@@ -49,11 +50,18 @@ public class Main {
             for(ResponseT<ShopInfo> response : responses){
                 if(response.isErrorOccurred()){
                     ctx.status(503);
-                    ctx.render("errorPage.jte",Collections.singletonMap("error", response.errorMessage));
+                    ctx.render("errorPage.jte",Collections.singletonMap("errorMessage", response.errorMessage));
                 }
                 shops.add(response.getValue());
             }
-            ctx.render("index.jte", Map.of("shops", shops));
+            PresentationUser user = getUser(username,ctx);
+            ctx.render("index.jte", Map.of("shops", shops, "user",user));
+        });
+
+        app.get("users/login", ctx->{
+            String username = ctx.cookieStore("uid");
+            PresentationUser user = getUser(username,ctx);
+            ctx.render("login.jte", Map.of("user",user));
         });
 
         app.post("/users/login", ctx->{
@@ -62,9 +70,9 @@ public class Main {
             ResponseT<User> response = services.Login(username,password);
             if(response.isErrorOccurred()){
                 ctx.status(418);
-                ctx.render("errorPage.jte", Collections.singletonMap("error", response.errorMessage));
+                ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
             }
-            ctx.cookie("uid", response.getValue().getId());
+            ctx.cookieStore("uid", response.getValue().getId());
             ctx.redirect("/");
         });
 
@@ -81,6 +89,15 @@ public class Main {
 
 
 
+    }
+
+    public static PresentationUser getUser(String username, Context ctx){
+        ResponseT<User> user = services.GetUser(username);
+        if(user.isErrorOccurred()){
+            ctx.status(503);
+            ctx.render("errorPage.jte",Collections.singletonMap("errorMessage", user.errorMessage));
+        }
+        return new PresentationUser(user.getValue());
     }
 
 }

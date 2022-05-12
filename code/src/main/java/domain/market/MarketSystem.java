@@ -157,7 +157,6 @@ public class MarketSystem {
         return ShopController.getInstance().getShop(shopID);
     }
 
-
     //TODO: Services start here :)
     public User logIn(String username, String pw) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
         if(username == null )

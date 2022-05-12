@@ -34,6 +34,15 @@ public class Services {
         return ServicesHolder.instance;
     }
 
+    public ResponseT<User> GetUser(String username){
+        try{
+            User u = marketSystem.getUser(username);
+            return new ResponseT<>(u);
+        }catch (BlankDataExc | IncorrectIdentification e){
+            return new ResponseT<>(e.getMessage());
+        }
+    }
+
     //General Guest-Visitor
     //Make:nitay InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification
     public ResponseT<User> Login(String username, String pw) {

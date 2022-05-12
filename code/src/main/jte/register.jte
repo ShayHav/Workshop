@@ -49,7 +49,7 @@
             <div class="col-2">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/users/Login">Sign in</a>
+                        <a class="nav-link active" aria-current="page" href="/users/login">Sign in</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/users/${user.getUsername()}/cart">

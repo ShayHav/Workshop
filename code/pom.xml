@@ -5,15 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>Workshop</artifactId>
+    <artifactId>Test</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
     <properties>
-        <exec.mainClass>src/main/java/Presentation</exec.mainClass>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
+
     <dependencies>
 
         <dependency>
@@ -44,40 +43,13 @@
         <dependency>
             <groupId>gg.jte</groupId>
             <artifactId>jte</artifactId>
-            <version>2.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>gg.jte</groupId>
-            <artifactId>jte-maven-plugin</artifactId>
-            <version>2.0.2</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.2</version>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.7.0</version>
         </dependency>
     </dependencies>
-<build>
-    <plugins>
-        <plugin>
-            <groupId>gg.jte</groupId>
-            <artifactId>jte-maven-plugin</artifactId>
-            <version>2.0.2</version>
-            <configuration>
-                <sourceDirectory>src/main/java/Presentation/jte</sourceDirectory> <!-- This is the directory where your .jte files are located. -->
-                <targetDirectory>${basedir}/target/classes</targetDirectory>
-                <contentType>Html</contentType>
-            </configuration>
-            <executions>
-                <execution>
-                    <phase>process-classes</phase>
-                    <goals>
-                        <goal>precompile</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
-</project>
 
+</project>
