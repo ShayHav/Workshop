@@ -1,6 +1,9 @@
 package Service;
 
 
+import Presentation.Model.PresentationProduct;
+import Presentation.Model.PresentationShop;
+import Presentation.Model.PresentationUser;
 import Testing_System.Result;
 import domain.Exceptions.*;
 import domain.Response;
@@ -17,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Services {
-/*    UtilP utilP = new UtilP();
-    BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
- */
     MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Services(){
@@ -32,11 +32,11 @@ public class Services {
      */
     //General Guest-Visitor
     //Make:nitay InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification
-    public ResponseT<User> Login(String username, String pw) {
-        ResponseT<User> output;
+    public ResponseT<PresentationUser> Login(String username, String pw) {
+        ResponseT<PresentationUser> output;
         try {
             User b = marketSystem.logIn(username, pw);
-            output = new ResponseT<>(b);
+            output = new ResponseT<>(new PresentationUser(b));
             return output;
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
@@ -61,10 +61,10 @@ public class Services {
         return new Response();
     }
     //Make:nitay
-    public ResponseT<User> EnterMarket() { //
+    public ResponseT<PresentationUser> EnterMarket() { //
         User EnterMarket = marketSystem.EnterMarket();
         if (EnterMarket != null)
-            return new ResponseT<>(EnterMarket);
+            return new ResponseT<>(new PresentationUser(EnterMarket));
         else return new ResponseT<>();
     }
     //Make:nitay   IncorrectIdentification, InvalidSequenceOperationsExc
@@ -86,11 +86,11 @@ public class Services {
 
 
     //General Member-Visitor
-    public ResponseT<User> Logout(String username) {
+    public ResponseT<PresentationUser> Logout(String username) {
         User output;
         try {
             output = marketSystem.logout(username);
-            return new ResponseT<>(output);
+            return new ResponseT<>(new PresentationUser(output));
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
@@ -100,11 +100,11 @@ public class Services {
         }
     }
     //Make:nitay BlankDataExc  BlankDataExc, IncorrectIdentification
-    public ResponseT<Shop> CreateShop(String username, String shopName) {
+    public ResponseT<PresentationShop> CreateShop(String username, String shopName) {
         try {
             Shop output = marketSystem.createShop(shopName, null, null, username);
             if (output != null)
-                return new ResponseT<>(output);
+                return new ResponseT<>(new PresentationShop(output));
             else return new ResponseT<>();
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
@@ -123,9 +123,14 @@ public class Services {
     //shay  //TODO: only for test?
     public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products)
     {
-        MarketSystem m = MarketSystem.getInstance();
-        boolean ans  = m.supply(ti, products);
-        return new Result<>(ans, ans);
+        try {
+            MarketSystem m = MarketSystem.getInstance();
+            boolean ans = m.supply(ti, products);
+            return new Result<>(ans, ans);
+        }
+        catch (BlankDataExc blankDataExc){
+            return null;
+        }
     }
 
     //shay  //TODO: only for test?
@@ -167,12 +172,12 @@ public class Services {
 
     //make: shahar
     //Guest-Visitor Shop options
-    public List<ResponseT<ShopInfo>> GetShopsInfo(String userName, Filter<ShopInfo> filter) {
+    public List<ResponseT<PresentationShop>> GetShopsInfo(String userName, Filter<Shop> filter) {
         try {
-            List<ResponseT<ShopInfo>> list = new LinkedList<>();
-            List<ShopInfo> shopInfo = marketSystem.getInfoOfShops(userName, filter);
-            for (ShopInfo shopInfo1 : shopInfo){
-                list.add(new ResponseT<>(shopInfo1));
+            List<ResponseT<PresentationShop>> list = new LinkedList<>();
+            List<Shop> shop = marketSystem.getInfoOfShops(userName, filter);
+            for (Shop shopInfo1 : shop){
+                list.add(new ResponseT<>(new PresentationShop(shopInfo1)));
             }
             return list;
         } catch (BlankDataExc blankDataExc) {
@@ -181,39 +186,54 @@ public class Services {
     }
 
     //Make:nitay
-    public List<ResponseT<ProductInfo>> GetProductInfoInShop(String userName ,int shopID, Filter<ProductInfo> f)
+    public List<ResponseT<PresentationProduct>> GetProductInfoInShop(String userName , int shopID, Filter<Product> f)
     {
-        List<ProductInfo> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userName,shopID,f);
-        List<ResponseT<ProductInfo>> CreateShop = new LinkedList<>();
-        if (GetProductInfoInShop == null || GetProductInfoInShop.size() == 0)
-            return null;
-        for(ProductInfo productInfo:GetProductInfoInShop){
-            CreateShop.add(new ResponseT<>(productInfo));
+        try {
+            List<Product> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userName, shopID, f);
+            List<ResponseT<PresentationProduct>> CreateShop = new LinkedList<>();
+            if (GetProductInfoInShop == null || GetProductInfoInShop.size() == 0)
+                return null;
+            for (Product productInfo : GetProductInfoInShop) {
+                CreateShop.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+            }
+            return CreateShop;
         }
-        return CreateShop;
+        catch (BlankDataExc blankDataExc){
+            return null;
+        }
     }//display information of a product?
 
 
     //make:shahar
-    public List<ResponseT<ProductInfo>> SearchProductByName(String userName ,String pName, Filter<ProductInfo> f) //done
+    public List<ResponseT<PresentationProduct>> SearchProductByName(String userName ,String pName, Filter<Product> f) //done
     {
-        List<ResponseT<ProductInfo>> result = new LinkedList<>();
-        List<ProductInfo> products = marketSystem.searchProductByName(userName ,pName, f);
-        for(ProductInfo productInfo: products){
-            result.add(new ResponseT<>(productInfo));
+        try {
+            List<ResponseT<PresentationProduct>> result = new LinkedList<>();
+            List<Product> products = marketSystem.searchProductByName(userName, pName, f);
+            for (Product productInfo : products) {
+                result.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+            }
+            return result;
         }
-        return result;
+        catch (BlankDataExc blankDataExc){
+            return null;
+        }
     }
 
     //make:shahar
-    public List<ResponseT<ProductInfo>> SearchProductByKeyword(String userName ,String keyword, Filter<ProductInfo> f)
+    public List<ResponseT<PresentationProduct>> SearchProductByKeyword(String userName ,String keyword, Filter<Product> f)
     {
-        List<ResponseT<ProductInfo>> result = new LinkedList<>();
-        List<ProductInfo> products = marketSystem.searchProductByKeyword(userName ,keyword, f);
-        for(ProductInfo productInfo: products){
-            result.add(new ResponseT<>(productInfo));
+        try {
+            List<ResponseT<PresentationProduct>> result = new LinkedList<>();
+            List<Product> products = marketSystem.searchProductByKeyword(userName, keyword, f);
+            for (Product productInfo : products) {
+                result.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+            }
+            return result;
         }
-        return result;
+        catch (BlankDataExc blankDataExc){
+            return null;
+        }
     }
 
     //make: shahar
@@ -296,7 +316,7 @@ public class Services {
 
     //Shay
     //done
-    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
+    public ResponseT<PresentationProduct> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop;
@@ -317,11 +337,11 @@ public class Services {
         if(p == null){
             return null;
         }
-        return new ResponseT<>(p);
+        return new ResponseT<>(new PresentationProduct(new ServiceProduct(p)));
     }
 
     //shay
-    public ResponseT<Product> ChangeProduct(String username, Product p, int shopID)
+    public ResponseT<PresentationProduct> ChangeProduct(String username, Product p, int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop;
@@ -341,7 +361,7 @@ public class Services {
         catch (InvalidProductInfoException ipie){
             return new ResponseT<>(null,ipie.getLocalizedMessage());
         }
-        return new ResponseT<>(changed);
+        return new ResponseT<>(new PresentationProduct(new ServiceProduct(changed)));
     }
 
     //Make:nitay
@@ -484,6 +504,10 @@ public class Services {
         catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
             return new Response(invalidSequenceOperationsExc.getMessage());
         }
+        catch (BlankDataExc blankDataExc){
+            return new Response(blankDataExc.getLocalizedMessage());
+        }
+
     }
     //TODO:
     public Response DeleteUser(String usernames) {
@@ -557,62 +581,4 @@ public class Services {
         }
         return output;
     }
-/*
-    @Override
-    public void run() {
-        try {
-            deploy();
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-    }
-    private void deploy() throws IOException {
-        BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
-        boolean exit = false;
-        while (!exit) {
-            System.out.println("Choose what you want to do:");
-            for (int i = 1; i <= Options.getFirstOts().length; i++) {
-                System.out.println((i) + ") " + Options.getFirstOts()[i - 1]);
-            }
-            int op = utilP.scanInt(scanner);
-            switch (op) {
-                case 1:
-                    firstTime();
-                    break;
-                case 2:
-                    logIn();
-                    break;
-                case 3:
-                    exit = true;
-                    break;
-            }
-        }
-    }
-    private void firstTime(){
-        StartMarket(null,null,"admin","password");
-        Register("nitay","password");
-        Register("omry","password");
-    }
-    private void logIn() throws IOException {
-        String password;
-        boolean logged = false;
-        while (!logged) {
-            System.out.println("In order to Login, please insert your ID:");
-            synchronized (this) {
-                userName = scanner.readLine(); //input from gui
-            }
-            System.out.println("In order to Login, please insert your password:");
-            synchronized (this) {
-                password = scanner.readLine();
-            }
-            System.out.println("Line 555");
-            Result<Boolean,Boolean> r = Login(userName,password);
-            if (r.GetFirstElement()) {
-                logged = true;
-                System.out.println(String.format("%s is logged in",userName));
-            }
-        }
-    }
- */
 }

@@ -59,9 +59,10 @@ public class UserController {
             } else {
                 throw new InvalidAuthorizationException("Identifier not correct");
             }
-        } else
+        } else {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
-        throw new InvalidAuthorizationException();
+            throw new InvalidAuthorizationException();
+        }
     }
 
     private synchronized boolean isUserisLog(String id){
@@ -137,8 +138,10 @@ public class UserController {
         return true;
     }
     public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc {
-        if(!memberList.containsKey(s))
-            throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s",s));
+        if(!memberList.containsKey(s)) {
+            errorLogger.logMsg(Level.WARNING, String.format("attempt to delete not exist user: %s", s));
+            throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s", s));
+        }
         deleteUser(s);
         return memberList.containsKey(s);
     }
@@ -156,7 +159,7 @@ public class UserController {
         }
     }
 
-    public List<String> checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification {
+    public List<String> checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
         User user = getUser(userID);
         return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
     }

@@ -1,10 +1,12 @@
 package domain.user;
 
+import domain.EventLoggerSingleton;
 import domain.shop.Order;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class SearchOfficialsFilter implements Filter<User>{
@@ -22,6 +24,7 @@ public class SearchOfficialsFilter implements Filter<User>{
     public List<User> applyFilter(List<User> userList){return null;}
 
     public List<UserSearchInfo> applyFilter(List<User> userList,int shopId) {
+        EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filer for Shop: "+shopId);
         List<User> result = new ArrayList<>();
         List<UserSearchInfo> output = new LinkedList<>();
         result = userList.stream().collect(Collectors.toList());

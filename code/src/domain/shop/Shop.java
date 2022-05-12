@@ -188,8 +188,10 @@ public class Shop {
      * @param transaction the info of the client to be charged and supply
      * @return true if successfully created the order and add to the inventory
      */
-    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction){
+
+    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction)throws BlankDataExc{
         double productBasePrice;
+
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
             //check purchase policy regarding the Product
             try {
@@ -326,9 +328,9 @@ public class Shop {
         return null;
     }
 
-    public List<ProductInfo> getProductInfoOfShop() {
-        List<ProductInfo> info = inventory.getAllProductInfo();
-        for (ProductInfo p : info) {
+    public List<Product> getProductInfoOfShop() {
+        List<Product> info = inventory.getAllProductInfo();
+        for (Product p : info) {
             p.setShopName(name);
             p.setShopRank(rank);
         }

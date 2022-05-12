@@ -321,8 +321,9 @@ public class User {
         return this.loggedIn;
     }
 
-    public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
+
+    public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
+        List<ResponseT<Order>> checkoutResult = userCart.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
         List<String> errors = new ArrayList<>();
         for (ResponseT<Order> r : checkoutResult) {
             if (r.isErrorOccurred()) {
