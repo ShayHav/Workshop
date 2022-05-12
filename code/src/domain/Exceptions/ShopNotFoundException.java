@@ -1,4 +1,4 @@
-package domain.shop;
+package domain.Exceptions;
 
 public class ShopNotFoundException extends Exception{
     public ShopNotFoundException(String message){

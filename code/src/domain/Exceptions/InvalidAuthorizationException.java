@@ -1,4 +1,4 @@
-package domain.user;
+package domain.Exceptions;
 
 public class InvalidAuthorizationException extends Exception {
     public String expectedAuthorization;

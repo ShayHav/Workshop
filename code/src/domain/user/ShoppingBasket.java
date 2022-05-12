@@ -5,7 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.ProductInfo;
-import domain.shop.ProductNotFoundException;
+import domain.Exceptions.ProductNotFoundException;
 import domain.shop.Shop;
 import java.util.HashMap;
 import java.util.Map;
@@ -130,7 +130,7 @@ public class ShoppingBasket {
      * @param billingInfo all the relevant information to complete the transaction.
      */
     public ResponseT<Order> checkout(TransactionInfo billingInfo) {
-        return shop.checkout(productAmountList, basketAmount, billingInfo);
+        return shop.checkout(productAmountList, billingInfo);
     }
 
     public BasketInfo showBasket() {

@@ -1,4 +1,4 @@
-package domain.shop;
+package domain.Exceptions;
 
 public class InvalidProductInfoException extends Exception {
     public InvalidProductInfoException(String message){

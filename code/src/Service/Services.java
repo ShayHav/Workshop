@@ -2,6 +2,7 @@ package Service;
 
 
 import Testing_System.Result;
+import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.*;
@@ -476,8 +477,13 @@ public class Services {
     }
     //Make:nitay
     public Response DeleteUserTest(String[] usernames) {
-        marketSystem.deleteUserTest(usernames);
-        return new Response();
+        try {
+            marketSystem.deleteUserTest(usernames);
+            return new Response();
+        }
+        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
+            return new Response(invalidSequenceOperationsExc.getMessage());
+        }
     }
     //TODO:
     public Response DeleteUser(String usernames) {

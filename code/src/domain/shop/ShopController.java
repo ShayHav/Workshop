@@ -2,6 +2,7 @@ package domain.shop;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Exceptions.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
@@ -33,16 +34,16 @@ public class ShopController {
         return shopCounter;
     }
 
-    public synchronized Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws IncorrectIdentification, BlankDataExc {
+    public synchronized Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
         Shop newShop;
         if (isUniqueName(name)) {
             shopCounter++;
-            newShop = new Shop(name, discountPolicy, purchasePolicy, id, shopCounter);
+            newShop = new Shop(name, discountPolicy, purchasePolicy, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
-            eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", id, name));
+            eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
             return newShop;
         }
-        errorLogger.logMsg(Level.WARNING, String.format("attempt to create a shop with exist name. id: %s , name: %s", id, name));
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to create a shop with exist name. id: %s , name: %s", shopFounder.getUserName(), name));
         return null;
     }
 
@@ -199,7 +200,7 @@ public class ShopController {
             return null;
         }
         synchronized (this) {
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getId(), id))
+            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getUserName(), id))
                 return "ShopManagerPermissionsRemove";
             else return null;
         }

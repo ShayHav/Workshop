@@ -65,7 +65,7 @@ public class AddToCartCaseTest extends Tester {
 
         ResponseT<User> u = EnterMarket();
         if(!u.isErrorOccurred())
-            guest = u.getValue().getId();
+            guest = u.getValue().getUserName();
 
         Register(user_1,pw_user_1);
         Register(user_2,pw_user_2);

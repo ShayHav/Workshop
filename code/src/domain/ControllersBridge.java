@@ -3,9 +3,9 @@ package domain;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.shop.ShopController;
-import domain.shop.ShopNotFoundException;
-import domain.user.BlankDataExc;
-import domain.user.IncorrectIdentification;
+import domain.Exceptions.ShopNotFoundException;
+import domain.Exceptions.BlankDataExc;
+import domain.Exceptions.IncorrectIdentification;
 import domain.user.User;
 import domain.user.UserController;
 
