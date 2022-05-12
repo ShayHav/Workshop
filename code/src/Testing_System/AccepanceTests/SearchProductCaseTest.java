@@ -9,9 +9,6 @@ import domain.user.SearchProductFilter;
 import domain.user.User;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -76,7 +73,7 @@ public class SearchProductCaseTest extends Tester {
             p_2 = productResponseT.getValue();
         ResponseT<User> userResponseT = EnterMarket();
         if(!userResponseT.isErrorOccurred())
-            guestID = userResponseT.getValue().getId();
+            guestID = userResponseT.getValue().getUserName();
     }
 
     @AfterAll

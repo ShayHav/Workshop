@@ -2,6 +2,7 @@ package Service;
 
 
 import Testing_System.Result;
+import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.*;

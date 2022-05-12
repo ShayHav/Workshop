@@ -4,7 +4,6 @@ import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
-import domain.shop.ShopPermissions;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class AddProductToShopCaseTest extends Tester {
         user_2 = validUsers[1];
         pw_1 = pws[0];
         pw_2 = pws[1];
-        Guest_Id = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getId() : "";
+        Guest_Id = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
         pCat_1 = "Sex";

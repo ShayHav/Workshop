@@ -2,6 +2,7 @@ package domain.market;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Exceptions.*;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
@@ -128,7 +129,8 @@ public class MarketSystem {
             throw new BlankDataExc("foundId");
         if(purchasePolicy == null )
             throw new BlankDataExc("purchasePolicy");
-        return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, foundId);
+        User shopFounder = getUser(foundId);
+        return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, shopFounder);
     }
 
     public boolean register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc {

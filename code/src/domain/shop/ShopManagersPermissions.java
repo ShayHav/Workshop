@@ -18,3 +18,8 @@ public enum ShopManagersPermissions {
         RequestInformationOnShopsOfficials,
         RequestInformationOfShopsSalesHistory,
 }
+
+
+
+
+

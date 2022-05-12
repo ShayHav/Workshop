@@ -1,4 +1,4 @@
-package domain.user;
+package domain.Exceptions;
 
 public class IncorrectIdentification extends Exception{
     public IncorrectIdentification(){super();}
