@@ -13,8 +13,6 @@ public class ExternalConnector {
     public ExternalConnector(){
         paymentServices = new ArrayList<>();
         supplyServices = new ArrayList<>();
-        paymentServices.add(new PaymentServiceImp());
-        supplyServices.add(new SupplyServiceImp());
     }
 
     public boolean connectToPaymentService(PaymentService service) {

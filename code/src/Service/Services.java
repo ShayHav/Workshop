@@ -22,6 +22,7 @@ public class Services {
     MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Services(){
+
     }
 
     /*Result<#t | # f,  return value>
@@ -476,7 +477,11 @@ public class Services {
     }
     //Make:nitay
     public Response DeleteUserTest(String[] usernames) {
-        marketSystem.deleteUserTest(usernames);
+        try {
+            marketSystem.deleteUserTest(usernames);
+        } catch (InvalidSequenceOperationsExc e) {
+            return new Response(e.getMessage());
+        }
         return new Response();
     }
     //TODO:

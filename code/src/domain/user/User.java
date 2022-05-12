@@ -132,7 +132,7 @@ public class User {
         us = null;
     }
 
-    public void closeShop(int shopId) {
+    public void closeShop(int shopId) throws InvalidSequenceOperationsExc {
         List<Role> useRoleList = roleList.get(shopId);
         if (useRoleList!=null) {
             if(useRoleList.contains(Role.ShopFounder))
@@ -141,7 +141,7 @@ public class User {
         else errorLogger.logMsg(Level.WARNING, String.format("Not Founder shop try to close shop. user: %s", this.id));
     }
 
-    private void founderCloseShop(int shop, String id) {
+    private void founderCloseShop(int shop, String id) throws InvalidSequenceOperationsExc {
         Shop shop1;
         try{
             shop1 = ControllersBridge.getInstance().getShop(shop); //TODO: new class

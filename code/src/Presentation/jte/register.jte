@@ -99,7 +99,7 @@
     });
     socket.onmessage = async function (event){
         const response = JSON.parse(event.data);
-        if(!response.error){
+        if(!response.errorMessage){
             const toUpdate = document.getElementById("responsePlace");
             toUpdate.firstChild.textContent = "The user was created";
             toUpdate.classList.add("border", "border-success", "border-3", "rounded");

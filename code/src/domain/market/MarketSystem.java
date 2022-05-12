@@ -127,7 +127,7 @@ public class MarketSystem {
         return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, foundId);
     }
 
-    public User register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc {
+    public boolean register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc {
         if(username == null )
             throw new BlankDataExc("username");
         if(pw == null)
@@ -136,7 +136,7 @@ public class MarketSystem {
         return UserController.getInstance().register(username, pw);
     }
 
-    public boolean deleteUserTest(String[] username) {
+    public boolean deleteUserTest(String[] username) throws InvalidSequenceOperationsExc {
         for(String user: username){
             if(user == null)
                 return false;
