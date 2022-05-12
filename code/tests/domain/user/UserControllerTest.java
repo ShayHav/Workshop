@@ -7,6 +7,8 @@ import domain.Exceptions.InvalidSequenceOperationsExc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.BooleanSupplier;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
@@ -18,7 +20,7 @@ public class UserControllerTest {
 
 
     @BeforeEach
-    void setUp() throws InvalidSequenceOperationsExc {
+    void setUp() {
         userController = UserController.getInstance();
         for(int i=0;i<userName.length;i++) {
             try {
@@ -69,6 +71,27 @@ public class UserControllerTest {
     void getUser() throws IncorrectIdentification {
         for (int i = 0; i < userName.length; i++){
             assertTrue(userController.getUser(userName[i]).getUserName().equals(userName[i]));
+        }
+    }
+
+    @Test
+    void createSystemManager(){
+        try {
+            userController.createSystemManager(userName[0], userPass[0]);
+            assertTrue(userController.getUser(userName[0]).isSystemManager());
+        }
+        catch (InvalidSequenceOperationsExc | IncorrectIdentification exception){
+            assertTrue(false);
+        }
+    }
+    @Test
+    void deleteUserName() throws InvalidSequenceOperationsExc {
+        try {
+            userController.deleteUserName(userName[0]);
+            assertTrue( userController.getUser(userName[0])==null);
+        }
+        catch (IncorrectIdentification | InvalidSequenceOperationsExc exception) {
+            exception.printStackTrace();
         }
     }
 }

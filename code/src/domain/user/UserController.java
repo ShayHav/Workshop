@@ -2,12 +2,9 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidAuthorizationException;
-import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Exceptions.*;
 import domain.shop.Order;
 import domain.shop.ShopController;
-import domain.Exceptions.ShopNotFoundException;
 
 import java.util.*;
 import java.util.logging.Level;

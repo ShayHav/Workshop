@@ -42,7 +42,9 @@ public class User {
         isSystemManager = false;
     }
 
-
+    public boolean isSystemManager() {
+        return isSystemManager;
+    }
 
     public String getUserMenu() throws IllegalStateException {
         int i = 1;
@@ -228,13 +230,13 @@ public class User {
     public void appointManager(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
         List<Role> useRolelist = roleList.get(shopName);
         if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
-            memberAppointManager(userId, shopName, this.userName, managerAppointeeList);
+            memberAppointManager(userId, shopName, this.userName);
         else
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
     }
 
 
-    private void memberAppointManager(String targetUser, int shop, String id, List<ManagerAppointment> managerAppointmentList) throws IncorrectIdentification, BlankDataExc {
+    private void memberAppointManager(String targetUser, int shop, String id/*, List<ManagerAppointment> managerAppointmentList*/) throws IncorrectIdentification, BlankDataExc {
         Shop shop1;
         try{
             shop1 = getShop(shop);
@@ -249,7 +251,7 @@ public class User {
                 shop1.AppointNewShopManager(targetUser, id);
                 if (isAppointedMeManager(user1, id)) {
                     ManagerAppointment newAppointment = new ManagerAppointment(shop1, id, user1);
-                    managerAppointmentList.add(newAppointment);
+                    managerAppointeeList.add(newAppointment);
                     eventLogger.logMsg(Level.INFO, String.format("appointManager = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
                     //return true;
                 } else
