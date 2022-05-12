@@ -54,19 +54,19 @@ public class ShopController {
         return true;
     }
 
-    public List<ShopInfo> getInfoOfShops(Filter<ShopInfo> f) {
-        List<ShopInfo> allShops = new ArrayList<>();
+    public List<Shop> getInfoOfShops(Filter<Shop> f) {
+        List<Shop> allShops = new ArrayList<>();
         synchronized (this) {
             for (Shop s : shopList.values()) {
-                ShopInfo info = s.getShopInfo();
-                if (info != null) //means, if the shop is open
-                    allShops.add(s.getShopInfo());
+                //ShopInfo info = s.getShopInfo();
+                //if (info != null) //means, if the shop is open
+                    allShops.add(s);
             }
         }
         return f.applyFilter(allShops);
     }
 
-    public List<ProductInfo> getInfoOfProductInShop(int shopID, Filter<ProductInfo> f) {
+    public List<Product> getInfoOfProductInShop(int shopID, Filter<Product> f) {
         Shop s;
         try {
             s = getShop(shopID);
@@ -74,28 +74,28 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        List<ProductInfo> info = s.getProductInfoOfShop();
+        List<Product> info = s.getProductInfoOfShop();
         return f.applyFilter(info);
     }
 
-    public List<ProductInfo> searchProductByName(String name, Filter<ProductInfo> f) {
+    public List<Product> searchProductByName(String name, Filter<Product> f) {
         String lowerName = name.toLowerCase();
-        List<ProductInfo> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         synchronized (shopList) {
             for (Shop s : shopList.values()) {
-                List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().toLowerCase().equals(lowerName)).collect(Collectors.toList());
+                List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getName().toLowerCase().equals(lowerName)).collect(Collectors.toList());
                 products.addAll(shopProducts);
             }
         }
         return f.applyFilter(products);
     }
 
-    public List<ProductInfo> searchProductByKeyword(String keyword, Filter<ProductInfo> f) {
+    public List<Product> searchProductByKeyword(String keyword, Filter<Product> f) {
         String lowerKeyword = keyword.toLowerCase();
-        List<ProductInfo> products = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         synchronized (shopList) {
             for (Shop s : shopList.values()) {
-                List<ProductInfo> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getProductName().toLowerCase().contains(lowerKeyword)).collect(Collectors.toList());
+                List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getName().toLowerCase().contains(lowerKeyword)).collect(Collectors.toList());
                 products.addAll(shopProducts);
             }
         }

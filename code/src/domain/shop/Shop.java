@@ -318,9 +318,9 @@ public class Shop {
         return null;
     }
 
-    public List<ProductInfo> getProductInfoOfShop() {
-        List<ProductInfo> info = inventory.getAllProductInfo();
-        for (ProductInfo p : info) {
+    public List<Product> getProductInfoOfShop() {
+        List<Product> info = inventory.getAllProductInfo();
+        for (Product p : info) {
             p.setShopName(name);
             p.setShopRank(rank);
         }

@@ -81,7 +81,7 @@ public class MarketSystem {
 
     }
 
-    public List<ShopInfo> getInfoOfShops(String userID, Filter<ShopInfo> f) throws BlankDataExc {
+    public List<Shop> getInfoOfShops(String userID, Filter<Shop> f) throws BlankDataExc {
         if (userID == null || f == null || !userController.HasUserEnteredMarket(userID))
             throw new BlankDataExc();
         return ShopController.getInstance().getInfoOfShops(f);
@@ -90,19 +90,19 @@ public class MarketSystem {
 
 
     //TODO: f==null is ok? getAllInfoProduct..
-    public List<ProductInfo> getInfoOfProductInShop(String userID, int shopID, Filter<ProductInfo> f) {
+    public List<Product> getInfoOfProductInShop(String userID, int shopID, Filter<Product> f) {
         if (userID == null || f == null || !userController.HasUserEnteredMarket(userID))
             return null;
         return ShopController.getInstance().getInfoOfProductInShop(shopID, f);
     }
     //TODO: f==null is ok? getAllInfoProduct..
-    public List<ProductInfo> searchProductByName(String userID, String name, Filter<ProductInfo> f) {
+    public List<Product> searchProductByName(String userID, String name, Filter<Product> f) {
         if (userID == null || name == null || f == null || !userController.HasUserEnteredMarket(userID))
             return null;
         return ShopController.getInstance().searchProductByName(name, f);
     }
     //TODO: f==null is ok? getAllInfoProduct..
-    public List<ProductInfo> searchProductByKeyword(String userID, String keyword, Filter<ProductInfo> f) {
+    public List<Product> searchProductByKeyword(String userID, String keyword, Filter<Product> f) {
         if (userID == null || keyword == null || f == null || !userController.HasUserEnteredMarket(userID))
             return null;
         return ShopController.getInstance().searchProductByKeyword(keyword, f);
@@ -127,7 +127,7 @@ public class MarketSystem {
         return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, foundId);
     }
 
-    public User register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc {
+    public boolean register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc {
         if(username == null )
             throw new BlankDataExc("username");
         if(pw == null)
