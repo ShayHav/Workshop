@@ -7,6 +7,9 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
 import domain.user.TransactionInfo;
+import domain.user.filter.Filter;
+import domain.user.filter.SearchOfficialsFilter;
+import domain.user.filter.SearchOrderFilter;
 
 import java.util.List;
 import java.util.Map;

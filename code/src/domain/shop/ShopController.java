@@ -5,6 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
+import domain.user.filter.Filter;
 
 import java.util.*;
 import java.util.logging.Level;

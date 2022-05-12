@@ -1,9 +1,9 @@
 package domain.user;
 
-import domain.ResponseT;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.filter.Filter;
 
 import java.util.List;
 

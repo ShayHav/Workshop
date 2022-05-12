@@ -4,13 +4,10 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.shop.*;
-import domain.user.Filter;
-import domain.user.SearchProductFilter;
+import domain.user.filter.Filter;
+import domain.user.filter.SearchProductFilter;
 import domain.user.User;
 import org.junit.jupiter.api.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

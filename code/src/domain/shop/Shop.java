@@ -9,6 +9,8 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
+import domain.user.filter.SearchOfficialsFilter;
+import domain.user.filter.SearchOrderFilter;
 
 import java.util.*;
 
@@ -359,13 +361,13 @@ public class Shop {
         return inventory;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(SearchOfficialsFilter f,String userId) {
+    public List<UserSearchInfo> RequestShopOfficialsInfo(SearchOfficialsFilter f, String userId) {
         if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)| ShopOwners.containsKey(userId)) {
             return f.applyFilter(getUserList(),shopID);
         }
         return null;
     }
-    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f,String userId) {
+    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f, String userId) {
         if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId) | ShopOwners.containsKey(userId))
             return f.applyFilter(orders.getOrders());
         else return null;

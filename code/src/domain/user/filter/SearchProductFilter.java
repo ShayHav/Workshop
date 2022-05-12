@@ -1,6 +1,7 @@
-package domain.user;
+package domain.user.filter;
 
 import domain.shop.ProductInfo;
+import domain.user.filter.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,14 @@ public class SearchProductFilter implements Filter<ProductInfo> {
     private Integer productRank;
     private Integer shopRank;
     private String category;
+
+    public SearchProductFilter(){
+        minPrice = 0d;
+        maxPrice = Double.MAX_VALUE;
+        productRank = null;
+        shopRank = null;
+        category = null;
+    }
 
     public SearchProductFilter(Double minPrice, Double maxPrice, Integer productRank, Integer shopRank, String category) {
         this.minPrice = Objects.requireNonNullElse(minPrice, 0d);

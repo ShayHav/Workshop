@@ -8,6 +8,9 @@ import domain.market.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
+import domain.user.filter.Filter;
+import domain.user.filter.SearchOfficialsFilter;
+import domain.user.filter.SearchOrderFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -187,7 +190,7 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userId) {
+    public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userId) {
         return (Result<Boolean, List<UserSearchInfo>>) sv.RequestShopOfficialsInfo(shopName, f, userId);
     }
 

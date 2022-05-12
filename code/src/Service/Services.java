@@ -9,6 +9,9 @@ import domain.shop.*;
 
 import domain.user.*;
 import domain.user.TransactionInfo;
+import domain.user.filter.Filter;
+import domain.user.filter.SearchOfficialsFilter;
+import domain.user.filter.SearchOrderFilter;
 
 
 import java.util.LinkedList;
@@ -443,7 +446,7 @@ public class Services {
         }
     }
     //Make:nitay  IncorrectIdentification
-    public List<ResponseT<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userName)
+    public List<ResponseT<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName)
     {
         List<ResponseT<UserSearchInfo>> responseTList = new LinkedList<>();
         try {
@@ -459,7 +462,7 @@ public class Services {
         }
     }
     //Make:nitay  IncorrectIdentification
-    public List<ResponseT<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f,String userName)
+    public List<ResponseT<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName)
     {
         List<ResponseT<Order>> output = new LinkedList<>();
         try {

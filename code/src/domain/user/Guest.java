@@ -1,13 +1,10 @@
 package domain.user;
 
 import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
-import domain.ResponseT;
-import domain.Tuple;
-import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.filter.Filter;
 
 import java.util.List;
 import java.util.logging.Level;

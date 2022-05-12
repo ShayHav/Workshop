@@ -5,6 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.shop.Order;
 import domain.shop.ShopController;
 import domain.shop.ShopNotFoundException;
+import domain.user.filter.Filter;
 
 import java.util.*;
 import java.util.logging.Level;

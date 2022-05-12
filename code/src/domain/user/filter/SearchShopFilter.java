@@ -1,6 +1,7 @@
-package domain.user;
+package domain.user.filter;
 
 import domain.shop.ShopInfo;
+import domain.user.filter.Filter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,11 @@ public class SearchShopFilter implements Filter<ShopInfo> {
     public SearchShopFilter(String name, Integer rank){
         this.name = name;
         this.rank = rank;
+    }
+
+    public SearchShopFilter(){
+        name = null;
+        rank = null;
     }
 
     @Override
