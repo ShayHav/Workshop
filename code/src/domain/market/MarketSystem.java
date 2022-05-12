@@ -347,7 +347,6 @@ public class MarketSystem {
         return userController.addProductToCart(userID, shopID, productId, amount);
     }
 
-
     public boolean EditShoppingCart(String userId, int shopId, int productId, int amount) throws InvalidSequenceOperationsExc {
         return userController.updateAmountOfProduct(userId, shopId, productId, amount);
     }

@@ -77,7 +77,7 @@ public class Cart {
         return new CartInfo(totalAmount,basketInfoList);
     }
 
-    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
         LocalDate transaction_date = LocalDate.now();
         totalAmount = getTotalAmount();
         TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);

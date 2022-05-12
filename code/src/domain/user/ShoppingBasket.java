@@ -129,7 +129,7 @@ public class ShoppingBasket {
      * complete the purchase by performing checkout via the relevant shop of the basket.
      * @param billingInfo all the relevant information to complete the transaction.
      */
-    public ResponseT<Order> checkout(TransactionInfo billingInfo) {
+    public ResponseT<Order> checkout(TransactionInfo billingInfo) throws BlankDataExc {
         return shop.checkout(productAmountList, basketAmount, billingInfo);
     }
 
