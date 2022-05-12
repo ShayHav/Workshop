@@ -44,6 +44,9 @@ public class Main {
         });
 
         app.ws("/users/new", ws ->{
+            ws.onConnect(ctx->{
+
+            });
             ws.onMessage(ctx->{
                 PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);
                 ResponseT<PresentationUser> response = services.Register(requestedUser.getUsername(), requestedUser.getPassword());
@@ -55,6 +58,7 @@ public class Main {
             if(ctx.cookie("uid") != null){
                 ResponseT<PresentationUser> response = services.EnterMarket();
                 if(response.isErrorOccurred()){
+                    ctx.status(503);
                     ctx.render("error.jte", Collections.singletonMap("error" ,response.errorMessage));
                 }
                 else {

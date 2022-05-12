@@ -77,40 +77,42 @@
                     <input type="password" name="username" class="form-control" id="password" placeholder="password">
                 </div>
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-success">Register</button>
+                    <button type="button" id="submitButton" class="btn btn-success">Register</button>
                     <a href="/" class="btn btn-danger">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
-    <div>
-        <p id="responsePlace" class="visually-hidden"></p>
+    <div id="responsePlace" class="container mt-5 col-4 visually-hidden">
+        <p class="fs-5"></p>
     </div>
 
 </main>
 </body>
 <script type="javascript">
     const socket = new WebSocket("wss://localhost:8080/users/new")
-    document.location.registerForm.onsubmit = function (){
-        const message = {username: this.username.value, password: this.password.value };
+    const button = document.querySelector('#submitButton');
+    button.addEventListener('click', function (){
+        const form = document.registerForm;
+        const message = {username: form.username.value, password: form.password.value };
         socket.send(JSON.stringify(message));
-    }
-    socket.onmessage = function (event){
+    });
+    socket.onmessage = async function (event){
         const response = JSON.parse(event.data);
         if(!response.error){
-            let toUpdate = document.getElementById("responsePlace");
-            toUpdate.innerText = "User was created";
-            toUpdate.parentElement.classList.add("border border-success border-3 rounded");
-            toUpdate.classList.toggle("visually-hidden");
+            const toUpdate = document.getElementById("responsePlace");
+            toUpdate.firstChild.textContent = "The user was created";
+            toUpdate.classList.add("border", "border-success", "border-3", "rounded");
+            toUpdate.classList.remove("visually-hidden");
+            await new Promise(r => setTimeout(r,3000));
             window.location.replace("/");
         }
         const username = document.getElementById("userName");
-        username.classList.add("border border-danger");
-        let toUpdate = document.getElementById("responsePlace");
-        toUpdate.innerText = response.errorMessage;
-        toUpdate.parentElement.classList.add("border border-danger border-3 rounded");
-        toUpdate.classList.toggle("visually-hidden");
-
+        username.classList.add("border", "border-danger");
+        const toUpdate = document.getElementById("responsePlace");
+        toUpdate.firstChild.textContent = response.error;
+        toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
+        toUpdate.classList.remove("visually-hidden");
     }
 </script>
 </html>
