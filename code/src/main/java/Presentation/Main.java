@@ -87,6 +87,12 @@ public class Main {
             });
         });
 
+        app.get("/users/new", ctx -> {
+            String username = ctx.cookieStore("uid");
+            PresentationUser user = getUser(username,ctx);
+            ctx.render("register.jte", Map.of("user",user));
+        });
+
 
 
     }
