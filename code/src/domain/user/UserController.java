@@ -56,9 +56,10 @@ public class UserController {
             } else {
                 throw new InvalidAuthorizationException("Identifier not correct");
             }
-        } else
+        } else {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
-        throw new InvalidAuthorizationException();
+            throw new InvalidAuthorizationException();
+        }
     }
 
     private synchronized boolean isUserisLog(String id){
@@ -127,20 +128,22 @@ public class UserController {
         return memberList.getOrDefault(id, null);
     }
 
-    public boolean deleteUserTest(String[] userId) {
+    public boolean deleteUserTest(String[] userId) throws InvalidSequenceOperationsExc {
         for (int i = 0; i < userId.length; i++) {
             deleteUser(userId[i]);
         }
         return true;
     }
     public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc {
-        if(!memberList.containsKey(s))
-            throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s",s));
+        if(!memberList.containsKey(s)) {
+            errorLogger.logMsg(Level.WARNING, String.format("attempt to delete not exist user: %s", s));
+            throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s", s));
+        }
         deleteUser(s);
         return memberList.containsKey(s);
     }
 
-    private void deleteUser(String useID) {
+    private void deleteUser(String useID) throws InvalidSequenceOperationsExc {
         User u = memberList.get(useID);
         if (u != null) {
             Map<Integer, List<Role>> useRoleList = u.getRoleList();

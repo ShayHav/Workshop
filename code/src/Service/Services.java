@@ -122,9 +122,14 @@ public class Services {
     //shay  //TODO: only for test?
     public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products)
     {
-        MarketSystem m = MarketSystem.getInstance();
-        boolean ans  = m.supply(ti, products);
-        return new Result<>(ans, ans);
+        try {
+            MarketSystem m = MarketSystem.getInstance();
+            boolean ans = m.supply(ti, products);
+            return new Result<>(ans, ans);
+        }
+        catch (BlankDataExc blankDataExc){
+            return null;
+        }
     }
 
     //shay  //TODO: only for test?
@@ -182,37 +187,52 @@ public class Services {
     //Make:nitay
     public List<ResponseT<PresentationProduct>> GetProductInfoInShop(String userName , int shopID, Filter<Product> f)
     {
-        List<Product> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userName,shopID,f);
-        List<ResponseT<PresentationProduct>> CreateShop = new LinkedList<>();
-        if (GetProductInfoInShop == null || GetProductInfoInShop.size() == 0)
-            return null;
-        for(Product productInfo:GetProductInfoInShop){
-            CreateShop.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+        try {
+            List<Product> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userName, shopID, f);
+            List<ResponseT<PresentationProduct>> CreateShop = new LinkedList<>();
+            if (GetProductInfoInShop == null || GetProductInfoInShop.size() == 0)
+                return null;
+            for (Product productInfo : GetProductInfoInShop) {
+                CreateShop.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+            }
+            return CreateShop;
         }
-        return CreateShop;
+        catch (BlankDataExc blankDataExc){
+            return null;
+        }
     }//display information of a product?
 
 
     //make:shahar
     public List<ResponseT<PresentationProduct>> SearchProductByName(String userName ,String pName, Filter<Product> f) //done
     {
-        List<ResponseT<PresentationProduct>> result = new LinkedList<>();
-        List<Product> products = marketSystem.searchProductByName(userName ,pName, f);
-        for(Product productInfo: products){
-            result.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+        try {
+            List<ResponseT<PresentationProduct>> result = new LinkedList<>();
+            List<Product> products = marketSystem.searchProductByName(userName, pName, f);
+            for (Product productInfo : products) {
+                result.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+            }
+            return result;
         }
-        return result;
+        catch (BlankDataExc blankDataExc){
+            return null;
+        }
     }
 
     //make:shahar
     public List<ResponseT<PresentationProduct>> SearchProductByKeyword(String userName ,String keyword, Filter<Product> f)
     {
-        List<ResponseT<PresentationProduct>> result = new LinkedList<>();
-        List<Product> products = marketSystem.searchProductByKeyword(userName ,keyword, f);
-        for(Product productInfo: products){
-            result.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+        try {
+            List<ResponseT<PresentationProduct>> result = new LinkedList<>();
+            List<Product> products = marketSystem.searchProductByKeyword(userName, keyword, f);
+            for (Product productInfo : products) {
+                result.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+            }
+            return result;
         }
-        return result;
+        catch (BlankDataExc blankDataExc){
+            return null;
+        }
     }
 
     //make: shahar
@@ -476,8 +496,16 @@ public class Services {
     }
     //Make:nitay
     public Response DeleteUserTest(String[] usernames) {
-        marketSystem.deleteUserTest(usernames);
-        return new Response();
+        try {
+            marketSystem.deleteUserTest(usernames);
+            return new Response();
+        }
+        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
+            return new Response(invalidSequenceOperationsExc.getMessage());
+        }
+        catch (BlankDataExc blankDataExc){
+            return new Response(blankDataExc.getLocalizedMessage());
+        }
     }
     //TODO:
     public Response DeleteUser(String usernames) {

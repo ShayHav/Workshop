@@ -58,8 +58,6 @@ public class ShopController {
         List<Shop> allShops = new ArrayList<>();
         synchronized (this) {
             for (Shop s : shopList.values()) {
-                //ShopInfo info = s.getShopInfo();
-                //if (info != null) //means, if the shop is open
                     allShops.add(s);
             }
         }
@@ -87,6 +85,7 @@ public class ShopController {
                 products.addAll(shopProducts);
             }
         }
+        eventLogger.logMsg(Level.INFO, "searchProductByName succeeded");
         return f.applyFilter(products);
     }
 
@@ -99,6 +98,7 @@ public class ShopController {
                 products.addAll(shopProducts);
             }
         }
+        eventLogger.logMsg(Level.INFO, "searchProductByKeyword succeeded");
         return f.applyFilter(products);
     }
 
@@ -107,6 +107,7 @@ public class ShopController {
             errorLogger.logMsg(Level.WARNING,String.format("shopId %d isn't a valid shop in market", shopID));
             throw new ShopNotFoundException("shop does not exist in market");
         }
+        eventLogger.logMsg(Level.INFO, "getShop succeeded");
         return shopList.get(shopID);
     }
 
@@ -148,6 +149,7 @@ public class ShopController {
             return -1;
         }
         s.removeListing(productId, username);
+        eventLogger.logMsg(Level.INFO, "RemoveProductFromShopInventory succeeded");
         return productId;
     }
 
@@ -159,8 +161,10 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser, id))
+            if (s.removePermissions(shopManagersPermissionsList, tragetUser, id)) {
+                eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
                 return "Shop Manager Permissions Removed";
+            }
             else
                 return null;
     }
@@ -173,8 +177,10 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        if (s.addPermissions(shopManagersPermissionsList, tragetUser, id))
+        if (s.addPermissions(shopManagersPermissionsList, tragetUser, id)) {
+            eventLogger.logMsg(Level.INFO, "AddShopMangerPermissions succeeded");
             return "ShopManagerPermissionsAdd";
+        }
         else
             return null;
     }
@@ -187,7 +193,8 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-            return s.AppointNewShopManager(targetUser, userId);
+        eventLogger.logMsg(Level.INFO, "AppointNewShopManager succeeded");
+        return s.AppointNewShopManager(targetUser, userId);
     }
 
     public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
@@ -199,8 +206,10 @@ public class ShopController {
             return null;
         }
         synchronized (this) {
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getId(), id))
+            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getId(), id)) {
+                eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
                 return "ShopManagerPermissionsRemove";
+            }
             else return null;
         }
     }
@@ -213,6 +222,7 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
+        eventLogger.logMsg(Level.INFO, "AppointNewShopOwner succeeded");
         return s.AppointNewShopOwner(targetUser, userId);
     }
 
@@ -232,6 +242,7 @@ public class ShopController {
                 orders.addAll(s.getOrders());
             }
         }
+        eventLogger.logMsg(Level.INFO, "getOrderHistoryForShops succeeded");
         return orders;
     }
 
