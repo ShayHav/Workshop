@@ -12,7 +12,7 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
-@template.NavBar(user = user)
+@template.navBar(user = user)
 <main class="container align-content-center">
     <div class="container col-5 mt-5 border">
         <div class="container col-4 mt-3">

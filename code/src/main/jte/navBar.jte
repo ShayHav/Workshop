@@ -1,5 +1,5 @@
 @param Presentation.Model.PresentationUser user
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <div class="navbar-brand">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shop-window"
@@ -17,10 +17,15 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/">Home</a>
                 </li>
+                @if (user.isLoggedIn())
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <button id="createShopBtn" class="nav-link bg-dark border-0">
+                    Create Shop
+                    </button>
                 </li>
-
+                    @else
+                    <a class="nav-link" href="/users/login">Create Shop</a>
+                @endif
             </ul>
             <div class="me-auto col-7">
                 <form class="d-flex" method="get">
@@ -45,7 +50,7 @@
                         </li>
                     @else
                         <form method="post" action="/users/${user.getUsername()}/logout">
-                            <button class="btn btn-light">Logout</button>
+                            <button class="btn btn-dark text-warning">Logout</button>
                         </form>
                     @endif
                     <li class="nav-item">
@@ -63,3 +68,26 @@
         </div>
     </div>
 </nav>
+
+@if (user.isLoggedIn())
+<div class="collapse container border border-2 mt-3 col-6" id="createShop">
+    <form class="m-3" method="post" action="/shop">
+        <h3 class="fs-5">create new shop in market:</h3>
+        <div class=" mb-2">
+            <input type="text" name="shopName" class="form-control" id="shopName" placeholder="shopName">
+        </div>
+        <div class="mb-2">
+            <input type="text" name="description" class="form-control" id="description" placeholder="description">
+        </div>
+        <button class="btn btn-success" type="submit">create new shop</button>
+    </form>
+</div>
+
+<script>
+    const button = document.querySelector("#createShopBtn");
+    button.addEventListener('click',function (){
+        const toCollapse = document.querySelector("#createShop");
+        toCollapse.classList.toggle('collapse');
+    })
+</script>
+@endif

@@ -404,11 +404,8 @@ public class Services {
                 return new Response(s);
             return null;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | BlankDataExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
-        }
-        catch (BlankDataExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     //Make:nitay
@@ -420,14 +417,8 @@ public class Services {
                 return new Response(s);
             return null;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
-        }
-        catch (BlankDataExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     public Response OpenShop(int shopId,String userName) {
@@ -437,14 +428,8 @@ public class Services {
                 return new Response(s);
             return null;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
-        }
-        catch (BlankDataExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     //Make:nitay  IncorrectIdentification

@@ -16,16 +16,17 @@
 
 <div class="container mt-5">
     <b><h1 class="fs-2">Oops..Looks like something bad happened</h1></b>
-<div class="container row">
-    <div class="col">
-        <p class="fs-4">${errorMessage}</p>
-        <b><p class="fs-4">Error Code: ${status}</p></b>
+    <div class="container row">
+        <div class="col">
+            <p class="fs-4">${errorMessage}</p>
+            <b><p class="fs-4">Error Code: ${status}</p></b>
+            <a class="nav-link" aria-current="page" href="/">Return to Homepage</a>
+        </div>
+        <div class="col">
+            <img src="https://a0.muscache.com/airbnb/static/error_pages/404-Airbnb_final-d652ff855b1335dd3eedc3baa8dc8b69.gif"
+                 width="313" height="428" alt="Girl has dropped her ice cream.">
+        </div>
     </div>
-    <div class="col">
-        <img src="https://a0.muscache.com/airbnb/static/error_pages/404-Airbnb_final-d652ff855b1335dd3eedc3baa8dc8b69.gif"
-             width="313" height="428" alt="Girl has dropped her ice cream.">
-    </div>
-</div>
 </div>
 </body>
 </html>
