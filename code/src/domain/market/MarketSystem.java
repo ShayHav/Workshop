@@ -8,6 +8,10 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
 import domain.user.TransactionInfo;
+import domain.user.filters.Filter;
+import domain.user.filters.SearchOfficialsFilter;
+import domain.user.filters.SearchOrderFilter;
+import domain.user.filters.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -312,7 +316,7 @@ public class MarketSystem {
         externalConnector = ec;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification {
+    public List<User> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification {
         if(userController.isLogin(userID)) {
             Shop shop1;
             try{
@@ -383,5 +387,9 @@ public class MarketSystem {
         if(targetUser== null)
             throw new BlankDataExc();
         return  userController.getUser(usernames).DismissalOwner(targetUser,shop);
+    }
+
+    public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        return userController.RequestUserInfo(f,userName);
     }
 }

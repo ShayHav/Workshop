@@ -12,7 +12,7 @@ public class PresentationUser {
     }
 
     public PresentationUser(User user){
-        username = user.getId();
+        username = user.getUserName();
     }
 
     public String getUsername() {

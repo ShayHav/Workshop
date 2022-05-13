@@ -10,6 +10,8 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
+import domain.user.filters.SearchOfficialsFilter;
+import domain.user.filters.SearchOrderFilter;
 
 import java.util.*;
 
@@ -52,6 +54,10 @@ public class Shop {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
@@ -370,13 +376,13 @@ public class Shop {
         return inventory;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(SearchOfficialsFilter f,String userId) {
+    public List<User> RequestShopOfficialsInfo(SearchOfficialsFilter f, String userId) {
         if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)| ShopOwners.containsKey(userId)) {
             return f.applyFilter(getUserList(),shopID);
         }
         return null;
     }
-    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f,String userId) {
+    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f, String userId) {
         if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId) | ShopOwners.containsKey(userId))
             return f.applyFilter(orders.getOrders());
         else return null;

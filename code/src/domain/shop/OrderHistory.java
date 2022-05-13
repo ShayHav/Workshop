@@ -1,8 +1,7 @@
 package domain.shop;
 
 import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
-import domain.user.SearchOrderFilter;
+import domain.user.filters.SearchOrderFilter;
 
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDateTime;

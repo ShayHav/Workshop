@@ -6,6 +6,7 @@ import domain.Exceptions.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
+import domain.user.filters.Filter;
 
 import java.util.*;
 import java.util.logging.Level;

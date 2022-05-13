@@ -1,8 +1,7 @@
-package domain.user;
+package domain.user.filters;
 
 import domain.EventLoggerSingleton;
 import domain.shop.Order;
-import domain.shop.ProductInfo;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

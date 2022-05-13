@@ -13,6 +13,10 @@ import domain.shop.*;
 
 import domain.user.*;
 import domain.user.TransactionInfo;
+import domain.user.filters.Filter;
+import domain.user.filters.SearchOfficialsFilter;
+import domain.user.filters.SearchOrderFilter;
+import domain.user.filters.SearchUserFilter;
 
 
 import java.util.LinkedList;
@@ -465,14 +469,14 @@ public class Services {
         }
     }
     //Make:nitay  IncorrectIdentification
-    public List<ResponseT<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f,String userName)
+    public List<ResponseT<PresentationUser>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName)
     {
-        List<ResponseT<UserSearchInfo>> responseTList = new LinkedList<>();
+        List<ResponseT<PresentationUser>> responseTList = new LinkedList<>();
         try {
-            List<UserSearchInfo> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
+            List<User> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
             if (s != null)
-                for(UserSearchInfo userSearchInfo: s)
-                    responseTList.add(new ResponseT<>(userSearchInfo));
+                for(User userSearchInfo: s)
+                    responseTList.add(new ResponseT<>(new PresentationUser(userSearchInfo)));
             return responseTList;
         }
         catch (IncorrectIdentification incorrectIdentification){
@@ -481,7 +485,7 @@ public class Services {
         }
     }
     //Make:nitay  IncorrectIdentification
-    public List<ResponseT<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f,String userName)
+    public List<ResponseT<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName)
     {
         List<ResponseT<Order>> output = new LinkedList<>();
         try {
@@ -617,6 +621,22 @@ public class Services {
         }
         catch (ShopNotFoundException shopNotFoundException){
             return new Response(shopNotFoundException.getLocalizedMessage());
+        }
+    }
+
+    public List<ResponseT<PresentationUser>> RequestUserInfo(SearchUserFilter f, String userName)
+    {
+        List<ResponseT<PresentationUser>> responseTList = new LinkedList<>();
+        try {
+            List<User> s = marketSystem.RequestUserInfo(f, userName);
+            if (s != null)
+                for(User userSearchInfo: s)
+                    responseTList.add(new ResponseT<>(new PresentationUser(userSearchInfo)));
+            return responseTList;
+        }
+        catch (IncorrectIdentification | InvalidSequenceOperationsExc incorrectIdentification){
+            responseTList.add(new ResponseT<>(null,incorrectIdentification.getLocalizedMessage()));
+            return responseTList;
         }
     }
 }

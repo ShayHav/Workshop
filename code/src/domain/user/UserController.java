@@ -5,6 +5,8 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
 import domain.shop.Order;
 import domain.shop.ShopController;
+import domain.user.filters.Filter;
+import domain.user.filters.SearchUserFilter;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -96,7 +98,6 @@ public class UserController {
      */
     public boolean register(String id, String pass) throws InvalidSequenceOperationsExc {
         if (!memberList.containsKey(id)) {
-            //System.out.println("97");
             User user = new User(id);
             synchronized (memberList) {
                 memberList.put(id, user);
@@ -241,5 +242,13 @@ public class UserController {
 
     public boolean isLogin(String userID) throws IncorrectIdentification {
         return getUser(userID).isLoggedIn();
+    }
+
+    public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        if(getUser(userName).isSystemManager()){
+            User[] result = (User[]) memberList.values().toArray(); //TODO: better way to solve.
+            return f.applyFilter(Arrays.asList(result));
+        }
+        throw new InvalidSequenceOperationsExc();
     }
 }

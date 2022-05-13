@@ -1,7 +1,9 @@
-package domain.user;
+package domain.user.filters;
 
 import domain.EventLoggerSingleton;
-import domain.shop.Order;
+import domain.user.Role;
+import domain.user.User;
+import domain.user.UserSearchInfo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,16 +25,14 @@ public class SearchOfficialsFilter implements Filter<User>{
     @Override
     public List<User> applyFilter(List<User> userList){return null;}
 
-    public List<UserSearchInfo> applyFilter(List<User> userList,int shopId) {
+    public List<User> applyFilter(List<User> userList, int shopId) {
         EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filer for Shop: "+shopId);
         List<User> result = new ArrayList<>();
-        List<UserSearchInfo> output = new LinkedList<>();
+        //List<User> output = new LinkedList<>();
         result = userList.stream().collect(Collectors.toList());
         for(Role run : roleList){
             result = result.stream().filter(u -> u.getRoleList().get(shopId).contains(run)).collect(Collectors.toList());
         }
-        for(User user : result)
-            output.add(user.getUserInfo());
-        return output;
+        return result;
     }
 }

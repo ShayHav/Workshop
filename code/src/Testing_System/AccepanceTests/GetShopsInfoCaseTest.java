@@ -1,13 +1,12 @@
 package Testing_System.AccepanceTests;
 
-import Testing_System.Result;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopInfo;
-import domain.user.Filter;
-import domain.user.SearchShopFilter;
+import domain.user.filters.Filter;
+import domain.user.filters.SearchShopFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
