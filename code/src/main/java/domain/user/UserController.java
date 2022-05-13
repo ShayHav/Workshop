@@ -58,11 +58,12 @@ public class UserController {
                 eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", id));
                 return output;
             } else {
-                throw new InvalidAuthorizationException("Identifier not correct");
+                throw new InvalidAuthorizationException("username or password given is incorrect.");
             }
-        } else
-            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
-        throw new InvalidAuthorizationException();
+        } else {
+            errorLogger.logMsg(Level.WARNING, "username or password given is incorrect.");
+            throw new InvalidAuthorizationException("username or password given is incorrect.");
+        }
     }
 
     private synchronized boolean isUserisLog(String id){

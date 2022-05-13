@@ -6,13 +6,16 @@ public class PresentationUser {
 
     private String username;
     private String password;
+    private boolean loggedIn;
 
-    public PresentationUser(String username){
+    public PresentationUser(String username, boolean loggedIn){
         this.username = username;
+        this.loggedIn = loggedIn;
     }
 
     public PresentationUser(User user){
         username = user.getId();
+        loggedIn = user.isLoggedIn();
     }
 
     public String getUsername() {
@@ -29,5 +32,13 @@ public class PresentationUser {
 
     public String getPassword() {
         return password;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
     }
 }

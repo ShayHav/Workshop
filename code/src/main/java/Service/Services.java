@@ -51,14 +51,8 @@ public class Services {
             User b = marketSystem.logIn(username, pw);
             output = new ResponseT<>(b);
             return output;
-        } catch (BlankDataExc blankDataExc) {
+        } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc | InvalidAuthorizationException blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
-        } catch (InvalidAuthorizationException invalidAuthorizationException) {
-            return new ResponseT<>(null, invalidAuthorizationException.actualAuthorization);
         }
     }
     //Make:nitay
@@ -66,10 +60,8 @@ public class Services {
         try {
             if(marketSystem.register(username, pw))
                 return new Response();
-        } catch (BlankDataExc blankDataExc) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         }
         return new Response();
     }

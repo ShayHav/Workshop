@@ -69,11 +69,14 @@ public class Main {
             String password = ctx.formParam("password");
             ResponseT<User> response = services.Login(username,password);
             if(response.isErrorOccurred()){
-                ctx.status(418);
-                ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+                int errorCode = 401;
+                ctx.status(errorCode);
+                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage,"status",errorCode));
             }
-            ctx.cookieStore("uid", response.getValue().getId());
-            ctx.redirect("/");
+            else {
+                ctx.cookieStore("uid", response.getValue().getId());
+                ctx.redirect("/");
+            }
         });
 
         app.ws("/users/new", ws ->{
@@ -90,10 +93,20 @@ public class Main {
         app.get("/users/new", ctx -> {
             String username = ctx.cookieStore("uid");
             PresentationUser user = getUser(username,ctx);
-            ctx.render("register.jte", Map.of("user",user));
+            ctx.render("register.jte", Map.of("r_user",user));
         });
 
-
+        app.post("/users/{id}/logout", ctx->
+        {
+           String username = ctx.pathParam("id");
+           ResponseT<User> guest = services.Logout(username);
+           if(guest.isErrorOccurred()){
+               ctx.status(418);
+               ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", guest.errorMessage));
+           }
+           ctx.cookieStore("uid", guest.getValue().getId());
+            ctx.redirect("/");
+        });
 
     }
 
