@@ -16,17 +16,10 @@ import static org.mockito.Mockito.when;
 class InventoryTest {
 
     Inventory inv;
-    Products products;
 
     @BeforeEach
     void setUp() throws InvalidProductInfoException {
         inv = new Inventory();
-        products = mock(Products.class);
-        inv.setProductList(products);
-        ProductImp p1 = new ProductImp(1, "Iphone13", "Apples new overpriced smartphone", "smartphone");
-        ProductImp p2 = new ProductImp(2,"Galaxy s22", "Samsung new overpriced smartphone", "smartphone");
-        when(products.getProduct(1)).thenReturn( p1);
-        when(products.getProduct(2)).thenReturn( p2);
         inv.addProduct("Iphone13", "Apples new overpriced smartphone", "smartphone",3499.90, 100);
         inv.addProduct("Galaxy s22", "Samsung new overpriced smartphone", "smartphone",2999.90, 0);
     }

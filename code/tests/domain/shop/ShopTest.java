@@ -26,6 +26,8 @@ public class ShopTest {
     Shop shop;
     int appleID;
     int orangeID;
+    Product p1;
+    Product p2;
 
     @BeforeEach
     void setUp() throws IncorrectIdentification, BlankDataExc {
