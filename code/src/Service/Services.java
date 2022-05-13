@@ -103,7 +103,15 @@ public class Services {
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
     }
-    //Make:nitay BlankDataExc  BlankDataExc, IncorrectIdentification
+    //Make:nitay
+
+    /***
+     * Create a store object to represent the relevant store in the app
+     * @param description, description of the created shop
+     * @param username
+     * @param shopName
+     * @return
+     */
     public ResponseT<PresentationShop> CreateShop(String description ,String username, String shopName) {
         try {
             Shop output = marketSystem.createShop(description ,shopName, null, null, username);
@@ -190,6 +198,14 @@ public class Services {
     }
 
     //Make:nitay
+
+    /***
+     * Query for certain products in the relevant store.
+     * @param userName
+     * @param shopID
+     * @param f
+     * @return
+     */
     public List<ResponseT<PresentationProduct>> GetProductInfoInShop(String userName , int shopID, Filter<Product> f)
     {
         try {
@@ -209,6 +225,14 @@ public class Services {
 
 
     //make:shahar
+
+    /**
+     * Query for certain products by name in the relevant store
+     * @param userName
+     * @param pName
+     * @param f
+     * @return
+     */
     public List<ResponseT<PresentationProduct>> SearchProductByName(String userName ,String pName, Filter<Product> f) //done
     {
         try {
@@ -225,6 +249,14 @@ public class Services {
     }
 
     //make:shahar
+
+    /**
+     * Query for certain products by keyword in the relevant store
+     * @param userName
+     * @param keyword
+     * @param f
+     * @return
+     */
     public List<ResponseT<PresentationProduct>> SearchProductByKeyword(String userName ,String keyword, Filter<Product> f)
     {
         try {
@@ -241,6 +273,15 @@ public class Services {
     }
 
     //make: shahar
+
+    /**
+     * Add a product to the user's shopping cart (member or guest)
+     * @param userName - user identifier
+     * @param shopID - shop identifier
+     * @param productId - product identifier
+     * @param amount
+     * @return
+     */
     public Response AddToShoppingCart(String userName, int shopID,int productId, int amount)
     {
         try {
@@ -259,6 +300,15 @@ public class Services {
     }
 
     //make:shahar
+
+    /**
+     * Edit a certain product quantity in the user's shopping cart
+     * @param userName - user identifier
+     * @param shopId - shop identifier
+     * @param productId - product identifier
+     * @param amount
+     * @return
+     */
     public Response EditShoppingCart(String userName, int shopId, int productId, int amount)
     {
         try {
@@ -345,6 +395,14 @@ public class Services {
     }
 
     //shay
+
+    /**
+     *
+     * @param username
+     * @param p
+     * @param shopID
+     * @return
+     */
     public ResponseT<PresentationProduct> ChangeProduct(String username, Product p, int shopID)
     {
         ShopController controller = ShopController.getInstance();
@@ -369,7 +427,15 @@ public class Services {
     }
 
     //Make:nitay
-    //done IncorrectIdentification, BlankDataExc
+    //done
+
+    /**
+     * Appoint a new Shop owner
+     * @param key - shop identifier
+     * @param targetUser - Passive user identifier
+     * @param userName - Active user identifier
+     * @return
+     */
     public Response AppointNewShopOwner(int key,String targetUser, String userName)
     {
         try {
@@ -386,7 +452,15 @@ public class Services {
         }
     }
     //Make:nitay
-    //done  IncorrectIdentification, BlankDataExc
+    //done
+
+    /**
+     * Appoint a new Shop manager
+     * @param key - shop identifier
+     * @param targetUser - Passive user identifier
+     * @param userName - Active user identifier
+     * @return
+     */
     public Response AppointNewShopManager(int key,String targetUser, String userName) {
         try {
             String s = marketSystem.AppointNewShopManager(key, targetUser, userName);
@@ -400,7 +474,15 @@ public class Services {
         }
     }
     //Make:nitay
-    //done  IncorrectIdentification, BlankDataExc
+
+    /**
+     * add a specific Shop manager's permission
+     * @param key - shop identifier
+     * @param shopManagersPermissionsList - wanted permissions to add
+     * @param targetUser - the manager who receives the permissions identifier.
+     * @param ownerID - the user who gives  the permissions identifier.
+     * @return
+     */
     public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID) {
         try {
             String s = marketSystem.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
@@ -416,7 +498,15 @@ public class Services {
         }
     }
     //Make:nitay
-    //done  IncorrectIdentification, BlankDataExc
+
+    /**
+     * Remove a specific Shop manager's permission
+     * @param key
+     * @param shopManagersPermissionsList
+     * @param managerUser
+     * @param ownerID
+     * @return
+     */
     public Response RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID)
     {
         try {
@@ -433,7 +523,14 @@ public class Services {
         }
     }
     //Make:nitay
-    //done  IncorrectIdentification, BlankDataExc
+    //done
+
+    /**
+     * Close an active shop
+     * @param shopId
+     * @param userName
+     * @return
+     */
     public Response CloseShop(int shopId,String userName) {
         try {
             String s = marketSystem.CloseShop(shopId, userName);
@@ -441,16 +538,17 @@ public class Services {
                 return new Response(s);
             return null;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
-        catch (BlankDataExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
     }
+
+    /**
+     * Make a closed shop -> active
+     * @param shopId
+     * @param userName
+     * @return
+     */
     public Response OpenShop(int shopId,String userName) {
         try {
             String s = marketSystem.OpenShop(shopId, userName);
@@ -458,17 +556,19 @@ public class Services {
                 return new Response(s);
             return null;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
-        catch (BlankDataExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
     }
-    //Make:nitay  IncorrectIdentification
+    //Make:nitay
+
+    /**
+     * Query for information about the relevant shop's employees
+     * @param shopName
+     * @param f
+     * @param userName
+     * @return
+     */
     public List<ResponseT<PresentationUser>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName)
     {
         List<ResponseT<PresentationUser>> responseTList = new LinkedList<>();
@@ -484,7 +584,15 @@ public class Services {
             return responseTList;
         }
     }
-    //Make:nitay  IncorrectIdentification
+    //Make:nitay
+
+    /**
+     * Query for store purchase history
+     * @param shopName
+     * @param f
+     * @param userName
+     * @return
+     */
     public List<ResponseT<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName)
     {
         List<ResponseT<Order>> output = new LinkedList<>();
@@ -520,35 +628,42 @@ public class Services {
             if(marketSystem.deleteUser(usernames))
                 return new Response();
         }
-        catch (BlankDataExc blankDataExc){
+        catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc){
             return new Response(blankDataExc.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         }
         return null;
     }
-    //Make:nitay  InvalidAuthorizationException, IncorrectIdentification, BlankDataExc
+    //Make:nitay
+
+    /**
+     * Remove a product from the shop inventory
+     * @param productId
+     * @param username
+     * @param shopname
+     * @return
+     */
     public Response RemoveProductFromShopInventory(int productId, String username, int shopname)
     {
         int removedProductID;
         try {
             removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopname);
-        }catch (InvalidAuthorizationException iae){
+        }catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc iae){
             return new Response(iae.getLocalizedMessage());
-        }
-        catch (BlankDataExc blankDataExc){
-            return new Response(blankDataExc.getLocalizedMessage());
-        }
-        catch (IncorrectIdentification incorrectIdentification){
-            return new Response(incorrectIdentification.getLocalizedMessage());
         }
         if(removedProductID != -1)
             return new Response();
         return null;
     }
 
-    //make:shahar   InvalidAuthorizationException, IncorrectIdentification
+    //make:shahar
+
+    /**
+     * Query for store purchase history
+     * @param userName
+     * @param f
+     * @param shopID
+     * @return
+     */
     public List<ResponseT<Order>> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID){
         List<ResponseT<Order>> output = new LinkedList<>();
         try {
@@ -556,18 +671,22 @@ public class Services {
              for(Order o :result)
                  output.add(new ResponseT<>(o));
         }
-        catch (InvalidAuthorizationException iae){
+        catch (InvalidAuthorizationException | IncorrectIdentification iae){
             output.add(new ResponseT(iae.getLocalizedMessage()));
-            return output;
-        }
-        catch (IncorrectIdentification incorrectIdentification){
-            output.add(new ResponseT(incorrectIdentification.getLocalizedMessage()));
             return output;
         }
         return output;
     }
 
-    //make:shahar   InvalidAuthorizationException, IncorrectIdentification
+    //make:shahar
+
+    /**
+     * Query for the user's purchase history
+     * @param userName
+     * @param f
+     * @param userNames
+     * @return
+     */
     public List<ResponseT<Order>> getOrderHistoryForUser(String userName, Filter<Order> f, List<String>  userNames){
         List<ResponseT<Order>> output= new LinkedList<>();
         List<Order> result;
@@ -586,6 +705,13 @@ public class Services {
         }
         return output;
     }
+
+    /**
+     * Remove registered user from the Market if it has no permissions
+     * @param usernames
+     * @param targetUser
+     * @return
+     */
     public Response DismissalUserBySystemManager(String usernames,String targetUser) {
         try {
             if(marketSystem.DismissalUser(usernames,targetUser))
@@ -603,7 +729,13 @@ public class Services {
         }
     }
 
-    //BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException
+    /**
+     * Remove a store owner's permission in a particular store
+     * @param usernames
+     * @param targetUser
+     * @param shop
+     * @return
+     */
     public Response DismissalOwnerByOwner(String usernames,String targetUser,int shop) {
         try {
             if(marketSystem.DismissalOwner(usernames,targetUser,shop))
@@ -624,6 +756,12 @@ public class Services {
         }
     }
 
+    /**
+     * System manager query for user's Info
+     * @param f
+     * @param userName
+     * @return
+     */
     public List<ResponseT<PresentationUser>> RequestUserInfo(SearchUserFilter f, String userName)
     {
         List<ResponseT<PresentationUser>> responseTList = new LinkedList<>();
