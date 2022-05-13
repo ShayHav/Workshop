@@ -220,14 +220,14 @@ public class User {
 //        //return false;
 //    }
 
-//    private boolean isAppointedMeOwner(User user, String id) {
-//        List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
-//        for (OwnerAppointment run : Appointmentusers) {
-//            if (run.getAppointed().getUserName().equals(id))
-//                return true;
-//        }
-//        return false;
-//    }
+    private boolean isAppointedMeOwner(User user, String id) {
+        List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
+        for (OwnerAppointment run : Appointmentusers) {
+            if (run.getAppointed().getUserName().equals(id))
+                return true;
+        }
+        return false;
+    }
 //
 //    public void appointManager(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
 //        List<Role> useRolelist = roleList.get(shopName);
@@ -415,10 +415,22 @@ public class User {
     }
 
     public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
-        if(isSystemManager){
+        if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
             return true;
+        }
+        errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not system manager: %s",targetUser));
+        throw new InvalidSequenceOperationsExc("");
+    }
+
+    public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+        if(loggedIn){
+            if(isAppointedMeOwner(this,targetUser)) {
+                ControllersBridge.getInstance().DismissalOwner(userName, targetUser, shop);
+                eventLogger.logMsg(Level.INFO, String.format("user has been dismiss: %s", targetUser));
+                return true;
+            }
         }
         errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not system manager: %s",targetUser));
         throw new InvalidSequenceOperationsExc("");

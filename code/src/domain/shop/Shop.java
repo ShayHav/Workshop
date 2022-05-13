@@ -404,4 +404,12 @@ public class Shop {
     public boolean canBeDismiss(String targetUser) {
         return isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser);
     }
+
+    public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc {
+        if(ShopOwners.containsKey(userName) & ShopOwners.containsKey(targetUser)){
+            if (shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) //TODO: need to check if OK.
+                return true;
+        }
+        throw new InvalidSequenceOperationsExc();
+    }
 }

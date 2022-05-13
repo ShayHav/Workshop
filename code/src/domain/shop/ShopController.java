@@ -256,4 +256,8 @@ public class ShopController {
         }
         return true;
     }
+
+    public boolean DismissalOwner(String userName, String targetUser, int shop) throws ShopNotFoundException, InvalidSequenceOperationsExc {
+        return getShop(shop).DismissalOwner(userName,targetUser);
+    }
 }

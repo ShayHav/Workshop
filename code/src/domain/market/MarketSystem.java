@@ -376,4 +376,12 @@ public class MarketSystem {
             throw new BlankDataExc();
         return  userController.getUser(usernames).DismissalUser(targetUser);
     }
+
+    public boolean DismissalOwner(String usernames, String targetUser, int shop) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException {
+        if(usernames==null)
+            throw new BlankDataExc();
+        if(targetUser== null)
+            throw new BlankDataExc();
+        return  userController.getUser(usernames).DismissalOwner(targetUser,shop);
+    }
 }

@@ -582,10 +582,11 @@ public class Services {
         }
         return output;
     }
-    public Response DismissalUser(String usernames,String targetUser) {
+    public Response DismissalUserBySystemManager(String usernames,String targetUser) {
         try {
             if(marketSystem.DismissalUser(usernames,targetUser))
                 return new Response();
+            return new ResponseT(null,"");
         }
         catch (BlankDataExc blankDataExc){
             return new Response(blankDataExc.getLocalizedMessage());
@@ -596,6 +597,26 @@ public class Services {
         catch ( IncorrectIdentification incorrectIdentification){
             return new Response(incorrectIdentification.getLocalizedMessage());
         }
-        return null;
+    }
+
+    //BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException
+    public Response DismissalOwnerByOwner(String usernames,String targetUser,int shop) {
+        try {
+            if(marketSystem.DismissalOwner(usernames,targetUser,shop))
+                return new Response();
+            return new ResponseT(null,"");
+        }
+        catch (BlankDataExc blankDataExc){
+            return new Response(blankDataExc.getLocalizedMessage());
+        }
+        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        }
+        catch ( IncorrectIdentification incorrectIdentification){
+            return new Response(incorrectIdentification.getLocalizedMessage());
+        }
+        catch (ShopNotFoundException shopNotFoundException){
+            return new Response(shopNotFoundException.getLocalizedMessage());
+        }
     }
 }
