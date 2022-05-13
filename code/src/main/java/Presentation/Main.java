@@ -1,11 +1,14 @@
 package Presentation;
 
+import Presentation.Model.PresentationProduct;
+import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
+import domain.shop.Product;
 import domain.shop.Shop;
 import domain.shop.ShopInfo;
 import domain.user.User;
@@ -23,68 +26,65 @@ public class Main {
     static final Services services = Services.getInstance();
 
     public static void main(String[] args) {
-        services.StartMarket(new PaymentServiceImp(),new SupplyServiceImp(), "Admin","Admin");
-        Javalin app =Javalin.create(JavalinConfig::enableWebjars).start(port);
+        services.StartMarket(new PaymentServiceImp(), new SupplyServiceImp(), "Admin", "Admin");
+        Javalin app = Javalin.create(JavalinConfig::enableWebjars).start(port);
 
-        app.before(ctx->{
-            if(ctx.cookieStore("uid") == null){
+        app.before(ctx -> {
+            if (ctx.cookieStore("uid") == null) {
                 ResponseT<User> response = services.EnterMarket();
-                if(response.isErrorOccurred()){
+                if (response.isErrorOccurred()) {
                     ctx.status(503);
-                    ctx.render("errorPage.jte", Collections.singletonMap("errorMessage" ,response.errorMessage));
-                }
-                else {
+                    ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+                } else {
                     PresentationUser user = new PresentationUser(response.getValue());
                     ctx.cookieStore("uid", user.getUsername());
                 }
             }
         });
 
-        app.post("/users" , ctx ->{
+        app.post("/users", ctx -> {
             //TODO get info of user from form and send to service
         });
 
-        app.get("/", ctx ->{
+        app.get("/", ctx -> {
             String username = ctx.cookieStore("uid");
             List<ResponseT<Shop>> responses = services.GetShopsInfo(username, new SearchShopFilter());
-            List<Shop> shops = new ArrayList<>();
-            for(ResponseT<Shop> response : responses){
-                if(response.isErrorOccurred()){
+            List<PresentationShop> shops = new ArrayList<>();
+            for (ResponseT<Shop> response : responses) {
+                if (response.isErrorOccurred()) {
                     ctx.status(503);
-                    ctx.render("errorPage.jte",Collections.singletonMap("errorMessage", response.errorMessage));
+                    ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
                 }
-                shops.add(response.getValue());
+                shops.add(new PresentationShop(response.getValue()));
             }
-            PresentationUser user = getUser(username,ctx);
-            ctx.render("index.jte", Map.of("shops", shops, "user",user));
+            PresentationUser user = getUser(ctx);
+            ctx.render("index.jte", Map.of("shops", shops, "user", user));
         });
 
-        app.get("users/login", ctx->{
-            String username = ctx.cookieStore("uid");
-            PresentationUser user = getUser(username,ctx);
-            ctx.render("login.jte", Map.of("user",user));
+        app.get("users/login", ctx -> {
+            PresentationUser user = getUser(ctx);
+            ctx.render("login.jte", Map.of("user", user));
         });
 
-        app.post("/users/login", ctx->{
+        app.post("/users/login", ctx -> {
             String username = ctx.formParam("username");
             String password = ctx.formParam("password");
-            ResponseT<User> response = services.Login(username,password);
-            if(response.isErrorOccurred()){
+            ResponseT<User> response = services.Login(username, password);
+            if (response.isErrorOccurred()) {
                 int errorCode = 401;
                 ctx.status(errorCode);
-                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage,"status",errorCode));
-            }
-            else {
+                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", errorCode));
+            } else {
                 ctx.cookieStore("uid", response.getValue().getUserName());
                 ctx.redirect("/");
             }
         });
 
-        app.ws("/users/new", ws ->{
-            ws.onConnect(ctx->{
+        app.ws("/users/new", ws -> {
+            ws.onConnect(ctx -> {
 
             });
-            ws.onMessage(ctx->{
+            ws.onMessage(ctx -> {
                 PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);
                 Response response = services.Register(requestedUser.getUsername(), requestedUser.getPassword());
                 ctx.send(response);
@@ -92,30 +92,56 @@ public class Main {
         });
 
         app.get("/users/new", ctx -> {
-            String username = ctx.cookieStore("uid");
-            PresentationUser user = getUser(username,ctx);
-            ctx.render("register.jte", Map.of("r_user",user));
+            PresentationUser user = getUser(ctx);
+            ctx.render("register.jte", Map.of("r_user", user));
         });
 
-        app.post("/users/{id}/logout", ctx->
+        app.post("/users/{id}/logout", ctx ->
         {
-           String username = ctx.pathParam("id");
-           ResponseT<User> guest = services.Logout(username);
-           if(guest.isErrorOccurred()){
-               ctx.status(418);
-               ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", guest.errorMessage));
-           }
-           ctx.cookieStore("uid", guest.getValue().getUserName());
+            String username = ctx.pathParam("id");
+            ResponseT<User> guest = services.Logout(username);
+            if (guest.isErrorOccurred()) {
+                ctx.status(418);
+                ctx.render("errorPage.jte", Map.of("errorMessage", guest.errorMessage, "status", 418));
+            }
+            ctx.cookieStore("uid", guest.getValue().getUserName());
             ctx.redirect("/");
         });
 
+        app.post("/shops", ctx -> {
+            String shopName = ctx.formParam("shopName");
+            //TODO: also send desc
+            String description = ctx.formParam("description");
+            String username = ctx.cookieStore("uid");
+            ResponseT<Shop> response = services.CreateShop(username, shopName);
+            if (response.isErrorOccurred()) {
+                ctx.status(418);
+                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 418));
+            } else {
+                ctx.redirect("/");
+            }
+        });
+
+        app.get("/shops/{id}", ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            PresentationUser user = getUser(ctx);
+            ResponseT<Shop> response = services.GetShop(id);
+            if (response.isErrorOccurred()) {
+                ctx.status(400);
+                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+                return;
+            }
+            PresentationShop shop = new PresentationShop(response.getValue());
+            ctx.render("shop.jte",Map.of("user", user,"shop", shop));
+        });
     }
 
-    public static PresentationUser getUser(String username, Context ctx){
+    public static PresentationUser getUser(Context ctx) {
+        String username = ctx.cookieStore("uid");
         ResponseT<User> user = services.GetUser(username);
-        if(user.isErrorOccurred()){
+        if (user.isErrorOccurred()) {
             ctx.status(503);
-            ctx.render("errorPage.jte",Collections.singletonMap("errorMessage", user.errorMessage));
+            ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", user.errorMessage));
         }
         return new PresentationUser(user.getValue());
     }

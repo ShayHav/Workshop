@@ -25,7 +25,7 @@ public class SearchShopFilter implements Filter<Shop> {
 
     @Override
     public List<Shop> applyFilter(List<Shop> shops) {
-        EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filer for shops");
+        EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filter for shops");
         if(name != null){
             shops = shops.stream().filter(shop -> shop.getName().equals(name)).collect(Collectors.toList());
         }

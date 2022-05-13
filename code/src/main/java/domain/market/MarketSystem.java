@@ -124,12 +124,12 @@ public class MarketSystem {
     public Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification {
         if(name == null )
             throw new BlankDataExc("name");
-        if(discountPolicy == null )
-            throw new BlankDataExc("discountPolicy");
+//        if(discountPolicy == null )
+//            throw new BlankDataExc("discountPolicy");
         if(foundId == null )
             throw new BlankDataExc("foundId");
-        if(purchasePolicy == null )
-            throw new BlankDataExc("purchasePolicy");
+//        if(purchasePolicy == null )
+//            throw new BlankDataExc("purchasePolicy");
         User shopFounder = getUser(foundId);
         return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, shopFounder);
     }

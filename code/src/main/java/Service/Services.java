@@ -46,6 +46,15 @@ public class Services {
         }
     }
 
+    public ResponseT<Shop> GetShop(int shopID){
+        try{
+            Shop s = marketSystem.getShop(shopID);
+            return new ResponseT<>(s);
+        } catch (ShopNotFoundException e) {
+            return new ResponseT<>(e.getMessage());
+        }
+    }
+
     //General Guest-Visitor
     //Make:nitay InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification
     public ResponseT<User> Login(String username, String pw) {
