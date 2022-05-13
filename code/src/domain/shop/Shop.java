@@ -22,6 +22,7 @@ public class Shop {
     private final int shopID;
     private int rank;
     private User ShopFounder;
+    private String description;
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
@@ -47,6 +48,10 @@ public class Shop {
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
@@ -396,4 +401,7 @@ public class Shop {
         return list;
     }
 
+    public boolean canBeDismiss(String targetUser) {
+        return isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser);
+    }
 }

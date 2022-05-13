@@ -1,5 +1,6 @@
 package domain;
 
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.shop.ShopController;
@@ -37,5 +38,11 @@ public class ControllersBridge {
 
     public List<Order> getOrderHistoryForShops(List<Integer> shopId){
         return ShopController.getInstance().getOrderHistoryForShops(shopId);
+    }
+
+    public void DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
+        if(ShopController.getInstance().canBeDismiss(targetUser))
+            UserController.getInstance().deleteUserName(targetUser);
+        throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s",targetUser));
     }
 }

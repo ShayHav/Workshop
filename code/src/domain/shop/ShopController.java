@@ -34,11 +34,12 @@ public class ShopController {
         return shopCounter;
     }
 
-    public synchronized Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
+    public synchronized Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
         Shop newShop;
         if (isUniqueName(name)) {
             shopCounter++;
             newShop = new Shop(name, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+            newShop.setDescription(description);
             shopList.put(shopCounter, newShop);
             eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
             return newShop;
@@ -137,6 +138,7 @@ public class ShopController {
         return s.getName();
     }
 
+    //TEST METHOD
     public void DeleteShops() {
         shopList = new HashMap<>();
     }
@@ -154,7 +156,7 @@ public class ShopController {
         return productId;
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userName) {
         Shop s;
         try {
             s = getShop(key);
@@ -162,7 +164,7 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser, id)) {
+            if (s.removePermissions(shopManagersPermissionsList, tragetUser, userName)) {
                 eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
                 return "Shop Manager Permissions Removed";
             }
@@ -170,7 +172,7 @@ public class ShopController {
                 return null;
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userName) {
         Shop s;
         try {
             s = getShop(key);
@@ -178,7 +180,7 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        if (s.addPermissions(shopManagersPermissionsList, tragetUser, id)) {
+        if (s.addPermissions(shopManagersPermissionsList, tragetUser, userName)) {
             eventLogger.logMsg(Level.INFO, "AddShopMangerPermissions succeeded");
             return "ShopManagerPermissionsAdd";
         }
@@ -186,7 +188,7 @@ public class ShopController {
             return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
+    public String AppointNewShopManager(int key, String targetUser, String userName) throws IncorrectIdentification, BlankDataExc {
         Shop s;
         try {
             s = getShop(key);
@@ -195,27 +197,27 @@ public class ShopController {
             return null;
         }
         eventLogger.logMsg(Level.INFO, "AppointNewShopManager succeeded");
-        return s.AppointNewShopManager(targetUser, userId);
+        return s.AppointNewShopManager(targetUser, userName);
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
-        Shop s;
-        try {
-            s = getShop(key);
-        }catch (ShopNotFoundException snfe){
-            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
-        }
-        synchronized (this) {
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getId(), id)) {
-                eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
-                return "ShopManagerPermissionsRemove";
-            }
-            else return null;
-        }
-    }
+//    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String userName) {
+//        Shop s;
+//        try {
+//            s = getShop(key);
+//        }catch (ShopNotFoundException snfe){
+//            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+//            return null;
+//        }
+//        synchronized (this) {
+//            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getUserName(), userName)) {
+//                eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
+//                return "ShopManagerPermissionsRemove";
+//            }
+//            else return null;
+//        }
+//    }
 
-    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
+    public String AppointNewShopOwner(int key, String targetUser, String userName) throws IncorrectIdentification, BlankDataExc {
         Shop s;
         try {
             s = getShop(key);
@@ -224,7 +226,7 @@ public class ShopController {
             return null;
         }
         eventLogger.logMsg(Level.INFO, "AppointNewShopOwner succeeded");
-        return s.AppointNewShopOwner(targetUser, userId);
+        return s.AppointNewShopOwner(targetUser, userName);
     }
 
     public List<Order> getOrderHistoryForShops(List<Integer> shopId) {
@@ -247,4 +249,11 @@ public class ShopController {
         return orders;
     }
 
+    public boolean canBeDismiss(String targetUser) {
+        for (Map.Entry<Integer, Shop> entry : shopList.entrySet()) {
+            if (!entry.getValue().canBeDismiss(targetUser))
+                return false;
+        }
+        return true;
+    }
 }

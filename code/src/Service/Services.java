@@ -100,9 +100,9 @@ public class Services {
         }
     }
     //Make:nitay BlankDataExc  BlankDataExc, IncorrectIdentification
-    public ResponseT<PresentationShop> CreateShop(String username, String shopName) {
+    public ResponseT<PresentationShop> CreateShop(String description ,String username, String shopName) {
         try {
-            Shop output = marketSystem.createShop(shopName, null, null, username);
+            Shop output = marketSystem.createShop(description ,shopName, null, null, username);
             if (output != null)
                 return new ResponseT<>(new PresentationShop(output));
             else return new ResponseT<>();
@@ -407,6 +407,8 @@ public class Services {
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
+            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
     //Make:nitay
@@ -487,10 +489,9 @@ public class Services {
             if (orders != null)
                 for(Order order:orders)
                     output.add(new ResponseT<>(order));
-
             return output;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | InvalidSequenceOperationsExc incorrectIdentification){
             output.add(new ResponseT<>(null,incorrectIdentification.getLocalizedMessage()));
             return output;
         }
@@ -580,5 +581,21 @@ public class Services {
             return output;
         }
         return output;
+    }
+    public Response DismissalUser(String usernames,String targetUser) {
+        try {
+            if(marketSystem.DismissalUser(usernames,targetUser))
+                return new Response();
+        }
+        catch (BlankDataExc blankDataExc){
+            return new Response(blankDataExc.getLocalizedMessage());
+        }
+        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        }
+        catch ( IncorrectIdentification incorrectIdentification){
+            return new Response(incorrectIdentification.getLocalizedMessage());
+        }
+        return null;
     }
 }

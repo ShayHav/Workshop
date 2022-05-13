@@ -136,6 +136,7 @@ public class User {
         us = null;
     }
 
+    /*
     public void closeShop(int shopId) throws InvalidSequenceOperationsExc {
         List<Role> useRoleList = roleList.get(shopId);
         if (useRoleList!=null) {
@@ -160,6 +161,7 @@ public class User {
             eventLogger.logMsg(Level.WARNING, String.format("attempt to close shop failed shop id: %s , user id:%s", shop, id));
         }
     }
+     */
     //TODO: not in use
     /*
     public void createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy) throws BlankDataExc, IncorrectIdentification {
@@ -177,104 +179,104 @@ public class User {
 
 
 
-    private void memberCreateShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws BlankDataExc, IncorrectIdentification {
-        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);  //TODO: new class
-    }
+//    private void memberCreateShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws BlankDataExc, IncorrectIdentification {
+//        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);  //TODO: new class
+//    }
 
 
 
-    public void appointOwner(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
-        List<Role> useRolelist = roleList.get(shopName);
-        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
-            memberAppointOwner(userId, shopName, this.userName, ownerAppointmentList);
-        else
-            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner with out appropriate role by user: %s", userName));
-    }
+//    public void appointOwner(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
+//        List<Role> useRolelist = roleList.get(shopName);
+//        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
+//            memberAppointOwner(userId, shopName, this.userName, ownerAppointmentList);
+//        else
+//            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner with out appropriate role by user: %s", userName));
+//    }
 
 
-    private void memberAppointOwner(String targetUser, int shop, String id, List<OwnerAppointment> ownerAppointmentList) throws IncorrectIdentification, BlankDataExc {
-        Shop shop1;
-        try{
-            shop1 = getShop(shop);
-        }catch (ShopNotFoundException snfe){
-            errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-            return;
-        }
-        User user = getUser(targetUser);
-        if (shop1.isFounder(id) || shop1.isOwner(id)) {
-            user.addRole(shop1.getShopID(), Role.ShopOwner);
-            shop1.AppointNewShopOwner(targetUser, id);
-            if (isAppointedMeOwner(user, id)) {
-                OwnerAppointment newAppointment = new OwnerAppointment(shop1, id, user);
-                ownerAppointmentList.add(newAppointment);
-                eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %s , appointedId: %s , ShopId %s}", id, user.getUserName(), shop));
-                //return true;
-            }
-            else
-                errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
-        }
-        else
-            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
-        //return false;
-    }
+//    private void memberAppointOwner(String targetUser, int shop, String id, List<OwnerAppointment> ownerAppointmentList) throws IncorrectIdentification, BlankDataExc {
+//        Shop shop1;
+//        try{
+//            shop1 = getShop(shop);
+//        }catch (ShopNotFoundException snfe){
+//            errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
+//            return;
+//        }
+//        User user = getUser(targetUser);
+//        if (shop1.isFounder(id) || shop1.isOwner(id)) {
+//            user.addRole(shop1.getShopID(), Role.ShopOwner);
+//            shop1.AppointNewShopOwner(targetUser, id);
+//            if (isAppointedMeOwner(user, id)) {
+//                OwnerAppointment newAppointment = new OwnerAppointment(shop1, id, user);
+//                ownerAppointmentList.add(newAppointment);
+//                eventLogger.logMsg(Level.INFO, String.format("appointOwner = {appointeeId: %s , appointedId: %s , ShopId %s}", id, user.getUserName(), shop));
+//                //return true;
+//            }
+//            else
+//                errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
+//        }
+//        else
+//            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
+//        //return false;
+//    }
 
-    private boolean isAppointedMeOwner(User user, String id) {
-        List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
-        for (OwnerAppointment run : Appointmentusers) {
-            if (run.getAppointed().getUserName().equals(id))
-                return true;
-        }
-        return false;
-    }
+//    private boolean isAppointedMeOwner(User user, String id) {
+//        List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
+//        for (OwnerAppointment run : Appointmentusers) {
+//            if (run.getAppointed().getUserName().equals(id))
+//                return true;
+//        }
+//        return false;
+//    }
+//
+//    public void appointManager(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
+//        List<Role> useRolelist = roleList.get(shopName);
+//        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
+//            memberAppointManager(userId, shopName, this.userName);
+//        else
+//            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
+//    }
 
-    public void appointManager(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
-        List<Role> useRolelist = roleList.get(shopName);
-        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
-            memberAppointManager(userId, shopName, this.userName);
-        else
-            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
-    }
 
+//    private void memberAppointManager(String targetUser, int shop, String id/*, List<ManagerAppointment> managerAppointmentList*/) throws IncorrectIdentification, BlankDataExc {
+//        Shop shop1;
+//        try{
+//            shop1 = getShop(shop);
+//        }catch (ShopNotFoundException snfe){
+//            errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
+//            return;
+//        }
+//        User user1 = getUser(targetUser);
+//        synchronized (this) {
+//            if (shop1.isOwner(id)) {
+//                user1.addRole(shop, Role.ShopManager);
+//                shop1.AppointNewShopManager(targetUser, id);
+//                if (isAppointedMeManager(user1, id)) {
+//                    ManagerAppointment newAppointment = new ManagerAppointment(shop1, id, user1);
+//                    managerAppointeeList.add(newAppointment);
+//                    eventLogger.logMsg(Level.INFO, String.format("appointManager = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
+//                    //return true;
+//                } else
+//                    errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}", id, targetUser, shop));
+//            } else
+//                errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager without permissions = {appointeeId: %s , appointedId: %s , ShopId %d}", id, targetUser, shop));
+//        }
+//        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+//        //return false;
+//    }
 
-    private void memberAppointManager(String targetUser, int shop, String id/*, List<ManagerAppointment> managerAppointmentList*/) throws IncorrectIdentification, BlankDataExc {
-        Shop shop1;
-        try{
-            shop1 = getShop(shop);
-        }catch (ShopNotFoundException snfe){
-            errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-            return;
-        }
-        User user1 = getUser(targetUser);
-        synchronized (this) {
-            if (shop1.isOwner(id)) {
-                user1.addRole(shop, Role.ShopManager);
-                shop1.AppointNewShopManager(targetUser, id);
-                if (isAppointedMeManager(user1, id)) {
-                    ManagerAppointment newAppointment = new ManagerAppointment(shop1, id, user1);
-                    managerAppointeeList.add(newAppointment);
-                    eventLogger.logMsg(Level.INFO, String.format("appointManager = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
-                    //return true;
-                } else
-                    errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager without permissions = {appointeeId: %d , appointedId: %d , ShopId %d}", id, targetUser, shop));
-            } else
-                errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager without permissions = {appointeeId: %s , appointedId: %s , ShopId %d}", id, targetUser, shop));
-        }
-        errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
-        //return false;
-    }
-
-    private boolean isAppointedMeManager(User user, String id) {
-        List<ManagerAppointment> Appointmentusers = user.getManagerAppointeeList();
-        for (ManagerAppointment run : Appointmentusers) {
-            if (run.getAppointed().getUserName().equals(id))
-                return true;
-        }
-        return false;
-    }
-
-    private User getUser(String targetUser) throws IncorrectIdentification, BlankDataExc {
-        return ControllersBridge.getInstance().getUser(targetUser); //TODO: new class
-    }
+//    private boolean isAppointedMeManager(User user, String id) {
+//        List<ManagerAppointment> Appointmentusers = user.getManagerAppointeeList();
+//        for (ManagerAppointment run : Appointmentusers) {
+//            if (run.getAppointed().getUserName().equals(id))
+//                return true;
+//        }
+//        return false;
+//    }
+//
+//    private User getUser(String targetUser) throws IncorrectIdentification, BlankDataExc {
+//        return ControllersBridge.getInstance().getUser(targetUser); //TODO: new class
+//    }
 
     private Shop getShop(int shop) throws ShopNotFoundException {
         return ControllersBridge.getInstance().getShop(shop); //TODO: new class
@@ -369,10 +371,6 @@ public class User {
         return userCart.removeProductFromCart(shopID, productID);
     }
 
-    public void addManagerPermissions(String targetUser,String shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList) {
-
-    }
-
     public Map<Integer, List<Role>> getRoleList() {
         return roleList;
     }
@@ -416,49 +414,59 @@ public class User {
         return f.applyFilter(result);
     }
 
-
-    /**
-     * @param targetUser
-     * @param shop
-     * @param userId
-     * @param shopManagersPermissionsList
-     * @return
-     */
-    public boolean addManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
-        synchronized (this) {
-            Shop shop1;
-            try{
-                shop1 = getShop(shop);
-            }catch (ShopNotFoundException snfe){
-                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-                return false;
-            }
-            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
-            return shop1.addPermissions(shopManagersPermissionsList, targetUser, userId);
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
+        if(isSystemManager){
+            ControllersBridge.getInstance().DismissalUser(targetUser);
+            eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
+            return true;
         }
+        errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not system manager: %s",targetUser));
+        throw new InvalidSequenceOperationsExc("");
     }
 
-    public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
-        synchronized (this) {
-            Shop shop1;
-            try{
-                shop1 = getShop(shop);
-            }catch (ShopNotFoundException snfe){
-                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-                return false;
-            }
-            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
-            return shop1.removePermissions(shopManagersPermissionsList, targetUser, userId);
-        }
-    }
 
-    public boolean saveCart(Cart cart) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
-    }
-
-    public void requestInfoOnOfficials(Filter f) {
-        throw new UnsupportedOperationException();
-    }
+//    /**
+//     * @param targetUser
+//     * @param shop
+//     * @param userId
+//     * @param shopManagersPermissionsList
+//     * @return
+//     */
+//    public boolean addManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
+//        synchronized (this) {
+//            Shop shop1;
+//            try{
+//                shop1 = getShop(shop);
+//            }catch (ShopNotFoundException snfe){
+//                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
+//                return false;
+//            }
+//            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
+//            return shop1.addPermissions(shopManagersPermissionsList, targetUser, userId);
+//        }
+//    }
+//
+//    public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
+//        synchronized (this) {
+//            Shop shop1;
+//            try{
+//                shop1 = getShop(shop);
+//            }catch (ShopNotFoundException snfe){
+//                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
+//                return false;
+//            }
+//            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
+//            return shop1.removePermissions(shopManagersPermissionsList, targetUser, userId);
+//        }
+//    }
+//
+//    public boolean saveCart(Cart cart) {
+//        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+//    }
+//
+//    public void requestInfoOnOfficials(Filter f) {
+//        throw new UnsupportedOperationException();
+//    }
 
 }
 

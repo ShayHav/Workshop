@@ -117,7 +117,7 @@ public class MarketSystem {
         return UserController.getInstance().getUser(id);
     }
 
-    public Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification {
+    public Shop createShop(String description ,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification {
         if(name == null )
             throw new BlankDataExc("name");
         if(discountPolicy == null )
@@ -127,7 +127,7 @@ public class MarketSystem {
         if(purchasePolicy == null )
             throw new BlankDataExc("purchasePolicy");
         User shopFounder = getUser(foundId);
-        return ShopController.getInstance().createShop(name, discountPolicy, purchasePolicy, shopFounder);
+        return ShopController.getInstance().createShop(description ,name, discountPolicy, purchasePolicy, shopFounder);
     }
 
     public boolean register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc {
@@ -233,7 +233,7 @@ public class MarketSystem {
         return null;
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc {
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if(shopManagersPermissionsList == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: shopManagersPermissionsList");
             throw new BlankDataExc("shopManagersPermissionsList");
@@ -248,7 +248,7 @@ public class MarketSystem {
         }
         if(userController.isLogin(userID))
             return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, userID);
-        return null;
+        throw new InvalidSequenceOperationsExc();
     }
 
     public String AppointNewShopManager(int key, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc {
@@ -327,7 +327,7 @@ public class MarketSystem {
             return null;
     }
 
-    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userID) throws IncorrectIdentification {
+    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userID) throws IncorrectIdentification, InvalidSequenceOperationsExc {
         if(userController.isLogin(userID)) {
             Shop shop1;
             try{
@@ -338,8 +338,7 @@ public class MarketSystem {
             }
             return shop1.RequestInformationOfShopsSalesHistory(f, userID);
         }
-        else
-            return null;
+        else throw new InvalidSequenceOperationsExc();
     }
 
     public User EnterMarket() {
@@ -368,5 +367,13 @@ public class MarketSystem {
         if(userController.isLogin(userID))
             return userController.getOrderHistoryForUser(userID, f, userIDs);
         else return null;
+    }
+
+    public boolean DismissalUser(String usernames, String targetUser) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        if(usernames==null)
+            throw new BlankDataExc();
+        if(targetUser== null)
+            throw new BlankDataExc();
+        return  userController.getUser(usernames).DismissalUser(targetUser);
     }
 }
