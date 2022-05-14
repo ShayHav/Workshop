@@ -282,10 +282,14 @@ public class Services {
         Shop shop;
         try{
             shop = controller.getShop(shopID);
+            return new ResponseT<>(shop.getProduct(p.getId()) != null);
         }catch (ShopNotFoundException snfe){
             return new ResponseT<>(null,snfe.getLocalizedMessage());
+        } catch (ProductNotFoundException e) {
+            return new ResponseT<>(e.getMessage());
         }
-        return new ResponseT<>(shop.getProduct(p.getId()) != null);
+
+
     }
 
     //Shay
@@ -512,5 +516,14 @@ public class Services {
         catch (InvalidAuthorizationException | IncorrectIdentification e){
             return new ResponseList<>(e.getMessage());
         }
+    }
+
+    public ResponseT<Product> getProduct(String username, int shopId, int serialNumber){
+        try{
+            Product p = marketSystem.getProduct(username, shopId, serialNumber);
+            return new ResponseT<>(p);
+        }
+        catch (ShopNotFoundException | ProductNotFoundException e){
+            return new ResponseT<>(e.getMessage());
     }
 }

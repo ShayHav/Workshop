@@ -31,6 +31,8 @@ public class MarketSystem {
         externalConnector = new ExternalConnector();
     }
 
+
+
     private static class MarketHolder{
         private static final MarketSystem market = new MarketSystem();
     }
@@ -373,5 +375,10 @@ public class MarketSystem {
         if(userController.isLogin(userID))
             return userController.getOrderHistoryForUser(userID, f, userIDs);
         else return null;
+    }
+
+    public Product getProduct(String username, int shopId, int serialNumber) throws ShopNotFoundException, ProductNotFoundException {
+        Shop shop = ShopController.getInstance().getShop(shopId);
+        return shop.getProduct(serialNumber);
     }
 }

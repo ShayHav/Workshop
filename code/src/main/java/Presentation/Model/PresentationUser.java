@@ -41,4 +41,8 @@ public class PresentationUser {
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
+
+    public boolean hasInventoryPermission(){
+        throw new UnsupportedOperationException("to be done");
+    }
 }

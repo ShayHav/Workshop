@@ -1,6 +1,6 @@
 @param Presentation.Model.PresentationProduct product
 @param Presentation.Model.PresentationUser user
-
+@param int shopId
 @template.navBar(user = user, title = product.name)
 <main class="container align-content-center">
     <div class="container col-5 mt-5 border">
@@ -26,16 +26,11 @@
                 </svg></p>
             <a href="/users/${user.getUsername()}/addToCart/?item=${product.serialNumber}" class="btn btn-success">Add To Cart</a>
         </div>
-    </div>
-    <div class="container col-4 mt-3 border-top">
-        <div class="container align-content-center mt-3 col-6">
+        @if(user.hasInventoryPermission())
             <div class="container">
-                <h2 class="fs-5 mb-3">New to Market?</h2>
+                <a href="/shops/${shopId}/${product.serialNumber}" class="btn btn-info">Edit</a>
             </div>
-            <div class="container ps-6">
-                <a href="/users/new" class="btn btn-warning">Register</a>
-            </div>
-        </div>
+        @endif
     </div>
 </main>
 </body>

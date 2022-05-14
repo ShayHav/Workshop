@@ -127,6 +127,20 @@ public class Main {
             PresentationShop shop = new PresentationShop(response.getValue());
             ctx.render("shop.jte", Map.of("user", user, "shop", shop));
         });
+
+        app.get("/shops/{shopID}/{serialNumber}", ctx->{
+            int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
+            int serialNumber = ctx.pathParamAsClass("serialNumber", Integer.class).get();
+            PresentationUser user = getUser(ctx);
+            ResponseT<Product> response =  services.getProduct(user.getUsername(),shopID, serialNumber);
+            if(response.isErrorOccurred()){
+               ctx.status(400);
+               ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+               return;
+            }
+            //TODO get permission for user in the shop
+            ctx.render("product.jte", Map.of("user", user, "product", response.getValue(), "shopId", shopID));
+        });
     }
 
     public static PresentationUser getUser(Context ctx) {
