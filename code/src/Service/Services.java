@@ -748,7 +748,7 @@ public class Services {
              for(Order o :result)
                  output.add(new ResponseT<>(o));
         }
-        catch (InvalidAuthorizationException | IncorrectIdentification iae){
+        catch (InvalidAuthorizationException | IncorrectIdentification | ShopNotFoundException iae){
             output.add(new ResponseT(iae.getLocalizedMessage()));
             return output;
         }

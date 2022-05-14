@@ -230,7 +230,12 @@ public class ShopController {
         return s.AppointNewShopOwner(targetUser, userName);
     }
 
-    public List<Order> getOrderHistoryForShops(List<Integer> shopId) {
+    /**
+     *
+     * @param shopId
+     * @return
+     */
+    public List<Order> getOrderHistoryForShops(List<Integer> shopId) throws ShopNotFoundException {
         List<Order> orders = new ArrayList<>();
         if (shopId == null) {
             for (Shop s : shopList.values()) {
@@ -240,8 +245,8 @@ public class ShopController {
             for (Integer id : shopId) {
                 Shop s = shopList.get(id);
                 if (s == null) {
-                    //log
-                    return null;
+                    errorLogger.logMsg(Level.WARNING,String.format("Shop not exist: %d",id));
+                    throw new ShopNotFoundException();
                 }
                 orders.addAll(s.getOrders());
             }
@@ -250,6 +255,11 @@ public class ShopController {
         return orders;
     }
 
+    /**
+     * check for each shop if the user is Founder | Owner Or manager
+     * @param targetUser - wanted Delete user identifier
+     * @return
+     */
     public boolean canBeDismiss(String targetUser) {
         for (Map.Entry<Integer, Shop> entry : shopList.entrySet()) {
             if (!entry.getValue().canBeDismiss(targetUser))
