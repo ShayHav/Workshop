@@ -94,6 +94,19 @@ public class ShopController {
         return f.applyFilter(products);
     }
 
+    public List<Product> searchProductByCategory(String category, Filter<Product> f) {
+        String category_lower = category.toLowerCase();
+        List<Product> products = new ArrayList<>();
+        synchronized (shopList) {
+            for (Shop s : shopList.values()) {
+                List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getCategory().toLowerCase().equals(category_lower)).collect(Collectors.toList());
+                products.addAll(shopProducts);
+            }
+        }
+        eventLogger.logMsg(Level.INFO, "searchProductByKeyword succeeded");
+        return f.applyFilter(products);
+    }
+
     public Shop getShop(int shopID) throws ShopNotFoundException {
         if (!shopList.containsKey(shopID)) {
             errorLogger.logMsg(Level.WARNING, String.format("shopId %d isn't a valid shop in market", shopID));
@@ -244,4 +257,6 @@ public class ShopController {
 
         return shop.requestInfoOnManagerPermissions(managerUsername);
     }
+
+
 }
