@@ -1,12 +1,9 @@
 package domain.shop;
 
-import domain.Exceptions.InvalidAuthorizationException;
-import domain.Exceptions.InvalidProductInfoException;
+import domain.Exceptions.*;
 import domain.market.ExternalConnector;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
-import domain.Exceptions.BlankDataExc;
-import domain.Exceptions.IncorrectIdentification;
 import domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,7 +68,11 @@ public class ShopTest {
             return;
         }
         assertTrue(shop.isProductIsAvailable(apple.getId()));
-        assertEquals(shop.getProduct(apple.getId()).getId(), apple.getId());
+        try {
+            assertEquals(shop.getProduct(apple.getId()).getId(), apple.getId());
+        } catch (ProductNotFoundException e) {
+            fail();
+        }
     }
 
 
@@ -79,8 +80,12 @@ public class ShopTest {
 
     @Test
     void getProduct(){
-        assertEquals(shop.getProduct(1), p1, "product p1 should have been returned");
-        assertEquals(shop.getProduct(2), p2, "product p1 should have been returned");
+        try {
+            assertEquals(shop.getProduct(1), p1, "product p1 should have been returned");
+            assertEquals(shop.getProduct(2), p2, "product p1 should have been returned");
+        } catch (ProductNotFoundException e) {
+            fail();
+        }
         assertThrows(NullPointerException.class, ()->shop.getProduct(3), "item should not exist");
     }
 

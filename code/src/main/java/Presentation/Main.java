@@ -5,6 +5,7 @@ import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
 import domain.Response;
+import domain.ResponseList;
 import domain.ResponseT;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
@@ -48,15 +49,13 @@ public class Main {
 
         app.get("/", ctx -> {
             String username = ctx.cookieStore("uid");
-            List<ResponseT<Shop>> responses = services.GetShopsInfo(username, new SearchShopFilter());
-            List<PresentationShop> shops = new ArrayList<>();
-            for (ResponseT<Shop> response : responses) {
-                if (response.isErrorOccurred()) {
-                    ctx.status(503);
-                    ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
-                }
-                shops.add(new PresentationShop(response.getValue()));
+            ResponseList<Shop> response = services.GetShopsInfo(username, new SearchShopFilter());
+            if (response.isErrorOccurred()) {
+                ctx.status(503);
+                ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+                return;
             }
+            List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).toList();
             PresentationUser user = getUser(ctx);
             ctx.render("index.jte", Map.of("shops", shops, "user", user));
         });
@@ -133,6 +132,20 @@ public class Main {
             }
             PresentationShop shop = new PresentationShop(response.getValue());
             ctx.render("shop.jte",Map.of("user", user,"shop", shop));
+        });
+
+        app.get("/shops/{shopID}/{serialNumber}", ctx->{
+            int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
+            int serialNumber = ctx.pathParamAsClass("serialNumber", Integer.class).get();
+            PresentationUser user = getUser(ctx);
+            ResponseT<Product> response =  services.getProduct(user.getUsername(),shopID, serialNumber);
+            if(response.isErrorOccurred()){
+               ctx.status(400);
+               ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+               return;
+            }
+            //TODO get permission for user in the shop
+            ctx.render("product.jte", Map.of("user", user, "product", response.getValue(), "shopId", shopID));
         });
     }
 

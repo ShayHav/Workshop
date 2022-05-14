@@ -78,7 +78,7 @@ public class Shop {
             String info = getProduct(prodID).getDescription();
             eventLogger.logMsg(Level.INFO, String.format("returned description of product: %d ", prodID));
             return info;
-        }catch (NullPointerException npe){
+        }catch (ProductNotFoundException npe){
             errorLogger.logMsg(Level.WARNING, String.format("could not find product: %d", prodID));
             return "this product does not exist.";
         }
@@ -90,7 +90,7 @@ public class Shop {
         return inventory.getItemsInStock();
     }
 
-    public Product getProduct(int prodID){
+    public Product getProduct(int prodID) throws ProductNotFoundException {
         Product product = inventory.findProduct(prodID);
         if(product != null) {
             eventLogger.logMsg(Level.INFO, String.format("returned product: %d", prodID));
@@ -98,7 +98,7 @@ public class Shop {
         }
         else {
             errorLogger.logMsg(Level.WARNING, String.format("could not find product: %d", prodID));
-            throw new NullPointerException("product not found");
+            throw new ProductNotFoundException("product not found");
         }
     }
 
