@@ -384,7 +384,7 @@ public class User {
         return new UserSearchInfo(userName);
     }
 
-    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
+    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, ShopNotFoundException {
         if(isSystemManager && us == UserState2.member)
             return systemManagerGetOrderHistoryForShops(f,shopID);
         else {
@@ -409,7 +409,7 @@ public class User {
         return f.applyFilter(result);
     }
 
-    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID){
+    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
         UserController uc = UserController.getInstance();
         List<Order> result = uc.getOrderHistoryForUser(userID);
         return f.applyFilter(result);

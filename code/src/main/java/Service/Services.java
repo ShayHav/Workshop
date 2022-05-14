@@ -521,40 +521,24 @@ public class Services {
 
     //make:shahar   InvalidAuthorizationException, IncorrectIdentification
     public ResponseList<Order> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID){
-        List<ResponseT<Order>> output = new LinkedList<>();
         try {
              List<Order> result = marketSystem.getOrderHistoryForShops(userName, f, shopID);
-             for(Order o :result)
-                 output.add(new ResponseT<>(o));
+             return new ResponseList<>(result);
         }
-        catch (InvalidAuthorizationException iae){
-            output.add(new ResponseT(iae.getLocalizedMessage()));
-            return output;
+        catch (IncorrectIdentification | ShopNotFoundException | InvalidAuthorizationException exception){
+            return new ResponseList<>(exception.getLocalizedMessage());
         }
-        catch (IncorrectIdentification incorrectIdentification){
-            output.add(new ResponseT(incorrectIdentification.getLocalizedMessage()));
-            return output;
-        }
-        return output;
+
     }
 
     //make:shahar   InvalidAuthorizationException, IncorrectIdentification
-    public List<ResponseT<Order>> getOrderHistoryForUser(String userName, Filter<Order> f, List<String>  userNames){
-        List<ResponseT<Order>> output= new LinkedList<>();
-        List<Order> result;
+    public ResponseList<Order> getOrderHistoryForUser(String userName, Filter<Order> f, List<String>  userNames){
         try {
-            result = marketSystem.getOrderHistoryForUser(userName, f, userNames);
-            for(Order order:result)
-                output.add(new ResponseT<>(order));
+            List<Order> result = marketSystem.getOrderHistoryForUser(userName, f, userNames);
+            return new ResponseList<>(result);
         }
-        catch (InvalidAuthorizationException iae){
-            output.add(new ResponseT(iae.getLocalizedMessage()));
-            return output;
+        catch (InvalidAuthorizationException | IncorrectIdentification e){
+            return new ResponseList<>(e.getMessage());
         }
-        catch (IncorrectIdentification incorrectIdentification){
-            output.add(new ResponseT(incorrectIdentification.getLocalizedMessage()));
-            return output;
-        }
-        return output;
     }
 }

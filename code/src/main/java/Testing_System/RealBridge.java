@@ -2,6 +2,7 @@ package Testing_System;
 
 import Service.Services;
 import domain.Response;
+import domain.ResponseList;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
@@ -94,24 +95,36 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<Shop> filter) {
-        return (Result<Boolean, List<ShopInfo>>) sv.GetShopsInfo(userID, filter);
+    public Result<Boolean, List<Shop>> GetShopsInfo(String userID, Filter<Shop> filter) {
+        ResponseList<Shop> response = sv.GetShopsInfo(userID, filter);
+        if(response.isErrorOccurred())
+            return new Result<>(false,null);
+        return new Result<>(true, response.getValue());
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<Product> f) {
-        return (Result<Boolean, List<ProductInfo>>) sv.GetProductInfoInShop(userID, shopID, f);
+    public Result<Boolean, List<Product>> GetProductInfoInShop(String userID ,int shopID, Filter<Product> f) {
+        ResponseList<Product> response = sv.GetProductInfoInShop(userID, shopID, f);
+        if(response.isErrorOccurred())
+            return new Result<>(false,null);
+        return new Result<>(true, response.getValue());
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID, String pName, Filter<Product> f) {
-        return (Result<Boolean, List<ProductInfo>>) sv.SearchProductByName(userID, pName, f);
+    public Result<Boolean, List<Product>> SearchProductByName(String userID, String pName, Filter<Product> f) {
+        ResponseList<Product> response = sv.SearchProductByName(userID, pName, f);
+        if(response.isErrorOccurred())
+            return new Result<>(false,null);
+        return new Result<>(true, response.getValue());
     }
 
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID, String keyword, Filter<Product> f) {
-        return (Result<Boolean, List<ProductInfo>>) sv.SearchProductByKeyword(userID, keyword, f);
+    public Result<Boolean, List<Product>> SearchProductByKeyword(String userID, String keyword, Filter<Product> f) {
+        ResponseList<Product> response =  sv.SearchProductByKeyword(userID, keyword, f);
+        if(response.isErrorOccurred())
+            return new Result<>(false,null);
+        return new Result<>(true, response.getValue());
     }
 
     @Override
@@ -191,7 +204,10 @@ public class RealBridge implements  Bridge{
 
     @Override
     public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userId) {
-        return (Result<Boolean, List<UserSearchInfo>>) sv.RequestShopOfficialsInfo(shopName, f, userId);
+        ResponseList<UserSearchInfo> response = sv.RequestShopOfficialsInfo(shopName, f, userId);
+        if(response.isErrorOccurred())
+            return new Result<>(false,null);
+        return new Result<>(true, response.getValue());
     }
 
     @Override
@@ -201,6 +217,9 @@ public class RealBridge implements  Bridge{
 
     @Override
     public Result<Boolean, List<Order>> RequestShopSalesInfo(int shopName, SearchOrderFilter f, String userId) {
-        return (Result<Boolean, List<Order>>) sv.RequestInformationOfShopsSalesHistory(shopName, f, userId);
+        ResponseList<Order> response = sv.RequestInformationOfShopsSalesHistory(shopName, f, userId);
+        if(response.isErrorOccurred())
+            return new Result<>(false,null);
+        return new Result<>(true, response.getValue());
     }
 }

@@ -180,7 +180,7 @@ public class UserController {
         return true;
     }
 
-    public List<Order> getOrderHistoryForUser(List<String>  userID){
+    public List<Order> getOrderHistoryForUser(List<String>  userID) throws InvalidAuthorizationException {
         List<Order> orders = new ArrayList<>();
         if(userID == null) {
             synchronized (memberList) {
@@ -193,8 +193,7 @@ public class UserController {
             for(String id: userID){
                 User user = memberList.get(id);
                 if(user == null){
-                  //log
-                  return null;
+                  throw new InvalidAuthorizationException(String.format("user %s does not exist",id));
                 }
                 orders.addAll(user.getHistoryOfOrders());
             }
@@ -231,7 +230,7 @@ public class UserController {
         return u.removeProductFromCart(shopID,productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, ShopNotFoundException {
         if(!activeUser.containsKey(userID)){
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
             throw new InvalidAuthorizationException();
