@@ -32,6 +32,7 @@ public class Shop {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final OrderHistory orders;
     private boolean isOpen;
+    private MarketSystem marketSystem;
 
     public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
@@ -47,6 +48,7 @@ public class Shop {
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+        marketSystem = MarketSystem.getInstance();
     }
 
     public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
@@ -141,7 +143,7 @@ public class Shop {
         return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
     }
 
-    public boolean isProductIsAvailable(int prodID){
+    public boolean isProductAvailable(int prodID){
         return inventory.isInStock(prodID);
     }
 
@@ -153,8 +155,17 @@ public class Shop {
         }
         return null;
     }
-    public boolean isProductIsAvailable(int prodID,int amount){
-        return inventory.getQuantity(prodID)>=amount;
+    public boolean isEnoughAmountOfProduct(int prodID, int amount){
+        int quantity;
+
+        try {
+            quantity = inventory.getQuantity(prodID);
+        }catch (ProductNotFoundException productNotFoundException){
+            return false;
+        }
+
+        return quantity >= amount;
+
     }
 
     public synchronized int addPercentageDiscount(int prodID, double percentage){
@@ -195,10 +206,14 @@ public class Shop {
             try {
                 productBasePrice = inventory.getPrice(set.getKey());
             }catch (ProductNotFoundException prodNotFound){
+                System.out.println("1");
                 return new ResponseT("this product does not exist");
             }
-            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
+            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue())) {
+                System.out.println("2 asd");
                 return new ResponseT("violates purchase policy");
+
+            }
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
@@ -208,6 +223,7 @@ public class Shop {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
+                System.out.println("3\n");
                 return new ResponseT<>("not in stock");
             }
         }
@@ -221,22 +237,25 @@ public class Shop {
             product_PricePer.put(set.getKey(), product_price_single);
         }
 
-        MarketSystem market = MarketSystem.getInstance();
-        if(!market.pay(transaction)){
+        if(!marketSystem.pay(transaction)){
             synchronized (inventory) {
                 try {
                     inventory.restoreStock(products);
                 }catch (Exception e){
+                    errorLogger.logMsg(Level.SEVERE, "couldn't restock, Fatal. Explanation:\n" + e.getMessage());
                     e.printStackTrace();
                 }
             }
-            return new ResponseT<>();
+            System.out.println("4\n");
+            return new ResponseT<>("problem with payment");
         }
-        if(!market.supply(transaction, products)){
+        if(!marketSystem.supply(transaction, products)){
+            System.out.println("5\n");
             return new ResponseT<>("problem with supply system, please contact the company representative");
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(products, transaction, product_PricePer);
+        System.out.println("6\n");
         return new ResponseT(o);
     }
 
@@ -392,6 +411,10 @@ public class Shop {
             list.add(permission);
         }
         return list;
+    }
+
+    private void setMarketSystem(MarketSystem ms){
+        marketSystem = ms;
     }
 
 }

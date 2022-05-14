@@ -39,7 +39,7 @@ public class ShoppingBasket {
      * @return false if the product
      */
     public boolean updateAmount(int productID, int amount) {
-        if(shop.isProductIsAvailable(productID,amount)) {
+        if(shop.isEnoughAmountOfProduct(productID,amount)) {
             if (!productAmountList.containsKey(productID)) {
                 errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
                 return false;
@@ -93,7 +93,7 @@ public class ShoppingBasket {
      * @param amountToAdd amount to add
      */
     public boolean addProductToBasket(int productID, int amountToAdd) {
-        if (shop.isProductIsAvailable(productID, amountToAdd)) {
+        if (shop.isEnoughAmountOfProduct(productID, amountToAdd)) {
             if (amountToAdd < 0) {
                 errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
                 return false;

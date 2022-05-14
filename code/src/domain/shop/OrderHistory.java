@@ -4,7 +4,7 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.user.SearchOrderFilter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,9 +36,9 @@ public class OrderHistory {
      * @param to the end of the filter
      * @return a List of all the Orders filtered
      */
-    public List<Order> searchByDate(LocalDate from, LocalDate to){
-        return orders.stream().filter((Order o) -> o.getBuyingTime().isBefore(ChronoLocalDateTime.from(to)) &&
-                o.getBuyingTime().isAfter(ChronoLocalDateTime.from(from))).collect(Collectors.toList());
+    public List<Order> searchByDate(LocalDateTime from, LocalDateTime to){
+        return orders.stream().filter((Order o) -> o.getBuyingTime().compareTo(from) >= 0 &&
+                o.getBuyingTime().compareTo(to) <= 0).collect(Collectors.toList());
     }
 
     /**
@@ -55,7 +55,7 @@ public class OrderHistory {
      * @param orderID the order id to search by
      * @return Instance of Order or Null if failed to found one
      */
-    public Order getOrder(int orderID){
+    public Order getOrder(long orderID){
         for(Order o: orders){
             if(o.getOrderId() == orderID)
                 return o;
