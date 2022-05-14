@@ -7,6 +7,7 @@ import Presentation.Model.PresentationUser;
 import Testing_System.Result;
 import domain.Exceptions.*;
 import domain.Response;
+import domain.ResponseList;
 import domain.ResponseT;
 import domain.market.*;
 import domain.shop.*;
@@ -18,6 +19,7 @@ import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
 
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,10 @@ public class Services {
 
     private static class ServicesHolder{
         private static final Services instance = new Services();
+    }
+
+    public ResponseList<ShopManagersPermissions> CheckPermissionsForManager(String username, int shopID){
+        return null;
     }
 
     public static Services getInstance(){
@@ -189,67 +195,49 @@ public class Services {
 
     //make: shahar
     //Guest-Visitor Shop options
-    public List<ResponseT<Shop>> GetShopsInfo(String userName, Filter<Shop> filter) {
+    public ResponseList<Shop> GetShopsInfo(String userName, Filter<Shop> filter) {
         try {
-            List<ResponseT<Shop>> list = new LinkedList<>();
-            List<Shop> shops = marketSystem.getInfoOfShops(userName, filter);
-            for (Shop shop : shops){
-                list.add(new ResponseT<>(shop));
-            }
-            return list;
+            List<Shop> shops = Collections.unmodifiableList(marketSystem.getInfoOfShops(userName, filter));
+            return new ResponseList<>(shops);
         } catch (BlankDataExc blankDataExc) {
-            return null;
+            return new ResponseList<>(blankDataExc.getMessage());
         }
     }
 
     //Make:nitay
-    public List<ResponseT<Product>> GetProductInfoInShop(String userName , int shopID, Filter<Product> f)
+    public ResponseList<Product> GetProductInfoInShop(String userName , int shopID, Filter<Product> f)
     {
         try {
-            List<Product> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userName, shopID, f);
-            List<ResponseT<Product>> CreateShop = new LinkedList<>();
-            if (GetProductInfoInShop == null || GetProductInfoInShop.size() == 0)
-                return null;
-            for (Product productInfo : GetProductInfoInShop) {
-                CreateShop.add(new ResponseT<>(productInfo));
-            }
-            return CreateShop;
+            List<Product> products = Collections.unmodifiableList(marketSystem.getInfoOfProductInShop(userName, shopID, f));
+            return new ResponseList<>(products);
         }
         catch (BlankDataExc blankDataExc){
-            return null;
+            return new ResponseList<>(blankDataExc.getMessage());
         }
     }//display information of a product?
 
 
     //make:shahar
-    public List<ResponseT<Product>> SearchProductByName(String userName ,String pName, Filter<Product> f) //done
+    public ResponseList<Product> SearchProductByName(String userName ,String pName, Filter<Product> f) //done
     {
         try {
-            List<ResponseT<Product>> result = new LinkedList<>();
-            List<Product> products = marketSystem.searchProductByName(userName, pName, f);
-            for (Product productInfo : products) {
-                result.add(new ResponseT<>(productInfo));
-            }
-            return result;
+            List<Product> products = Collections.unmodifiableList(marketSystem.searchProductByName(userName, pName, f));
+            return new ResponseList<>(products);
         }
         catch (BlankDataExc blankDataExc){
-            return null;
+            return new ResponseList<>(blankDataExc.getMessage());
         }
     }
 
     //make:shahar
-    public List<ResponseT<Product>> SearchProductByKeyword(String userName ,String keyword, Filter<Product> f)
+    public ResponseList<Product> SearchProductByKeyword(String userName ,String keyword, Filter<Product> f)
     {
         try {
-            List<ResponseT<Product>> result = new LinkedList<>();
-            List<Product> products = marketSystem.searchProductByKeyword(userName, keyword, f);
-            for (Product productInfo : products) {
-                result.add(new ResponseT<>(productInfo));
-            }
-            return result;
+            List<Product> products = Collections.unmodifiableList(marketSystem.searchProductByKeyword(userName, keyword, f));
+            return new ResponseList<>(products);
         }
         catch (BlankDataExc blankDataExc){
-            return null;
+            return new ResponseList<>(blankDataExc.getMessage());
         }
     }
 
@@ -308,11 +296,8 @@ public class Services {
                 return checkout;
             }
             return null;
-        } catch (IncorrectIdentification incorrectIdentification) {
+        } catch (IncorrectIdentification | BlankDataExc incorrectIdentification) {
             checkout.add(new Response(incorrectIdentification.getLocalizedMessage()));
-            return checkout;
-        } catch (BlankDataExc blankDataExc) {
-            checkout.add(new Response(blankDataExc.getLocalizedMessage()));
             return checkout;
         }
     }
@@ -465,36 +450,25 @@ public class Services {
         }
     }
     //Make:nitay  IncorrectIdentification
-    public List<ResponseT<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName)
+    public ResponseList<UserSearchInfo> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName)
     {
-        List<ResponseT<UserSearchInfo>> responseTList = new LinkedList<>();
         try {
             List<UserSearchInfo> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
-            if (s != null)
-                for(UserSearchInfo userSearchInfo: s)
-                    responseTList.add(new ResponseT<>(userSearchInfo));
-            return responseTList;
+            return new ResponseList<>(s);
         }
-        catch (IncorrectIdentification incorrectIdentification){
-            responseTList.add(new ResponseT<>(null,incorrectIdentification.getLocalizedMessage()));
-            return responseTList;
+        catch (IncorrectIdentification | ShopNotFoundException incorrectIdentification){
+            return new ResponseList<>(incorrectIdentification.getLocalizedMessage());
         }
     }
     //Make:nitay  IncorrectIdentification
-    public List<ResponseT<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName)
+    public ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName)
     {
-        List<ResponseT<Order>> output = new LinkedList<>();
         try {
             List<Order> orders = marketSystem.RequestInformationOfShopsSalesHistory(shopName, f, userName);
-            if (orders != null)
-                for(Order order:orders)
-                    output.add(new ResponseT<>(order));
-
-            return output;
+            return new ResponseList<>(orders);
         }
-        catch (IncorrectIdentification incorrectIdentification){
-            output.add(new ResponseT<>(null,incorrectIdentification.getLocalizedMessage()));
-            return output;
+        catch (IncorrectIdentification | ShopNotFoundException incorrectIdentification){
+            return new ResponseList<>(incorrectIdentification.getLocalizedMessage());
         }
     }
     //Make:nitay
@@ -546,7 +520,7 @@ public class Services {
     }
 
     //make:shahar   InvalidAuthorizationException, IncorrectIdentification
-    public List<ResponseT<Order>> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID){
+    public ResponseList<Order> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID){
         List<ResponseT<Order>> output = new LinkedList<>();
         try {
              List<Order> result = marketSystem.getOrderHistoryForShops(userName, f, shopID);

@@ -202,10 +202,10 @@ public class Shop {
             try {
                 productBasePrice = inventory.getPrice(set.getKey());
             }catch (ProductNotFoundException prodNotFound){
-                return new ResponseT("this product does not exist");
+                return new ResponseT<>(String.format("this product does not exist in shop %d",shopID));
             }
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
-                return new ResponseT("violates purchase policy");
+                return new ResponseT<>(String.format("checkout process violates purchase policy in shop %d",shopID));
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
@@ -215,7 +215,7 @@ public class Shop {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-                return new ResponseT<>("not in stock");
+                return new ResponseT<>(String.format("one of items selected is not in stock in shop %d",shopID));
             }
         }
 
@@ -240,11 +240,11 @@ public class Shop {
             return new ResponseT<>();
         }
         if(!market.supply(transaction, products)){
-            return new ResponseT<>("problem with supply system, please contact the company representative");
+            return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(products, transaction, product_PricePer);
-        return new ResponseT(o);
+        return new ResponseT<>(o);
     }
 
     private Order createOrder(Map<Integer, Integer> products, TransactionInfo transaction, Map<Integer, Double> product_PricePer) {

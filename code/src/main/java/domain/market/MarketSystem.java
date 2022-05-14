@@ -315,14 +315,14 @@ public class MarketSystem {
         externalConnector = ec;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification {
+    public List<UserSearchInfo> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification, ShopNotFoundException {
         if(userController.isLogin(userID)) {
             Shop shop1;
             try{
                 shop1 = ShopController.getInstance().getShop(shopID);
             }catch (ShopNotFoundException snfe){
                 errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shopID));
-                return null;
+                throw snfe;
             }
             return shop1.RequestShopOfficialsInfo(f, userID);
         }
@@ -330,14 +330,14 @@ public class MarketSystem {
             return null;
     }
 
-    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userID) throws IncorrectIdentification {
+    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userID) throws IncorrectIdentification, ShopNotFoundException {
         if(userController.isLogin(userID)) {
             Shop shop1;
             try{
                 shop1 = ShopController.getInstance().getShop(shopID);
             }catch (ShopNotFoundException snfe){
                 errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shopID));
-                return null;
+                throw snfe;
             }
             return shop1.RequestInformationOfShopsSalesHistory(f, userID);
         }

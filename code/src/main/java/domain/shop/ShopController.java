@@ -60,7 +60,7 @@ public class ShopController {
         List<Shop> allShops = new ArrayList<>();
         synchronized (this) {
             for (Shop s : shopList.values()) {
-                    allShops.add(s);
+                allShops.add(s);
             }
         }
         return f.applyFilter(allShops);
@@ -70,7 +70,7 @@ public class ShopController {
         Shop s;
         try {
             s = getShop(shopID);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
@@ -106,7 +106,7 @@ public class ShopController {
 
     public Shop getShop(int shopID) throws ShopNotFoundException {
         if (!shopList.containsKey(shopID)) {
-            errorLogger.logMsg(Level.WARNING,String.format("shopId %d isn't a valid shop in market", shopID));
+            errorLogger.logMsg(Level.WARNING, String.format("shopId %d isn't a valid shop in market", shopID));
             throw new ShopNotFoundException("shop does not exist in market");
         }
         eventLogger.logMsg(Level.INFO, "getShop succeeded");
@@ -117,7 +117,7 @@ public class ShopController {
         Shop s;
         try {
             s = getShop(key);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
@@ -125,11 +125,12 @@ public class ShopController {
         eventLogger.logMsg(Level.INFO, "close shop succeeded");
         return s.getName();
     }
+
     public String openShop(int key, String user) throws InvalidSequenceOperationsExc {
         Shop s;
         try {
             s = getShop(key);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
@@ -146,7 +147,7 @@ public class ShopController {
         Shop s;
         try {
             s = getShop(shopID);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return -1;
         }
@@ -159,31 +160,29 @@ public class ShopController {
         Shop s;
         try {
             s = getShop(key);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser, id)) {
-                eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
-                return "Shop Manager Permissions Removed";
-            }
-            else
-                return null;
+        if (s.removePermissions(shopManagersPermissionsList, tragetUser, id)) {
+            eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
+            return "Shop Manager Permissions Removed";
+        } else
+            return null;
     }
 
     public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
         Shop s;
         try {
             s = getShop(key);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
         if (s.addPermissions(shopManagersPermissionsList, tragetUser, id)) {
             eventLogger.logMsg(Level.INFO, "AddShopMangerPermissions succeeded");
             return "ShopManagerPermissionsAdd";
-        }
-        else
+        } else
             return null;
     }
 
@@ -191,7 +190,7 @@ public class ShopController {
         Shop s;
         try {
             s = getShop(key);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
@@ -203,7 +202,7 @@ public class ShopController {
         Shop s;
         try {
             s = getShop(key);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
@@ -211,8 +210,7 @@ public class ShopController {
             if (s.removePermissions(shopManagersPermissionsList, tragetUser.getUserName(), id)) {
                 eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
                 return "ShopManagerPermissionsRemove";
-            }
-            else return null;
+            } else return null;
         }
     }
 
@@ -220,7 +218,7 @@ public class ShopController {
         Shop s;
         try {
             s = getShop(key);
-        }catch (ShopNotFoundException snfe){
+        } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
@@ -228,7 +226,7 @@ public class ShopController {
         return s.AppointNewShopOwner(targetUser, userId);
     }
 
-    public List<Order> getOrderHistoryForShops(List<Integer> shopId) {
+    public List<Order> getOrderHistoryForShops(List<Integer> shopId) throws ShopNotFoundException {
         List<Order> orders = new ArrayList<>();
         if (shopId == null) {
             for (Shop s : shopList.values()) {
@@ -237,15 +235,14 @@ public class ShopController {
         } else {
             for (Integer id : shopId) {
                 Shop s = shopList.get(id);
-                if (s == null) {
-                    //log
-                    return null;
-                }
+                if (s == null)
+                    throw new ShopNotFoundException(String.format("shop %id doesn't exist", id));
                 orders.addAll(s.getOrders());
             }
         }
-        eventLogger.logMsg(Level.INFO, "getOrderHistoryForShops succeeded");
-        return orders;
-    }
+            eventLogger.logMsg(Level.INFO, "getOrderHistoryForShops succeeded");
+            return orders;
 
+
+    }
 }

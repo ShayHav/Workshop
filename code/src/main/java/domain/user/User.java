@@ -403,7 +403,7 @@ public class User {
     }
 
 
-    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
+    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws ShopNotFoundException {
         ControllersBridge cb = ControllersBridge.getInstance();
         List<Order> result = cb.getOrderHistoryForShops(shopID);
         return f.applyFilter(result);

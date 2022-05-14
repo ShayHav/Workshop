@@ -92,6 +92,7 @@ public class Cart {
             }
             else{
                 errorLogger.logMsg(Level.WARNING, String.format("basket of shop %d failed in checkout.", shopId));
+
             }
         }
         return orders;

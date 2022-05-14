@@ -35,7 +35,7 @@ public class ControllersBridge {
         return UserController.getInstance().getUser(id);
     }
 
-    public List<Order> getOrderHistoryForShops(List<Integer> shopId){
+    public List<Order> getOrderHistoryForShops(List<Integer> shopId) throws ShopNotFoundException {
         return ShopController.getInstance().getOrderHistoryForShops(shopId);
     }
 }
