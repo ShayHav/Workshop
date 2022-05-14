@@ -518,12 +518,12 @@ public class Services {
         }
     }
 
-    public ResponseT<Product> getProduct(String username, int shopId, int serialNumber){
-        try{
+    public ResponseT<Product> getProduct(String username, int shopId, int serialNumber) {
+        try {
             Product p = marketSystem.getProduct(username, shopId, serialNumber);
             return new ResponseT<>(p);
-        }
-        catch (ShopNotFoundException | ProductNotFoundException e){
+        } catch (ShopNotFoundException | ProductNotFoundException e) {
             return new ResponseT<>(e.getMessage());
+        }
     }
 }
