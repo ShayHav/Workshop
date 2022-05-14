@@ -151,6 +151,9 @@ public class ShopTest {
         TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166", "0534356345", "123123", "10/30", LocalDate.of(2022, 05, 10), 68);
         Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
         product_QuantityInBasket.put(appleID, 3);
+        MarketSystem ms = mock(MarketSystem.class);
+        when(ms.pay(trans)).thenReturn(true);
+        when(ms.supply(trans, product_QuantityInBasket)).thenReturn(true);
         ResponseT<Order> checkoutRet = shop.checkout(product_QuantityInBasket, trans);
         assertFalse(checkoutRet.isErrorOccurred());
         assertFalse(shop.isProductAvailable(appleID));
