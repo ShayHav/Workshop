@@ -93,7 +93,7 @@ public class ShoppingBasket {
      */
     public void addProductToBasket(int productID, int amountToAdd) throws IllegalArgumentException, ProductNotFoundException{
         if (shop.isProductIsAvailable(productID, amountToAdd)) {
-            if (amountToAdd < 0) {
+            if (amountToAdd <= 0) {
                 errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
                 throw new IllegalArgumentException(String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
             } else if (!productAmountList.containsKey(productID)) {
@@ -138,7 +138,7 @@ public class ShoppingBasket {
             try {
                 p = shop.getInfoOnProduct(product);
             }catch (ProductNotFoundException pnfe){
-                removeProduct(product);
+                productAmountList.remove(product);
                 continue;
             }
             int amount = productAmountList.get(product);

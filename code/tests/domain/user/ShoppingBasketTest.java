@@ -32,13 +32,13 @@ class ShoppingBasketTest {
 
 
     @Test
-    void addProductToBasket() {
-        assertFalse(basket.addProductToBasket(5, -1));
-        assertTrue(basket.addProductToBasket(5, 0));
+    void addProductToBasket() throws ProductNotFoundException {
+        when(shop.isProductIsAvailable(5)).thenReturn(true);
+        assertThrows(IllegalArgumentException.class,()->basket.addProductToBasket(5, -1));
+        basket.addProductToBasket(5,50);
+        assertEquals(50,basket.getProductAmountList().get(5));
         assertTrue(basket.getProductAmountList().containsKey(5));
-        assertTrue(basket.addProductToBasket(5, 50));
         assertNotEquals(basket.getProductAmountList().get(1),50);
-        assertTrue(basket.addProductToBasket(1, 50));
         assertEquals(basket.getProductAmountList().get(1), 150);
 
     }
@@ -54,21 +54,24 @@ class ShoppingBasketTest {
     }
 
     @Test
-    void updateAmount() {
-        assertFalse(basket.updateAmount(1, -1));
+    void updateAmount() throws ProductNotFoundException {
+        when(shop.isProductIsAvailable(5)).thenReturn(true);
+        assertThrows(IllegalArgumentException.class, ()->basket.updateAmount(1, -1));
         assertTrue(basket.getProductAmountList().containsKey(1));
-        assertTrue(basket.updateAmount(1, 50));
+        basket.updateAmount(1, 50);
+        assertEquals(50,basket.getProductAmountList().get(5));
         assertTrue(basket.getProductAmountList().containsKey(1));
-        assertTrue(basket.updateAmount(1, 0));
+        basket.updateAmount(1, 0);
         assertFalse(basket.getProductAmountList().containsKey(1));
     }
 
     @Test
-    void removeProduct() {
+    void removeProduct() throws ProductNotFoundException {
+        when(shop.isProductIsAvailable(5)).thenReturn(true);
         basket.getProductAmountList().put(2,200);
-        assertTrue(basket.removeProduct(1));
+        basket.removeProduct(1);
         assertFalse(basket.getProductAmountList().containsKey(1));
-        assertTrue(basket.removeProduct(2));
+        basket.removeProduct(2);
         assertFalse(basket.getProductAmountList().containsKey(2));
     }
 
