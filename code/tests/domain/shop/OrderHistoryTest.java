@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderHistoryTest {
 
     OrderHistory myHistory;
-    ProductImp p = new ProductImp(1, "TestProduct", "", "Testing");
+    ProductImp p = new ProductImp(1, "TestProduct", "", "Testing", 100);
 
 
     List<Product> getProducts(){
@@ -26,11 +27,12 @@ class OrderHistoryTest {
     void setUp() {
         myHistory = new OrderHistory();
         Order o = new Order(getProducts(),3.0, "1");
+        myHistory.addOrder(o);
     }
 
     @Test
     void searchByDate() {
-        LocalDate yesterday = LocalDate.now().minusDays(1), tomorrow = LocalDate.now().plusDays(1);
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1), tomorrow = LocalDateTime.now().plusDays(1);
         p.setName("NewName");
         List<Order> orders = myHistory.searchByDate(yesterday, tomorrow);
         assertEquals(orders.size(), 1);
@@ -48,9 +50,10 @@ class OrderHistoryTest {
     @Test
     void getOrder() {
         Order toAdd = new Order(getProducts(),5, "2");
-        Order o = myHistory.getOrder(5);
+        myHistory.addOrder(toAdd);
+        Order o = myHistory.getOrder(100);
         assertNull(o);
-        o = myHistory.getOrder(1);
-        assertEquals(o, toAdd);
+        o = myHistory.getOrder(toAdd.getOrderId());
+        assertEquals(o.getOrderId(), toAdd.getOrderId());
     }
 }

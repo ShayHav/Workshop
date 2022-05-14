@@ -35,6 +35,7 @@ public class Shop {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final OrderHistory orders;
     private boolean isOpen;
+    private MarketSystem marketSystem;
 
     public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
@@ -50,6 +51,7 @@ public class Shop {
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+        marketSystem = MarketSystem.getInstance();
     }
 
     public void setDescription(String description) {
@@ -164,8 +166,17 @@ public class Shop {
         }
         return null;
     }
-    public boolean isProductIsAvailable(int prodID,int amount){
-        return inventory.getQuantity(prodID)>=amount;
+    public boolean isEnoughAmountOfProduct(int prodID, int amount){
+        int quantity;
+
+        try {
+            quantity = inventory.getQuantity(prodID);
+        }catch (ProductNotFoundException productNotFoundException){
+            return false;
+        }
+
+        return quantity >= amount;
+
     }
 
     public synchronized int addPercentageDiscount(int prodID, double percentage){
@@ -199,10 +210,8 @@ public class Shop {
      * @param transaction the info of the client to be charged and supply
      * @return true if successfully created the order and add to the inventory
      */
-
-    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction)throws BlankDataExc{
+    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction){
         double productBasePrice;
-
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
             //check purchase policy regarding the Product
             try {
@@ -234,18 +243,19 @@ public class Shop {
             product_PricePer.put(set.getKey(), product_price_single);
         }
 
-        MarketSystem market = MarketSystem.getInstance();
-        if(!market.pay(transaction)){
+        if(!marketSystem.pay(transaction)){
             synchronized (inventory) {
                 try {
                     inventory.restoreStock(products);
                 }catch (Exception e){
+                    errorLogger.logMsg(Level.SEVERE, "couldn't restock, Fatal. Explanation:\n" + e.getMessage());
                     e.printStackTrace();
                 }
             }
             return new ResponseT<>();
         }
-        if(!market.supply(transaction, products)){
+        if(!marketSystem.supply(transaction, products)){
+            //System.out.println("5\n");
             return new ResponseT<>("problem with supply system, please contact the company representative");
         }
         // creating Order object to store in the Order History with unmutable copy of product
@@ -405,6 +415,10 @@ public class Shop {
             list.add(permission);
         }
         return list;
+    }
+
+    private void setMarketSystem(MarketSystem ms){
+        marketSystem = ms;
     }
 
     public boolean canBeDismiss(String targetUser) {
