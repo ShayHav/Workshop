@@ -237,7 +237,7 @@ public class Shop {
                     e.printStackTrace();
                 }
             }
-            return new ResponseT<>();
+            return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please contact the company representative", shopID));
         }
         if(!market.supply(transaction, products)){
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
