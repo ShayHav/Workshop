@@ -323,9 +323,18 @@ public class User {
         return this.loggedIn;
     }
 
-
+    /**
+     * operate userCart checkOut and looking for errors.
+     * @param fullName
+     * @param address
+     * @param phoneNumber
+     * @param cardNumber
+     * @param expirationDate
+     * @return string List of errors
+     * @throws BlankDataExc
+     */
     public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
-        List<ResponseT<Order>> checkoutResult = userCart.checkout(id, fullName, address, phoneNumber, cardNumber, expirationDate);
+        List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
         List<String> errors = new ArrayList<>();
         for (ResponseT<Order> r : checkoutResult) {
             if (r.isErrorOccurred()) {
@@ -390,6 +399,13 @@ public class User {
         }
     }
 
+    /**
+     * Checks whether the perpetrator may perform it and operate
+     * @param f
+     * @param userID
+     * @return
+     * @throws InvalidAuthorizationException
+     */
     public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
         if(isSystemManager && us == UserState2.member)
             return systemManagerGetOrderHistoryForUser(f,userID);
@@ -399,19 +415,36 @@ public class User {
         }
     }
 
-
+    /**
+     * operate the query requested by the system manager for OrderHistory
+     * @param f - Query-relevant parameters
+     * @param shopID - shop identifier
+     * @return
+     */
     private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
         ControllersBridge cb = ControllersBridge.getInstance();
         List<Order> result = cb.getOrderHistoryForShops(shopID);
         return f.applyFilter(result);
     }
 
+    /**
+     * operate the query requested by the system manager for OrderHistory
+     * @param f - Query-relevant parameters
+     * @param userID - users identifiers
+     * @return
+     */
     private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID){
         UserController uc = UserController.getInstance();
         List<Order> result = uc.getOrderHistoryForUser(userID);
         return f.applyFilter(result);
     }
 
+    /**
+     * Checks whether the perpetrator may perform it and operate
+     * @param targetUser
+     * @return
+     * @throws InvalidSequenceOperationsExc
+     */
     public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
@@ -422,6 +455,14 @@ public class User {
         throw new InvalidSequenceOperationsExc("");
     }
 
+    /**
+     * Checks whether the perpetrator may perform it and operate
+     * @param targetUser
+     * @param shop
+     * @return
+     * @throws InvalidSequenceOperationsExc
+     * @throws ShopNotFoundException
+     */
     public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException {
         if(loggedIn){
             if(isAppointedMeOwner(this,targetUser)) {
