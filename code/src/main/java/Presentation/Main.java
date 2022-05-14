@@ -53,9 +53,9 @@ public class Main {
             if (response.isErrorOccurred()) {
                 ctx.status(503);
                 ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
-                return;
             }
-            List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).toList();
+
+            List<Shop> shops = response.getValue();
             PresentationUser user = getUser(ctx);
             ctx.render("index.jte", Map.of("shops", shops, "user", user));
         });
@@ -131,7 +131,7 @@ public class Main {
                 return;
             }
             PresentationShop shop = new PresentationShop(response.getValue());
-            ctx.render("shop.jte",Map.of("user", user,"shop", shop));
+            ctx.render("shop.jte", Map.of("user", user, "shop", shop));
         });
 
         app.get("/shops/{shopID}/{serialNumber}", ctx->{

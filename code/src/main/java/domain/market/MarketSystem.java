@@ -363,7 +363,7 @@ public class MarketSystem {
         return userController.removeProductFromCart(userId, shopId, productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, IncorrectIdentification {
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException {
         if(userController.isLogin(userID))
             return userController.getOrderHistoryForShops(userID, f, shopID);
         else return null;

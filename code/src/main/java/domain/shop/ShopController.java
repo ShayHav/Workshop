@@ -237,11 +237,12 @@ public class ShopController {
                 Shop s = shopList.get(id);
                 if (s == null)
                     throw new ShopNotFoundException(String.format("shop %id doesn't exist", id));
+
                 orders.addAll(s.getOrders());
             }
         }
-            eventLogger.logMsg(Level.INFO, "getOrderHistoryForShops succeeded");
-            return orders;
+        eventLogger.logMsg(Level.INFO, "getOrderHistoryForShops succeeded");
+        return orders;
 
 
     }
