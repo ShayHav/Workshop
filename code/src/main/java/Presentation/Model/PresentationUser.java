@@ -1,21 +1,27 @@
 package Presentation.Model;
 
+import domain.shop.ShopManagersPermissions;
 import domain.user.User;
+
+import java.util.List;
 
 public class PresentationUser {
 
     private String username;
     private String password;
     private boolean loggedIn;
+    List<ShopManagersPermissions> permissions;
 
     public PresentationUser(String username, boolean loggedIn){
         this.username = username;
         this.loggedIn = loggedIn;
+        permissions = null;
     }
 
     public PresentationUser(User user){
         username = user.getUserName();
         loggedIn = user.isLoggedIn();
+        permissions = null;
     }
 
     public String getUsername() {
@@ -43,6 +49,19 @@ public class PresentationUser {
     }
 
     public boolean hasInventoryPermission(){
-        throw new UnsupportedOperationException("to be done");
+        if(permissions == null){
+            return false;
+        }
+        for(ShopManagersPermissions permissions : permissions){
+            if(permissions == ShopManagersPermissions.AddProductToInventory ||
+                permissions == ShopManagersPermissions.RemoveProductFromInventory ||
+                permissions == ShopManagersPermissions.ChangeProductsDetail)
+                return true;
+        }
+        return false;
+    }
+
+    public void setPermission(List<ShopManagersPermissions> value) {
+        this.permissions = value;
     }
 }
