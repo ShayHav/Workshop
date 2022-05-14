@@ -120,6 +120,12 @@ public class MarketSystem {
         return ShopController.getInstance().searchProductByKeyword(keyword, f);
     }
 
+    public List<Product> searchProductByCategory(String userID, String category, Filter<Product> f) throws BlankDataExc {
+        if (userID == null || category == null || f == null || !userController.HasUserEnteredMarket(userID))
+            throw new BlankDataExc();
+        return ShopController.getInstance().searchProductByCategory(category, f);
+    }
+
     //TODO: need to get inside //not in use
     public User getUser(String id) throws IncorrectIdentification, BlankDataExc {
         if(id == null || id.isEmpty())

@@ -36,9 +36,9 @@ public class Services {
     public ResponseList<ShopManagersPermissions> CheckPermissionsForManager(String managerUsername, int shopID) {
         try {
             List<ShopManagersPermissions> permissions = marketSystem.checkPermissionsForManager(managerUsername, shopID);
-            return new ResponseList<ShopManagersPermissions>(permissions);
+            return new ResponseList<>(permissions);
         } catch (ShopNotFoundException | IllegalArgumentException e) {
-            return new ResponseList<ShopManagersPermissions>(e.getMessage());
+            return new ResponseList<>(e.getMessage());
         }
     }
 
@@ -218,6 +218,15 @@ public class Services {
     public ResponseList<Product> SearchProductByKeyword(String userName, String keyword, Filter<Product> f) {
         try {
             List<Product> products = Collections.unmodifiableList(marketSystem.searchProductByKeyword(userName, keyword, f));
+            return new ResponseList<>(products);
+        } catch (BlankDataExc blankDataExc) {
+            return new ResponseList<>(blankDataExc.getMessage());
+        }
+    }
+
+    public ResponseList<Product> SearchProductByCategory(String userName, String category, Filter<Product> f) {
+        try {
+            List<Product> products = Collections.unmodifiableList(marketSystem.searchProductByCategory(userName, category, f));
             return new ResponseList<>(products);
         } catch (BlankDataExc blankDataExc) {
             return new ResponseList<>(blankDataExc.getMessage());
@@ -463,10 +472,10 @@ public class Services {
     }
 
     //Make:nitay  InvalidAuthorizationException, IncorrectIdentification, BlankDataExc
-    public Response RemoveProductFromShopInventory(int productId, String username, int shopname) {
+    public Response RemoveProductFromShopInventory(int productId, String username, int shopName) {
         int removedProductID;
         try {
-            removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopname);
+            removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopName);
         } catch (InvalidAuthorizationException iae) {
             return new Response(iae.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
