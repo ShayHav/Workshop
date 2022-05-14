@@ -3,6 +3,7 @@ package domain.market;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
+import domain.Response;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
@@ -173,11 +174,12 @@ public class MarketSystem {
         return UserController.getInstance().logIn(username, pw);
     }
 
-    public User LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc {
-        if(s!=null & !s.isEmpty()){
+
+    public User LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        if(s!=null && !s.isEmpty()){
             return userController.logOut(s);
         }
-        return null;
+        throw new BlankDataExc();
     }
 
     public User logout(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
@@ -349,15 +351,15 @@ public class MarketSystem {
         return userController.enterMarket();
     }
 
-    public boolean AddProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+    public Response AddProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
         return userController.addProductToCart(userID, shopID, productId, amount);
     }
 
-    public boolean EditShoppingCart(String userId, int shopId, int productId, int amount) throws InvalidSequenceOperationsExc {
+    public Response EditShoppingCart(String userId, int shopId, int productId, int amount) throws InvalidSequenceOperationsExc {
         return userController.updateAmountOfProduct(userId, shopId, productId, amount);
     }
 
-    public boolean removeProductFromCart(String userId, int shopId, int productId) throws InvalidSequenceOperationsExc {
+    public Response removeProductFromCart(String userId, int shopId, int productId) throws InvalidSequenceOperationsExc {
         return userController.removeProductFromCart(userId, shopId, productId);
     }
 

@@ -1,11 +1,13 @@
 package domain.user;
 
 import domain.*;
+import domain.Exceptions.ProductNotFoundException;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.Exceptions.ShopNotFoundException;
 import domain.Exceptions.BlankDataExc;
 import domain.user.ShoppingBasket.BasketInfo;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,39 +26,55 @@ public class Cart {
         totalAmount = 0;
     }
 
-    public boolean addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
-        boolean result;
+    public Response addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
         if (!baskets.containsKey(shopID)) {
-            Shop shop = ControllersBridge.getInstance().getShop(shopID);
-            ShoppingBasket newBasket = new ShoppingBasket(shop);
-            result = newBasket.addProductToBasket(productID, amount);
-            baskets.put(shopID, newBasket);
-
+            try {
+                Shop shop = ControllersBridge.getInstance().getShop(shopID);
+                ShoppingBasket newBasket = new ShoppingBasket(shop);
+                newBasket.addProductToBasket(productID, amount);
+                baskets.put(shopID, newBasket);
+                eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
+                return new Response();
+            } catch (IllegalArgumentException | ProductNotFoundException e) {
+                errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
+                return new Response(e.getMessage());
+            }
         } else {
-            result = baskets.get(shopID).addProductToBasket(productID, amount);
-
+            try {
+                baskets.get(shopID).addProductToBasket(productID, amount);
+                return new Response();
+            } catch (IllegalArgumentException | ProductNotFoundException e) {
+                errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
+                return new Response(e.getMessage());
+            }
         }
-        if(result)
-            eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
-        else
-            errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
-        return result;
     }
 
-    public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
+    public Response updateAmountOfProduct(int shopID, int productID, int amount) {
         if (!baskets.containsKey(shopID)) {
             errorLogger.logMsg(Level.WARNING, String.format("cannot update amount of product %d because cart doesn't contain basket with shop %d", productID, shopID));
-            return false;
+            return new Response(String.format("cannot update amount of product %d because cart doesn't contain basket with shop %d", productID, shopID));
         }
-        return baskets.get(shopID).updateAmount(productID, amount);
+        try {
+            baskets.get(shopID).updateAmount(productID, amount);
+            return new Response();
+
+        } catch (ProductNotFoundException | IllegalArgumentException e) {
+            return new Response(e.getMessage());
+        }
     }
 
-    public boolean removeProductFromCart(int shopID, int productID) {
+    public Response removeProductFromCart(int shopID, int productID) {
         if (!baskets.containsKey(shopID)) {
             errorLogger.logMsg(Level.WARNING, String.format("cannot remove product %d because cart doesn't contain basket with shop %d", productID, shopID));
-            return false;
+            return new Response(String.format("cannot update amount of product %d because cart doesn't contain basket with shop %d", productID, shopID));
         }
-        return baskets.get(shopID).removeProduct(productID);
+        try {
+            baskets.get(shopID).removeProduct(productID);
+            return new Response();
+        } catch (ProductNotFoundException e) {
+            return new Response(e.getMessage());
+        }
     }
 
     public double getTotalAmount() {
@@ -71,13 +89,14 @@ public class Cart {
         List<BasketInfo> basketInfoList = new ArrayList<>();
         for (Integer shopID : baskets.keySet()) {
             BasketInfo basket = baskets.get(shopID).showBasket();
-           basketInfoList.add(basket);
+            basketInfoList.add(basket);
         }
         totalAmount = getTotalAmount();
-        return new CartInfo(totalAmount,basketInfoList);
+        return new CartInfo(totalAmount, basketInfoList);
     }
 
-    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
+    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String
+            phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
         LocalDate transaction_date = LocalDate.now();
         totalAmount = getTotalAmount();
         TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
@@ -89,21 +108,19 @@ public class Cart {
             if (!result.isErrorOccurred()) {
                 baskets.remove(shopId);
                 eventLogger.logMsg(Level.INFO, String.format("basket of shop %d checkout successfully.", shopId));
-            }
-            else{
+            } else {
                 errorLogger.logMsg(Level.WARNING, String.format("basket of shop %d failed in checkout.", shopId));
-
             }
         }
         return orders;
     }
 
-    public class CartInfo{
+    public class CartInfo {
 
         private double totalAmount;
         private List<BasketInfo> baskets;
 
-        public CartInfo(double totalAmount,List<BasketInfo> baskets){
+        public CartInfo(double totalAmount, List<BasketInfo> baskets) {
             this.totalAmount = totalAmount;
             this.baskets = baskets;
         }

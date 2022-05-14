@@ -40,14 +40,14 @@ public class ShoppingBasket {
      * @param amount desired amount
      * @return false if the product
      */
-    public boolean updateAmount(int productID, int amount) {
-        if(shop.isProductIsAvailable(productID,amount)) {
+    public void updateAmount(int productID, int amount) throws ProductNotFoundException,IllegalArgumentException {
+        if (shop.isProductIsAvailable(productID, amount)) {
             if (!productAmountList.containsKey(productID)) {
                 errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
-                return false;
+                throw new ProductNotFoundException(String.format("requested product %d wasn't in the basket.", productID));
             } else if (amount < 0) {
                 errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - tried to update to negative amount.", productID, shop.getShopID()));
-                return false;
+                throw new IllegalArgumentException(String.format("tried to update product %d to negative amount. ", productID));
             } else {
                 if (amount == 0) {
                     synchronized (productAmountList) {
@@ -60,13 +60,11 @@ public class ShoppingBasket {
                     }
                     eventLogger.logMsg(Level.INFO, String.format("product %d amount in basket %d was updated to amount %d", productID, shop.getShopID(), amount));
                 }
-
-                return true;
             }
-        }
-        else {
+        } else {
             errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - product is not available.", productID, shop.getShopID()));
-            return false;}
+            throw new ProductNotFoundException(String.format("product %d is not available.", productID));
+        }
     }
 
     /***
@@ -75,16 +73,15 @@ public class ShoppingBasket {
      * @param productID id of product
      * @return false if the product
      */
-    public boolean removeProduct(int productID) {
+    public void removeProduct(int productID) throws ProductNotFoundException {
         if (!productAmountList.containsKey(productID)) {
             errorLogger.logMsg(Level.WARNING, String.format("remove product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
-            return false;
+            throw new ProductNotFoundException(String.format("requested product %d wasn't in the basket.", productID));
         } else {
             synchronized (productAmountList) {
                 productAmountList.remove(productID);
             }
             eventLogger.logMsg(Level.INFO, String.format("product %d removed successfully from basket", productID));
-            return true;
         }
     }
 
@@ -94,11 +91,11 @@ public class ShoppingBasket {
      * @param productID product id
      * @param amountToAdd amount to add
      */
-    public boolean addProductToBasket(int productID, int amountToAdd) {
+    public void addProductToBasket(int productID, int amountToAdd) throws IllegalArgumentException, ProductNotFoundException{
         if (shop.isProductIsAvailable(productID, amountToAdd)) {
             if (amountToAdd < 0) {
                 errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
-                return false;
+                throw new IllegalArgumentException(String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
             } else if (!productAmountList.containsKey(productID)) {
                 synchronized (productAmountList) {
                     productAmountList.put(productID, amountToAdd);
@@ -111,10 +108,9 @@ public class ShoppingBasket {
                 }
                 eventLogger.logMsg(Level.INFO, String.format("product %d with amount %d added to basket successfully", productID, currAmount));
             }
-            return true;
         } else {
             errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - product is not available.", productID, shop.getShopID()));
-            return false;
+           throw new ProductNotFoundException(String.format("product %d is unavailable in shop %d", productID,shop.getShopID()));
         }
     }
 

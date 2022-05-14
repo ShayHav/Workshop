@@ -37,30 +37,20 @@ public class ShopController {
 
     public synchronized Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
         Shop newShop;
-        if (isUniqueName(name)) {
-            shopCounter++;
-            newShop = new Shop(name, discountPolicy, purchasePolicy, shopFounder, shopCounter);
-            shopList.put(shopCounter, newShop);
-            eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
-            return newShop;
-        }
-        errorLogger.logMsg(Level.WARNING, String.format("attempt to create a shop with exist name. id: %s , name: %s", shopFounder.getUserName(), name));
-        return null;
-    }
+        shopCounter++;
+        newShop = new Shop(name, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+        shopList.put(shopCounter, newShop);
+        eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
+        return newShop;
 
-    private boolean isUniqueName(String name) {
-        for (Map.Entry<Integer, Shop> entry : shopList.entrySet()) {
-            if (entry.getValue().getName().equals(name))
-                return false;
-        }
-        return true;
     }
 
     public List<Shop> getInfoOfShops(Filter<Shop> f) {
         List<Shop> allShops = new ArrayList<>();
         synchronized (this) {
             for (Shop s : shopList.values()) {
-                allShops.add(s);
+                if(s.isOpen())
+                    allShops.add(s);
             }
         }
         return f.applyFilter(allShops);

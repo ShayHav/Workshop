@@ -5,7 +5,7 @@ public class Response {
     public String errorMessage;
 
     public Response() {
-        
+        errorMessage = null;
     }
 
     public Response(String msg) {

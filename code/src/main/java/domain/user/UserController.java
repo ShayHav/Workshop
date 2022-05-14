@@ -3,6 +3,7 @@ package domain.user;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
+import domain.Response;
 import domain.shop.Order;
 import domain.shop.ShopController;
 import domain.user.filter.Filter;
@@ -205,7 +206,7 @@ public class UserController {
         return activeUser.containsKey(userID) || guestUser.containsKey(userID);
     }
 
-    public boolean addProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+    public Response addProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
         if(!HasUserEnteredMarket(userID)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
             throw new InvalidSequenceOperationsExc();
@@ -214,7 +215,7 @@ public class UserController {
         return u.addProductToCart(shopID,productId,amount);
     }
 
-    public boolean updateAmountOfProduct(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc {
+    public Response updateAmountOfProduct(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc {
         if(!HasUserEnteredMarket(userID)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
             throw new InvalidSequenceOperationsExc();
@@ -223,7 +224,7 @@ public class UserController {
         return u.updateAmountOfProduct(shopID,productId,amount);
     }
 
-    public boolean removeProductFromCart(String userID, int shopID, int productId) throws InvalidSequenceOperationsExc {
+    public Response removeProductFromCart(String userID, int shopID, int productId) throws InvalidSequenceOperationsExc {
         if(!HasUserEnteredMarket(userID))
             throw new InvalidSequenceOperationsExc();
         User u = activeUser.get(userID);

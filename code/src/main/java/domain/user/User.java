@@ -1,12 +1,9 @@
 package domain.user;
 
 
-import domain.ControllersBridge;
-import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
+import domain.*;
 import domain.Exceptions.*;
 import domain.Exceptions.IllegalStateException;
-import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
@@ -356,15 +353,15 @@ public class User {
         return userCart.showCart();
     }
 
-    public boolean addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
+    public Response addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
         return userCart.addProductToCart(shopID, productID, amount);
     }
 
-    public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
+    public Response updateAmountOfProduct(int shopID, int productID, int amount) {
         return userCart.updateAmountOfProduct(shopID, productID, amount);
     }
 
-    public boolean removeProductFromCart(int shopID, int productID) {
+    public Response removeProductFromCart(int shopID, int productID) {
         return userCart.removeProductFromCart(shopID, productID);
     }
 

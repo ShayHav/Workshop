@@ -8,9 +8,6 @@ public class ResponseList<T> extends Response {
     public ResponseList(String msg){
         super(msg);
     }
-    public ResponseList(){
-        super();
-    }
 
     public ResponseList(List<T> value){
         super();

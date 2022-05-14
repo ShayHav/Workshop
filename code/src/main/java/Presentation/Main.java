@@ -1,6 +1,5 @@
 package Presentation;
 
-import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
@@ -9,17 +8,16 @@ import domain.ResponseList;
 import domain.ResponseT;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
-import domain.shop.Product;
 import domain.shop.Shop;
-import domain.shop.ShopInfo;
 import domain.user.User;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 import io.javalin.http.Context;
 
-
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class Main {
 
@@ -41,10 +39,6 @@ public class Main {
                     ctx.cookieStore("uid", user.getUsername());
                 }
             }
-        });
-
-        app.post("/users", ctx -> {
-            //TODO get info of user from form and send to service
         });
 
         app.get("/", ctx -> {

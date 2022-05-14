@@ -1,23 +1,21 @@
 package Service;
 
 
-import Presentation.Model.PresentationProduct;
-import Presentation.Model.PresentationShop;
-import Presentation.Model.PresentationUser;
 import Testing_System.Result;
 import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseT;
-import domain.market.*;
+import domain.market.MarketSystem;
+import domain.market.PaymentService;
+import domain.market.SupplyService;
 import domain.shop.*;
-
-import domain.user.*;
 import domain.user.TransactionInfo;
+import domain.user.User;
+import domain.user.UserSearchInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
-
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -25,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Services {
-    private MarketSystem marketSystem;
+    private final MarketSystem marketSystem;
 
     private Services(){
         marketSystem = MarketSystem.getInstance();
@@ -76,34 +74,27 @@ public class Services {
     //Make:nitay
     public Response Register(String username, String pw) {
         try {
-            if(marketSystem.register(username, pw))
-                return new Response();
+            marketSystem.register(username, pw);
+            return new Response();
         } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
         }
-        return new Response();
+
     }
     //Make:nitay
     public ResponseT<User> EnterMarket() { //
         User guest = marketSystem.EnterMarket();
-        if (guest != null)
-            return new ResponseT<>(guest);
-        else return new ResponseT<>();
+        return new ResponseT<>(guest);
     }
     //Make:nitay   IncorrectIdentification, InvalidSequenceOperationsExc
-    //TODO: need to check
+    //TODO: need to check why leave returns user and the service method returns only response
     public Response LeaveMarket() {
         try {
             User output = marketSystem.LeaveMarket("");
-            if (output != null)
-                return new Response();
-            else return null;
+            return new Response();
         }
-        catch (IncorrectIdentification incorrectIdentification){
-            return new Response(incorrectIdentification.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        catch (IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc e){
+            return new Response(e.getLocalizedMessage());
         }
     }
 
@@ -114,25 +105,17 @@ public class Services {
         try {
             guest = marketSystem.logout(username);
             return new ResponseT<>(guest);
-        } catch (BlankDataExc blankDataExc) {
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
+        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification e) {
+            return new ResponseT<>(e.getLocalizedMessage());
         }
     }
     //Make:nitay BlankDataExc  BlankDataExc, IncorrectIdentification
     public ResponseT<Shop> CreateShop(String username, String shopName) {
         try {
             Shop output = marketSystem.createShop(shopName, null, null, username);
-            if (output != null)
-                return new ResponseT<>(output);
-            else return new ResponseT<>();
-        } catch (BlankDataExc blankDataExc) {
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
+;           return new ResponseT<>(output);
+        } catch (BlankDataExc | IncorrectIdentification e) {
+            return new ResponseT<>(e.getLocalizedMessage());
         }
     }
 
@@ -166,7 +149,7 @@ public class Services {
 
     public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password) {
         try {
-            boolean b = marketSystem.start(payment, supply, userName, password);
+            marketSystem.start(payment, supply, userName, password);
             return new Response();
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
@@ -245,17 +228,10 @@ public class Services {
     public Response AddToShoppingCart(String userName, int shopID,int productId, int amount)
     {
         try {
-            boolean success = marketSystem.AddProductToCart(userName, shopID, productId, amount);
-            if (success)
-                return new Response();
-            else
-                return new Response();
+            return marketSystem.AddProductToCart(userName, shopID, productId, amount);
         }
-        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
-        }
-        catch (ShopNotFoundException shopNotFoundException){
-            return new Response(shopNotFoundException.getLocalizedMessage());
+        catch (InvalidSequenceOperationsExc | ShopNotFoundException e){
+            return new Response(e.getLocalizedMessage());
         }
     }
 
@@ -263,11 +239,7 @@ public class Services {
     public Response EditShoppingCart(String userName, int shopId, int productId, int amount)
     {
         try {
-            boolean success = marketSystem.EditShoppingCart(userName, shopId, productId, amount);
-            if (success)
-                return new Response();
-            else
-                return new Response();
+            return marketSystem.EditShoppingCart(userName, shopId, productId, amount);
         }
         catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
@@ -276,13 +248,13 @@ public class Services {
 
     //make:shahar
 
-    //TODO:
+
     public Response RemoveFromShoppingCart(String userName, int shopId, int productId) throws InvalidSequenceOperationsExc {
-        boolean success = marketSystem.removeProductFromCart(userName, shopId, productId);
-        if(success)
-            return new Response();
-        else
-            return new Response();
+        try {
+            return marketSystem.removeProductFromCart(userName, shopId, productId);
+        }catch(InvalidSequenceOperationsExc e){
+            return new Response(e.getMessage());
+        }
     }
 
     //Make nitay  IncorrectIdentification, BlankDataExc
