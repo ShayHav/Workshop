@@ -1,16 +1,19 @@
 package Presentation.Model;
 
 import domain.shop.ShopManagersPermissions;
+import domain.user.Role;
 import domain.user.User;
 
 import java.util.List;
+import java.util.Map;
 
 public class PresentationUser {
 
     private String username;
     private String password;
     private boolean loggedIn;
-    List<ShopManagersPermissions> permissions;
+    Map<Integer, List<Role>> roleList;
+    Map<Integer, List<ShopManagersPermissions>> permissions;
 
     public PresentationUser(String username, boolean loggedIn){
         this.username = username;
@@ -22,6 +25,7 @@ public class PresentationUser {
         username = user.getUserName();
         loggedIn = user.isLoggedIn();
         permissions = null;
+        roleList = user.getRoleList();
     }
 
     public String getUsername() {
@@ -48,20 +52,27 @@ public class PresentationUser {
         this.loggedIn = loggedIn;
     }
 
-    public boolean hasInventoryPermission(){
+    public boolean hasInventoryPermission(int shopID){
         if(permissions == null){
             return false;
         }
-        for(ShopManagersPermissions permissions : permissions){
-            if(permissions == ShopManagersPermissions.AddProductToInventory ||
-                permissions == ShopManagersPermissions.RemoveProductFromInventory ||
-                permissions == ShopManagersPermissions.ChangeProductsDetail)
+        if(roleList.containsKey(shopID)){
+            List<Role> shopRoles = roleList.get(shopID);
+            if(shopRoles.contains(Role.ShopOwner) || shopRoles.contains(Role.ShopFounder))
                 return true;
+        }
+        if(permissions.containsKey(shopID)) {
+            for (ShopManagersPermissions permissions : permissions.get(shopID)) {
+                if (permissions == ShopManagersPermissions.AddProductToInventory ||
+                        permissions == ShopManagersPermissions.RemoveProductFromInventory ||
+                        permissions == ShopManagersPermissions.ChangeProductsDetail)
+                    return true;
+            }
         }
         return false;
     }
 
-    public void setPermission(List<ShopManagersPermissions> value) {
-        this.permissions = value;
+    public void setPermission(int shopID, List<ShopManagersPermissions> value) {
+        permissions.put(shopID, value);
     }
 }

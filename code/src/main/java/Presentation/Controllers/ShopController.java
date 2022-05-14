@@ -65,7 +65,7 @@ public class ShopController {
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
             return;
         }
-        user.setPermission(permission.getValue());
+        user.setPermission(shopID, permission.getValue());
         ctx.render("product.jte", Map.of("user", user, "product", response.getValue(), "shopId", shopID));
     }
 
@@ -89,5 +89,36 @@ public class ShopController {
     }
 
     public void addProduct(Context ctx) {
+        PresentationUser user = userController.getUser(ctx);
+        int shopID = ctx.pathParamAsClass("shopID",Integer.class ).get();
+        int serialNumber = ctx.formParamAsClass("serialNumber", Integer.class).get();
+        String name = ctx.formParam("name");
+        String description = ctx.formParam("description");
+        String category = ctx.formParam("category");
+        double price = ctx.formParamAsClass("price", Double.class).get();
+        int quantity = ctx.formParamAsClass("quantity", Integer.class).get();
+        //TODO change all follow method to add serial number
+        ResponseT<Product> response = services.AddProductToShopInventory(name,description, category, price, quantity, user.getUsername(), shopID);
+        if(response.isErrorOccurred()){
+            ctx.status(400);
+            ctx.render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+            return;
+        }
+        ctx.redirect(String.format("/shops/%d",shopID));
+    }
+
+    public void renderAddProductPage(Context context) {
+        PresentationUser user = userController.getUser(context);
+        int shopID = context.pathParamAsClass("shopID", Integer.class).get();
+        ResponseList<ShopManagersPermissions> permissions = services.CheckPermissionsForManager(user.getUsername(), shopID);
+        if(permissions.isErrorOccurred()){
+            context.render("errorPage.jte",Map.of("status", 400, "errorMessage", "You have no permission to add products"));
+        }
+        user.setPermission(shopID, permissions.getValue());
+        if(user.hasInventoryPermission(shopID)){
+            context.render("addProduct.jte", Map.of("user", user, "shopId", shopID));
+            return;
+        }
+        context.render("errorPage.jte",Map.of("status", 400, "errorMessage", "You have no permission to add products"));
     }
 }

@@ -64,10 +64,13 @@ public class Main {
 
                 path("{shopID}", () ->{
                     get(shopController::renderShop);
+                    get("/addProduct", shopController::renderAddProductPage);
+
+                    post("/addProduct",shopController::addProduct);
 
                     path("{serialNumber}", () ->{
                         get(shopController::renderProductPage);
-                        post(shopController::addProduct);
+                        ;
                         post("/edit", shopController::editProduct);
                     });
                 });
