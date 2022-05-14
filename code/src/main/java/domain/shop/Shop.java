@@ -396,4 +396,9 @@ public class Shop {
         return list;
     }
 
+    public List<ShopManagersPermissions> requestInfoOnManagerPermissions(String managerUsername) throws IllegalArgumentException {
+        if(!ShopManagers.containsKey(managerUsername))
+            throw new IllegalArgumentException("username "+managerUsername+" is not a manager in the shop " + shopID);
+        return shopManagersPermissionsController.getPermissions(managerUsername);
+    }
 }

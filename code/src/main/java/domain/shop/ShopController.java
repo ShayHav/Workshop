@@ -236,4 +236,12 @@ public class ShopController {
 
 
     }
+
+    public List<ShopManagersPermissions> checkPermissionsForManager(String managerUsername, int shopID) throws ShopNotFoundException, IllegalArgumentException {
+        Shop shop = shopList.get(shopID);
+        if(shop == null)
+            throw new ShopNotFoundException(String.format("Shop id %d doesn't exist", shopID));
+
+        return shop.requestInfoOnManagerPermissions(managerUsername);
+    }
 }
