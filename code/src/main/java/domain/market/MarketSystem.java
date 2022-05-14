@@ -31,6 +31,9 @@ public class MarketSystem {
         externalConnector = new ExternalConnector();
     }
 
+    public List<ShopManagersPermissions> checkPermissionsForManager(String managerUsername, int shopID) throws ShopNotFoundException, IllegalArgumentException{
+        return ShopController.getInstance().checkPermissionsForManager(managerUsername,shopID);
+    }
 
 
     private static class MarketHolder{
