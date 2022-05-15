@@ -1,5 +1,7 @@
+@import Presentation.Main
 @import Presentation.Model.PresentationUser
 @import gg.jte.Content
+@import java.net.InetAddress
 @param PresentationUser r_user
 
 @template.navBar(user = r_user, title = "Register")
@@ -32,7 +34,7 @@
 </main>
 </body>
 <script type="javascript">
-    const socket = new WebSocket("wss://localhost:8080/users/new")
+    const socket = new WebSocket("wss://${Main.ip.getHostAddress()}:8080/users/new")
     const button = document.querySelector('#submitButton');
     button.addEventListener('click', function () {
         const form = document.registerForm;

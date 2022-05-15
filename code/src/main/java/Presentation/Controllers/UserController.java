@@ -67,7 +67,7 @@ public class UserController {
 
     public void register(WsConfig ws) {
         ws.onConnect(wsConnectContext -> {
-
+            System.out.println("connected to "+wsConnectContext.host());
         });
         ws.onMessage(ctx -> {
             PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);

@@ -13,6 +13,10 @@ import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +24,21 @@ import java.util.Map;
 public class Main {
 
     static final int port = 8080;
-
+    public static InetAddress ip;
 
     public static void main(String[] args) {
         Services.getInstance().StartMarket(new PaymentServiceImp(), new SupplyServiceImp(), "Admin", "Admin");
         UserController userController  = new UserController();
         ShopController shopController = new ShopController();
-        Javalin app = Javalin.create(JavalinConfig::enableWebjars).start(port);
-
+        Javalin app;
+        try{
+            ip =  Inet4Address.getLocalHost();
+            System.out.println(ip.getHostAddress());
+        }
+        catch (UnknownHostException e) {
+            return;
+        }
+        app = Javalin.create(JavalinConfig::enableWebjars).start(ip.getHostAddress(), port);
         app.before(userController::validateUser);
 
         app.get("/", ctx -> {
