@@ -10,6 +10,8 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
+import domain.user.filters.SearchOfficialsFilter;
+import domain.user.filters.SearchOrderFilter;
 
 import java.util.*;
 
@@ -22,6 +24,7 @@ public class Shop {
     private final int shopID;
     private int rank;
     private User ShopFounder;
+    private String description;
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
@@ -49,6 +52,14 @@ public class Shop {
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
         marketSystem = MarketSystem.getInstance();
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
@@ -143,7 +154,7 @@ public class Shop {
         return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
     }
 
-    public boolean isProductAvailable(int prodID){
+    public boolean isProductIsAvailable(int prodID){
         return inventory.isInStock(prodID);
     }
 
@@ -206,14 +217,10 @@ public class Shop {
             try {
                 productBasePrice = inventory.getPrice(set.getKey());
             }catch (ProductNotFoundException prodNotFound){
-                System.out.println("1");
                 return new ResponseT("this product does not exist");
             }
-            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue())) {
-                System.out.println("2 asd");
+            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
                 return new ResponseT("violates purchase policy");
-
-            }
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
@@ -223,7 +230,6 @@ public class Shop {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println("3\n");
                 return new ResponseT<>("not in stock");
             }
         }
@@ -246,16 +252,14 @@ public class Shop {
                     e.printStackTrace();
                 }
             }
-            System.out.println("4\n");
-            return new ResponseT<>("problem with payment");
+            return new ResponseT<>();
         }
         if(!marketSystem.supply(transaction, products)){
-            System.out.println("5\n");
+            //System.out.println("5\n");
             return new ResponseT<>("problem with supply system, please contact the company representative");
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(products, transaction, product_PricePer);
-        System.out.println("6\n");
         return new ResponseT(o);
     }
 
@@ -355,9 +359,9 @@ public class Shop {
         return null;
     }
 
-    public List<ProductInfo> getProductInfoOfShop() {
-        List<ProductInfo> info = inventory.getAllProductInfo();
-        for (ProductInfo p : info) {
+    public List<Product> getProductInfoOfShop() {
+        List<Product> info = inventory.getAllProductInfo();
+        for (Product p : info) {
             p.setShopName(name);
             p.setShopRank(rank);
         }
@@ -392,13 +396,13 @@ public class Shop {
         return inventory;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(SearchOfficialsFilter f,String userId) {
+    public List<User> RequestShopOfficialsInfo(SearchOfficialsFilter f, String userId) {
         if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)| ShopOwners.containsKey(userId)) {
             return f.applyFilter(getUserList(),shopID);
         }
         return null;
     }
-    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f,String userId) {
+    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f, String userId) {
         if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId) | ShopOwners.containsKey(userId))
             return f.applyFilter(orders.getOrders());
         else return null;
@@ -427,4 +431,15 @@ public class Shop {
         marketSystem = ms;
     }
 
+    public boolean canBeDismiss(String targetUser) {
+        return isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser);
+    }
+
+    public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc {
+        if(ShopOwners.containsKey(userName) & ShopOwners.containsKey(targetUser)){
+            if (shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) //TODO: need to check if OK.
+                return true;
+        }
+        throw new InvalidSequenceOperationsExc();
+    }
 }

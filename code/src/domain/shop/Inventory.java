@@ -191,6 +191,7 @@ public class Inventory {
 
     public Product setProduct(int product, String name, String description, String category) throws ProductNotFoundException {
         if(!keyToProduct.containsKey(product)){
+            errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d",product));
             throw new ProductNotFoundException("this product does not exist");
         }
         ProductImp p  = keyToProduct.get(product);
@@ -212,6 +213,7 @@ public class Inventory {
 
     public ProductInfo getProductInfo(int productId) throws ProductNotFoundException {
         if(!keyToProduct.containsKey(productId)){
+            errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d",productId));
             throw new ProductNotFoundException("this product does not exist");
         }
         ProductImp p = keyToProduct.get(productId);
@@ -220,13 +222,10 @@ public class Inventory {
         return product;
     }
 
-    public synchronized List<ProductInfo> getAllProductInfo(){
-        List<ProductInfo> products = new ArrayList<>();
+    public synchronized List<Product> getAllProductInfo(){
+        List<Product> products = new ArrayList<>();
         for(ProductImp p: keyToProduct.values()){
-            ProductInfo productInfo = p.getProductInfo();
-            double price = p.getBasePrice();
-            productInfo.setPrice(price);
-            products.add(productInfo);
+            products.add(p);
         }
         return products;
     }

@@ -1,10 +1,12 @@
-package domain.user;
+package domain.user.filters;
 
+import domain.EventLoggerSingleton;
 import domain.shop.ProductInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class SearchProductFilter implements Filter<ProductInfo> {
@@ -24,6 +26,7 @@ public class SearchProductFilter implements Filter<ProductInfo> {
     }
 
     public List<ProductInfo> applyFilter(List<ProductInfo> products) {
+        EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filer for products");
         List<ProductInfo> result = new ArrayList<>();
 
         if(minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice)

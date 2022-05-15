@@ -2,6 +2,7 @@ package domain.user;
 
 import domain.shop.Order;
 import domain.shop.ShopController;
+import domain.user.filters.Filter;
 
 import java.util.List;
 

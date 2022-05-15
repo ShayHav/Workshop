@@ -13,6 +13,14 @@ public class ServiceProduct implements Product{
 
     }
 
+    public ServiceProduct(Product serviceProduct){
+        this.id = serviceProduct.getId();
+        this.name = serviceProduct.getName();
+        this.dis = serviceProduct.getDescription();
+        this.cat = serviceProduct.getCategory();
+        this.price = serviceProduct.getPrice();
+    }
+
 
     @Override
     public String getName() {
@@ -34,8 +42,18 @@ public class ServiceProduct implements Product{
         return null;
     }
 
-    public double getPrice() {
-        return price;
+    public int getPrice() {
+        return (int) price;
+    }
+
+    @Override
+    public void setShopName(String s) {
+
+    }
+
+    @Override
+    public void setShopRank(int s) {
+
     }
 
     public int getAmount() {

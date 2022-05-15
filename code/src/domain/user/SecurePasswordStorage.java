@@ -40,6 +40,13 @@ public class SecurePasswordStorage {
         }
     }
 
+    /**
+     * compare between the given password and the saved password
+     * @param inputUser - identifier
+     * @param inputPass - given password
+     * @return
+     * @throws Exception
+     */
     private boolean authenticateUser(String inputUser, String inputPass) throws Exception {
         UserInfo user;
         synchronized (userDatabase) {
@@ -53,11 +60,18 @@ public class SecurePasswordStorage {
             return calculatedHash.equals(user.userEncryptedPassword);
         }
     }
+
     public void inRole(String userid, String password){
         try{ signUp(userid,password); }
         catch (Exception e){ errorLogger.logMsg(Level.WARNING,String.format("Cryptographic Hash password of %d failed.: "+e.getMessage(),userid)); }
     }
 
+    /**
+     * Encrypte the given password with salt
+     * @param userid
+     * @param password
+     * @throws Exception
+     */
     private synchronized void signUp(String userid, String password) throws Exception {
         String salt = getNewSalt();
         String encryptedPassword = getEncryptedPassword(password, salt);
@@ -68,7 +82,13 @@ public class SecurePasswordStorage {
         saveUser(user);
     }
 
-    // Get a encrypted password using PBKDF2 hash algorithm
+    /**
+     * Get a encrypted password using PBKDF2 hash algorithm
+     * @param password
+     * @param salt
+     * @return
+     * @throws Exception
+     */
     public String getEncryptedPassword(String password, String salt) throws Exception {
         String algorithm = "PBKDF2WithHmacSHA1";
         int derivedKeyLength = 160; // for SHA1
@@ -82,7 +102,11 @@ public class SecurePasswordStorage {
         return Base64.getEncoder().encodeToString(encBytes);
     }
 
-    // Returns base64 encoded salt
+    /**
+     * Returns base64 encoded salt
+     * @return
+     * @throws Exception
+     */
     public String getNewSalt() throws Exception {
         // Don't use Random!
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
@@ -96,8 +120,11 @@ public class SecurePasswordStorage {
         userDatabase.put(user.userid, user);
     }
 
-    public boolean isUserRole(String userName) {
+
+    //TODO:Test
+    public boolean isUserRole (String userName){
         return userDatabase.containsKey(userName);
     }
+
 }
 

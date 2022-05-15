@@ -42,6 +42,9 @@ public class User {
         isSystemManager = false;
     }
 
+    public boolean isSystemManager() {
+        return isSystemManager;
+    }
 
     public String getUserMenu() throws IllegalStateException {
         int i = 1;
@@ -143,8 +146,6 @@ public class User {
         else errorLogger.logMsg(Level.WARNING, String.format("Not Founder shop try to close shop. user: %s", this.userName));
     }
 
-
-
     private void founderCloseShop(int shop, String id) throws InvalidSequenceOperationsExc {
         Shop shop1;
         try{
@@ -177,9 +178,9 @@ public class User {
 
 
 
-    private void memberCreateShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws BlankDataExc, IncorrectIdentification {
-        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);  //TODO: new class
-    }
+//    private void memberCreateShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String id) throws BlankDataExc, IncorrectIdentification {
+//        MarketSystem.getInstance().createShop(name, discountPolicy, purchasePolicy, id);  //TODO: new class
+//    }
 
 
 
@@ -359,16 +360,10 @@ public class User {
 
 
     public void addRole(int shop,Role role) {
-        System.out.println("@@@@@@@@@@@");
         List<Role> useRoleList = roleList.get(shop);
-        if (useRoleList != null) {
-            if (useRoleList.contains(role))
+        if(useRoleList!=null)
+            if(useRoleList.contains(role))
                 useRoleList.add(role);
-        } else {
-            useRoleList = new LinkedList<>();
-            useRoleList.add(role);
-            roleList.put(shop,useRoleList);
-        }
     }
 
     public List<OwnerAppointment> getOwnerAppointmentList() {
@@ -486,9 +481,6 @@ public class User {
         throw new UnsupportedOperationException();
     }
 
-    public boolean isSystemManager() {
-        return isSystemManager;
-    }
 }
 
 

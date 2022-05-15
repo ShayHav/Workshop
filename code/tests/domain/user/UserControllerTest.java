@@ -63,7 +63,7 @@ public class UserControllerTest {
 
     @Test
     void register() throws InvalidSequenceOperationsExc, IncorrectIdentification {
-        //userController.deleteUserTest(userName);
+        userController.deleteUserTest(userName);
         for (int i = 0; i < userName.length; i++) {
             assertTrue(userController.getUser(userName[i]).getUserName().equals(userName[i]));
         }

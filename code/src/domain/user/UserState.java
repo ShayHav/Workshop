@@ -6,6 +6,7 @@ import domain.Exceptions.ShopNotFoundException;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
+import domain.user.filters.Filter;
 
 import java.util.List;
 
