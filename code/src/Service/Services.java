@@ -359,6 +359,8 @@ public class Services {
         }
         catch (BlankDataExc blankDataExc){
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
     //Make:nitay
@@ -373,6 +375,8 @@ public class Services {
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
     //Make:nitay

@@ -181,7 +181,7 @@ public class ShopController {
             return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
+    public String AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         Shop s;
         try {
             s = getShop(key);
@@ -191,8 +191,18 @@ public class ShopController {
         }
             return s.AppointNewShopManager(targetUser, userId);
     }
+    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
+        return s.AppointNewShopOwner(targetUser, userId);
+    }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
+   /* public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
         Shop s;
         try {
             s = getShop(key);
@@ -206,8 +216,9 @@ public class ShopController {
             else return null;
         }
     }
+    */
 
-    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
+   /* public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
         Shop s;
         User u;
         try {
@@ -219,6 +230,8 @@ public class ShopController {
         }
         return u.appointOwner(targetUser,key);
     }
+
+    */
 
     public List<Order> getOrderHistoryForShops(List<Integer> shopId) {
         List<Order> orders = new ArrayList<>();

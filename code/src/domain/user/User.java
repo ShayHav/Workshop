@@ -183,7 +183,7 @@ public class User {
 
 
 
-    public void appointOwner(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
+    /*public void appointOwner(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
         List<Role> useRolelist = roleList.get(shopName);
         if(useRolelist!=null) {
             if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
@@ -193,8 +193,10 @@ public class User {
         }
     }
 
+     */
 
-    private void memberAppointOwner(String targetUser, int shop, String id, List<OwnerAppointment> ownerAppointmentList) throws IncorrectIdentification, BlankDataExc {
+
+   /* private void memberAppointOwner(String targetUser, int shop, String id, List<OwnerAppointment> ownerAppointmentList) throws IncorrectIdentification, BlankDataExc {
         Shop shop1;
         try{
             shop1 = getShop(shop);
@@ -219,6 +221,7 @@ public class User {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner without permissions = {appointeeId: %s , appointedId: %s , ShopId %s}", id, targetUser, shop));
         //return false;
     }
+    */
 
     private boolean isAppointedMeOwner(User user, String id) {
         List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
@@ -229,16 +232,31 @@ public class User {
         return false;
     }
 
-    public void appointManager(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
+    public boolean appointManager(int shopName) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         List<Role> useRolelist = roleList.get(shopName);
+        if(useRolelist==null)
+            throw new InvalidSequenceOperationsExc();
         if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
-            memberAppointManager(userId, shopName, this.userName, managerAppointeeList);
-        else
+            return true;
+        else {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
+            throw new InvalidSequenceOperationsExc();
+        }
+    }
+    public boolean appointOwner(int shopName) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        List<Role> useRolelist = roleList.get(shopName);
+        if(useRolelist==null)
+            throw new InvalidSequenceOperationsExc();
+        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
+            return true;
+        else {
+            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
+            throw new InvalidSequenceOperationsExc();
+        }
     }
 
 
-    private void memberAppointManager(String targetUser, int shop, String id, List<ManagerAppointment> managerAppointmentList) throws IncorrectIdentification, BlankDataExc {
+   /* private void memberAppointManager(String targetUser, int shop, String id, List<ManagerAppointment> managerAppointmentList) throws IncorrectIdentification, BlankDataExc {
         Shop shop1;
         try{
             shop1 = getShop(shop);
@@ -249,7 +267,7 @@ public class User {
         User user1 = getUser(targetUser);
         synchronized (this) {
             if (shop1.isOwner(id)) {
-                user1.addRole(shop, Role.ShopManager);
+
                 shop1.AppointNewShopManager(targetUser, id);
                 if (isAppointedMeManager(user1, id)) {
                     ManagerAppointment newAppointment = new ManagerAppointment(shop1, id, user1);
@@ -264,6 +282,7 @@ public class User {
         errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
         //return false;
     }
+    */
 
     private boolean isAppointedMeManager(User user, String id) {
         List<ManagerAppointment> Appointmentusers = user.getManagerAppointeeList();

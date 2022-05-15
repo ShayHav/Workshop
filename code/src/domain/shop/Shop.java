@@ -279,32 +279,42 @@ public class Shop {
         return ShopOwners.containsKey(id);
     }
 
-    public String AppointNewShopOwner(String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
-        if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId) | isFounder(userId)) {
+    public String AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        if (shopManagersPermissionsController.canAppointNewShopOwner(userId)| ShopOwners.containsKey(userId)) {
             synchronized (this) {
-                User newOwner = ControllersBridge.getInstance().getUser(targetUser);
-                if (newOwner != null)
-                    ShopOwners.putIfAbsent(targetUser, newOwner);
-                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", targetUser));
-                return String.format("Appoint New ShopOwner User: %s", targetUser);
+                User newManager = ControllersBridge.getInstance().getUser(usertarget);
+                User managerUser = ControllersBridge.getInstance().getUser(userId);
+                if (newManager != null) {
+                    if(managerUser.appointOwner(shopID)){
+                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        newManager.addRole(shopID,Role.ShopOwner);
+                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+                        return String.format("Appoint New ShopManager User: %s", usertarget);
+                    }
+                }
             }
         }
-        errorLogger.logMsg(Level.WARNING, String.format("Appoint New ShopOwner User: %s", targetUser));
-        return String.format("attempt to appoint New ShopOwner User: %s filed", targetUser);
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+        return String.format("attempt to appoint New ShopManager User: %s filed", usertarget);
     }
 
     public int getShopID() {
         return shopID;
     }
 
-    public String AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc {
+    public String AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if (shopManagersPermissionsController.canAppointNewShopManager(userId)| ShopOwners.containsKey(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
-                if (newManager != null)
-                    ShopManagers.putIfAbsent(usertarget, newManager);
-                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
-                return String.format("Appoint New ShopManager User: %s", usertarget);
+                User managerUser = ControllersBridge.getInstance().getUser(userId);
+                if (newManager != null) {
+                    if(managerUser.appointManager(shopID)){
+                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        newManager.addRole(shopID,Role.ShopManager);
+                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+                        return String.format("Appoint New ShopManager User: %s", usertarget);
+                    }
+                }
             }
         }
         errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));

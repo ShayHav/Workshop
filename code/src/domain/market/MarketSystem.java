@@ -230,7 +230,7 @@ public class MarketSystem {
         return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc {
+    public String AppointNewShopManager(int key, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if(targetUser == null)
             throw new BlankDataExc("targetUser");
         if(userID == null)
@@ -240,7 +240,7 @@ public class MarketSystem {
         return null;
     }
 
-    public String AppointNewShopOwner(int key, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc {
+    public String AppointNewShopOwner(int key, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if(targetUser == null )
             throw new BlankDataExc("targetUser");
         if(userID == null)
