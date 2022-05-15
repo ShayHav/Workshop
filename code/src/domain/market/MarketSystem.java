@@ -20,7 +20,6 @@ public class MarketSystem {
     private static MarketSystem instance = null;
     private ExternalConnector externalConnector;
     private final UserController userController = UserController.getInstance();
-    //private final ShopController shopController = ShopController.getInstance();
 
     private MarketSystem() {
         eventLogger.logMsg(Level.INFO, "System start");
@@ -328,4 +327,5 @@ public class MarketSystem {
             return userController.getOrderHistoryForUser(userID, f, userIDs);
         else return null;
     }
+
 }
