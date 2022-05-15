@@ -152,7 +152,7 @@ public class UserController {
                     if (runn == Role.ShopFounder)
                         ShopController.getInstance().closeShop(run.getKey(), useID);
             }
-            memberList.remove(u);
+            memberList.remove(useID);
         }
     }
 

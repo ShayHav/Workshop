@@ -23,7 +23,7 @@ public class SecurePasswordStorage {
     private final Map<String, UserInfo> userDatabase = new HashMap<>();
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
 
-    private SecurePasswordStorage(){}
+    SecurePasswordStorage(){}
 
     public static SecurePasswordStorage getSecurePasswordStorage_singleton(){
         if(securePasswordStorage_singleton==null)
@@ -96,5 +96,8 @@ public class SecurePasswordStorage {
         userDatabase.put(user.userid, user);
     }
 
+    public boolean isUserRole(String userName) {
+        return userDatabase.containsKey(userName);
+    }
 }
 

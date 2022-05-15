@@ -43,7 +43,6 @@ public class User {
     }
 
 
-
     public String getUserMenu() throws IllegalStateException {
         int i = 1;
         
@@ -134,6 +133,7 @@ public class User {
         us = null;
     }
 
+    /*
     public void closeShop(int shopId) throws InvalidSequenceOperationsExc {
         List<Role> useRoleList = roleList.get(shopId);
         if (useRoleList!=null) {
@@ -142,6 +142,8 @@ public class User {
         }
         else errorLogger.logMsg(Level.WARNING, String.format("Not Founder shop try to close shop. user: %s", this.userName));
     }
+
+
 
     private void founderCloseShop(int shop, String id) throws InvalidSequenceOperationsExc {
         Shop shop1;
@@ -183,10 +185,12 @@ public class User {
 
     public void appointOwner(String userId, int shopName) throws IncorrectIdentification, BlankDataExc {
         List<Role> useRolelist = roleList.get(shopName);
-        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
-            memberAppointOwner(userId, shopName, this.userName, ownerAppointmentList);
-        else
-            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner with out appropriate role by user: %s", userName));
+        if(useRolelist!=null) {
+            if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
+                memberAppointOwner(userId, shopName, this.userName, ownerAppointmentList);
+            else
+                errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner with out appropriate role by user: %s", userName));
+        }
     }
 
 
@@ -201,7 +205,7 @@ public class User {
         User user = getUser(targetUser);
         if (shop1.isFounder(id) || shop1.isOwner(id)) {
             user.addRole(shop1.getShopID(), Role.ShopOwner);
-            shop1.AppointNewShopOwner(targetUser, id);
+            shop1.AppointNewShopOwner(targetUser, userName);
             if (isAppointedMeOwner(user, id)) {
                 OwnerAppointment newAppointment = new OwnerAppointment(shop1, id, user);
                 ownerAppointmentList.add(newAppointment);
@@ -336,10 +340,16 @@ public class User {
 
 
     public void addRole(int shop,Role role) {
+        System.out.println("@@@@@@@@@@@");
         List<Role> useRoleList = roleList.get(shop);
-        if(useRoleList!=null)
-            if(useRoleList.contains(role))
+        if (useRoleList != null) {
+            if (useRoleList.contains(role))
                 useRoleList.add(role);
+        } else {
+            useRoleList = new LinkedList<>();
+            useRoleList.add(role);
+            roleList.put(shop,useRoleList);
+        }
     }
 
     public List<OwnerAppointment> getOwnerAppointmentList() {
@@ -457,6 +467,9 @@ public class User {
         throw new UnsupportedOperationException();
     }
 
+    public boolean isSystemManager() {
+        return isSystemManager;
+    }
 }
 
 

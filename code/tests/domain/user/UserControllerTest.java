@@ -7,18 +7,22 @@ import domain.Exceptions.InvalidSequenceOperationsExc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.BooleanSupplier;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
     private UserController userController;
     private UserGenerator userGenerator = new UserGenerator();
     private String[] userName = userGenerator.GetValidUsers();
+    private String admin = userGenerator.GetAdminID();
+    private String adminPass = userGenerator.GetAdminPW();
     private String[] userPass = userGenerator.GetPW();
     private String[] badPass = userGenerator.GetBadPW();
 
 
     @BeforeEach
-    void setUp() throws InvalidSequenceOperationsExc {
+    void setUp() {
         userController = UserController.getInstance();
         for(int i=0;i<userName.length;i++) {
             try {
@@ -59,7 +63,7 @@ public class UserControllerTest {
 
     @Test
     void register() throws InvalidSequenceOperationsExc, IncorrectIdentification {
-        userController.deleteUserTest(userName);
+        //userController.deleteUserTest(userName);
         for (int i = 0; i < userName.length; i++) {
             assertTrue(userController.getUser(userName[i]).getUserName().equals(userName[i]));
         }
@@ -69,6 +73,27 @@ public class UserControllerTest {
     void getUser() throws IncorrectIdentification {
         for (int i = 0; i < userName.length; i++){
             assertTrue(userController.getUser(userName[i]).getUserName().equals(userName[i]));
+        }
+    }
+
+    @Test
+    void createSystemManager(){
+        try {
+            userController.createSystemManager(admin, adminPass);
+            assertTrue(userController.getUser(admin).isSystemManager());
+        }
+        catch (InvalidSequenceOperationsExc | IncorrectIdentification exception){
+            assertTrue(false);
+        }
+    }
+    @Test
+    void deleteUserName() {
+        try {
+            userController.deleteUserName(userName[0]);
+            assertTrue( userController.getUser(userName[0]) == null);
+        }
+        catch (IncorrectIdentification | InvalidSequenceOperationsExc exception) {
+            fail();
         }
     }
 }

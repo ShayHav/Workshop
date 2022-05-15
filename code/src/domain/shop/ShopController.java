@@ -1,5 +1,6 @@
 package domain.shop;
 
+import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
@@ -208,13 +209,15 @@ public class ShopController {
 
     public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
         Shop s;
+        User u;
         try {
             s = getShop(key);
+            u = ControllersBridge.getInstance().getUser(userId);
         }catch (ShopNotFoundException snfe){
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        return s.AppointNewShopOwner(targetUser, userId);
+        return u.appointOwner(targetUser,key);
     }
 
     public List<Order> getOrderHistoryForShops(List<Integer> shopId) {
