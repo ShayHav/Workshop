@@ -2,8 +2,10 @@ package Presentation;
 
 import Presentation.Controllers.ShopController;
 import Presentation.Controllers.UserController;
+import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
+import domain.Response;
 import domain.ResponseList;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
@@ -20,6 +22,7 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -29,7 +32,7 @@ public class Main {
     public static void main(String[] args) {
         Services.getInstance().StartMarket(new PaymentServiceImp(), new SupplyServiceImp(), "Admin", "Admin");
         UserController userController  = new UserController();
-        ShopController shopController = new ShopController();
+        ShopController shopController = new ShopController(userController);
         Javalin app;
         try{
             ip =  Inet4Address.getLocalHost();
@@ -38,7 +41,7 @@ public class Main {
         catch (UnknownHostException e) {
             return;
         }
-        app = Javalin.create(JavalinConfig::enableWebjars).start(ip.getHostAddress(), port);
+        app = Javalin.create(JavalinConfig::enableWebjars).start(port);
         app.before(userController::validateUser);
 
         app.get("/", ctx -> {
@@ -48,7 +51,7 @@ public class Main {
                 ctx.status(503);
                 ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
             }
-            List<Shop> shops = response.getValue();
+            List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
             PresentationUser user = userController.getUser(ctx);
             ctx.render("index.jte", Map.of("shops", shops, "user", user));
         });
@@ -58,7 +61,7 @@ public class Main {
             path("users",() ->{
                 path("login", ()->{
                     get(userController::renderLogin);
-                    post(userController::renderLogin);
+                    post(userController::login);
                 });
                 path("new", () ->{
                     get(userController::renderRegister);
@@ -76,17 +79,17 @@ public class Main {
                 path("{shopID}", () ->{
                     get(shopController::renderShop);
                     get("/addProduct", shopController::renderAddProductPage);
-
                     post("/addProduct",shopController::addProduct);
 
                     path("{serialNumber}", () ->{
                         get(shopController::renderProductPage);
-                        ;
                         post("/edit", shopController::editProduct);
                     });
                 });
             });
 
         });
+
+
     }
 }

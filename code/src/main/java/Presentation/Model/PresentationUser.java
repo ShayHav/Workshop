@@ -4,6 +4,7 @@ import domain.shop.ShopManagersPermissions;
 import domain.user.Role;
 import domain.user.User;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +19,20 @@ public class PresentationUser {
     public PresentationUser(String username, boolean loggedIn){
         this.username = username;
         this.loggedIn = loggedIn;
-        permissions = null;
+        permissions = new HashMap<>();
+        roleList = new HashMap<>();
     }
 
     public PresentationUser(User user){
         username = user.getUserName();
         loggedIn = user.isLoggedIn();
-        permissions = null;
+        permissions = new HashMap<>();
         roleList = user.getRoleList();
+    }
+
+    public PresentationUser(){
+        permissions = new HashMap<>();
+        roleList = new HashMap<>();
     }
 
     public String getUsername() {

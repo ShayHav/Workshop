@@ -23,6 +23,9 @@
             </div>
         @endfor
     </div>
+    @if(user.hasInventoryPermission(Integer.parseInt(shop.id)))
+        <a href="/shops/${shop.id}/addProduct" class="btn btn-primary">Add Product</a>
+    @endif
 
 </main>
 

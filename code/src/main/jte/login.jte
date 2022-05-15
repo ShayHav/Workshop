@@ -30,7 +30,7 @@
                     <h2 class="fs-5 mb-3">New to Market?</h2>
                 </div>
                 <div class="container ps-6">
-                    <a href="/users/new" class="btn btn-warning">Register</a>
+                    <a href="/users/new" class="btn btn-warning btn-lg">Register</a>
                 </div>
             </div>
         </div>

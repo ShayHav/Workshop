@@ -7,6 +7,7 @@ import domain.ResponseT;
 import domain.user.User;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
+import io.javalin.websocket.WsMessageContext;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,11 +15,11 @@ import java.util.Map;
 
 public class UserController {
 
-    private final Map<String, PresentationUser> requestedUser;
+    private final Map<String, PresentationUser> requestedUsers;
     private final Services services;
 
     public UserController(){
-        requestedUser = new HashMap<>();
+        requestedUsers = new HashMap<>();
         services = Services.getInstance();
     }
 
@@ -33,8 +34,9 @@ public class UserController {
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", errorCode));
         } else {
             PresentationUser user = new PresentationUser(response.getValue());
-            synchronized (requestedUser){
-                requestedUser.put(user.getUsername(), user);
+            user.setLoggedIn(true);
+            synchronized (requestedUsers){
+                requestedUsers.put(user.getUsername(), user);
             }
             ctx.cookieStore("uid",user.getUsername());
             ctx.redirect("/");
@@ -48,9 +50,9 @@ public class UserController {
 
     public PresentationUser getUser(Context ctx) {
         String username = ctx.cookieStore("uid");
-        synchronized (requestedUser){
-            if(requestedUser.containsKey(username))
-                return requestedUser.get(username);
+        synchronized (requestedUsers){
+            if(requestedUsers.containsKey(username))
+                return requestedUsers.get(username);
         }
         ResponseT<User> response = services.GetUser(username);
         if (response.isErrorOccurred()) {
@@ -59,19 +61,20 @@ public class UserController {
             return null;
         }
         PresentationUser user = new PresentationUser(response.getValue());
-        synchronized (requestedUser){
-            requestedUser.put(user.getUsername(), user);
+        synchronized (requestedUsers){
+            requestedUsers.put(user.getUsername(), user);
         }
         return user;
     }
 
-    public void register(WsConfig ws) {
-        ws.onConnect(wsConnectContext -> {
-            System.out.println("connected to "+wsConnectContext.host());
+    public void register(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx->{
+            System.out.println("register page connected via websocket");
         });
-        ws.onMessage(ctx -> {
+
+        wsConfig.onMessage(ctx->{
             PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);
-            Response response = services.Register(requestedUser.getUsername(), requestedUser.getPassword());
+            Response response = Services.getInstance().Register(requestedUser.getUsername(), requestedUser.getPassword());
             ctx.send(response);
         });
     }

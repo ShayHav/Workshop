@@ -26,7 +26,7 @@
                 </svg></p>
             <a href="/users/${user.getUsername()}/addToCart/?item=${product.serialNumber}" class="btn btn-success">Add To Cart</a>
         </div>
-        @if(user.hasInventoryPermission())
+        @if(user.hasInventoryPermission(shopId))
             <div class="container">
                 <a href="/shops/${shopId}/${product.serialNumber}" class="btn btn-info">Edit</a>
             </div>

@@ -9,17 +9,20 @@ import domain.shop.Product;
 import domain.shop.ServiceProduct;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
+import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 
+import java.util.List;
 import java.util.Map;
 
 public class ShopController {
 
     private final Services services;
-    private UserController userController;
+    private final UserController userController;
 
-    public ShopController(){
+    public ShopController(UserController userController){
         services = Services.getInstance();
+        this.userController = userController;
     }
 
     public void createShop(Context ctx) {
@@ -32,6 +35,10 @@ public class ShopController {
             ctx.status(418);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 418));
         } else {
+            ResponseList<Shop> shops = services.GetShopsInfo(username, new SearchShopFilter());
+            if(shops.isErrorOccurred()){
+                ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            }
             ctx.redirect("/");
         }
     }
@@ -46,6 +53,13 @@ public class ShopController {
             return;
         }
         PresentationShop shop = new PresentationShop(response.getValue());
+        ResponseList<ShopManagersPermissions> permission = services.CheckPermissionsForManager(user.getUsername(), id);
+        if(permission.isErrorOccurred()){
+            ctx.status(400);
+            ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        user.setPermission(id, permission.getValue());
         ctx.render("shop.jte", Map.of("user", user, "shop", shop));
     }
 
