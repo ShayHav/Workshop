@@ -7,6 +7,7 @@ import domain.Exceptions.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
+import domain.user.filters.*;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -198,7 +199,7 @@ public class ShopController {
             return null;
         }
         eventLogger.logMsg(Level.INFO, "AppointNewShopManager succeeded");
-        return s.AppointNewShopManager(targetUser, userName);
+        return s.AppointNewShopManager(targetUser, userId);
     }
     public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         Shop s;

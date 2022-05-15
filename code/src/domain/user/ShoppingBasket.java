@@ -2,6 +2,7 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Exceptions.BlankDataExc;
 import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.ProductInfo;
@@ -130,7 +131,7 @@ public class ShoppingBasket {
      * @param billingInfo all the relevant information to complete the transaction.
      */
     public ResponseT<Order> checkout(TransactionInfo billingInfo) throws BlankDataExc {
-        return shop.checkout(productAmountList, basketAmount, billingInfo);
+        return shop.checkout(productAmountList, billingInfo);
     }
 
     public BasketInfo showBasket() {

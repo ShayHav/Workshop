@@ -9,6 +9,7 @@ import domain.Exceptions.IllegalStateException;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.*;
+import domain.user.filters.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 
@@ -345,7 +346,7 @@ public class User {
         return this.loggedIn;
     }
 
-    public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
         List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
         List<String> errors = new ArrayList<>();
         for (ResponseT<Order> r : checkoutResult) {
@@ -390,9 +391,10 @@ public class User {
         return userCart.removeProductFromCart(shopID, productID);
     }
 
-    public void addManagerPermissions(String targetUser,String shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList) {
+    /*public void addManagerPermissions(String targetUser,String shop,String userId,List<ShopManagersPermissions> shopManagersPermissionsList) {
 
     }
+     */
 
     public Map<Integer, List<Role>> getRoleList() {
         return roleList;
@@ -406,7 +408,7 @@ public class User {
         return new UserSearchInfo(userName);
     }
 
-    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
+    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, ShopNotFoundException {
         if(isSystemManager && us == UserState2.member)
             return systemManagerGetOrderHistoryForShops(f,shopID);
         else {
@@ -425,7 +427,7 @@ public class User {
     }
 
 
-    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) {
+    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws ShopNotFoundException {
         ControllersBridge cb = ControllersBridge.getInstance();
         List<Order> result = cb.getOrderHistoryForShops(shopID);
         return f.applyFilter(result);
@@ -438,13 +440,7 @@ public class User {
     }
 
 
-    /**
-     * @param targetUser
-     * @param shop
-     * @param userId
-     * @param shopManagersPermissionsList
-     * @return
-     */
+/*
     public boolean addManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
         synchronized (this) {
             Shop shop1;
@@ -458,8 +454,9 @@ public class User {
             return shop1.addPermissions(shopManagersPermissionsList, targetUser, userId);
         }
     }
+    */
 
-    public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
+  /*  public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
         synchronized (this) {
             Shop shop1;
             try{
@@ -473,12 +470,49 @@ public class User {
         }
     }
 
+
     public boolean saveCart(Cart cart) {
         throw new UnsupportedOperationException("guest is not allowed to perform this action");
     }
 
     public void requestInfoOnOfficials(Filter f) {
         throw new UnsupportedOperationException();
+    }
+    */
+    /**
+     * Checks whether the perpetrator may perform it and operate
+     * @param targetUser
+     * @return
+     * @throws InvalidSequenceOperationsExc
+     */
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
+        if(isSystemManager & loggedIn){
+            ControllersBridge.getInstance().DismissalUser(targetUser);
+            eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
+            return true;
+        }
+        errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not system manager: %s",targetUser));
+        throw new InvalidSequenceOperationsExc("");
+    }
+
+    /**
+     * Checks whether the perpetrator may perform it and operate
+     * @param targetUser
+     * @param shop
+     * @return
+     * @throws InvalidSequenceOperationsExc
+     * @throws ShopNotFoundException
+     */
+    public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+        if(loggedIn){
+            if(isAppointedMeOwner(this,targetUser)) {
+                ControllersBridge.getInstance().DismissalOwner(userName, targetUser, shop);
+                eventLogger.logMsg(Level.INFO, String.format("user has been dismiss: %s", targetUser));
+                return true;
+            }
+        }
+        errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not system manager: %s",targetUser));
+        throw new InvalidSequenceOperationsExc("");
     }
 
 }

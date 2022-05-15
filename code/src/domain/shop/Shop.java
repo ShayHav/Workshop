@@ -210,7 +210,7 @@ public class Shop {
      * @param transaction the info of the client to be charged and supply
      * @return true if successfully created the order and add to the inventory
      */
-    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction){
+    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction) throws BlankDataExc {
         double productBasePrice;
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
             //check purchase policy regarding the Product
@@ -329,14 +329,14 @@ public class Shop {
         if(shopManagersPermissionsController.canCloseShop(userID)) {
             if (isOpen)
                 isOpen = false;
-            else throw new InvalidSequenceOperationsExc();
+            else throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s",userID));
         }
     }
     public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc {
         if(shopManagersPermissionsController.canOpenShop(userID)) {
             if (!isOpen)
                 isOpen = true;
-            else throw new InvalidSequenceOperationsExc();
+            else throw new InvalidSequenceOperationsExc(String.format("attempt to Open Opened Shop userID: %s",userID));
         }
     }
 
@@ -442,4 +442,12 @@ public class Shop {
         }
         throw new InvalidSequenceOperationsExc();
     }
+
+    public List<User> getShopOwners() {
+        List<User> output = new LinkedList<>();
+        ShopOwners.values().forEach((u)->output.add(u));
+        output.add(ShopFounder);
+        return output;
+    }
+
 }

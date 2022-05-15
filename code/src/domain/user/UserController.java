@@ -196,7 +196,7 @@ public class UserController {
             for(String id: userName){
                 User user = memberList.get(id);
                 if(user == null){
-                  //log
+                  errorLogger.logMsg(Level.WARNING,String.format("user not exist: %s",id));
                   return null;
                 }
                 orders.addAll(user.getHistoryOfOrders());
@@ -294,5 +294,9 @@ public class UserController {
             return f.applyFilter(Arrays.asList(result));
         }
         throw new InvalidSequenceOperationsExc();
+    }
+
+    public List<User> getAdminUser() {
+        return adminUser;
     }
 }
