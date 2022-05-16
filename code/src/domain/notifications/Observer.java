@@ -18,8 +18,9 @@ public class Observer {
     }
 
     public void update(String msg) {
-        messages.add(msg);
+        messages.add(index,msg);
         index++;
+        updated = true;
     }
 
     public String isUpDate(){
@@ -28,6 +29,7 @@ public class Observer {
             output = messages.get(index);
             messages.remove(index);
             index--;
+            updated=false;
         }
         return output;
     }
