@@ -1,5 +1,6 @@
 package Presentation.Controllers;
 
+import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
@@ -9,11 +10,13 @@ import domain.shop.Product;
 import domain.shop.ServiceProduct;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
+import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ShopController {
 
@@ -44,22 +47,29 @@ public class ShopController {
     }
 
     public void renderShop(Context ctx) {
-        int id = Integer.parseInt(ctx.pathParam("shopID"));
+        int shopID = Integer.parseInt(ctx.pathParam("shopID"));
         PresentationUser user = userController.getUser(ctx);
-        ResponseT<Shop> response = services.GetShop(id);
+        ResponseT<Shop> response = services.GetShop(shopID);
         if (response.isErrorOccurred()) {
             ctx.status(400);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
             return;
         }
         PresentationShop shop = new PresentationShop(response.getValue());
-        ResponseList<ShopManagersPermissions> permission = services.CheckPermissionsForManager(user.getUsername(), id);
+        ResponseList<Product> products= services.GetProductInfoInShop(user.getUsername(), shopID,new SearchProductFilter());
+        if(response.isErrorOccurred()) {
+            ctx.status(400);
+            ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        shop.products = products.getValue().stream().map(PresentationProduct::new).collect(Collectors.toList());
+        ResponseList<ShopManagersPermissions> permission = services.CheckPermissionsForManager(user.getUsername(), shopID);
         if(permission.isErrorOccurred()){
             ctx.status(400);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
             return;
         }
-        user.setPermission(id, permission.getValue());
+        user.setPermission(shopID, permission.getValue());
         ctx.render("shop.jte", Map.of("user", user, "shop", shop));
     }
 
@@ -110,7 +120,7 @@ public class ShopController {
         String description = ctx.formParam("description");
         String category = ctx.formParam("category");
         double price = ctx.formParamAsClass("price", Double.class).get();
-        int quantity = ctx.formParamAsClass("quantity", Integer.class).get();
+        int quantity = ctx.formParamAsClass("amount", Integer.class).get();
         //TODO change all follow method to add serial number
         ResponseT<Product> response = services.AddProductToShopInventory(name,description, category, price, quantity, user.getUsername(), shopID);
         if(response.isErrorOccurred()){

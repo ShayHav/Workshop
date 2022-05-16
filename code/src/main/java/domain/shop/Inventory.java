@@ -62,7 +62,7 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", prodID));
             throw new InvalidProductInfoException();
         }
-        ProductImp p = new ProductImp(prodID, productName, productDesc, productCategory, price);
+        ProductImp p = new ProductImp(prodID, productName, productDesc, productCategory, price, quantity);
         productToQuantity.put(p, quantity);
         keyToProduct.put(prodID,p);
         eventLogger.logMsg(Level.INFO, String.format("product with id %d added to the store inventory", prodID));

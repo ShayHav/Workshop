@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderHistoryTest {
 
     OrderHistory myHistory;
-    ProductImp p = new ProductImp(1, "TestProduct", "", "Testing",100);
+    ProductImp p = new ProductImp(1, "TestProduct", "", "Testing",100,3);
 
 
     List<Product> getProducts(){

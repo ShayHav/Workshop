@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Services {
     private final MarketSystem marketSystem;
@@ -195,8 +196,8 @@ public class Services {
     //Make:nitay
     public ResponseList<Product> GetProductInfoInShop(String userName, int shopID, Filter<Product> f) {
         try {
-            List<Product> products = Collections.unmodifiableList(marketSystem.getInfoOfProductInShop(userName, shopID, f));
-            return new ResponseList<>(products);
+            List<Product> products = marketSystem.getInfoOfProductInShop(userName, shopID, f);
+            return new ResponseList<Product>(products);
         } catch (BlankDataExc blankDataExc) {
             return new ResponseList<>(blankDataExc.getMessage());
         }

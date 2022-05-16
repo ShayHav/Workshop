@@ -1,5 +1,6 @@
 package Presentation.Model;
 
+import domain.shop.Product;
 import domain.shop.ServiceProduct;
 
 public class PresentationProduct {
@@ -19,7 +20,7 @@ public class PresentationProduct {
         this.amount = amount;
     }
 
-    public PresentationProduct(ServiceProduct serviceProduct){
+    public PresentationProduct(Product serviceProduct){
         this.serialNumber = serviceProduct.getId();
         this.name = serviceProduct.getName();
         this.description = serviceProduct.getDescription();

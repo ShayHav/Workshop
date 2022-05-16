@@ -19,6 +19,7 @@ public class ServiceProduct implements Product{
         this.dis = serviceProduct.getDescription();
         this.cat = serviceProduct.getCategory();
         this.price = serviceProduct.getPrice();
+        this.amount = serviceProduct.getAmount();
     }
 
 
