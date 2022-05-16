@@ -9,6 +9,7 @@ import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.*;
+import domain.notifications.Observer;
 import domain.shop.*;
 
 import domain.user.*;
@@ -183,9 +184,9 @@ public class Services {
      * @param password - user's given password
      * @return Response object
      */
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password) {
+    public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password,Observer observer) {
         try {
-            boolean b = marketSystem.start(payment, supply, userName, password);
+            boolean b = marketSystem.start(payment, supply, userName, password,observer);
             return new Response();
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
@@ -512,10 +513,10 @@ public class Services {
      * @param userName - Active user identifier
      * @return Response object
      */
-    public Response AppointNewShopOwner(int key,String targetUser, String userName)
+    public Response AppointNewShopOwner(int key,String targetUser, String userName, Observer observer)
     {
         try {
-            String s = marketSystem.AppointNewShopOwner(key, targetUser, userName);
+            String s = marketSystem.AppointNewShopOwner(key, targetUser, userName,observer);
             if (s != null)
                 return new Response(s);
             return null;
@@ -539,9 +540,9 @@ public class Services {
      * @param userName - Active user identifier
      * @return Response object
      */
-    public Response AppointNewShopManager(int key,String targetUser, String userName) {
+    public Response AppointNewShopManager(int key,String targetUser, String userName, Observer observer) {
         try {
-            String s = marketSystem.AppointNewShopManager(key, targetUser, userName);
+            String s = marketSystem.AppointNewShopManager(key, targetUser, userName,observer);
             if (s != null)
                 return new Response(s);
             return null;
@@ -806,9 +807,9 @@ public class Services {
      * @param shop - shop identifier
      * @return Response object
      */
-    public Response DismissalOwnerByOwner(String usernames,String targetUser,int shop) {
+    public Response DismissalOwnerByOwner(String usernames,String targetUser,int shop, Observer observer) {
         try {
-            if(marketSystem.DismissalOwner(usernames,targetUser,shop))
+            if(marketSystem.DismissalOwner(usernames,targetUser,shop,observer))
                 return new Response();
             return new ResponseT(null,"");
         }
@@ -846,5 +847,22 @@ public class Services {
             responseTList.add(new ResponseT<>(null,incorrectIdentification.getLocalizedMessage()));
             return responseTList;
         }
+    }
+
+    /**
+     * Registering SystemManager by registered System Manager
+     * @param systemManager
+     * @param username
+     * @param pw
+     * @return
+     */
+    public Response CreateSystemManager(String systemManager,String username, String pw) {
+        try {
+            if(marketSystem.createSystemManager(systemManager,username, pw))
+                return new Response();
+        } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc blankDataExc) {
+            return new Response(blankDataExc.getLocalizedMessage());
+        }
+        return new Response();
     }
 }

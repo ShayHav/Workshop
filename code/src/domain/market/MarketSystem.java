@@ -4,6 +4,7 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
 import domain.notifications.NotificationManager;
+import domain.notifications.Observer;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
@@ -44,10 +45,11 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    public boolean start(PaymentService payment, SupplyService supply, String userID, String password) throws InvalidSequenceOperationsExc {
+    public boolean start(PaymentService payment, SupplyService supply, String userID, String password,Observer observer) throws InvalidSequenceOperationsExc {
         if(!userController.createSystemManager(userID,password)){
             return false;
         }
+        notificationManager.subscribeSystemManager(observer);
         if(!externalConnector.connectToSupplyService(supply)){
             return false;
         }
@@ -174,7 +176,6 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: password");
         }
         output = UserController.getInstance().logIn(username, pw);
-        notificationManager.newSocketChannel(output,null);//TODO:
         return output;
     }
 
@@ -191,7 +192,6 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: username");
         }
         output = UserController.getInstance().logOut(username);
-        notificationManager.disConnected(output);
         return output;
     }
 
@@ -212,7 +212,7 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: username");
         }
         if(userController.isLogin(userID)) {
-            notificationManager.systeManagerMessage(String.format("ShopId: %d  is Close",shopId));
+            notificationManager.setMessageSystemManager(String.format("ShopId: %d  is Close",shopId));
             return ShopController.getInstance().closeShop(shopId, userID);
         }
         return null;
@@ -223,7 +223,7 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: username");
         }
         if(userController.isLogin(userID)) {
-            notificationManager.systeManagerMessage(String.format("ShopId: %d  is Open",shopId));
+            notificationManager.setMessageSystemManager(String.format("ShopId: %d  is Open",shopId));
             return ShopController.getInstance().openShop(shopId, userID);
         }
         return null;
@@ -265,19 +265,24 @@ public class MarketSystem {
         return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public String AppointNewShopManager(int shopID, String targetUser, String userID, Observer observer) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        String output;
         if(targetUser == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
         }
         if(userID == null)
             throw new BlankDataExc("parameter is null: username");
-        if(userController.isLogin(userID))
-            return ShopController.getInstance().AppointNewShopManager(key, targetUser, userID);
+        if(userController.isLogin(userID)) {
+            output = ShopController.getInstance().AppointNewShopManager(shopID, targetUser, userID);
+            notificationManager.subscribeShop(observer,shopID);
+            return output;
+        }
         return null;
     }
 
-    public String AppointNewShopOwner(int key, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public String AppointNewShopOwner(int shopID, String targetUser, String userID, Observer observer) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        String output;
         if(targetUser == null ) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
@@ -286,8 +291,11 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userController.isLogin(userID))
-            return ShopController.getInstance().AppointNewShopOwner(key, targetUser, userID);
+        if(userController.isLogin(userID)) {
+            output = ShopController.getInstance().AppointNewShopOwner(shopID, targetUser, userID);
+            notificationManager.subscribeShop(observer,shopID);
+            return output;
+        }
         return null;
     }
 
@@ -388,19 +396,20 @@ public class MarketSystem {
         if(targetUser== null)
             throw new BlankDataExc("parameter is null: targetUser");
         if(userController.getUser(usernames).DismissalUser(targetUser)){
-            notificationManager.systeManagerMessage(String.format("user has dismissal: %s",targetUser));
+            notificationManager.setMessageSystemManager(String.format("user has dismissal: %s",targetUser));
             return true;
         }
         else return false;
     }
 
-    public boolean DismissalOwner(String usernames, String targetUser, int shop) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException {
+    public boolean DismissalOwner(String usernames, String targetUser, int shop, Observer observer) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException {
         if(usernames==null)
             throw new BlankDataExc("parameter is null: usernames");
         if(targetUser== null)
             throw new BlankDataExc("parameter is null: targetUser");
         if(userController.getUser(usernames).DismissalOwner(targetUser,shop)){
-            notificationManager.shopOwnerMessage(shop,String.format("Owner of shop: %d has dismissal: %s",shop,targetUser));
+            notificationManager.unsubscribeShop(observer,shop);
+            notificationManager.setMessageShop(shop,String.format("Owner of shop: %d has dismissal: %s",shop,targetUser));
             return true;
         }
         return false;
@@ -409,5 +418,17 @@ public class MarketSystem {
 
     public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws InvalidSequenceOperationsExc, IncorrectIdentification {
         return userController.RequestUserInfo(f,userName);
+    }
+
+    public boolean createSystemManager(String systemManager, String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
+        if(username == null )
+            throw new BlankDataExc("parameter is null: username");
+        if(pw == null)
+            throw new BlankDataExc("parameter is null: pw");
+        if(systemManager==null)
+            throw new BlankDataExc("parameter is null: systemManager");
+        if(UserController.getInstance().getUser(systemManager).isSystemManager())
+            return UserController.getInstance().createSystemManager(username, pw);
+        else return false;
     }
 }
