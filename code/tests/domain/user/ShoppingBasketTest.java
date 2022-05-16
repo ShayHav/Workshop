@@ -1,7 +1,6 @@
 package domain.user;
 
 import domain.shop.Product;
-import domain.shop.ProductInfo;
 import domain.Exceptions.ProductNotFoundException;
 import domain.shop.Shop;
 
@@ -82,7 +81,7 @@ class ShoppingBasketTest {
         when(shop.getName()).thenReturn("david&sons");
         when(shop.getInfoOnProduct(1)).thenReturn(productInfo);
         when(shop.calculateTotalAmountOfOrder(basket.getProductAmountList())).thenReturn(100.0);
-        ShoppingBasket.BasketInfo info = basket.showBasket();
+        ShoppingBasket.ServiceBasket info = basket.showBasket();
         assertEquals(info.getShopId(),1);
         assertEquals(info.getShopName(),"david&sons");
         assertEquals(info.getProductWithAmount().get(productInfo), 100);

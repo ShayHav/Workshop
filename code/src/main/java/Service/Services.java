@@ -10,19 +10,15 @@ import domain.market.MarketSystem;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
 import domain.shop.*;
-import domain.user.TransactionInfo;
-import domain.user.User;
-import domain.user.UserSearchInfo;
+import domain.user.*;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
-import domain.user.filter.SearchProductFilter;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Services {
     private final MarketSystem marketSystem;
@@ -232,6 +228,15 @@ public class Services {
             return new ResponseList<>(products);
         } catch (BlankDataExc blankDataExc) {
             return new ResponseList<>(blankDataExc.getMessage());
+        }
+    }
+
+    public ResponseT<Cart.ServiceCart> ShowCart(String username){
+        try{
+            Cart.ServiceCart c = marketSystem.showCart(username);
+            return new ResponseT<>(c);
+        }catch (BlankDataExc e){
+            return new ResponseT<>(e.getMessage());
         }
     }
 

@@ -6,7 +6,6 @@ import domain.Exceptions.BlankDataExc;
 import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.Product;
-import domain.shop.ProductInfo;
 import domain.Exceptions.ProductNotFoundException;
 import domain.shop.Shop;
 import java.util.HashMap;
@@ -14,13 +13,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class ShoppingBasket {
-    enum status {
-        active,
-        completed,
-        failed_payment,
-        failed_supply,
-        failed_due_to_error
-    }
+
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final Shop shop;
@@ -131,7 +124,7 @@ public class ShoppingBasket {
         return shop.checkout(productAmountList, billingInfo);
     }
 
-    public BasketInfo showBasket() {
+    public ServiceBasket showBasket() {
         Map<Product,Integer> productWithAmount = new HashMap<>();
         for(Integer product: productAmountList.keySet()){
             Product p;
@@ -145,21 +138,21 @@ public class ShoppingBasket {
             productWithAmount.put(p,amount);
         }
         basketAmount = calculateTotalAmount();
-        return new BasketInfo(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
+        return new ServiceBasket(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
     }
 
     public Map<Integer, Integer> getProductAmountList() {
         return productAmountList;
     }
 
-    public class BasketInfo{
+    public class ServiceBasket {
 
         private int shopId;
         private String shopName;
         private Map<Product,Integer> productWithAmount;
         private double totalAmount;
 
-        public BasketInfo(int shopId, String shopName, Map<Product, Integer> productWithAmount, double totalAmount){
+        public ServiceBasket(int shopId, String shopName, Map<Product, Integer> productWithAmount, double totalAmount){
             this.shopId = shopId;
             this.shopName = shopName;
             this.productWithAmount = productWithAmount;

@@ -12,7 +12,6 @@ import domain.user.TransactionInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
-import domain.user.filter.SearchProductFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -101,6 +100,11 @@ public class MarketSystem {
 
     }
 
+    public Cart.ServiceCart showCart(String username) throws BlankDataExc {
+        if(username==null || !userController.HasUserEnteredMarket(username))
+            throw new BlankDataExc("username is null or not entered market");
+        return userController.showCart(username);
+    }
 
     //TODO: f==null is ok? getAllInfoProduct..
     public List<Product> getInfoOfProductInShop(String userID, int shopID, Filter<Product> f) throws BlankDataExc {

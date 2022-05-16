@@ -29,6 +29,8 @@ public class UserController {
         guestUser = new HashMap<>();
     }
 
+
+
     private static class UserControllerHolder{
         private static final UserController uc = new UserController();
     }
@@ -66,6 +68,14 @@ public class UserController {
             throw new InvalidAuthorizationException("username or password given is incorrect.");
         }
     }
+    public Cart.ServiceCart showCart(String username) {
+        User u = memberList.get(username);
+        if (u == null){
+            u = guestUser.get(username);
+        }
+        return u.showCart();
+    }
+
 
     private synchronized boolean isUserisLog(String id){
         return activeUser.containsKey(id);

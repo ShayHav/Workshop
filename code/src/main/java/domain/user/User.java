@@ -349,7 +349,7 @@ public class User {
         return managerAppointeeList;
     }
 
-    public Cart.CartInfo showCart() {
+    public Cart.ServiceCart showCart() {
         return userCart.showCart();
     }
 

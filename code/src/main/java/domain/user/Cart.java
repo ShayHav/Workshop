@@ -6,7 +6,7 @@ import domain.shop.Order;
 import domain.shop.Shop;
 import domain.Exceptions.ShopNotFoundException;
 import domain.Exceptions.BlankDataExc;
-import domain.user.ShoppingBasket.BasketInfo;
+import domain.user.ShoppingBasket.ServiceBasket;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -85,14 +85,14 @@ public class Cart {
     }
 
 
-    public CartInfo showCart() {
-        List<BasketInfo> basketInfoList = new ArrayList<>();
+    public ServiceCart showCart() {
+        Map<Integer,ServiceBasket> basketMap = new HashMap<>();
         for (Integer shopID : baskets.keySet()) {
-            BasketInfo basket = baskets.get(shopID).showBasket();
-            basketInfoList.add(basket);
+            ServiceBasket basket = baskets.get(shopID).showBasket();
+            basketMap.put(shopID,basket);
         }
         totalAmount = getTotalAmount();
-        return new CartInfo(totalAmount, basketInfoList);
+        return new ServiceCart(totalAmount, basketMap);
     }
 
     public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String
@@ -115,12 +115,12 @@ public class Cart {
         return orders;
     }
 
-    public class CartInfo {
+    public class ServiceCart {
 
         private double totalAmount;
-        private List<BasketInfo> baskets;
+        private Map<Integer,ServiceBasket> baskets;
 
-        public CartInfo(double totalAmount, List<BasketInfo> baskets) {
+        public ServiceCart(double totalAmount, Map<Integer,ServiceBasket> baskets) {
             this.totalAmount = totalAmount;
             this.baskets = baskets;
         }
@@ -129,7 +129,7 @@ public class Cart {
             return totalAmount;
         }
 
-        public List<BasketInfo> getBaskets() {
+        public Map<Integer,ServiceBasket>getBaskets() {
             return baskets;
         }
     }
