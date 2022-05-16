@@ -4,20 +4,26 @@ public class ServiceProduct implements Product{
 
     private int id;
     private String name;
-    private String dis;
-    private String cat;
+    private String description;
+    private String category;
     private double price;
     private int amount;
-    public ServiceProduct(int id, String name, String dis, String cat, double price, int amount)
+    public ServiceProduct(int id, String name, String description, String category, double price, int amount)
     {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.price = price;
+        this.amount = amount;
 
     }
 
-    public ServiceProduct(Product serviceProduct){
+    public ServiceProduct(ProductImp serviceProduct){
         this.id = serviceProduct.getId();
         this.name = serviceProduct.getName();
-        this.dis = serviceProduct.getDescription();
-        this.cat = serviceProduct.getCategory();
+        this.description = serviceProduct.getDescription();
+        this.category = serviceProduct.getCategory();
         this.price = serviceProduct.getPrice();
         this.amount = serviceProduct.getAmount();
     }
@@ -30,21 +36,21 @@ public class ServiceProduct implements Product{
 
     @Override
     public String getDescription() {
-        return null;
+        return description;
     }
 
     @Override
     public int getId() {
-        return 0;
+        return id;
     }
 
     @Override
     public String getCategory() {
-        return null;
+        return category;
     }
 
     public double getPrice() {
-        return (int) price;
+        return price;
     }
 
     @Override

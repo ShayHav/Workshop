@@ -20,8 +20,8 @@ class InventoryTest {
     @BeforeEach
     void setUp() throws InvalidProductInfoException {
         inv = new Inventory();
-        inv.addProduct("Iphone13", "Apples new overpriced smartphone", "smartphone",3499.90, 100);
-        inv.addProduct("Galaxy s22", "Samsung new overpriced smartphone", "smartphone",2999.90, 0);
+        inv.addProduct(1,"Iphone13", "Apples new overpriced smartphone", "smartphone",3499.90, 100);
+        inv.addProduct(2,"Galaxy s22", "Samsung new overpriced smartphone", "smartphone",2999.90, 0);
     }
 
     @Test

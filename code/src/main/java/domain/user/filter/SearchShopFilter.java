@@ -2,9 +2,8 @@ package domain.user.filter;
 
 import domain.EventLoggerSingleton;
 import domain.shop.Shop;
-import domain.shop.ShopInfo;
-import domain.user.filter.Filter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;

@@ -3,6 +3,9 @@ package Presentation.Model;
 import domain.shop.Product;
 import domain.shop.ServiceProduct;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PresentationProduct {
     public int serialNumber;
     public String name;
@@ -28,5 +31,6 @@ public class PresentationProduct {
         this.price = serviceProduct.getPrice();
         this.amount = serviceProduct.getAmount();
     }
+
 
 }

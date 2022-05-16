@@ -97,17 +97,17 @@ public class AddProductToShopCaseTest extends Tester {
     @Test
     public void GoodInsertTest()
     {
-        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
-        assertTrue(!(AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_2).isErrorOccurred()));
-        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_2, amountToAdd_2, user_2, shopID_3).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_2).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_2, amountToAdd_2, user_2, shopID_3).isErrorOccurred()));
     }
 
     @Test
     public void SameProductDifferentShopInsertTest()
     {
-        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
-        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_2).isErrorOccurred()));
-        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_3).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_2).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_3).isErrorOccurred()));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class AddProductToShopCaseTest extends Tester {
         Register(validUsers[2],pws[2]);
         Login(validUsers[2],pws[2]);
         AppointNewShopOwner(shopID_1,validUsers[2],user_1);
-        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
     }
 
     @Test
@@ -129,20 +129,20 @@ public class AddProductToShopCaseTest extends Tester {
         List<ShopManagersPermissions> ls = new ArrayList<ShopManagersPermissions>();
         ls.add(sp);
         AddShopMangerPermissions(shopID_1,ls,validUsers[2],user_1);
-        assertTrue((!AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
+        assertTrue((!AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
     }
 
     @Test
     public void NotRegisteredUserTest()
     {
-        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
     }
 
     @Test
     public void NotLoggedInUserTest()
     {
         Logout(user_1);
-        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
     }
 
     @Test
@@ -161,27 +161,27 @@ public class AddProductToShopCaseTest extends Tester {
         ls.add(sp);
         AddShopMangerPermissions(shopID_1,ls,validUsers[2],user_1);
         AppointNewShopOwner(shopID_1, validUsers[3],user_1);
-        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_2).isErrorOccurred()));
-        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[3], shopID_2).isErrorOccurred()));
-        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_2).isErrorOccurred()));
-        assertFalse(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[ug.getNumOfUser()-1], shopID_2).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_2).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[3], shopID_2).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_2).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[ug.getNumOfUser()-1], shopID_2).isErrorOccurred()));
 
     }
 
     @Test
     public void ProductAlreadyInShopTest()
     {
-        assertTrue(!(AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
-        assertFalse(!(AddProductToShopInventory(pName_1,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID_1).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID_1).isErrorOccurred()));
     }
 
     @Test
     public void BadProductInputsTest() {
-        assertFalse(!(AddProductToShopInventory(pName_1, "", pCat_1, price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
-        assertFalse(!(AddProductToShopInventory(pName_1, pDis_1, "", price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
-        assertFalse(!(AddProductToShopInventory(pName_1, pDis_1, pCat_1, -1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
-        assertFalse(!(AddProductToShopInventory(pName_1, pDis_1, pCat_1, price_1, 0, user_1, shopID_1).isErrorOccurred()));
-        assertFalse(!(AddProductToShopInventory(null, pDis_1, pCat_1, price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1, "", pCat_1, price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1, pDis_1, "", price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1, pDis_1, pCat_1, -1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,pName_1, pDis_1, pCat_1, price_1, 0, user_1, shopID_1).isErrorOccurred()));
+        assertFalse(!(AddProductToShopInventory(1,null, pDis_1, pCat_1, price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
 
     }
 

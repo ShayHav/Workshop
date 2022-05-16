@@ -16,6 +16,7 @@ import domain.user.UserSearchInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.SearchProductFilter;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -197,7 +198,7 @@ public class Services {
     public ResponseList<Product> GetProductInfoInShop(String userName, int shopID, Filter<Product> f) {
         try {
             List<Product> products = marketSystem.getInfoOfProductInShop(userName, shopID, f);
-            return new ResponseList<Product>(products);
+            return new ResponseList<>(products);
         } catch (BlankDataExc blankDataExc) {
             return new ResponseList<>(blankDataExc.getMessage());
         }
@@ -299,7 +300,7 @@ public class Services {
 
     //Shay
     //done
-    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
+    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
         ShopController controller = ShopController.getInstance();
         Shop shop;
         try {
@@ -309,7 +310,7 @@ public class Services {
         }
         Product p;
         try {
-            p = shop.addListing(pName, pDis, pCat, price, amount, username);
+            p = shop.addListing(serialNumber, pName, pDis, pCat, price, amount, username);
         } catch (InvalidAuthorizationException iae) {
             return new ResponseT<>(null, iae.getLocalizedMessage());
         } catch (InvalidProductInfoException ipie) {

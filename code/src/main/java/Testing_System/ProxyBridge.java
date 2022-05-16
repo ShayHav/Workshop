@@ -7,9 +7,7 @@ import domain.market.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchOfficialsFilter;
-import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.*;
 
 import java.util.List;
 import java.util.Map;
@@ -147,7 +145,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
+    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
         return new ResponseT();
     }
 

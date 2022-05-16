@@ -102,9 +102,9 @@ public class Shop {
         }
     }
 
-    public synchronized Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
+    public synchronized Product addListing(int serialNumber, String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
         if(shopManagersPermissionsController.canAddProductToInventory(userId)| ShopOwners.containsKey(userId))
-            return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
+            return inventory.addProduct(serialNumber, productName, productDesc, productCategory, price, quantity);
         else
             throw new InvalidAuthorizationException("you do not have permission to list a product to this shop");
     }

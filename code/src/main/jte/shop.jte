@@ -10,6 +10,11 @@
         <h2 class="fs-4">Little bit about us</h2>
         <p class="fs-5">${shop.description}</p>
     </div>
+    @if(user.hasInventoryPermission(Integer.parseInt(shop.id)))
+        <div class="container">
+        <a href="/shops/${shop.id}/addProduct" class="btn btn-primary">Add Product</a>
+        </div>
+    @endif
     <div class="container row mx-auto">
         @for(Presentation.Model.PresentationProduct product: shop.products)
             <div class="card m-1" style="width: 18rem">
@@ -18,15 +23,11 @@
                 <div class="card-body">
                     <h2 class="card-title">${product.name}</h2>
                     <p class="card-text">${product.description}</p>
-                    <a href="/products/${product.serialNumber}" class="btn btn-primary">Show Product</a>
+                    <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary">Show Product</a>
                 </div>
             </div>
         @endfor
     </div>
-    @if(user.hasInventoryPermission(Integer.parseInt(shop.id)))
-        <a href="/shops/${shop.id}/addProduct" class="btn btn-primary">Add Product</a>
-    @endif
-
 </main>
 
 </body>

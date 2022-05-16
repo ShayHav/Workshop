@@ -14,6 +14,7 @@ import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,11 +58,13 @@ public class ShopController {
         }
         PresentationShop shop = new PresentationShop(response.getValue());
         ResponseList<Product> products= services.GetProductInfoInShop(user.getUsername(), shopID,new SearchProductFilter());
-        if(response.isErrorOccurred()) {
+        if(products.isErrorOccurred()) {
             ctx.status(400);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
             return;
         }
+
+
         shop.products = products.getValue().stream().map(PresentationProduct::new).collect(Collectors.toList());
         ResponseList<ShopManagersPermissions> permission = services.CheckPermissionsForManager(user.getUsername(), shopID);
         if(permission.isErrorOccurred()){
@@ -89,8 +92,9 @@ public class ShopController {
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
             return;
         }
+        PresentationProduct product = new PresentationProduct(response.getValue());
         user.setPermission(shopID, permission.getValue());
-        ctx.render("product.jte", Map.of("user", user, "product", response.getValue(), "shopId", shopID));
+        ctx.render("product.jte", Map.of("user", user, "product", product, "shopId", shopID));
     }
 
     public void editProduct(Context ctx) {
@@ -122,7 +126,7 @@ public class ShopController {
         double price = ctx.formParamAsClass("price", Double.class).get();
         int quantity = ctx.formParamAsClass("amount", Integer.class).get();
         //TODO change all follow method to add serial number
-        ResponseT<Product> response = services.AddProductToShopInventory(name,description, category, price, quantity, user.getUsername(), shopID);
+        ResponseT<Product> response = services.AddProductToShopInventory(serialNumber,name,description, category, price, quantity, user.getUsername(), shopID);
         if(response.isErrorOccurred()){
             ctx.status(400);
             ctx.render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));

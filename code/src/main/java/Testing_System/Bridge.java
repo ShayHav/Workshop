@@ -10,6 +10,7 @@ import domain.user.TransactionInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.SearchProductFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,7 @@ public interface Bridge {
 
     ResponseT<Boolean> CheckIfProductAvailable(Product p, int shopID);
 
-    ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID); //done
+    ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID); //done
 
     ResponseT<Product> ChangeProduct(String username, Product p, int shopID);
     /*

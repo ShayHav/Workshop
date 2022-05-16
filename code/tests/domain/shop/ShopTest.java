@@ -59,7 +59,7 @@ public class ShopTest {
     void addAndGetProduct() {
         Product apple;
         try {
-            apple = shop.addListing("apple", "red apple", "fruits", 5.0, 5, "Davidos");
+            apple = shop.addListing(5,"apple", "red apple", "fruits", 5.0, 5, "Davidos");
         }catch (InvalidAuthorizationException InvAuthExc){
             fail("founder can add product");
             return;

@@ -12,6 +12,7 @@ import domain.user.TransactionInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.SearchProductFilter;
 
 import java.util.List;
 import java.util.Map;
