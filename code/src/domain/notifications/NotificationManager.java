@@ -35,6 +35,9 @@ public class NotificationManager {
     public synchronized void newSocketChannel (User user,SocketChannel socketChannel){
         userSocketChannelMap.putIfAbsent(user,socketChannel);
     }
+    public synchronized void disConnected(User user){
+        userSocketChannelMap.remove(user);
+    }
     public synchronized void setMessage(User forUser,String message) {
         if (userSocketChannelMap.containsKey(forUser)) {
             userSocketChannelMap.get(forUser).send(message);

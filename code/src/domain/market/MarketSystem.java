@@ -164,6 +164,7 @@ public class MarketSystem {
 
     //TODO: Services start here :)
     public User logIn(String username, String pw) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+        User output;
         if(username == null ) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: username");
             throw new BlankDataExc("parameter is null: username");
@@ -172,22 +173,26 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: pw");
             throw new BlankDataExc("parameter is null: password");
         }
-        return UserController.getInstance().logIn(username, pw);
+        output = UserController.getInstance().logIn(username, pw);
+        notificationManager.newSocketChannel(output,null);//TODO:
+        return output;
     }
 
-    public User LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc {
-        if(s!=null & !s.isEmpty()){
-            return userController.logOut(s);
-        }
+    public User LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        if(UserController.getInstance().getUser(s).isLoggedIn())
+            logout(s);
         return null;
     }
 
     public User logout(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
-        if(username == null){
-            errorLogger.logMsg(Level.WARNING,"BlankDataExc: username");
+        User output;
+        if (username == null) {
+            errorLogger.logMsg(Level.WARNING, "BlankDataExc: username");
             throw new BlankDataExc("parameter is null: username");
         }
-        return UserController.getInstance().logOut(username);
+        output = UserController.getInstance().logOut(username);
+        notificationManager.disConnected(output);
+        return output;
     }
 
     public int RemoveProductFromShopInventory(int productId, String userID, int shopname) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc {

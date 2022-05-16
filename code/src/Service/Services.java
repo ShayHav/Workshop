@@ -103,11 +103,10 @@ public class Services {
                 return new Response();
             else return null;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | InvalidSequenceOperationsExc incorrectIdentification){
             return new Response(incorrectIdentification.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (BlankDataExc blankDataExc) {
+            return new ResponseT<>(blankDataExc.getMessage());
         }
     }
 
