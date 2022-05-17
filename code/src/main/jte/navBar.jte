@@ -42,11 +42,10 @@
             </ul>
             <div class="me-auto col-7">
                 <form class="d-flex" method="get" action="/search">
-                    <div class="col-2">
+                    <div class="col-3">
                         <select class="form-select border-end-0 rounded-start" name="searchBy"
                                 aria-label="Disabled select example">
-                            <option selected value="product">Product's Name</option>
-                            <option value="shop">Shop's Name</option>
+                            <option selected value="products">Product's Name</option>
                             <option value="category">Category</option>
                             <option value="keyword">Keyword</option>
                         </select>
