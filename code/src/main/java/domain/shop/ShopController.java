@@ -1,12 +1,13 @@
 package domain.shop;
 
+import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
-import domain.user.filter.Filter;
+import domain.user.filter.*;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -35,11 +36,12 @@ public class ShopController {
         return shopCounter;
     }
 
-    public synchronized Shop createShop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
+    public synchronized Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
         Shop newShop;
         if (isUniqueName(name)) {
             shopCounter++;
             newShop = new Shop(name, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+            newShop.setDescription(description);
             shopList.put(shopCounter, newShop);
             eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
             return newShop;
@@ -60,7 +62,7 @@ public class ShopController {
         List<Shop> allShops = new ArrayList<>();
         synchronized (this) {
             for (Shop s : shopList.values()) {
-                    allShops.add(s);
+                allShops.add(s);
             }
         }
         return f.applyFilter(allShops);
@@ -138,6 +140,7 @@ public class ShopController {
         return s.getName();
     }
 
+    //TEST METHOD
     public void DeleteShops() {
         shopList = new HashMap<>();
     }
@@ -155,7 +158,7 @@ public class ShopController {
         return productId;
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userName) {
         Shop s;
         try {
             s = getShop(key);
@@ -163,15 +166,15 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser, id)) {
-                eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
-                return "Shop Manager Permissions Removed";
-            }
-            else
-                return null;
+        if (s.removePermissions(shopManagersPermissionsList, tragetUser, userName)) {
+            eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
+            return "Shop Manager Permissions Removed";
+        }
+        else
+            return null;
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userName) {
         Shop s;
         try {
             s = getShop(key);
@@ -179,7 +182,7 @@ public class ShopController {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        if (s.addPermissions(shopManagersPermissionsList, tragetUser, id)) {
+        if (s.addPermissions(shopManagersPermissionsList, tragetUser, userName)) {
             eventLogger.logMsg(Level.INFO, "AddShopMangerPermissions succeeded");
             return "ShopManagerPermissionsAdd";
         }
@@ -187,7 +190,7 @@ public class ShopController {
             return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
+    public String AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         Shop s;
         try {
             s = getShop(key);
@@ -198,8 +201,18 @@ public class ShopController {
         eventLogger.logMsg(Level.INFO, "AppointNewShopManager succeeded");
         return s.AppointNewShopManager(targetUser, userId);
     }
+    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        Shop s;
+        try {
+            s = getShop(key);
+        }catch (ShopNotFoundException snfe){
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
+        return s.AppointNewShopOwner(targetUser, userId);
+    }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
+   /* public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
         Shop s;
         try {
             s = getShop(key);
@@ -210,24 +223,31 @@ public class ShopController {
         synchronized (this) {
             if (s.removePermissions(shopManagersPermissionsList, tragetUser.getUserName(), id))
                 return "ShopManagerPermissionsRemove";
-            }
             else return null;
         }
     }
+    */
 
-    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
+   /* public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
         Shop s;
+        User u;
         try {
             s = getShop(key);
+            u = ControllersBridge.getInstance().getUser(userId);
         }catch (ShopNotFoundException snfe){
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
             return null;
         }
-        eventLogger.logMsg(Level.INFO, "AppointNewShopOwner succeeded");
-        return s.AppointNewShopOwner(targetUser, userId);
+        return u.appointOwner(targetUser,key);
     }
+    */
 
-    public List<Order> getOrderHistoryForShops(List<Integer> shopId) {
+    /**
+     *
+     * @param shopId
+     * @return
+     */
+    public List<Order> getOrderHistoryForShops(List<Integer> shopId) throws ShopNotFoundException {
         List<Order> orders = new ArrayList<>();
         if (shopId == null) {
             for (Shop s : shopList.values()) {
@@ -237,8 +257,8 @@ public class ShopController {
             for (Integer id : shopId) {
                 Shop s = shopList.get(id);
                 if (s == null) {
-                    //log
-                    return null;
+                    errorLogger.logMsg(Level.WARNING,String.format("Shop not exist: %d",id));
+                    throw new ShopNotFoundException();
                 }
                 orders.addAll(s.getOrders());
             }
@@ -247,4 +267,20 @@ public class ShopController {
         return orders;
     }
 
+    /**
+     * check for each shop if the user is Founder | Owner Or manager
+     * @param targetUser - wanted Delete user identifier
+     * @return
+     */
+    public boolean canBeDismiss(String targetUser) {
+        for (Map.Entry<Integer, Shop> entry : shopList.entrySet()) {
+            if (!entry.getValue().canBeDismiss(targetUser))
+                return false;
+        }
+        return true;
+    }
+
+    public boolean DismissalOwner(String userName, String targetUser, int shop) throws ShopNotFoundException, InvalidSequenceOperationsExc {
+        return getShop(shop).DismissalOwner(userName,targetUser);
+    }
 }

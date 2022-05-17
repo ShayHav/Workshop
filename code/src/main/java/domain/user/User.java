@@ -7,12 +7,8 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
 import domain.Exceptions.IllegalStateException;
 import domain.ResponseT;
-import domain.market.MarketSystem;
 import domain.shop.*;
-import domain.user.filters.*;
-import domain.shop.PurchasePolicys.PurchasePolicy;
-import domain.shop.discount.DiscountPolicy;
-import domain.user.filter.Filter;
+import domain.user.filter.*;
 
 import java.util.*;
 import java.util.logging.Level;

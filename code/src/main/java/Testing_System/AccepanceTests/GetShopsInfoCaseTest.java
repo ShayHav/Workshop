@@ -3,7 +3,6 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
-import domain.shop.Shop;
 import domain.shop.ShopInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchShopFilter;

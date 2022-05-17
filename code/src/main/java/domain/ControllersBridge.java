@@ -2,11 +2,11 @@ package domain;
 
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.shop.Order;
-import domain.shop.Shop;
-import domain.shop.ShopController;
 import domain.Exceptions.ShopNotFoundException;
 import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
+import domain.shop.Shop;
+import domain.shop.ShopController;
 import domain.user.User;
 import domain.user.UserController;
 

@@ -3,7 +3,6 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
-import domain.shop.Shop;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -68,9 +68,7 @@ public class NotificationManager {
 
 package domain.notifications;
 
-import domain.ErrorLoggerSingleton;
 import domain.Exceptions.ShopNotFoundException;
-import domain.shop.ShopController;
 import domain.user.User;
 import domain.user.UserController;
 
@@ -78,7 +76,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class NotificationManager {
     private static NotificationManager single_instance = null;
