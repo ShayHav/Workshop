@@ -30,6 +30,7 @@
         </div>
         @if(user.hasInventoryPermission(shopId))
             <div class="container">
+
                 <a href="/shops/${shopId}/${product.serialNumber}" class="btn btn-info">Edit</a>
             </div>
         @endif
@@ -39,11 +40,12 @@
 
 
 <script>
-    const socket = new WebSocket("ws://localhost:8080/users/new")
-    const button = document.querySelector('#submitButton');
+    const socket = new WebSocket("ws://localhost:8080/users/{id}/addToCart/{shopID}/?item={serialNum}")
     const f = function () {
-        const form = document.registerForm;
-        const message = {username: form.username.value, password: form.password.value};
+        const username = "${user.getUsername()}"
+        const shopID = "${shopId}"
+        const serial = "${product.serialNumber}"
+        const message = {username:username, shopID: shopID, serialNumber:serial};
         socket.send(JSON.stringify(message));
     }
     button.addEventListener('click', f);

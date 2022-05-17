@@ -1,5 +1,6 @@
 package Presentation.Controllers;
 
+import Presentation.Model.AddToCartMessage;
 import Presentation.Model.PresentationUser;
 import Service.Services;
 import domain.Response;
@@ -95,16 +96,26 @@ public class UserController {
         ctx.redirect("/");
     }
 
-    public void addToCart(Context ctx) {
-        String username = ctx.pathParam("id");
-        int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
-        int productSerial = ctx.pathParamAsClass("serialNum",Integer.class).get();
-        int amount = 1; //currently, as default. maybe we will add the option to choose how much to add
-        Response response = services.AddToShoppingCart(username,shopID,productSerial,amount);
-        if(response.isErrorOccurred()){
-            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
-        }
-        //TODO: figure out what to do if the method ended successfully.
+    public void addToCart(WsConfig wsConfig) {
+
+        wsConfig.onConnect(ctx -> {
+            System.out.println("product page connected via websocket");
+        });
+
+        wsConfig.onMessage(ctx ->{
+            AddToCartMessage message = ctx.messageAsClass(AddToCartMessage.class);
+            Response response = services.AddToShoppingCart(message.getUsername(), message.getShopID(), message.getSerialNumber(), 1);
+        });
+
+//        String username = ctx.pathParam("id");
+//        int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
+//        int productSerial = ctx.pathParamAsClass("serialNum",Integer.class).get();
+//        int amount = 1; //currently, as default. maybe we will add the option to choose how much to add
+//        Response response = services.AddToShoppingCart(username,shopID,productSerial,amount);
+//        if(response.isErrorOccurred()){
+//            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+//        }
+//        //TODO: figure out what to do if the method ended successfully.
     }
 
     public void validateUser(Context ctx){

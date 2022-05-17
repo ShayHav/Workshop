@@ -71,7 +71,7 @@ public class Main {
                     post(userController::logout);
 
                     path("{id}/addToCart/{shopID}/?item={serialNum}", ()->{
-                        get(userController::addToCart);
+                        ws(userController::addToCart);
                     });
                 });
             });

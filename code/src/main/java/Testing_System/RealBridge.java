@@ -3,6 +3,7 @@ package Testing_System;
 import Service.Services;
 import domain.Response;
 import domain.ResponseList;
+import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
@@ -14,6 +15,7 @@ import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchProductFilter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -113,19 +115,23 @@ public class RealBridge implements  Bridge{
 
     @Override
     public Result<Boolean, List<Product>> SearchProductByName(String userID, String pName, Filter<Product> f) {
-        ResponseList<Product> response = sv.SearchProductByName(userID, pName, f);
+        ResponseMap<Integer,List<Product>> response = sv.SearchProductByName(userID, pName, f);
         if(response.isErrorOccurred())
             return new Result<>(false,null);
-        return new Result<>(true, response.getValue());
+        List<Product> result = new ArrayList<>();
+        response.getValue().values().forEach(result::addAll);
+        return new Result<>(true,result);
     }
 
 
     @Override
     public Result<Boolean, List<Product>> SearchProductByKeyword(String userID, String keyword, Filter<Product> f) {
-        ResponseList<Product> response =  sv.SearchProductByKeyword(userID, keyword, f);
+        ResponseMap<Integer,List<Product>> response =  sv.SearchProductByKeyword(userID, keyword, f);
         if(response.isErrorOccurred())
             return new Result<>(false,null);
-        return new Result<>(true, response.getValue());
+        List<Product> result = new ArrayList<>();
+        response.getValue().values().forEach(result::addAll);
+        return new Result<>(true,result);
     }
 
     @Override
