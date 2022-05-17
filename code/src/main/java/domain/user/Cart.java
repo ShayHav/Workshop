@@ -2,9 +2,7 @@ package domain.user;
 
 import domain.*;
 import domain.shop.Order;
-import domain.shop.Shop;
 import domain.Exceptions.ShopNotFoundException;
-import domain.Exceptions.BlankDataExc;
 import domain.user.ShoppingBasket.BasketInfo;
 import java.time.LocalDate;
 import java.util.ArrayList;

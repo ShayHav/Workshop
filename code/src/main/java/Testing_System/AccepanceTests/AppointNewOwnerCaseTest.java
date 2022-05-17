@@ -2,13 +2,7 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
-import domain.shop.Shop;
-import domain.shop.ShopManagersPermissions;
-import domain.shop.ShopPermissions;
 import org.junit.jupiter.api.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

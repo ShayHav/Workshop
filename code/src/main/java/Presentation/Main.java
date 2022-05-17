@@ -6,8 +6,6 @@ import domain.Response;
 import domain.ResponseT;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
-import domain.shop.Shop;
-import domain.shop.ShopInfo;
 import domain.user.User;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.Javalin;

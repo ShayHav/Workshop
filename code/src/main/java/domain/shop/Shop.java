@@ -10,8 +10,7 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
-import domain.user.filter.SearchOfficialsFilter;
-import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.*;
 
 import java.util.*;
 
@@ -24,6 +23,7 @@ public class Shop {
     private final int shopID;
     private int rank;
     private User ShopFounder;
+    private String description;
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
@@ -34,6 +34,7 @@ public class Shop {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final OrderHistory orders;
     private boolean isOpen;
+    private MarketSystem marketSystem;
 
     public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
@@ -49,6 +50,15 @@ public class Shop {
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+        marketSystem = MarketSystem.getInstance();
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
@@ -158,8 +168,17 @@ public class Shop {
         }
         return null;
     }
-    public boolean isProductIsAvailable(int prodID,int amount){
-        return inventory.getQuantity(prodID)>=amount;
+    public boolean isEnoughAmountOfProduct(int prodID, int amount){
+        int quantity;
+
+        try {
+            quantity = inventory.getQuantity(prodID);
+        }catch (ProductNotFoundException productNotFoundException){
+            return false;
+        }
+
+        return quantity >= amount;
+
     }
 
     public synchronized int addPercentageDiscount(int prodID, double percentage){
@@ -193,10 +212,8 @@ public class Shop {
      * @param transaction the info of the client to be charged and supply
      * @return true if successfully created the order and add to the inventory
      */
-
-    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction)throws BlankDataExc{
+    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction) throws BlankDataExc {
         double productBasePrice;
-
         for(Map.Entry<Integer, Integer> set : products.entrySet()){
             //check purchase policy regarding the Product
             try {
@@ -228,18 +245,19 @@ public class Shop {
             product_PricePer.put(set.getKey(), product_price_single);
         }
 
-        MarketSystem market = MarketSystem.getInstance();
-        if(!market.pay(transaction)){
+        if(!marketSystem.pay(transaction)){
             synchronized (inventory) {
                 try {
                     inventory.restoreStock(products);
                 }catch (Exception e){
+                    errorLogger.logMsg(Level.SEVERE, "couldn't restock, Fatal. Explanation:\n" + e.getMessage());
                     e.printStackTrace();
                 }
             }
             return new ResponseT<>();
         }
-        if(!market.supply(transaction, products)){
+        if(!marketSystem.supply(transaction, products)){
+            //System.out.println("5\n");
             return new ResponseT<>("problem with supply system, please contact the company representative");
         }
         // creating Order object to store in the Order History with unmutable copy of product
@@ -267,32 +285,42 @@ public class Shop {
         return ShopOwners.containsKey(id);
     }
 
-    public String AppointNewShopOwner(String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
-        if (shopManagersPermissionsController.canAppointNewShopOwner(userId) | ShopOwners.containsKey(userId) | isFounder(userId)) {
+    public String AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        if (shopManagersPermissionsController.canAppointNewShopOwner(userId)| ShopOwners.containsKey(userId)) {
             synchronized (this) {
-                User newOwner = ControllersBridge.getInstance().getUser(targetUser);
-                if (newOwner != null)
-                    ShopOwners.putIfAbsent(targetUser, newOwner);
-                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopOwner User: %s", targetUser));
-                return String.format("Appoint New ShopOwner User: %s", targetUser);
+                User newManager = ControllersBridge.getInstance().getUser(usertarget);
+                User managerUser = ControllersBridge.getInstance().getUser(userId);
+                if (newManager != null) {
+                    if(managerUser.appointOwner(shopID)){
+                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        newManager.addRole(shopID,Role.ShopOwner);
+                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+                        return String.format("Appoint New ShopManager User: %s", usertarget);
+                    }
+                }
             }
         }
-        errorLogger.logMsg(Level.WARNING, String.format("Appoint New ShopOwner User: %s", targetUser));
-        return String.format("attempt to appoint New ShopOwner User: %s filed", targetUser);
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+        return String.format("attempt to appoint New ShopManager User: %s filed", usertarget);
     }
 
     public int getShopID() {
         return shopID;
     }
 
-    public String AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc {
+    public String AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if (shopManagersPermissionsController.canAppointNewShopManager(userId)| ShopOwners.containsKey(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
-                if (newManager != null)
-                    ShopManagers.putIfAbsent(usertarget, newManager);
-                eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
-                return String.format("Appoint New ShopManager User: %s", usertarget);
+                User managerUser = ControllersBridge.getInstance().getUser(userId);
+                if (newManager != null) {
+                    if(managerUser.appointManager(shopID)){
+                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        newManager.addRole(shopID,Role.ShopManager);
+                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+                        return String.format("Appoint New ShopManager User: %s", usertarget);
+                    }
+                }
             }
         }
         errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
@@ -303,14 +331,14 @@ public class Shop {
         if(shopManagersPermissionsController.canCloseShop(userID)) {
             if (isOpen)
                 isOpen = false;
-            else throw new InvalidSequenceOperationsExc();
+            else throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s",userID));
         }
     }
     public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc {
         if(shopManagersPermissionsController.canOpenShop(userID)) {
             if (!isOpen)
                 isOpen = true;
-            else throw new InvalidSequenceOperationsExc();
+            else throw new InvalidSequenceOperationsExc(String.format("attempt to Open Opened Shop userID: %s",userID));
         }
     }
 
@@ -335,6 +363,9 @@ public class Shop {
 
     public List<Product> getProductInfoOfShop() {
         List<Product> info = inventory.getAllProductInfo();
+        for (Product p : info) {
+            p.setShopRank(rank);
+        }
         return info;
     }
 
@@ -365,7 +396,7 @@ public class Shop {
         return inventory;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(SearchOfficialsFilter f, String userId) {
+    public List<User> RequestShopOfficialsInfo(SearchOfficialsFilter f, String userId) {
         if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)| ShopOwners.containsKey(userId)) {
             return f.applyFilter(getUserList(),shopID);
         }
@@ -394,6 +425,29 @@ public class Shop {
             list.add(permission);
         }
         return list;
+    }
+
+    private void setMarketSystem(MarketSystem ms){
+        marketSystem = ms;
+    }
+
+    public boolean canBeDismiss(String targetUser) {
+        return isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser);
+    }
+
+    public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc {
+        if(ShopOwners.containsKey(userName) & ShopOwners.containsKey(targetUser)){
+            if (shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) //TODO: need to check if OK.
+                return true;
+        }
+        throw new InvalidSequenceOperationsExc();
+    }
+
+    public List<User> getShopOwners() {
+        List<User> output = new LinkedList<>();
+        ShopOwners.values().forEach((u)->output.add(u));
+        output.add(ShopFounder);
+        return output;
     }
 
 }

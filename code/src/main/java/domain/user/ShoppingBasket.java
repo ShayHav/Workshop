@@ -6,9 +6,8 @@ import domain.Exceptions.BlankDataExc;
 import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.Product;
-import domain.shop.ProductInfo;
 import domain.Exceptions.ProductNotFoundException;
-import domain.shop.Shop;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
