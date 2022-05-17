@@ -41,7 +41,7 @@
                 @endif
             </ul>
             <div class="me-auto col-7">
-                <form class="d-flex" method="get">
+                <form class="d-flex" method="get" action="/search">
                     <div class="col-2">
                         <select class="form-select border-end-0 rounded-start" name="searchBy"
                                 aria-label="Disabled select example">

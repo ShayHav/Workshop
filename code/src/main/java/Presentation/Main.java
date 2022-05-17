@@ -75,9 +75,10 @@ public class Main {
                 path("{id}/logout", () ->{
                     post(userController::logout);
 
-                    path("{id}/addToCart/{shopID}/?item={serialNum}", ()->{
-                        ws(userController::addToCart);
-                    });
+                });
+
+                path("{id}/addToCart/{shopID}/?item={serialNum}", ()->{
+                    ws(userController::addToCart);
                 });
             });
 
@@ -99,9 +100,9 @@ public class Main {
 
         });
 
-        app.get("/search/", ctx ->{
-            String query = ctx.pathParam("query");
-            String searchBy = ctx.pathParam("searchBy");
+        app.get("/search", ctx ->{
+            String query = ctx.queryParam("query");
+            String searchBy = ctx.queryParam("searchBy");
             PresentationUser user = userController.getUser(ctx);
             switch (searchBy){
                 case "Product":
