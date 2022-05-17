@@ -1,7 +1,8 @@
 package domain.user;
 
+import domain.shop.Product;
 import domain.shop.ProductInfo;
-import domain.shop.ProductNotFoundException;
+import domain.Exceptions.ProductNotFoundException;
 import domain.shop.Shop;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,12 +19,12 @@ class ShoppingBasketTest {
 
     ShoppingBasket basket;
     Shop shop;
-    ProductInfo productInfo;
+    Product productInfo;
 
     @BeforeEach
     void setUp() {
         shop = mock(Shop.class);
-        productInfo = mock(ProductInfo.class);
+        productInfo = mock(Product.class);
         basket = new ShoppingBasket(shop);
         Map<Integer, Integer> productsWithAmount = basket.getProductAmountList();
         productsWithAmount.put(1, 100);

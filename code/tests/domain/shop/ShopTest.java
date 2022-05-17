@@ -1,24 +1,17 @@
 package domain.shop;
 
-import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
-import domain.ResponseT;
+import domain.Exceptions.InvalidAuthorizationException;
+import domain.Exceptions.InvalidProductInfoException;
 import domain.market.ExternalConnector;
-import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
-import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.BlankDataExc;
-import domain.user.IncorrectIdentification;
-import domain.user.TransactionInfo;
+import domain.Exceptions.BlankDataExc;
+import domain.Exceptions.IncorrectIdentification;
 import domain.user.User;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
 
 import java.util.*;
-import java.util.logging.Level;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,32 +22,56 @@ public class ShopTest {
     DiscountPolicy discountPolicy;
     PurchasePolicy purchasePolicy;
     OrderHistory orders;
+    User davidos;
     Shop shop;
-    ProductImp p1;
-    ProductImp p2;
+    int appleID;
+    int orangeID;
+    Product p1;
+    Product p2;
 
     @BeforeEach
     void setUp() throws IncorrectIdentification, BlankDataExc {
+        ExternalConnector ec = mock(ExternalConnector.class);
+
+
+    }
+
+    private User setDavidos(){
+        User davidos = mock(User.class);
+        when(davidos.getUserName() == "Davidos");
+
+        return davidos;
+    }
+
+    private void setDavidosShop(){
+        User davidos = setDavidos();
+        shop = new Shop("David's", discountPolicy, purchasePolicy, davidos, 1);
         discountPolicy = mock(DiscountPolicy.class);
         purchasePolicy = mock(PurchasePolicy.class);
-        inventory = mock(Inventory.class);
-        shop = new Shop("David's", discountPolicy, purchasePolicy, "Davidos", 1);
         Product p1 = mock(ProductImp.class);
         Product p2 = mock(ProductImp.class);
-        ExternalConnector ec = mock(ExternalConnector.class);
         when(p1.getId()).thenReturn(1);
         when(p2.getId()).thenReturn(2);
-        when(inventory.findProduct(1)).thenReturn(p1);
-        /*when(ec.pay()).thenReturn(true);*/
-        when(inventory.findProduct(2)).thenReturn(p2);
-        when(inventory.getPrice(1)).thenReturn(5.0);
-        when(inventory.getPrice(2)).thenReturn(12.0);
         when(discountPolicy.calcPricePerProduct(1, 5.0, 3)).thenReturn(4.0);
         when(discountPolicy.calcPricePerProduct(2, 12.0, 7)).thenReturn(8.0);
-        when(inventory.getPrice(2)).thenReturn(12.0);
-        shop.setInventory(inventory);
         shop.setDiscountPolicy(discountPolicy);
         shop.setPurchasePolicy(purchasePolicy);
+    }
+
+    @Test
+    void addAndGetProduct() {
+        Product apple;
+        try {
+            apple = shop.addListing("apple", "red apple", "fruits", 5.0, 5, "Davidos");
+        }catch (InvalidAuthorizationException InvAuthExc){
+            fail("founder can add product");
+            return;
+        }catch (InvalidProductInfoException InvProdInfoExc){
+            fail("product info is legal");
+            return;
+        }
+        assertTrue(shop.isProductIsAvailable(apple.getId()));
+        assertEquals(shop.getProduct(apple.getId()).getId(), apple.getId());
     }
 
 
