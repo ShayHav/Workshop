@@ -74,10 +74,10 @@ public class Main {
 
                 path("{id}", () -> {
                     post("/logout", userController::logout);
-                    ws("/addToCart",userController::addToCart);
+                    ws("/addToCart", userController::addToCart);
 
 
-                    path("cart", ()->{
+                    path("cart", () -> {
                         get(userController::renderCart);
                         post("{serialNumber}/update", userController::updateAmountInCart);
                         post("{serialNumber}/remove", userController::removeFromCart);
@@ -95,19 +95,17 @@ public class Main {
                 get("/addProduct", shopController::renderAddProductPage);
                 post("/addProduct", shopController::addProduct);
 
-                    path("{serialNumber}", () ->{
-                        get(shopController::renderProductPage);
-                        post("/edit", shopController::editProduct);
-                        post("/remove", shopController::removeProduct);
-                    });
+                path("{serialNumber}", () -> {
+                    get(shopController::renderProductPage);
+                    post("/edit", shopController::editProduct);
+                    post("/remove", shopController::removeProduct);
                 });
             });
+        });
 
-    });
 
-        app.get("/search",ctx ->
 
-    {
+        app.get("/search",ctx -> {
         String query = ctx.queryParam("query");
         String searchBy = ctx.queryParam("searchBy");
         PresentationUser user = userController.getUser(ctx);
