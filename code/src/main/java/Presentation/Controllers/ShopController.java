@@ -32,10 +32,9 @@ public class ShopController {
 
     public void createShop(Context ctx) {
         String shopName = ctx.formParam("shopName");
-        //TODO: also send desc
         String description = ctx.formParam("description");
         String username = ctx.cookieStore("uid");
-        ResponseT<Shop> response = services.CreateShop(username, shopName);
+        ResponseT<Shop> response = services.CreateShop(description,username, shopName);
         if (response.isErrorOccurred()) {
             ctx.status(418);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 418));

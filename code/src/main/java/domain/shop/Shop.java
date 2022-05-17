@@ -155,8 +155,8 @@ public class Shop {
         return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
     }
 
-    public boolean isProductIsAvailable(int prodID){
-        return inventory.isInStock(prodID);
+    public boolean isProductIsAvailable(int prodID, int quantity) throws ProductNotFoundException {
+        return inventory.getQuantity(prodID) >= quantity;
     }
 
     public synchronized Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price) throws InvalidProductInfoException, ProductNotFoundException {
@@ -255,7 +255,7 @@ public class Shop {
             }
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please contact the company representative", shopID));
         }
-        if(!market.supply(transaction, products)){
+        if(!marketSystem.supply(transaction, products)){
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
         }
         // creating Order object to store in the Order History with unmutable copy of product
@@ -427,7 +427,7 @@ public class Shop {
             throw new IllegalArgumentException("username "+managerUsername+" is not authorize in the shop " + shopID);
         return shopManagersPermissionsController.getPermissions(managerUsername);
     }
-}
+
     private void setMarketSystem(MarketSystem ms){
         marketSystem = ms;
     }

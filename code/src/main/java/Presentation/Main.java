@@ -6,7 +6,6 @@ import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
-import domain.Response;
 import domain.ResponseList;
 import domain.ResponseMap;
 import domain.market.PaymentServiceImp;
@@ -84,44 +83,42 @@ public class Main {
                     });
                 });
             });
-        });
 
-        //all the shop interfaces
-        path("shops", () -> {
-            post(shopController::createShop);
+            //all the shop interfaces
+            path("shops", () -> {
+                post(shopController::createShop);
 
-            path("{shopID}", () -> {
-                get(shopController::renderShop);
-                get("/addProduct", shopController::renderAddProductPage);
-                post("/addProduct", shopController::addProduct);
+                path("{shopID}", () -> {
+                    get(shopController::renderShop);
+                    get("/addProduct", shopController::renderAddProductPage);
+                    post("/addProduct", shopController::addProduct);
 
-                path("{serialNumber}", () -> {
-                    get(shopController::renderProductPage);
-                    post("/edit", shopController::editProduct);
-                    post("/remove", shopController::removeProduct);
+                    path("{serialNumber}", () -> {
+                        get(shopController::renderProductPage);
+                        post("/edit", shopController::editProduct);
+                        post("/remove", shopController::removeProduct);
+                    });
                 });
             });
         });
 
-
-
         app.get("/search",ctx -> {
-        String query = ctx.queryParam("query");
-        String searchBy = ctx.queryParam("searchBy");
-        PresentationUser user = userController.getUser(ctx);
-        ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
-            case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
-            case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, new SearchProductFilter());
-            case "" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
-            default -> new ResponseMap<Integer, List<Product>>("please choose a suitable query method");
-        } : new ResponseMap<Integer, List<Product>>("not suppose to happen");
-        if (response.isErrorOccurred()) {
-            ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
-            return;
-        }
-        List<PresentationProduct> searchResult = new ArrayList<>();
-        response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
-        ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult));
+            String query = ctx.queryParam("query");
+            String searchBy = ctx.queryParam("searchBy");
+            PresentationUser user = userController.getUser(ctx);
+            ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
+                case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
+                case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, new SearchProductFilter());
+                case "keyboard" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
+                default -> new ResponseMap<Integer, List<Product>>("please choose a suitable query method");
+            } : new ResponseMap<Integer, List<Product>>("not suppose to happen");
+            if (response.isErrorOccurred()) {
+                ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+                return;
+            }
+            List<PresentationProduct> searchResult = new ArrayList<>();
+            response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
+            ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult));
     });
 }
 }

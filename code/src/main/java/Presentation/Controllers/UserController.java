@@ -76,7 +76,7 @@ public class UserController {
 
         wsConfig.onMessage(ctx -> {
             PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);
-            Response response = Services.getInstance().Register(requestedUser.getUsername(), requestedUser.getPassword());
+            Response response = services.Register(requestedUser.getUsername(), requestedUser.getPassword());
             ctx.send(response);
         });
     }

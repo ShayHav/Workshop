@@ -50,10 +50,14 @@
                 </div>
             </form>
             @if(user.hasInventoryPermission(shopId))
-                <a href="/shops/${shopId}/${product.serialNumber}" class="btn btn-warning">Edit Product</a>
-                <form method="post" action="/shops/${product.shop}/${product.serialNumber}">
+                <div class="mb-2">
+                <a href="/shops/${shopId}/${product.serialNumber}/edit" class="btn btn-warning">Edit Product</a>
+                </div>
+                <div>
+                <form method="post" action="/shops/${product.shop}/${product.serialNumber}/remove">
                     <button type="submit" class="btn btn-danger">Remove Product</button>
                 </form>
+                </div>
             @endif
         </div>
     </div>

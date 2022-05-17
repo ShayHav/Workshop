@@ -455,7 +455,6 @@ public class User {
             return shop1.addPermissions(shopManagersPermissionsList, targetUser, userId);
         }
     }
-    */
 
   /*  public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
         synchronized (this) {

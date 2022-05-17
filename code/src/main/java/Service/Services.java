@@ -1,7 +1,5 @@
 package Service;
 
-
-import Testing_System.Result;
 import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseList;
@@ -70,8 +68,8 @@ public class Services {
      * @param pw - given password
      * @return - Response object
      */
-    public ResponseT<PresentationUser> Login(String username, String pw) {
-        ResponseT<PresentationUser> output;
+    public ResponseT<User> Login(String username, String pw) {
+        ResponseT<User> output;
         try {
             User b = marketSystem.logIn(username, pw);
             output = new ResponseT<>(b);
@@ -95,14 +93,14 @@ public class Services {
      * @param pw - given user password
      * @return
      */
-    public Response Register(String username, String pw, UserObserver userObserver) {
+    public Response Register(String username, String pw) {
         try {
             marketSystem.register(username, pw);
             return new Response();
         } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
         } catch (IncorrectIdentification incorrectIdentification) {
-            incorrectIdentification.printStackTrace();
+            return new Response(incorrectIdentification.getMessage());
         }
 
     }
@@ -140,10 +138,9 @@ public class Services {
      * @param username - user identifier
      * @return Response object
      */
-    public ResponseT<PresentationUser> Logout(String username) {
-        User output;
+    public ResponseT<User> Logout(String username) {
         try {
-            guest = marketSystem.logout(username);
+            User guest = marketSystem.logout(username);
             return new ResponseT<>(guest);
         } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification e) {
             return new ResponseT<>(e.getLocalizedMessage());
@@ -158,9 +155,9 @@ public class Services {
      * @param shopName - shop name
      * @return Response object
      */
-    public ResponseT<PresentationShop> CreateShop(String description ,String username, String shopName) {
+    public ResponseT<Shop> CreateShop(String description ,String username, String shopName) {
         try {
-            Shop output = marketSystem.createShop(shopName, null, null, username);
+            Shop output = marketSystem.createShop(description, shopName, null, null, username);
             ;
             return new ResponseT<>(output);
         } catch (BlankDataExc | IncorrectIdentification e) {
@@ -170,26 +167,26 @@ public class Services {
 
     //TODO: impl on later version
     //System
-    public Result<Boolean, String> RealTimeNotification(List<String> users, String msg) {
+    public Response RealTimeNotification(List<String> users, String msg) {
         return null;
     }
 
     //shay  //TODO: only for test?
-    public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
+    public ResponseT<Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
         try {
             MarketSystem m = MarketSystem.getInstance();
             boolean ans = m.supply(ti, products);
-            return new Result<>(ans, ans);
+            return new ResponseT<>(ans);
         } catch (BlankDataExc blankDataExc) {
             return null;
         }
     }
 
     //shay  //TODO: only for test?
-    public Result<Boolean, Boolean> Payment(TransactionInfo ti) {
+    public ResponseT<Boolean> Payment(TransactionInfo ti) {
         //MarketSystem m = MarketSystem.getInstance();
         boolean ans = marketSystem.pay(ti);
-        return new Result<>(ans, ans);
+        return new ResponseT<>(ans);
     }
 
     /**
@@ -200,9 +197,9 @@ public class Services {
      * @param password - user's given password
      * @return Response object
      */
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password,UserObserver observer) {
+    public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password) {
         try {
-            boolean b = marketSystem.start(payment, supply, userName, password,observer);
+            boolean b = marketSystem.start(payment, supply, userName, password);
             return new Response();
         } catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc) {
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
@@ -485,6 +482,8 @@ public class Services {
             return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null, blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new Response(invalidSequenceOperationsExc.getMessage());
         }
     }
 
@@ -506,6 +505,8 @@ public class Services {
             return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null, blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new Response(invalidSequenceOperationsExc.getMessage());
         }
     }
 
@@ -527,6 +528,8 @@ public class Services {
             return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null, blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new Response(invalidSequenceOperationsExc.getMessage());
         }
     }
 
@@ -590,12 +593,14 @@ public class Services {
      * @param userName - user identifier
      * @return Response object
      */
-    public ResponseList<UserSearchInfo> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName) {
+    public ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName) {
         try {
-            List<UserSearchInfo> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
+            List<User> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
             return new ResponseList<>(s);
-        } catch (IncorrectIdentification | ShopNotFoundException incorrectIdentification) {
+        } catch (IncorrectIdentification incorrectIdentification) {
             return new ResponseList<>(incorrectIdentification.getLocalizedMessage());
+        } catch (ShopNotFoundException e) {
+            return new ResponseList<User>(e.getMessage());
         }
     }
 
@@ -612,6 +617,8 @@ public class Services {
             return new ResponseList<>(orders);
         } catch (IncorrectIdentification | ShopNotFoundException incorrectIdentification) {
             return new ResponseList<>(incorrectIdentification.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new ResponseList<Order>(invalidSequenceOperationsExc.getMessage());
         }
     }
 
@@ -645,13 +652,13 @@ public class Services {
      * Remove a product from the shop inventory
      * @param productId
      * @param username
-     * @param shopname
+     * @param shopName
      * @return Response object
      */
     public Response RemoveProductFromShopInventory(int productId, String username, int shopName) {
         int removedProductID;
         try {
-            removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopname);
+            removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopName);
         }catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc iae){
             return new Response(iae.getLocalizedMessage());
         }
@@ -661,11 +668,11 @@ public class Services {
     }
 
     /**
-     * Remove a product from the shop inventory
-     * @param productId
-     * @param username
-     * @param shopname
-     * @return Response object
+     *
+     * @param userName
+     * @param f
+     * @param shopID
+     * @return
      */
     public ResponseList<Order> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID) {
         try {
@@ -699,11 +706,7 @@ public class Services {
             return new ResponseT<>(p);
         } catch (ShopNotFoundException | ProductNotFoundException e) {
             return new ResponseT<>(e.getMessage());
-        catch (InvalidAuthorizationException | IncorrectIdentification iae){
-            output.add(new ResponseT(iae.getLocalizedMessage()));
-            return output;
         }
-        return output;
     }
 
     /**
@@ -756,19 +759,14 @@ public class Services {
      * @param userName
      * @return list of Response object
      */
-    public List<ResponseT<PresentationUser>> RequestUserInfo(SearchUserFilter f, String userName)
+    public ResponseList<User> RequestUserInfo(SearchUserFilter f, String userName)
     {
-        List<ResponseT<PresentationUser>> responseTList = new LinkedList<>();
         try {
             List<User> s = marketSystem.RequestUserInfo(f, userName);
-            if (s != null)
-                for(User userSearchInfo: s)
-                    responseTList.add(new ResponseT<>(new PresentationUser(userSearchInfo)));
-            return responseTList;
+            return new ResponseList<User>(s);
         }
-        catch (IncorrectIdentification | InvalidSequenceOperationsExc incorrectIdentification){
-            responseTList.add(new ResponseT<>(null,incorrectIdentification.getLocalizedMessage()));
-            return responseTList;
+        catch (IncorrectIdentification | InvalidSequenceOperationsExc e){
+            return new ResponseList<User>(e.getMessage());
         }
     }
 

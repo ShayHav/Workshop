@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class SearchShopFilter implements Filter<ShopInfo> {
+public class SearchShopFilter implements Filter<Shop> {
     String name;
     Integer rank;
 

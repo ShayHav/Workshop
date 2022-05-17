@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-public class SearchProductFilter implements Filter<ProductInfo> {
+public class SearchProductFilter implements Filter<Product> {
 
     private Double minPrice;
     private Double maxPrice;
@@ -45,7 +45,7 @@ public class SearchProductFilter implements Filter<ProductInfo> {
         result = products.stream().filter(p -> (p.getPrice() >= minPrice & p.getPrice() <= maxPrice)).collect(Collectors.toList());
 
         if (productRank != null) {
-            result = result.stream().filter(p -> p.getProductRank() == productRank).collect(Collectors.toList());
+            result = result.stream().filter(p -> p.getRank() == productRank).collect(Collectors.toList());
         }
         if (shopRank != null) {
             result = result.stream().filter(p -> p.getShopRank() == shopRank).collect(Collectors.toList());

@@ -3,6 +3,7 @@ package domain.market;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
+import domain.ResponseT;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
 import domain.Response;
@@ -52,11 +53,10 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    public boolean start(PaymentService payment, SupplyService supply, String userID, String password, UserObserver observer) throws InvalidSequenceOperationsExc, IncorrectIdentification {
+    public boolean start(PaymentService payment, SupplyService supply, String userID, String password) throws InvalidSequenceOperationsExc, IncorrectIdentification {
         if(!userController.createSystemManager(userID,password)){
             return false;
         }
-        notificationManager.newSocketChannel(UserController.getInstance().getUser(userID), observer);
         if(!externalConnector.connectToSupplyService(supply)){
             return false;
         }
@@ -145,19 +145,15 @@ public class MarketSystem {
     public Shop createShop(String description ,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification {
         if(name == null )
             throw new BlankDataExc("parameter is null: name");
-        if(discountPolicy == null )
-            throw new BlankDataExc("parameter is null: discountPolicy");
         if(foundId == null )
             throw new BlankDataExc("parameter is null: foundId");
-        if(purchasePolicy == null )
-            throw new BlankDataExc("parameter is null: purchasePolicy");
         User shopFounder = getUser(foundId);
         Shop s = ShopController.getInstance().createShop(description ,name, discountPolicy, purchasePolicy, shopFounder);
         notificationManager.systeManagerMessage(String.format("ShopId: %d  was Create. ShopFounder: %s",s.getShopID(),shopFounder.getUserName()));
         return s;
     }
 
-    public boolean register(String username, String pw,UserObserver observer) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
+    public boolean register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
         if(username == null )
             throw new BlankDataExc("parameter is null: username");
         if(pw == null)
@@ -165,7 +161,6 @@ public class MarketSystem {
 
         if(UserController.getInstance().register(username, pw)){
             User u = UserController.getInstance().getUser(username);
-            notificationManager.newSocketChannel(u,observer);
             return true;
         }
         return false;
@@ -355,7 +350,7 @@ public class MarketSystem {
         externalConnector = ec;
     }
 
-    public List<User> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification {
+    public List<User> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification, ShopNotFoundException {
         if(userController.isLogin(userID)) {
             Shop shop1;
             try{
@@ -370,7 +365,7 @@ public class MarketSystem {
             return null;
     }
 
-    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userID) throws IncorrectIdentification, ShopNotFoundException {
+    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userID) throws IncorrectIdentification, ShopNotFoundException, InvalidSequenceOperationsExc {
         if(userController.isLogin(userID)) {
             Shop shop1;
             try{
@@ -389,6 +384,7 @@ public class MarketSystem {
     }
 
     public Response AddProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+
         return userController.addProductToCart(userID, shopID, productId, amount);
     }
 
@@ -397,7 +393,8 @@ public class MarketSystem {
     }
 
     public Response removeProductFromCart(String userId, int shopId, int productId) throws InvalidSequenceOperationsExc {
-        return userController.removeProductFromCart(userId, shopId, productId);
+        userController.removeProductFromCart(userId, shopId, productId);
+        return new Response();
     }
 
     public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException {
