@@ -95,6 +95,18 @@ public class UserController {
         ctx.redirect("/");
     }
 
+    public void addToCart(Context ctx) {
+        String username = ctx.pathParam("id");
+        int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
+        int productSerial = ctx.pathParamAsClass("serialNum",Integer.class).get();
+        int amount = 1; //currently, as default. maybe we will add the option to choose how much to add
+        Response response = services.AddToShoppingCart(username,shopID,productSerial,amount);
+        if(response.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+        }
+        //TODO: figure out what to do if the method ended successfully.
+    }
+
     public void validateUser(Context ctx){
         if (ctx.cookieStore("uid") == null){
             ResponseT<User> response = services.EnterMarket();
@@ -107,4 +119,5 @@ public class UserController {
             }
         }
     }
+
 }

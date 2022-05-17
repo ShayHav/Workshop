@@ -69,6 +69,10 @@ public class Main {
                 });
                 path("{id}/logout", () ->{
                     post(userController::logout);
+
+                    path("{id}/addToCart/{shopID}/?item={serialNum}", ()->{
+                        get(userController::addToCart);
+                    });
                 });
             });
 

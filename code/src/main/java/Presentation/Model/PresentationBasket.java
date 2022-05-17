@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PresentationBasket {
-    int shopId;
-    String shopName;
-    Map<PresentationProduct, Integer> productWithAmount;
-    double totalAmount;
+    public int shopId;
+    public String shopName;
+    public Map<PresentationProduct, Integer> productWithAmount;
+    public double totalAmount;
 
     public PresentationBasket(int shopId, String shopName, Map<PresentationProduct,Integer> productWithAmount, double totalAmount){
         this.shopId = shopId;

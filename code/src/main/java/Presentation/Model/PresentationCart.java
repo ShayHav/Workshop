@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PresentationCart {
-    Map<Integer, PresentationBasket> baskets;
-    double totalAmount;
+    public Map<Integer, PresentationBasket> baskets;
+    public double totalAmount;
 
     public PresentationCart(Map<Integer, PresentationBasket> baskets, double totalAmount) {
         this.baskets = baskets;
