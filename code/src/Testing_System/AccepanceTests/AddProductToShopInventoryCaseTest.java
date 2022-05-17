@@ -8,6 +8,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+
 public class AddProductToShopInventoryCaseTest extends Tester {
 
     private final String pName = "Ainal";

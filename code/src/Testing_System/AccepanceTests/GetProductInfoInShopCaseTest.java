@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class GetProductInfoInShopCaseTest extends Tester {
 
     private UserGenerator ug;

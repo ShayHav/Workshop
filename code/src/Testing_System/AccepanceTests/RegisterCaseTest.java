@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class RegisterCaseTest extends Tester {
 
     private UserGenerator ug = new UserGenerator();

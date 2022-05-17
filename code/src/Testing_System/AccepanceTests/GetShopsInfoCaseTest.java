@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class GetShopsInfoCaseTest extends Tester {
 
     private UserGenerator ug;

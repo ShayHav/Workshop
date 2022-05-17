@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class LogoutCaseTest extends Tester {
 
     private UserGenerator ug = new UserGenerator();
