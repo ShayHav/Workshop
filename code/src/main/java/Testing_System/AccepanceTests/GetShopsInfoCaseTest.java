@@ -19,10 +19,10 @@ public class GetShopsInfoCaseTest extends Tester {
     private UserGenerator ug;
     private String[] validUsers;
     private String[] pws;
-    private Filter<ShopInfo> f_1;
-    private Filter<ShopInfo> f_2;
-    private Filter<ShopInfo> f_3;
-    private Filter<ShopInfo> f_4;
+    private Filter<Shop> f_1;
+    private Filter<Shop> f_2;
+    private Filter<Shop> f_3;
+    private Filter<Shop> f_4;
     private String user;
     private int shopID;
 

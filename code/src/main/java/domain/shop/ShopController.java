@@ -208,7 +208,8 @@ public class ShopController {
             return null;
         }
         synchronized (this) {
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getUserName(), id))
+            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getUserName(), id)) {
+                eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
                 return "ShopManagerPermissionsRemove";
             }
             else return null;

@@ -2,6 +2,7 @@ package domain.user.filter;
 
 import domain.EventLoggerSingleton;
 import domain.shop.Order;
+import domain.user.filter.Filter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +17,12 @@ public class SearchOrderFilter implements Filter<Order> {
     LocalDate minDate;
     LocalDate maxDate;
 
+    public SearchOrderFilter(){
+        minPrice = 0d;
+        maxPrice = Double.MAX_VALUE;
+        minDate = null;
+        maxDate = null;
+    }
 
     public SearchOrderFilter(Double minPrice, Double maxPrice, LocalDate minDate, LocalDate maxDate) {
         this.minPrice = Objects.requireNonNullElse(minPrice, 0d);

@@ -17,7 +17,6 @@ public enum ShopManagersPermissions {
         OpenShop,
         RequestInformationOnShopsOfficials,
         RequestInformationOfShopsSalesHistory,
-        DismissalOfStoreOwner
 }
 
 

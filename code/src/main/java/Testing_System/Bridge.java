@@ -50,13 +50,13 @@ public interface Bridge {
     Result<Boolean, String> RemovePaymentService(String path);
 
     //Guest-Visitor Shop option
-    Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter); //done
+    Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<Shop> filter); //done
 
-    Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f);
+    Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<Product> f);
 
-    Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f); //done
+    Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<Product> f); //done
 
-    Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f);    //done
+    Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<Product> f);    //done
 
     Response AddToShoppingCart(String userID, int shopID, int productId, int amount);
 

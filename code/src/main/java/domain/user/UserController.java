@@ -16,6 +16,7 @@ public class UserController {
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
     private Map<String,User> activeUser; //TODO: temporary
+    private Map<String,User> guestUser;
     private static UserController instance = null;
     private List<User> adminUser;
     private int guestCounter = 0;
@@ -24,13 +25,15 @@ public class UserController {
         memberList = new HashMap<>();
         activeUser = new HashMap<>();
         adminUser = new LinkedList<>();
+        guestUser = new HashMap<>();
+    }
+
+    private static class UserControllerHolder{
+        private static final UserController uc = new UserController();
     }
 
     public static UserController getInstance() {
-        if (instance == null) {
-            instance = new UserController();
-        }
-        return instance;
+       return UserControllerHolder.uc;
     }
 
     //TODO: add logger and validate pre condition
@@ -55,11 +58,11 @@ public class UserController {
                 eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", id));
                 return output;
             } else {
-                throw new InvalidAuthorizationException("Identifier not correct");
+                throw new InvalidAuthorizationException("username or password given is incorrect.");
             }
         } else {
-            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
-            throw new InvalidAuthorizationException();
+            errorLogger.logMsg(Level.WARNING, "username or password given is incorrect.");
+            throw new InvalidAuthorizationException("username or password given is incorrect.");
         }
     }
 
@@ -119,6 +122,7 @@ public class UserController {
         guestCounter++;
         temp.enterMarket();
         activeUser.put(temp.getUserName(), temp);
+        guestUser.put(temp.getUserName(),temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
         return temp;
     }
@@ -126,7 +130,11 @@ public class UserController {
     public User getUser(String id) throws IncorrectIdentification {
         if(id == null)
             throw new IncorrectIdentification("id not exist");
-        return memberList.getOrDefault(id, null);
+        User u =  memberList.getOrDefault(id, null);
+        if(u == null){
+            u = guestUser.get(id);
+        }
+        return u;
     }
 
     public boolean deleteUserTest(String[] userId) throws InvalidSequenceOperationsExc {
@@ -157,8 +165,8 @@ public class UserController {
         }
     }
 
-    public List<String> checkout(String userName,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
-        User user = getUser(userName);
+    public List<String> checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc, BlankDataExc {
+        User user = getUser(userID);
         return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
     }
 
@@ -194,8 +202,8 @@ public class UserController {
         return orders;
     }
 
-    public synchronized boolean HasUserEnteredMarket(String userName) {
-        return activeUser.containsKey(userName);
+    public synchronized boolean HasUserEnteredMarket(String userID) {
+        return activeUser.containsKey(userID) || guestUser.containsKey(userID);
     }
 
     public boolean addProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
@@ -223,7 +231,7 @@ public class UserController {
         return u.removeProductFromCart(shopID,productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, ShopNotFoundException {
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
         if(!activeUser.containsKey(userID)){
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
             throw new InvalidAuthorizationException();

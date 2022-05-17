@@ -20,7 +20,7 @@ public class RealBridge implements  Bridge{
     private Services sv;
     public RealBridge()
     {
-        sv = new Services();
+        sv = Services.getInstance();
     }
 
     @Override
@@ -94,23 +94,23 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter) {
+    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<Shop> filter) {
         return (Result<Boolean, List<ShopInfo>>) sv.GetShopsInfo(userID, filter);
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f) {
+    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<Product> f) {
         return (Result<Boolean, List<ProductInfo>>) sv.GetProductInfoInShop(userID, shopID, f);
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID, String pName, Filter<ProductInfo> f) {
+    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID, String pName, Filter<Product> f) {
         return (Result<Boolean, List<ProductInfo>>) sv.SearchProductByName(userID, pName, f);
     }
 
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID, String keyword, Filter<ProductInfo> f) {
+    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID, String keyword, Filter<Product> f) {
         return (Result<Boolean, List<ProductInfo>>) sv.SearchProductByKeyword(userID, keyword, f);
     }
 

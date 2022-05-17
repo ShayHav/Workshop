@@ -9,8 +9,6 @@ import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.*;
-import domain.notifications.Observer;
-import domain.notifications.UserObserver;
 import domain.shop.*;
 
 import domain.user.*;
@@ -19,44 +17,45 @@ import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
 
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class Services {
-    MarketSystem marketSystem = MarketSystem.getInstance();
+    private MarketSystem marketSystem;
 
-    public Services(){
+    private Services(){
+        marketSystem = MarketSystem.getInstance();
     }
 
-    /*Result<#t | # f,  return value>
-     * t - success
-     * f - failed
-     *
-     */
+    private static class ServicesHolder{
+        private static final Services instance = new Services();
+    }
+
+    public static Services getInstance(){
+        return ServicesHolder.instance;
+    }
+
+    public ResponseT<User> GetUser(String username){
+        try{
+            User u = marketSystem.getUser(username);
+            return new ResponseT<>(u);
+        }catch (BlankDataExc | IncorrectIdentification e){
+            return new ResponseT<>(e.getMessage());
+        }
+    }
+
     //General Guest-Visitor
     //Make:nitay InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification
-
-    /**
-     * User logged in to the system
-     * @param username - user identifier
-     * @param pw - given password
-     * @return - Response object
-     */
-    public ResponseT<PresentationUser> Login(String username, String pw) {
-        ResponseT<PresentationUser> output;
+    public ResponseT<User> Login(String username, String pw) {
+        ResponseT<User> output;
         try {
             User b = marketSystem.logIn(username, pw);
-            output = new ResponseT<>(new PresentationUser(b));
+            output = new ResponseT<>(b);
             return output;
-        } catch (BlankDataExc blankDataExc) {
+        } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc | InvalidAuthorizationException blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
-        } catch (InvalidAuthorizationException invalidAuthorizationException) {
-            return new ResponseT<>(null, invalidAuthorizationException.actualAuthorization);
         }
     }
     //Make:nitay
@@ -64,22 +63,16 @@ public class Services {
         try {
             if(marketSystem.register(username, pw))
                 return new Response();
-        } catch (BlankDataExc blankDataExc) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            invalidSequenceOperationsExc.printStackTrace();
         }
         return new Response();
     }
     //Make:nitay
-    /**
-     * User enters the system
-     * @return response object
-     */
-    public ResponseT<PresentationUser> EnterMarket() { //
-        User EnterMarket = marketSystem.EnterMarket();
-        if (EnterMarket != null)
-            return new ResponseT<>(new PresentationUser(EnterMarket));
+    public ResponseT<User> EnterMarket() { //
+        User guest = marketSystem.EnterMarket();
+        if (guest != null)
+            return new ResponseT<>(guest);
         else return new ResponseT<>();
     }
     //Make:nitay   IncorrectIdentification, InvalidSequenceOperationsExc
@@ -101,35 +94,25 @@ public class Services {
 
 
     //General Member-Visitor
-
-    /**
-     * User logs off
-     * @param username - user identifier
-     * @return Response object
-     */
-    public ResponseT<PresentationUser> Logout(String username) {
-        User output;
+    public ResponseT<User> Logout(String username) {
+        User guest;
         try {
-            output = marketSystem.logout(username);
-            return new ResponseT<>(new PresentationUser(output));
-        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification blankDataExc) {
+            guest = marketSystem.logout(username);
+            return new ResponseT<>(guest);
+        } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (IncorrectIdentification incorrectIdentification) {
+            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
     }
-    //Make:nitay
-
-    /***
-     * Create a store object to represent the relevant store in the app
-     * @param description -  description of the created shop
-     * @param username - user identifier
-     * @param shopName - shop name
-     * @return Response object
-     */
-    public ResponseT<PresentationShop> CreateShop(String description ,String username, String shopName) {
+    //Make:nitay BlankDataExc  BlankDataExc, IncorrectIdentification
+    public ResponseT<Shop> CreateShop(String username, String shopName) {
         try {
             Shop output = marketSystem.createShop(shopName, null, null, username);
             if (output != null)
-                return new ResponseT<>(new PresentationShop(output));
+                return new ResponseT<>(output);
             else return new ResponseT<>();
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
@@ -197,19 +180,12 @@ public class Services {
 
     //make: shahar
     //Guest-Visitor Shop options
-
-    /**
-     * Query for certain shops
-     * @param userName - user identifier
-     * @param filter - Identifying parameters
-     * @return list of Response object
-     */
-    public List<ResponseT<PresentationShop>> GetShopsInfo(String userName, Filter<Shop> filter) {
+    public List<ResponseT<Shop>> GetShopsInfo(String userName, Filter<Shop> filter) {
         try {
-            List<ResponseT<PresentationShop>> list = new LinkedList<>();
-            List<Shop> shop = marketSystem.getInfoOfShops(userName, filter);
-            for (Shop shopInfo1 : shop){
-                list.add(new ResponseT<>(new PresentationShop(shopInfo1)));
+            List<ResponseT<Shop>> list = new LinkedList<>();
+            List<Shop> shops = marketSystem.getInfoOfShops(userName, filter);
+            for (Shop shop : shops){
+                list.add(new ResponseT<>(shop));
             }
             return list;
         } catch (BlankDataExc blankDataExc) {
@@ -218,23 +194,15 @@ public class Services {
     }
 
     //Make:nitay
-
-    /***
-     * Query for certain products in the relevant store.
-     * @param userName - user identifier
-     * @param shopID - shop identifier
-     * @param f
-     * @return list of Response object
-     */
-    public List<ResponseT<PresentationProduct>> GetProductInfoInShop(String userName , int shopID, Filter<Product> f)
+    public List<ResponseT<Product>> GetProductInfoInShop(String userName , int shopID, Filter<Product> f)
     {
         try {
             List<Product> GetProductInfoInShop = marketSystem.getInfoOfProductInShop(userName, shopID, f);
-            List<ResponseT<PresentationProduct>> CreateShop = new LinkedList<>();
+            List<ResponseT<Product>> CreateShop = new LinkedList<>();
             if (GetProductInfoInShop == null || GetProductInfoInShop.size() == 0)
                 return null;
             for (Product productInfo : GetProductInfoInShop) {
-                CreateShop.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+                CreateShop.add(new ResponseT<>(productInfo));
             }
             return CreateShop;
         }
@@ -245,21 +213,13 @@ public class Services {
 
 
     //make:shahar
-
-    /**
-     * Query for certain products by name in the relevant store
-     * @param userName - user identifier
-     * @param pName - shop's name
-     * @param f
-     * @return list of Response object
-     */
-    public List<ResponseT<PresentationProduct>> SearchProductByName(String userName ,String pName, Filter<Product> f) //done
+    public List<ResponseT<Product>> SearchProductByName(String userName ,String pName, Filter<Product> f) //done
     {
         try {
-            List<ResponseT<PresentationProduct>> result = new LinkedList<>();
+            List<ResponseT<Product>> result = new LinkedList<>();
             List<Product> products = marketSystem.searchProductByName(userName, pName, f);
             for (Product productInfo : products) {
-                result.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+                result.add(new ResponseT<>(productInfo));
             }
             return result;
         }
@@ -269,21 +229,13 @@ public class Services {
     }
 
     //make:shahar
-
-    /**
-     * Query for certain products by keyword in the relevant store
-     * @param userName
-     * @param keyword
-     * @param f
-     * @return list Response object
-     */
-    public List<ResponseT<PresentationProduct>> SearchProductByKeyword(String userName ,String keyword, Filter<Product> f)
+    public List<ResponseT<Product>> SearchProductByKeyword(String userName ,String keyword, Filter<Product> f)
     {
         try {
-            List<ResponseT<PresentationProduct>> result = new LinkedList<>();
+            List<ResponseT<Product>> result = new LinkedList<>();
             List<Product> products = marketSystem.searchProductByKeyword(userName, keyword, f);
             for (Product productInfo : products) {
-                result.add(new ResponseT<>(new PresentationProduct(new ServiceProduct(productInfo))));
+                result.add(new ResponseT<>(productInfo));
             }
             return result;
         }
@@ -372,19 +324,7 @@ public class Services {
 
     //Shay
     //done
-
-    /**
-     * Add a product to the shop inventory
-     * @param pName - product name
-     * @param pDis - product description
-     * @param pCat - product category
-     * @param price - product price
-     * @param amount - amount of added product
-     * @param username - active user identifier
-     * @param shopID - shop identifier
-     * @return Response object
-     */
-    public ResponseT<PresentationProduct> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
+    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username,int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop;
@@ -405,19 +345,11 @@ public class Services {
         if(p == null){
             return null;
         }
-        return new ResponseT<>(new PresentationProduct(new ServiceProduct(p)));
+        return new ResponseT<>(p);
     }
 
     //shay
-
-    /**
-     *
-     * @param username
-     * @param p
-     * @param shopID
-     * @return Response object
-     */
-    public ResponseT<PresentationProduct> ChangeProduct(String username, Product p, int shopID)
+    public ResponseT<Product> ChangeProduct(String username, Product p, int shopID)
     {
         ShopController controller = ShopController.getInstance();
         Shop shop;
@@ -437,7 +369,7 @@ public class Services {
         catch (InvalidProductInfoException ipie){
             return new ResponseT<>(null,ipie.getLocalizedMessage());
         }
-        return new ResponseT<>(new PresentationProduct(new ServiceProduct(changed)));
+        return new ResponseT<>(changed);
     }
 
     //Make:nitay
@@ -472,15 +404,7 @@ public class Services {
         }
     }
     //Make:nitay
-
-    /**
-     * add a specific Shop manager's permission
-     * @param key - shop identifier
-     * @param shopManagersPermissionsList - wanted permissions to add
-     * @param targetUser - the manager who receives the permissions identifier.
-     * @param ownerID - the user who gives  the permissions identifier.
-     * @return Response object
-     */
+    //done  IncorrectIdentification, BlankDataExc
     public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID) {
         try {
             String s = marketSystem.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
@@ -494,15 +418,7 @@ public class Services {
         }
     }
     //Make:nitay
-
-    /**
-     * Remove a specific Shop manager's permission
-     * @param key
-     * @param shopManagersPermissionsList
-     * @param managerUser
-     * @param ownerID
-     * @return Response object
-     */
+    //done  IncorrectIdentification, BlankDataExc
     public Response RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser , String ownerID)
     {
         try {
@@ -511,11 +427,8 @@ public class Services {
                 return new Response(s);
             return null;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | BlankDataExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
-        }
-        catch (BlankDataExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     //Make:nitay
@@ -527,14 +440,8 @@ public class Services {
                 return new Response(s);
             return null;
         }
-        catch (IncorrectIdentification incorrectIdentification){
+        catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
-        }
-        catch (BlankDataExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
         }
     }
     public Response OpenShop(int shopId,String userName) {
@@ -544,27 +451,19 @@ public class Services {
                 return new Response(s);
             return null;
         }
-        catch (IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc incorrectIdentification){
+        catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
     }
-    //Make:nitay
-
-    /**
-     * Query for information about the relevant shop's employees
-     * @param shopName - shop identifier
-     * @param f
-     * @param userName - user identifier
-     * @return Response object
-     */
-    public List<ResponseT<PresentationUser>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName)
+    //Make:nitay  IncorrectIdentification
+    public List<ResponseT<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName)
     {
-        List<ResponseT<PresentationUser>> responseTList = new LinkedList<>();
+        List<ResponseT<UserSearchInfo>> responseTList = new LinkedList<>();
         try {
-            List<User> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
+            List<UserSearchInfo> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
             if (s != null)
-                for(User userSearchInfo: s)
-                    responseTList.add(new ResponseT<>(new PresentationUser(userSearchInfo)));
+                for(UserSearchInfo userSearchInfo: s)
+                    responseTList.add(new ResponseT<>(userSearchInfo));
             return responseTList;
         }
         catch (IncorrectIdentification incorrectIdentification){
@@ -572,15 +471,7 @@ public class Services {
             return responseTList;
         }
     }
-    //Make:nitay
-
-    /**
-     * Query for store purchase history
-     * @param shopName - shop identifier
-     * @param f
-     * @param userName - user identifier
-     * @return list of Response object
-     */
+    //Make:nitay  IncorrectIdentification
     public List<ResponseT<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName)
     {
         List<ResponseT<Order>> output = new LinkedList<>();
@@ -660,8 +551,6 @@ public class Services {
         catch (IncorrectIdentification incorrectIdentification){
             output.add(new ResponseT(incorrectIdentification.getLocalizedMessage()));
             return output;
-        } catch (ShopNotFoundException shopNotFoundException) {
-            shopNotFoundException.printStackTrace();
         }
         return output;
     }

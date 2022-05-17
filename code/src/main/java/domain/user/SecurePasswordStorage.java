@@ -23,7 +23,7 @@ public class SecurePasswordStorage {
     private final Map<String, UserInfo> userDatabase = new HashMap<>();
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
 
-    SecurePasswordStorage(){}
+    private SecurePasswordStorage(){}
 
     public static SecurePasswordStorage getSecurePasswordStorage_singleton(){
         if(securePasswordStorage_singleton==null)
@@ -40,13 +40,6 @@ public class SecurePasswordStorage {
         }
     }
 
-    /**
-     * compare between the given password and the saved password
-     * @param inputUser - identifier
-     * @param inputPass - given password
-     * @return
-     * @throws Exception
-     */
     private boolean authenticateUser(String inputUser, String inputPass) throws Exception {
         UserInfo user;
         synchronized (userDatabase) {
@@ -60,18 +53,11 @@ public class SecurePasswordStorage {
             return calculatedHash.equals(user.userEncryptedPassword);
         }
     }
-
     public void inRole(String userid, String password){
         try{ signUp(userid,password); }
         catch (Exception e){ errorLogger.logMsg(Level.WARNING,String.format("Cryptographic Hash password of %d failed.: "+e.getMessage(),userid)); }
     }
 
-    /**
-     * Encrypte the given password with salt
-     * @param userid
-     * @param password
-     * @throws Exception
-     */
     private synchronized void signUp(String userid, String password) throws Exception {
         String salt = getNewSalt();
         String encryptedPassword = getEncryptedPassword(password, salt);
@@ -82,13 +68,7 @@ public class SecurePasswordStorage {
         saveUser(user);
     }
 
-    /**
-     * Get a encrypted password using PBKDF2 hash algorithm
-     * @param password
-     * @param salt
-     * @return
-     * @throws Exception
-     */
+    // Get a encrypted password using PBKDF2 hash algorithm
     public String getEncryptedPassword(String password, String salt) throws Exception {
         String algorithm = "PBKDF2WithHmacSHA1";
         int derivedKeyLength = 160; // for SHA1
@@ -102,11 +82,7 @@ public class SecurePasswordStorage {
         return Base64.getEncoder().encodeToString(encBytes);
     }
 
-    /**
-     * Returns base64 encoded salt
-     * @return
-     * @throws Exception
-     */
+    // Returns base64 encoded salt
     public String getNewSalt() throws Exception {
         // Don't use Random!
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
@@ -118,12 +94,6 @@ public class SecurePasswordStorage {
 
     private synchronized void saveUser(UserInfo user) {
         userDatabase.put(user.userid, user);
-    }
-
-
-    //TODO:Test
-    public boolean isUserRole (String userName){
-        return userDatabase.containsKey(userName);
     }
 
 }

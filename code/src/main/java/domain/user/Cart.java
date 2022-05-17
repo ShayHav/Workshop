@@ -1,7 +1,6 @@
 package domain.user;
 
 import domain.*;
-import domain.Exceptions.BlankDataExc;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.Exceptions.ShopNotFoundException;

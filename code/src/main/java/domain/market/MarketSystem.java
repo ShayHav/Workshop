@@ -3,9 +3,6 @@ package domain.market;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
-import domain.notifications.NotificationManager;
-import domain.notifications.Observer;
-import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
@@ -33,11 +30,12 @@ public class MarketSystem {
         externalConnector = new ExternalConnector();
     }
 
+    private static class MarketHolder{
+        private static final MarketSystem market = new MarketSystem();
+    }
+
     public static MarketSystem getInstance() {
-        if (instance == null) {
-            instance = new MarketSystem();
-        }
-        return instance;
+        return MarketHolder.market;
     }
 
 
@@ -161,7 +159,6 @@ public class MarketSystem {
     public Shop getShop(int shopID) throws ShopNotFoundException {
         return ShopController.getInstance().getShop(shopID);
     }
-
 
     //TODO: Services start here :)
     public User logIn(String username, String pw) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
@@ -318,7 +315,7 @@ public class MarketSystem {
         externalConnector = ec;
     }
 
-    public List<User> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification {
+    public List<UserSearchInfo> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification {
         if(userController.isLogin(userID)) {
             Shop shop1;
             try{
@@ -364,7 +361,7 @@ public class MarketSystem {
         return userController.removeProductFromCart(userId, shopId, productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException {
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, IncorrectIdentification {
         if(userController.isLogin(userID))
             return userController.getOrderHistoryForShops(userID, f, shopID);
         else return null;

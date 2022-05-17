@@ -51,15 +51,15 @@ public class Tester {
 
     //Guest-Visitor Purchase
     //
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter) {
+    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<Shop> filter) {
         return br.GetShopsInfo(userID, filter);
     }
 
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f) {
+    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<Product> f) {
         return br.GetProductInfoInShop(userID, shopID, f);
     }
 
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f) {
+    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<Product> f) {
         return br.SearchProductByName(userID, pName, f);
     }
 
@@ -67,7 +67,7 @@ public class Tester {
 //        return br.SearchProductByCategory(userID, category,f);
 //    }
 
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f) {
+    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<Product> f) {
         return br.SearchProductByKeyword(userID, keyword, f);
     }
 

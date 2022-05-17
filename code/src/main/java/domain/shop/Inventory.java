@@ -19,7 +19,7 @@ public class Inventory {
     public Inventory(){
         productToQuantity = new HashMap<>();
         keyToProduct = new HashMap<>();
-        productIdGen = 1;
+        productIdGen = Integer.MIN_VALUE;
     }
 
     /**
@@ -28,13 +28,7 @@ public class Inventory {
      * @return true if there is at least one item in the inventory
      */
     public synchronized boolean isInStock(int product){
-        int quantity;
-        try {
-            quantity = getQuantity(product);
-        }catch (ProductNotFoundException productNotFoundException){
-            return false;
-        }
-        return quantity > 0;
+        return getQuantity(product) > 0;
     }
 
     public double getPrice(int prodID) throws ProductNotFoundException {
@@ -46,10 +40,10 @@ public class Inventory {
         throw new ProductNotFoundException(String.format("product: %d does not exist", prodID));
     }
 
-    public int getQuantity(int product) throws ProductNotFoundException {
-        if(!keyToProduct.containsKey(product)) {
+    public int getQuantity(int product){
+        if(keyToProduct.containsKey(product)) {
             errorLogger.logMsg(Level.WARNING, String.format("No product with the id %d in the store", product));
-            throw new ProductNotFoundException();
+            return -1;
         }
         return productToQuantity.get(keyToProduct.get(product));
     }
@@ -61,7 +55,8 @@ public class Inventory {
     public Product addProduct(String productName, String productDesc, String productCategory, double price, int quantity) throws InvalidProductInfoException {
         int prodID;
         synchronized (this) {
-            prodID = productIdGen++;
+            prodID = productIdGen;
+            productIdGen++;
         }
         if(price < 0.0 || quantity < 0) {
             errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", prodID));
@@ -74,7 +69,7 @@ public class Inventory {
         return p;
     }
 
-    public void setPrice(int product, double newPrice) throws InvalidProductInfoException, ProductNotFoundException {
+    public boolean setPrice(int product, double newPrice) throws InvalidProductInfoException, ProductNotFoundException {
         if(newPrice < 0.0){
             errorLogger.logMsg(Level.WARNING, String.format("illegal argument at set price to product %d", product));
             throw new InvalidProductInfoException("illegal argument at set price to product");
@@ -87,9 +82,10 @@ public class Inventory {
             ProductImp p = keyToProduct.get(product);
             p.setBasePrice(newPrice);
         }
+        return true;
     }
 
-    public void setAmount(int product, int newAmount) throws InvalidProductInfoException, ProductNotFoundException {
+    public boolean setAmount(int product, int newAmount) throws InvalidProductInfoException, ProductNotFoundException {
         if(newAmount < 0) {
             errorLogger.logMsg(Level.WARNING, String.format("illegal argument at set price to product %d", product));
             throw new InvalidProductInfoException("invalid new amount");
@@ -101,6 +97,7 @@ public class Inventory {
         synchronized (productToQuantity) {
             productToQuantity.replace(keyToProduct.get(product), newAmount);
         }
+        return true;
     }
 
     /**
@@ -182,9 +179,17 @@ public class Inventory {
      * restoring the quantity of products after a reduced amount
      * @param items map of a product id to the quantity that were reserved
      */
-    protected void restoreStock(Map<Integer, Integer> items) throws InvalidProductInfoException, ProductNotFoundException{
-        for(Integer item: items.keySet()) {
-            setAmount(item, getQuantity(item) + items.get(item));
+    protected void restoreStock(Map<Integer, Integer> items) throws Exception {
+        for(Integer item: items.keySet()){
+            try {
+                setAmount(item, getQuantity(item) + items.get(item));
+            }catch (InvalidProductInfoException ipie){
+                errorLogger.logMsg(Level.SEVERE, "couldn't restock, Fatal. Explanation:\n" + ipie.getMessage());
+                throw new Exception("a Fatal error occured. Explanation: couldn't restock, Fatal. Explanation:\n" + ipie.getMessage());
+            }catch (ProductNotFoundException pnfe){
+                errorLogger.logMsg(Level.SEVERE, "couldn't restock, Fatal. Explanation:\n" + pnfe.getMessage());
+                throw new Exception("a Fatal error occured. Explanation: couldn't restock, Fatal. Explanation:\n" + pnfe.getMessage());
+            }
         }
         eventLogger.logMsg(Level.INFO, "restored the stock of items");
     }
