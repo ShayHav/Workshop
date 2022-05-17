@@ -10,6 +10,7 @@ import domain.Response;
 import domain.ResponseT;
 import domain.market.*;
 import domain.notifications.Observer;
+import domain.notifications.UserObserver;
 import domain.shop.*;
 
 import domain.user.*;
@@ -68,14 +69,14 @@ public class Services {
      * @param pw - given user password
      * @return
      */
-    public Response Register(String username, String pw) {
+    public Response Register(String username, String pw, UserObserver userObserver) {
         try {
-            if(marketSystem.register(username, pw))
+            if(marketSystem.register(username, pw,userObserver))
                 return new Response();
-        } catch (BlankDataExc blankDataExc) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (IncorrectIdentification incorrectIdentification) {
+            incorrectIdentification.printStackTrace();
         }
         return new Response();
     }
@@ -184,11 +185,11 @@ public class Services {
      * @param password - user's given password
      * @return Response object
      */
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password,Observer observer) {
+    public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password,UserObserver observer) {
         try {
             boolean b = marketSystem.start(payment, supply, userName, password,observer);
             return new Response();
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+        } catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc) {
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
@@ -513,10 +514,10 @@ public class Services {
      * @param userName - Active user identifier
      * @return Response object
      */
-    public Response AppointNewShopOwner(int key,String targetUser, String userName, Observer observer)
+    public Response AppointNewShopOwner(int key,String targetUser, String userName)
     {
         try {
-            String s = marketSystem.AppointNewShopOwner(key, targetUser, userName,observer);
+            String s = marketSystem.AppointNewShopOwner(key, targetUser, userName);
             if (s != null)
                 return new Response(s);
             return null;
@@ -540,9 +541,9 @@ public class Services {
      * @param userName - Active user identifier
      * @return Response object
      */
-    public Response AppointNewShopManager(int key,String targetUser, String userName, Observer observer) {
+    public Response AppointNewShopManager(int key,String targetUser, String userName) {
         try {
-            String s = marketSystem.AppointNewShopManager(key, targetUser, userName,observer);
+            String s = marketSystem.AppointNewShopManager(key, targetUser, userName);
             if (s != null)
                 return new Response(s);
             return null;

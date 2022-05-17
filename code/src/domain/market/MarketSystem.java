@@ -135,15 +135,23 @@ public class MarketSystem {
         if(purchasePolicy == null )
             throw new BlankDataExc("parameter is null: purchasePolicy");
         User shopFounder = getUser(foundId);
-        return ShopController.getInstance().createShop(description ,name, discountPolicy, purchasePolicy, shopFounder);
+        Shop s = ShopController.getInstance().createShop(description ,name, discountPolicy, purchasePolicy, shopFounder);
+        notificationManager.systeManagerMessage(String.format("ShopId: %d  was Create. ShopFounder: %s",s.getShopID(),shopFounder.getUserName()));
+        return s;
     }
 
-    public boolean register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc {
+    public boolean register(String username, String pw,UserObserver observer) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
         if(username == null )
             throw new BlankDataExc("parameter is null: username");
         if(pw == null)
             throw new BlankDataExc("parameter is null: pw");
-        return UserController.getInstance().register(username, pw);
+
+        if(UserController.getInstance().register(username, pw)){
+            User u = UserController.getInstance().getUser(username);
+            notificationManager.newSocketChannel(u,observer);
+            return true;
+        }
+        return false;
     }
 
     public boolean deleteUserTest(String[] username) throws InvalidSequenceOperationsExc, BlankDataExc {
@@ -177,6 +185,7 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: password");
         }
         output = UserController.getInstance().logIn(username, pw);
+        notificationManager.getMessage(output);
         return output;
     }
 
