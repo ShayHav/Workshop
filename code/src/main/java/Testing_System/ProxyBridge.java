@@ -86,28 +86,28 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<Shop> filter) {
+    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter) {
         {
             return new Result(true,null);
         }
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID, int shopID, Filter<Product> f) {
+    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID, int shopID, Filter<ProductInfo> f) {
         {
             return new Result(true,null);
         }
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID, String pName, Filter<Product> f) {
+    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID, String pName, Filter<ProductInfo> f) {
         {
             return new Result(true,null);
         }
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID, String keyword, Filter<Product> f) {
+    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID, String keyword, Filter<ProductInfo> f) {
         {
             return new Result(true,null);
         }

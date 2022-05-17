@@ -69,9 +69,6 @@ public class Shop {
         }
     }
 
-    public int getRank() {
-        return rank;
-    }
 
     public String getProductInfo(int prodID){
         try{
@@ -335,14 +332,19 @@ public class Shop {
 
     public List<Product> getProductInfoOfShop() {
         List<Product> info = inventory.getAllProductInfo();
+        for (Product p : info) {
+            p.setShopName(name);
+            p.setShopRank(rank);
+        }
         return info;
     }
 
-    public Product getInfoOnProduct(int productId) throws ProductNotFoundException {
-        Product p;
+    public ProductInfo getInfoOnProduct(int productId) throws ProductNotFoundException {
+        ProductInfo p;
         synchronized (inventory){
             p = inventory.getProductInfo(productId);
         }
+        p.setShopName(name);
         p.setShopRank(rank);
         return p;
 
@@ -365,13 +367,13 @@ public class Shop {
         return inventory;
     }
 
-    public List<UserSearchInfo> RequestShopOfficialsInfo(SearchOfficialsFilter f, String userId) {
+    public List<User> RequestShopOfficialsInfo(SearchOfficialsFilter f, String userId) {
         if(shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)| ShopOwners.containsKey(userId)) {
             return f.applyFilter(getUserList(),shopID);
         }
         return null;
     }
-    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f, String userId) {
+    public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f,String userId) {
         if(shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId) | ShopOwners.containsKey(userId))
             return f.applyFilter(orders.getOrders());
         else return null;

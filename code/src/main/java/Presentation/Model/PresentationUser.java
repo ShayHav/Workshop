@@ -33,12 +33,4 @@ public class PresentationUser {
     public String getPassword() {
         return password;
     }
-
-    public boolean isLoggedIn() {
-        return loggedIn;
-    }
-
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
-    }
 }
