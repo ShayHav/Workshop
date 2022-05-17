@@ -77,7 +77,7 @@ public class Main {
 
                 });
 
-                path("{id}/addToCart/{shopID}/?item={serialNum}", ()->{
+                path("{id}/addToCart", ()->{
                     ws(userController::addToCart);
                 });
             });

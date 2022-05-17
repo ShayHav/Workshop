@@ -37,6 +37,7 @@ public class User {
         this.userName = userName;
         loggedIn = false;
         us = UserState2.disconnected;
+        userCart = new Cart();
         isSystemManager = false;
     }
 
@@ -121,7 +122,6 @@ public class User {
      */
     public void enterMarket() {
         us = UserState2.disconnected;
-        userCart = new Cart();
     }
 
 
