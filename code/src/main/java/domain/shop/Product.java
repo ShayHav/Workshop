@@ -9,4 +9,5 @@ public interface Product {
     int getRank();
     void setShopRank(int shopRank);
     int getShopRank();
+    int getAmount();
 }

@@ -3,9 +3,9 @@ package domain.user;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
+import domain.Response;
 import domain.shop.Order;
 import domain.shop.ShopController;
-import domain.user.filter.SearchUserFilter;
 import domain.user.filter.*;
 
 import java.util.*;
@@ -17,6 +17,7 @@ public class UserController {
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
     private Map<String,User> activeUser; //TODO: temporary
+    private Map<String,User> guestUser;
     private static UserController instance = null;
     private List<User> adminUser;
     private int guestCounter = 0;
@@ -25,13 +26,17 @@ public class UserController {
         memberList = new HashMap<>();
         activeUser = new HashMap<>();
         adminUser = new LinkedList<>();
+        guestUser = new HashMap<>();
+    }
+
+
+
+    private static class UserControllerHolder{
+        private static final UserController uc = new UserController();
     }
 
     public static UserController getInstance() {
-        if (instance == null) {
-            instance = new UserController();
-        }
-        return instance;
+       return UserControllerHolder.uc;
     }
 
     //TODO: add logger and validate pre condition
@@ -63,6 +68,14 @@ public class UserController {
             throw new InvalidAuthorizationException();
         }
     }
+    public Cart.ServiceCart showCart(String username) {
+        User u = memberList.get(username);
+        if (u == null){
+            u = guestUser.get(username);
+        }
+        return u.showCart();
+    }
+
 
     private synchronized boolean isUserisLog(String id){
         return activeUser.containsKey(id);
@@ -126,7 +139,11 @@ public class UserController {
     public User getUser(String id) throws IncorrectIdentification {
         if(id == null)
             throw new IncorrectIdentification("id not exist");
-        return memberList.getOrDefault(id, null);
+        User u =  memberList.getOrDefault(id, null);
+        if(u == null){
+            u = guestUser.get(id);
+        }
+        return u;
     }
 
     public boolean deleteUserTest(String[] userName) throws InvalidSequenceOperationsExc {
@@ -227,7 +244,7 @@ public class UserController {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean updateAmountOfProduct(String userName, int shopNumber, int productId, int amount) throws InvalidSequenceOperationsExc {
+    public Response updateAmountOfProduct(String userName, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc {
         if(!HasUserEnteredMarket(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
             throw new InvalidSequenceOperationsExc();

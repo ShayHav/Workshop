@@ -73,10 +73,10 @@ public class ChangeProductInfoCaseTest extends Tester{
         pCat_2 = "Sex";
         price_2 = 99.9;
         amountToAdd_2 = 50;
-        ResponseT<Product> productResponseT = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1);
+        ResponseT<Product> productResponseT = AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1);
         if (!productResponseT.isErrorOccurred())
             pID_1 = productResponseT.getValue();
-        productResponseT = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,user_1,shopID_1);
+        productResponseT = AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,user_1,shopID_1);
         if(!productResponseT.isErrorOccurred())
             pID_2 = productResponseT.getValue();
     }

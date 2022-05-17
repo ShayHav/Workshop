@@ -1,21 +1,10 @@
+@import Presentation.Main
 @import Presentation.Model.PresentationUser
 @import gg.jte.Content
+@import java.net.InetAddress
 @param PresentationUser r_user
 
-
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SignIn</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-</head>
-<body>
-@template.navBar(user = r_user)
+@template.navBar(user = r_user, title = "Register")
 <main class="container align-content-center">
     <div class="container col-5 mt-5 border">
         <div class="container col-4 mt-3">
@@ -25,11 +14,11 @@
             <form method="post" name="registerForm" class="form">
                 <div class="mb-3">
                     <label for="userName" class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control" id="userName" placeholder="username">
+                    <input type="text" name="username" class="form-control" id="userName" placeholder="username" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" name="username" class="form-control" id="password" placeholder="password">
+                    <input type="password" name="password" class="form-control" id="password" placeholder="password" required>
                 </div>
                 <div class="mb-3">
                     <button type="button" id="submitButton" class="btn btn-success">Register</button>
@@ -44,14 +33,15 @@
 
 </main>
 </body>
-<script type="javascript">
-    const socket = new WebSocket("wss://localhost:8080/users/new")
+<script>
+    const socket = new WebSocket("ws://localhost:${Presentation.Main.port}/users/new")
     const button = document.querySelector('#submitButton');
-    button.addEventListener('click', function () {
+    const f = function () {
         const form = document.registerForm;
         const message = {username: form.username.value, password: form.password.value};
         socket.send(JSON.stringify(message));
-    });
+    }
+    button.addEventListener('click', f);
     socket.onmessage = async function (event) {
         const response = JSON.parse(event.data);
         if (!response.errorMessage) {
@@ -59,13 +49,13 @@
             toUpdate.firstChild.textContent = "The user was created";
             toUpdate.classList.add("border", "border-success", "border-3", "rounded");
             toUpdate.classList.remove("visually-hidden");
-            await new Promise(r => setTimeout(r, 3000));
-            window.location.replace("/");
+            await new Promise(r => setTimeout(r, 1500));
+            window.location.replace("/users/login");
         }
         const username = document.getElementById("userName");
         username.classList.add("border", "border-danger");
         const toUpdate = document.getElementById("responsePlace");
-        toUpdate.firstChild.textContent = response.error;
+        toUpdate.firstChild.textContent = response.errorMessage;
         toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
         toUpdate.classList.remove("visually-hidden");
     }

@@ -1,121 +1,127 @@
 package Presentation;
 
+import Presentation.Controllers.ShopController;
+import Presentation.Controllers.UserController;
+import Presentation.Model.PresentationProduct;
+import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
 import domain.Response;
-import domain.ResponseT;
+import domain.ResponseList;
+import domain.ResponseMap;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
-import domain.user.User;
+import domain.shop.Product;
+import domain.shop.Shop;
+import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
-import io.javalin.http.Context;
 
+import static io.javalin.apibuilder.ApiBuilder.*;
 
-import java.util.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Main {
 
-    static final int port = 8080;
-    static final Services services = Services.getInstance();
+    public static final int port = 80;
+    public static InetAddress ip;
 
     public static void main(String[] args) {
-        services.StartMarket(new PaymentServiceImp(),new SupplyServiceImp(), "Admin","Admin");
-        Javalin app =Javalin.create(JavalinConfig::enableWebjars).start(port);
-
-        app.before(ctx->{
-            if(ctx.cookieStore("uid") == null){
-                ResponseT<User> response = services.EnterMarket();
-                if(response.isErrorOccurred()){
-                    ctx.status(503);
-                    ctx.render("errorPage.jte", Collections.singletonMap("errorMessage" ,response.errorMessage));
-                }
-                else {
-                    PresentationUser user = new PresentationUser(response.getValue());
-                    ctx.cookieStore("uid", user.getUsername());
-                }
-            }
-        });
-
-        app.post("/users" , ctx ->{
-            //TODO get info of user from form and send to service
-        });
-
-        app.get("/", ctx ->{
-            String username = ctx.cookieStore("uid");
-            List<ResponseT<Shop>> responses = services.GetShopsInfo(username, new SearchShopFilter());
-            List<Shop> shops = new ArrayList<>();
-            for(ResponseT<Shop> response : responses){
-                if(response.isErrorOccurred()){
-                    ctx.status(503);
-                    ctx.render("errorPage.jte",Collections.singletonMap("errorMessage", response.errorMessage));
-                }
-                shops.add(response.getValue());
-            }
-            PresentationUser user = getUser(username,ctx);
-            ctx.render("index.jte", Map.of("shops", shops, "user",user));
-        });
-
-        app.get("users/login", ctx->{
-            String username = ctx.cookieStore("uid");
-            PresentationUser user = getUser(username,ctx);
-            ctx.render("login.jte", Map.of("user",user));
-        });
-
-        app.post("/users/login", ctx->{
-            String username = ctx.formParam("username");
-            String password = ctx.formParam("password");
-            ResponseT<User> response = services.Login(username,password);
-            if(response.isErrorOccurred()){
-                int errorCode = 401;
-                ctx.status(errorCode);
-                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage,"status",errorCode));
-            }
-            else {
-                ctx.cookieStore("uid", response.getValue().getUserName());
-                ctx.redirect("/");
-            }
-        });
-
-        app.ws("/users/new", ws ->{
-            ws.onConnect(ctx->{
-
-            });
-            ws.onMessage(ctx->{
-                PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);
-                Response response = services.Register(requestedUser.getUsername(), requestedUser.getPassword());
-                ctx.send(response);
-            });
-        });
-
-        app.get("/users/new", ctx -> {
-            String username = ctx.cookieStore("uid");
-            PresentationUser user = getUser(username,ctx);
-            ctx.render("register.jte", Map.of("r_user",user));
-        });
-
-        app.post("/users/{id}/logout", ctx->
-        {
-           String username = ctx.pathParam("id");
-           ResponseT<User> guest = services.Logout(username);
-           if(guest.isErrorOccurred()){
-               ctx.status(418);
-               ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", guest.errorMessage));
-           }
-           ctx.cookieStore("uid", guest.getValue().getUserName());
-            ctx.redirect("/");
-        });
-
-    }
-
-    public static PresentationUser getUser(String username, Context ctx){
-        ResponseT<User> user = services.GetUser(username);
-        if(user.isErrorOccurred()){
-            ctx.status(503);
-            ctx.render("errorPage.jte",Collections.singletonMap("errorMessage", user.errorMessage));
+        Services.getInstance().StartMarket(new PaymentServiceImp(), new SupplyServiceImp(), "Admin", "Admin");
+        UserController userController = new UserController();
+        ShopController shopController = new ShopController(userController);
+        Javalin app;
+        try {
+            ip = Inet4Address.getLocalHost();
+            System.out.println(ip.getHostAddress());
+        } catch (UnknownHostException e) {
+            return;
         }
-        return new PresentationUser(user.getValue());
-    }
+        app = Javalin.create(JavalinConfig::enableWebjars).start(port);
+        app.before(userController::validateUser);
 
+        app.get("/", ctx -> {
+            String username = ctx.cookieStore("uid");
+            ResponseList<Shop> response = Services.getInstance().GetShopsInfo(username, new SearchShopFilter());
+            if (response.isErrorOccurred()) {
+                ctx.status(503);
+                ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+            }
+            List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
+            PresentationUser user = userController.getUser(ctx);
+            ctx.render("index.jte", Map.of("shops", shops, "user", user));
+        });
+
+        app.routes(() -> {
+            // all the users interfaces
+            path("users", () -> {
+                path("login", () -> {
+                    get(userController::renderLogin);
+                    post(userController::login);
+                });
+                path("new", () -> {
+                    get(userController::renderRegister);
+                    ws(userController::register);
+                });
+
+                path("{id}", () -> {
+                    post("/logout", userController::logout);
+                    ws("/addToCart", userController::addToCart);
+
+
+                    path("cart", () -> {
+                        get(userController::renderCart);
+                        post("{serialNumber}/update", userController::updateAmountInCart);
+                        post("{serialNumber}/remove", userController::removeFromCart);
+                    });
+                });
+            });
+        });
+
+        //all the shop interfaces
+        path("shops", () -> {
+            post(shopController::createShop);
+
+            path("{shopID}", () -> {
+                get(shopController::renderShop);
+                get("/addProduct", shopController::renderAddProductPage);
+                post("/addProduct", shopController::addProduct);
+
+                path("{serialNumber}", () -> {
+                    get(shopController::renderProductPage);
+                    post("/edit", shopController::editProduct);
+                    post("/remove", shopController::removeProduct);
+                });
+            });
+        });
+
+
+
+        app.get("/search",ctx -> {
+        String query = ctx.queryParam("query");
+        String searchBy = ctx.queryParam("searchBy");
+        PresentationUser user = userController.getUser(ctx);
+        ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
+            case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
+            case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, new SearchProductFilter());
+            case "" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
+            default -> new ResponseMap<Integer, List<Product>>("please choose a suitable query method");
+        } : new ResponseMap<Integer, List<Product>>("not suppose to happen");
+        if (response.isErrorOccurred()) {
+            ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+            return;
+        }
+        List<PresentationProduct> searchResult = new ArrayList<>();
+        response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
+        ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult));
+    });
+}
 }

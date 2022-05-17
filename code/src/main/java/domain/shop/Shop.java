@@ -50,7 +50,6 @@ public class Shop {
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
-        marketSystem = MarketSystem.getInstance();
     }
 
     public void setDescription(String description) {
@@ -79,13 +78,16 @@ public class Shop {
         }
     }
 
+    public int getRank() {
+        return rank;
+    }
 
     public String getProductInfo(int prodID){
         try{
             String info = getProduct(prodID).getDescription();
             eventLogger.logMsg(Level.INFO, String.format("returned description of product: %d ", prodID));
             return info;
-        }catch (NullPointerException npe){
+        }catch (ProductNotFoundException npe){
             errorLogger.logMsg(Level.WARNING, String.format("could not find product: %d", prodID));
             return "this product does not exist.";
         }
@@ -97,7 +99,7 @@ public class Shop {
         return inventory.getItemsInStock();
     }
 
-    public Product getProduct(int prodID){
+    public Product getProduct(int prodID) throws ProductNotFoundException {
         Product product = inventory.findProduct(prodID);
         if(product != null) {
             eventLogger.logMsg(Level.INFO, String.format("returned product: %d", prodID));
@@ -105,13 +107,13 @@ public class Shop {
         }
         else {
             errorLogger.logMsg(Level.WARNING, String.format("could not find product: %d", prodID));
-            throw new NullPointerException("product not found");
+            throw new ProductNotFoundException("product not found");
         }
     }
 
-    public synchronized Product addListing(String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
+    public synchronized Product addListing(int serialNumber, String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
         if(shopManagersPermissionsController.canAddProductToInventory(userId)| ShopOwners.containsKey(userId))
-            return inventory.addProduct(productName, productDesc, productCategory, price, quantity);
+            return inventory.addProduct(serialNumber, productName, productDesc, productCategory, price, quantity);
         else
             throw new InvalidAuthorizationException("you do not have permission to list a product to this shop");
     }
@@ -216,10 +218,10 @@ public class Shop {
             try {
                 productBasePrice = inventory.getPrice(set.getKey());
             }catch (ProductNotFoundException prodNotFound){
-                return new ResponseT("this product does not exist");
+                return new ResponseT<>(String.format("this product does not exist in shop %d",shopID));
             }
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
-                return new ResponseT("violates purchase policy");
+                return new ResponseT<>(String.format("checkout process violates purchase policy in shop %d",shopID));
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
@@ -229,7 +231,7 @@ public class Shop {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-                return new ResponseT<>("not in stock");
+                return new ResponseT<>(String.format("one of items selected is not in stock in shop %d",shopID));
             }
         }
 
@@ -251,15 +253,14 @@ public class Shop {
                     e.printStackTrace();
                 }
             }
-            return new ResponseT<>();
+            return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please contact the company representative", shopID));
         }
-        if(!marketSystem.supply(transaction, products)){
-            //System.out.println("5\n");
-            return new ResponseT<>("problem with supply system, please contact the company representative");
+        if(!market.supply(transaction, products)){
+            return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(products, transaction, product_PricePer);
-        return new ResponseT(o);
+        return new ResponseT<>(o);
     }
 
     private Order createOrder(Map<Integer, Integer> products, TransactionInfo transaction, Map<Integer, Double> product_PricePer) {
@@ -360,9 +361,6 @@ public class Shop {
 
     public List<Product> getProductInfoOfShop() {
         List<Product> info = inventory.getAllProductInfo();
-        for (Product p : info) {
-            p.setShopRank(rank);
-        }
         return info;
     }
 
@@ -424,6 +422,12 @@ public class Shop {
         return list;
     }
 
+    public List<ShopManagersPermissions> requestInfoOnManagerPermissions(String managerUsername) throws IllegalArgumentException {
+        if(!ShopManagers.containsKey(managerUsername) && !ShopOwners.containsKey(managerUsername) && !ShopFounder.getUserName().equals(managerUsername))
+            throw new IllegalArgumentException("username "+managerUsername+" is not authorize in the shop " + shopID);
+        return shopManagersPermissionsController.getPermissions(managerUsername);
+    }
+}
     private void setMarketSystem(MarketSystem ms){
         marketSystem = ms;
     }

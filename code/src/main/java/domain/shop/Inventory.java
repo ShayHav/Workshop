@@ -10,16 +10,11 @@ import java.util.logging.Level;
 
 public class Inventory {
     private final Map<Integer, ProductImp> keyToProduct;
-    private final Map<ProductImp, Integer> productToQuantity;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
-    private int productIdGen;
-
     public Inventory(){
-        productToQuantity = new HashMap<>();
         keyToProduct = new HashMap<>();
-        productIdGen = 1;
     }
 
     /**
@@ -46,31 +41,28 @@ public class Inventory {
         throw new ProductNotFoundException(String.format("product: %d does not exist", prodID));
     }
 
-    public int getQuantity(int product) throws ProductNotFoundException {
+    public int getQuantity(int product)  throws ProductNotFoundException{
         if(!keyToProduct.containsKey(product)) {
             errorLogger.logMsg(Level.WARNING, String.format("No product with the id %d in the store", product));
             throw new ProductNotFoundException();
         }
-        return productToQuantity.get(keyToProduct.get(product));
+        return keyToProduct.get(product).getAmount();
     }
 
     /**
      * adding a product to the store inventory
 
      */
-    public Product addProduct(String productName, String productDesc, String productCategory, double price, int quantity) throws InvalidProductInfoException {
-        int prodID;
-        synchronized (this) {
-            prodID = productIdGen++;
-        }
+    public Product addProduct(int serialNumber, String productName, String productDesc, String productCategory, double price, int quantity) throws InvalidProductInfoException {
         if(price < 0.0 || quantity < 0) {
-            errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", prodID));
+            errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", serialNumber));
             throw new InvalidProductInfoException();
         }
-        ProductImp p = new ProductImp(prodID, productName, productDesc, productCategory, price);
-        productToQuantity.put(p, quantity);
-        keyToProduct.put(prodID,p);
-        eventLogger.logMsg(Level.INFO, String.format("product with id %d added to the store inventory", prodID));
+        ProductImp p = new ProductImp(serialNumber, productName, productDesc, productCategory, price, quantity);
+        synchronized (keyToProduct) {
+            keyToProduct.put(serialNumber, p);
+        }
+        eventLogger.logMsg(Level.INFO, String.format("product with id %d added to the store inventory", serialNumber));
         return p;
     }
 
@@ -83,7 +75,7 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("product: %d does not exist", product));
             throw new ProductNotFoundException("product does not exist");
         }
-        synchronized (productToQuantity) {
+        synchronized (keyToProduct) {
             ProductImp p = keyToProduct.get(product);
             p.setBasePrice(newPrice);
         }
@@ -98,8 +90,8 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("product:%d does not exist", product));
             throw new ProductNotFoundException("this product does not exist in the inventory");
         }
-        synchronized (productToQuantity) {
-            productToQuantity.replace(keyToProduct.get(product), newAmount);
+        synchronized (keyToProduct) {
+            keyToProduct.get(product).setQuantity(newAmount);
         }
     }
 
@@ -113,12 +105,12 @@ public class Inventory {
         if(!keyToProduct.containsKey(product))
             return false;
         ProductImp p = keyToProduct.get(product);
-        if(productToQuantity.get(p) < amount)
+        int currentAmount =keyToProduct.get(product).getAmount();
+        if(currentAmount < amount)
             return false;
-        synchronized (productToQuantity) {
-            int currentAmount = productToQuantity.get(p);
+        synchronized (keyToProduct) {
             currentAmount -= amount;
-            productToQuantity.replace(p, currentAmount);
+            keyToProduct.get(product).setQuantity(currentAmount);
         }
         return true;
     }
@@ -126,17 +118,16 @@ public class Inventory {
     public void removeProduct(int product) {
         if(keyToProduct.containsKey(product)){
             Product p = keyToProduct.get(product);
-            keyToProduct.remove(product);
-            synchronized (productToQuantity) {
-                productToQuantity.remove(p);
+            synchronized (keyToProduct) {
+                keyToProduct.remove(product);
             }
         }
     }
 
     public List<Product> getItemsInStock() {
         List<Product> products = new ArrayList<>();
-        for(ProductImp p : productToQuantity.keySet()){
-            if(productToQuantity.get(p) > 0){
+        for(ProductImp p : keyToProduct.values()){
+            if(p.getAmount() > 0){
                 products.add(p);
             }
         }
@@ -211,20 +202,16 @@ public class Inventory {
         }
     }*/
 
-    public Product getProductInfo(int productId) throws ProductNotFoundException {
+    public ServiceProduct getProductInfo(int productId) throws ProductNotFoundException {
         if(!keyToProduct.containsKey(productId)){
             errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d",productId));
             throw new ProductNotFoundException("this product does not exist");
         }
-        return keyToProduct.get(productId);
+        return new ServiceProduct(keyToProduct.get(productId));
     }
 
     public synchronized List<Product> getAllProductInfo(){
-        List<Product> products = new ArrayList<>();
-        for(ProductImp p: keyToProduct.values()){
-            products.add(p);
-        }
-        return products;
+        return new ArrayList<>(keyToProduct.values());
     }
 
 }

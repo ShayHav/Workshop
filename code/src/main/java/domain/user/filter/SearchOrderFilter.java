@@ -16,6 +16,12 @@ public class SearchOrderFilter implements Filter<Order> {
     LocalDate minDate;
     LocalDate maxDate;
 
+    public SearchOrderFilter() {
+        minPrice = 0d;
+        maxPrice = Double.MAX_VALUE;
+        minDate = null;
+        maxDate = null;
+    }
 
     public SearchOrderFilter(Double minPrice, Double maxPrice, LocalDate minDate, LocalDate maxDate) {
         this.minPrice = Objects.requireNonNullElse(minPrice, 0d);
@@ -25,12 +31,12 @@ public class SearchOrderFilter implements Filter<Order> {
     }
 
     public List<Order> applyFilter(List<Order> orders) {
-        EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filer for Orders");
+        EventLoggerSingleton.getInstance().logMsg(Level.INFO, "Operate filer for Orders");
         List<Order> result = new ArrayList<>();
 
-        if(minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice
-            || minDate.isAfter(LocalDate.now()) || maxDate.isAfter(LocalDate.now())
-            || maxDate.isBefore(minDate)) {
+        if (minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice
+                || minDate.isAfter(LocalDate.now()) || maxDate.isAfter(LocalDate.now())
+                || maxDate.isBefore(minDate)) {
             return result;
         }
 
@@ -44,4 +50,5 @@ public class SearchOrderFilter implements Filter<Order> {
         }
         return result;
     }
+
 }

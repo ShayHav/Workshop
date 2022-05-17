@@ -1,4 +1,17 @@
 @param Presentation.Model.PresentationUser user
+@param String title
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>${title}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <div class="navbar-brand">
@@ -28,17 +41,16 @@
                 @endif
             </ul>
             <div class="me-auto col-7">
-                <form class="d-flex" method="get">
-                    <div class="col-2">
+                <form class="d-flex" method="get" action="/search">
+                    <div class="col-3">
                         <select class="form-select border-end-0 rounded-start" name="searchBy"
                                 aria-label="Disabled select example">
-                            <option selected value="product">Product's Name</option>
-                            <option value="shop">Shop's Name</option>
+                            <option selected value="products">Product's Name</option>
                             <option value="category">Category</option>
                             <option value="keyword">Keyword</option>
                         </select>
                     </div>
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control me-2" name="query" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>
@@ -71,7 +83,7 @@
 
 @if (user.isLoggedIn())
 <div class="collapse container border border-2 mt-3 col-6" id="createShop">
-    <form class="m-3" method="post" action="/shop">
+    <form class="m-3" method="post" action="/shops">
         <h3 class="fs-5">create new shop in market:</h3>
         <div class=" mb-2">
             <input type="text" name="shopName" class="form-control" id="shopName" placeholder="shopName">

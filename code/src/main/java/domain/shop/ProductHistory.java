@@ -56,6 +56,11 @@ public class ProductHistory implements Product{
         return 0;
     }
 
+    @Override
+    public int getAmount() {
+        return numSold;
+    }
+
     public int getNumSold() {
         return numSold;
     }

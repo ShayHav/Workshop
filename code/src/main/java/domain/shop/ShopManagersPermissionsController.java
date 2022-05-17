@@ -127,4 +127,8 @@ public class ShopManagersPermissionsController {
             output.add(run);
         return output;
     }
+
+    protected List<ShopManagersPermissions> getPermissions(String username){
+        return shopManagersPermissionsMap.get(username);
+    }
 }
