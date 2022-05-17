@@ -1,5 +1,6 @@
 package Testing_System.AccepanceTests;
 
+import Presentation.Model.PresentationShop;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
@@ -78,7 +79,7 @@ public class AddToCartCaseTest extends Tester {
 
         Login(user_1,pw_user_1);
 
-        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        ResponseT<PresentationShop> shopResponseT = CreateShop(user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID = shopResponseT.getValue().getShopID();
         pID_1 = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID).getValue().getId();

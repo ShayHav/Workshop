@@ -35,7 +35,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         pw_1 = pws[0];
         Register(user_1, pw_1);
         Login(user_1, pw_1);
-        ResponseT<Shop> shopResponseT = CreateShop(user_1, "TestShop");
+        ResponseT<Shop> shopResponseT = CreateShop("Hello Darkness My Old friend", user_1, "TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];

@@ -1,10 +1,13 @@
 package Testing_System;
 
+import Presentation.Model.PresentationShop;
+import Presentation.Model.PresentationUser;
 import Service.Services;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
+import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
@@ -15,7 +18,7 @@ import domain.user.filter.SearchOrderFilter;
 import java.util.List;
 import java.util.Map;
 
-public class RealBridge implements  Bridge{
+public class RealBridge implements Bridge{
 
     private Services sv;
     public RealBridge()
@@ -24,13 +27,13 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public ResponseT<User> Login(String username, String pw) {
+    public ResponseT<PresentationUser> Login(String username, String pw) {
         return sv.Login(username, pw);
     }
 
     @Override
-    public Response Register(String username, String pw) {
-        return sv.Register(username, pw);
+    public Response Register(String username, String pw, UserObserver uo) {
+        return sv.Register(username, pw, uo);
     }
 
     @Override
@@ -49,8 +52,8 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public ResponseT<Shop> CreateShop(String username, String shopname) {
-        return sv.CreateShop(username, shopname);
+    public ResponseT<Shop> CreateShop(String dis, String username, String shopname) {
+        return sv.CreateShop(dis, username, shopname);
     }
 
     @Override

@@ -83,6 +83,8 @@ public class Services {
             return new Response(blankDataExc.getLocalizedMessage());
         } catch (IncorrectIdentification incorrectIdentification) {
             incorrectIdentification.printStackTrace();
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            invalidSequenceOperationsExc.printStackTrace();
         }
         return new Response();
     }

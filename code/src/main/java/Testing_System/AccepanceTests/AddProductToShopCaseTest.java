@@ -65,8 +65,8 @@ public class AddProductToShopCaseTest extends Tester {
     @BeforeEach
     public void SetShops()
     {
-        Register(user_1, pw_1);
-        Login(user_1,pw_1);
+        Register(user_1, pw_1, null);
+        Login(user_1,pw_1, null);
         Register(user_2, pw_2);
         Login(user_2,pw_2);
         ResponseT<Shop> shopResponseT;

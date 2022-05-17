@@ -1,9 +1,12 @@
 package Testing_System;
 
+import Presentation.Model.PresentationShop;
+import Presentation.Model.PresentationUser;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
+import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
@@ -17,14 +20,13 @@ import java.util.Map;
 public interface Bridge {
 
     //General Guest-Visitor
-    ResponseT<User> Login(String username, String pw); //done
+    ResponseT<PresentationUser> Login(String username, String pw); //done
 
-    Response Register(String username, String pw); //done
+    Response Register(String username, String pw, UserObserver uo); //done
 
     ResponseT<User> EnterMarket();
 
     Response LeaveMarket();
-
 
     //General Member-Visitor
     ResponseT<User> Logout(String username); //done
