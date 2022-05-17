@@ -65,7 +65,7 @@ public class ShopController {
         }
 
 
-        shop.products = products.getValue().stream().map(PresentationProduct::new).collect(Collectors.toList());
+        shop.products = PresentationProduct.convertProduct(products.getValue(), shopID);
         ResponseList<ShopManagersPermissions> permission = services.CheckPermissionsForManager(user.getUsername(), shopID);
         if(permission.isErrorOccurred()){
             ctx.status(400);
@@ -92,7 +92,7 @@ public class ShopController {
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
             return;
         }
-        PresentationProduct product = new PresentationProduct(response.getValue());
+        PresentationProduct product = new PresentationProduct(response.getValue(), shopID);
         user.setPermission(shopID, permission.getValue());
         ctx.render("product.jte", Map.of("user", user, "product", product, "shopId", shopID));
     }

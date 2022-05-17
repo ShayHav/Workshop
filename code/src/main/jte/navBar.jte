@@ -51,7 +51,7 @@
                             <option value="keyword">Keyword</option>
                         </select>
                     </div>
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control me-2" name="query" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>

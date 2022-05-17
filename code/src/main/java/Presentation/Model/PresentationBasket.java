@@ -28,7 +28,7 @@ public class PresentationBasket {
         Map<Product,Integer> products = basket.getProductWithAmount();
         for(Product p: products.keySet()){
             int amount = products.get(p);
-            productWithAmount.put(new PresentationProduct(p),amount);
+            productWithAmount.put(new PresentationProduct(p,shopId),amount);
         }
     }
 }
