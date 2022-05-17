@@ -1,10 +1,9 @@
 package domain.shop;
 
 import domain.ErrorLoggerSingleton;
-import domain.user.filters.SearchOrderFilter;
+import domain.user.filter.SearchOrderFilter;
 
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -4,8 +4,8 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.shop.*;
-import domain.user.filters.Filter;
-import domain.user.filters.SearchProductFilter;
+import domain.user.filter.Filter;
+import domain.user.filter.SearchProductFilter;
 import domain.user.User;
 import org.junit.jupiter.api.*;
 

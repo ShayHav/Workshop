@@ -1,4 +1,4 @@
-package domain.user.filters;
+package domain.user.filter;
 
 import domain.EventLoggerSingleton;
 import domain.shop.ProductInfo;

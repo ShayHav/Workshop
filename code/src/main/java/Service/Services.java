@@ -19,7 +19,6 @@ import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
 
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -67,8 +66,8 @@ public class Services {
                 return new Response();
         } catch (BlankDataExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
-        } catch (IncorrectIdentification incorrectIdentification) {
-            incorrectIdentification.printStackTrace();
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            invalidSequenceOperationsExc.printStackTrace();
         }
         return new Response();
     }
@@ -115,10 +114,6 @@ public class Services {
             return new ResponseT<>(new PresentationUser(output));
         } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
     }
     //Make:nitay
@@ -474,8 +469,6 @@ public class Services {
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
     //Make:nitay
@@ -498,8 +491,6 @@ public class Services {
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new ResponseT<>(null,invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
     //Make:nitay
@@ -556,12 +547,6 @@ public class Services {
         catch (IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc incorrectIdentification){
             return new ResponseT<>(null,incorrectIdentification.getLocalizedMessage());
         }
-        catch (BlankDataExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc blankDataExc){
-            return new ResponseT<>(null,blankDataExc.getLocalizedMessage());
-        }
     }
     //Make:nitay
 
@@ -574,12 +559,12 @@ public class Services {
      */
     public List<ResponseT<PresentationUser>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName)
     {
-        List<ResponseT<UserSearchInfo>> responseTList = new LinkedList<>();
+        List<ResponseT<PresentationUser>> responseTList = new LinkedList<>();
         try {
-            List<UserSearchInfo> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
+            List<User> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
             if (s != null)
-                for(UserSearchInfo userSearchInfo: s)
-                    responseTList.add(new ResponseT<>(userSearchInfo));
+                for(User userSearchInfo: s)
+                    responseTList.add(new ResponseT<>(new PresentationUser(userSearchInfo)));
             return responseTList;
         }
         catch (IncorrectIdentification incorrectIdentification){
@@ -675,6 +660,8 @@ public class Services {
         catch (IncorrectIdentification incorrectIdentification){
             output.add(new ResponseT(incorrectIdentification.getLocalizedMessage()));
             return output;
+        } catch (ShopNotFoundException shopNotFoundException) {
+            shopNotFoundException.printStackTrace();
         }
         return output;
     }

@@ -8,9 +8,9 @@ import domain.market.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
-import domain.user.filters.Filter;
-import domain.user.filters.SearchOfficialsFilter;
-import domain.user.filters.SearchOrderFilter;
+import domain.user.filter.Filter;
+import domain.user.filter.SearchOfficialsFilter;
+import domain.user.filter.SearchOrderFilter;
 
 import java.util.List;
 import java.util.Map;

@@ -2,9 +2,7 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidAuthorizationException;
-import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Exceptions.*;
 import domain.shop.Order;
 import domain.shop.ShopController;
 import domain.user.filter.Filter;
@@ -225,7 +223,7 @@ public class UserController {
         return u.removeProductFromCart(shopID,productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException {
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, ShopNotFoundException {
         if(!activeUser.containsKey(userID)){
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
             throw new InvalidAuthorizationException();
