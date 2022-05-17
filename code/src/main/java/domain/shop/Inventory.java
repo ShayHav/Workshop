@@ -36,7 +36,7 @@ public class Inventory {
     }
 
     public int getQuantity(int product){
-        if(keyToProduct.containsKey(product)) {
+        if(!keyToProduct.containsKey(product)) {
             errorLogger.logMsg(Level.WARNING, String.format("No product with the id %d in the store", product));
             return -1;
         }

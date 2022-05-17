@@ -34,7 +34,7 @@
 </main>
 </body>
 <script>
-    const socket = new WebSocket("ws://localhost:8080/users/new")
+    const socket = new WebSocket("ws://localhost:${Presentation.Main.port}/users/new")
     const button = document.querySelector('#submitButton');
     const f = function () {
         const form = document.registerForm;
@@ -55,7 +55,7 @@
         const username = document.getElementById("userName");
         username.classList.add("border", "border-danger");
         const toUpdate = document.getElementById("responsePlace");
-        toUpdate.firstChild.textContent = response.error;
+        toUpdate.firstChild.textContent = response.errorMessage;
         toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
         toUpdate.classList.remove("visually-hidden");
     }

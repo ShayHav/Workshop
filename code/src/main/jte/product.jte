@@ -4,12 +4,12 @@
 @template.navBar(user = user, title = product.name)
 <main class="container align-content-center mb-4">
     <div class="container card col-5 mt-5 border">
-        <div class="container card-body col-4 mt-3">
+        <div class="container col-4 mt-3 mb-3">
             <h1 class="card-title fs-2 fw-bold">${product.name}</h1>
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
-                <div class="container card-text mt-5">
+                <div class="container card-text ">
                     <h2 class="fs-4 fw-bold">Category</h2>
                     <p class="fs-5 text">${product.category}</p>
                 </div>
@@ -39,9 +39,16 @@
             </li>
 
         </ul>
-        <div class="container card-body mb-1">
-            <a href="/users/${user.getUsername()}/addToCart/${shopId}/?item=${product.serialNumber}"
-               class="btn btn-success">Add To Cart</a>
+        <div class="container card-body">
+            <form class="form mb-2" method="post" name="amountForm">
+                <div class="mb-2">
+                    <label for="amount" class="form-label fw-bold">Quantity:</label>
+                    <input type="number" min="0" step="1" id="amount" name="amount" required>
+                </div>
+                <div>
+                    <button type="button" id="addProduct" class="btn btn-success">AddToCart</button>
+                </div>
+            </form>
             @if(user.hasInventoryPermission(shopId))
                 <a href="/shops/${shopId}/${product.serialNumber}" class="btn btn-warning">Edit Product</a>
                 <form method="post" action="/shops/${product.shop}/${product.serialNumber}">
@@ -50,36 +57,43 @@
             @endif
         </div>
     </div>
+    <div id="responsePlace" class="container mt-5 col-4 visually-hidden">
+        <p class="fs-5"></p>
+    </div>
 </main>
 </body>
 
 
 <script>
-    const socket = new WebSocket("ws://localhost:8080/users/{id}/addToCart/{shopID}/?item={serialNum}")
+    const socket = new WebSocket("ws://localhost:${Presentation.Main.port}/users/${user.getUsername()}/addToCart")
+    socket.onopen = function (event){
+        console.log("connected to add product web-socket in port: ",${Presentation.Main.port})
+    }
+    const username = "${user.getUsername()}"
+    const shopID = "${shopId}"
+    const serial = "${product.serialNumber}"
+    const add_button = document.querySelector('#addProduct');
     const f = function () {
-        const username = "${user.getUsername()}"
-        const shopID = "${shopId}"
-        const serial = "${product.serialNumber}"
-        const message = {username: username, shopID: shopID, serialNumber: serial};
+        const form = document.amountForm;
+        const message = {username: username, shopID: shopID, serialNumber: serial, quantity: form.amount.value};
         socket.send(JSON.stringify(message));
     }
-    button.addEventListener('click', f);
+    add_button.addEventListener('click', f);
     socket.onmessage = async function (event) {
         const response = JSON.parse(event.data);
         if (!response.errorMessage) {
             const toUpdate = document.getElementById("responsePlace");
-            toUpdate.firstChild.textContent = "The user was created";
+            toUpdate.firstChild.textContent = "The product wad added to cart successfully";
             toUpdate.classList.add("border", "border-success", "border-3", "rounded");
             toUpdate.classList.remove("visually-hidden");
             await new Promise(r => setTimeout(r, 1500));
-            window.location.replace("/users/login");
         }
-        const username = document.getElementById("userName");
-        username.classList.add("border", "border-danger");
-        const toUpdate = document.getElementById("responsePlace");
-        toUpdate.firstChild.textContent = response.error;
-        toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
-        toUpdate.classList.remove("visually-hidden");
+        else {
+            const toUpdate = document.getElementById("responsePlace");
+            toUpdate.firstChild.textContent = response.errorMessage;
+            toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
+            toUpdate.classList.remove("visually-hidden");
+        }
     }
 </script>
 </html>

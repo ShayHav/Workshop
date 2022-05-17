@@ -104,10 +104,9 @@ public class UserController {
 
         wsConfig.onMessage(ctx ->{
             AddToCartMessage message = ctx.messageAsClass(AddToCartMessage.class);
-            Response response = services.AddToShoppingCart(message.getUsername(), message.getShopID(), message.getSerialNumber(), 1);
+            Response response = services.AddToShoppingCart(message.getUsername(), message.getShopID(), message.getSerialNumber(), message.getQuantity());
+            ctx.send(response);
         });
-
-       //TODO: figure out what to do if the method ended successfully.
     }
 
     public void validateUser(Context ctx){
