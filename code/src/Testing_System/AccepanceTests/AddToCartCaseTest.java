@@ -5,10 +5,7 @@ import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.user.User;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -89,11 +86,11 @@ public class AddToCartCaseTest extends Tester {
         pID_2 = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID).getValue().getId();
     }
 
-    @BeforeEach
+    @AfterAll
     public void LogUsers()
     {
-        Login(user_2,pw_user_2);
-        Login(user_3,pw_user_3);
+        DeleteUserTest(validUsers);
+        ug.DeleteAdmin();
     }
 
     @Test
@@ -117,10 +114,6 @@ public class AddToCartCaseTest extends Tester {
         assertFalse(AddToShoppingCart(user_1,shopID,pID_1,20000).isErrorOccurred());
 
     }
-
-    @Test
-    public void SaveCart
-
 
 
 
