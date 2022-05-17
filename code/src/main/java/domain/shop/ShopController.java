@@ -69,43 +69,43 @@ public class ShopController {
         return f.applyFilter(info);
     }
 
-    public List<Product> searchProductByName(String name, Filter<Product> f) {
+    public Map<Integer,List<Product>> searchProductByName(String name, Filter<Product> f) {
         String lowerName = name.toLowerCase();
-        List<Product> products = new ArrayList<>();
+        Map<Integer,List<Product>> products = new HashMap<>();
         synchronized (shopList) {
             for (Shop s : shopList.values()) {
                 List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getName().toLowerCase().equals(lowerName)).collect(Collectors.toList());
-                products.addAll(shopProducts);
+                products.put(s.getShopID(),f.applyFilter(shopProducts));
             }
         }
         eventLogger.logMsg(Level.INFO, "searchProductByName succeeded");
-        return f.applyFilter(products);
+        return products;
     }
 
-    public List<Product> searchProductByKeyword(String keyword, Filter<Product> f) {
+    public Map<Integer,List<Product>> searchProductByKeyword(String keyword, Filter<Product> f) {
         String lowerKeyword = keyword.toLowerCase();
-        List<Product> products = new ArrayList<>();
+        Map<Integer,List<Product>> products = new HashMap<>();
         synchronized (shopList) {
             for (Shop s : shopList.values()) {
                 List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getName().toLowerCase().contains(lowerKeyword)).collect(Collectors.toList());
-                products.addAll(shopProducts);
+                products.put(s.getShopID(),f.applyFilter(shopProducts));
             }
         }
         eventLogger.logMsg(Level.INFO, "searchProductByKeyword succeeded");
-        return f.applyFilter(products);
+        return products;
     }
 
-    public List<Product> searchProductByCategory(String category, Filter<Product> f) {
+    public Map<Integer,List<Product>> searchProductByCategory(String category, Filter<Product> f) {
         String category_lower = category.toLowerCase();
-        List<Product> products = new ArrayList<>();
+        Map<Integer,List<Product>> products = new HashMap<>();
         synchronized (shopList) {
             for (Shop s : shopList.values()) {
                 List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getCategory().toLowerCase().equals(category_lower)).collect(Collectors.toList());
-                products.addAll(shopProducts);
+                products.put(s.getShopID(),f.applyFilter(shopProducts));
             }
         }
         eventLogger.logMsg(Level.INFO, "searchProductByKeyword succeeded");
-        return f.applyFilter(products);
+        return products;
     }
 
     public Shop getShop(int shopID) throws ShopNotFoundException {

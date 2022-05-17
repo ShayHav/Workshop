@@ -5,6 +5,7 @@ import Testing_System.Result;
 import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseList;
+import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.market.PaymentService;
@@ -202,32 +203,32 @@ public class Services {
 
 
     //make:shahar
-    public ResponseList<Product> SearchProductByName(String userName, String pName, Filter<Product> f) //done
+    public ResponseMap<Integer,List<Product>> SearchProductByName(String userName, String pName, Filter<Product> f) //done
     {
         try {
-            List<Product> products = Collections.unmodifiableList(marketSystem.searchProductByName(userName, pName, f));
-            return new ResponseList<>(products);
+            Map<Integer,List<Product>> products = Collections.unmodifiableMap(marketSystem.searchProductByName(userName, pName, f));
+            return new ResponseMap<>(products);
         } catch (BlankDataExc blankDataExc) {
-            return new ResponseList<>(blankDataExc.getMessage());
+            return new ResponseMap<>(blankDataExc.getMessage());
         }
     }
 
     //make:shahar
-    public ResponseList<Product> SearchProductByKeyword(String userName, String keyword, Filter<Product> f) {
+    public ResponseMap<Integer,List<Product>> SearchProductByKeyword(String userName, String keyword, Filter<Product> f) {
         try {
-            List<Product> products = Collections.unmodifiableList(marketSystem.searchProductByKeyword(userName, keyword, f));
-            return new ResponseList<>(products);
+            Map<Integer,List<Product>> products = Collections.unmodifiableMap(marketSystem.searchProductByKeyword(userName, keyword, f));
+            return new ResponseMap<>(products);
         } catch (BlankDataExc blankDataExc) {
-            return new ResponseList<>(blankDataExc.getMessage());
+            return new ResponseMap<>(blankDataExc.getMessage());
         }
     }
 
-    public ResponseList<Product> SearchProductByCategory(String userName, String category, Filter<Product> f) {
+    public ResponseMap<Integer,List<Product>> SearchProductByCategory(String userName, String category, Filter<Product> f) {
         try {
-            List<Product> products = Collections.unmodifiableList(marketSystem.searchProductByCategory(userName, category, f));
-            return new ResponseList<>(products);
+            Map<Integer,List<Product>> products = Collections.unmodifiableMap(marketSystem.searchProductByCategory(userName, category, f));
+            return new ResponseMap<>(products);
         } catch (BlankDataExc blankDataExc) {
-            return new ResponseList<>(blankDataExc.getMessage());
+            return new ResponseMap<>(blankDataExc.getMessage());
         }
     }
 

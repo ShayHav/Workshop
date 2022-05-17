@@ -36,4 +36,33 @@
     </div>
 </main>
 </body>
+
+
+<script>
+    const socket = new WebSocket("ws://localhost:8080/users/new")
+    const button = document.querySelector('#submitButton');
+    const f = function () {
+        const form = document.registerForm;
+        const message = {username: form.username.value, password: form.password.value};
+        socket.send(JSON.stringify(message));
+    }
+    button.addEventListener('click', f);
+    socket.onmessage = async function (event) {
+        const response = JSON.parse(event.data);
+        if (!response.errorMessage) {
+            const toUpdate = document.getElementById("responsePlace");
+            toUpdate.firstChild.textContent = "The user was created";
+            toUpdate.classList.add("border", "border-success", "border-3", "rounded");
+            toUpdate.classList.remove("visually-hidden");
+            await new Promise(r => setTimeout(r, 1500));
+            window.location.replace("/users/login");
+        }
+        const username = document.getElementById("userName");
+        username.classList.add("border", "border-danger");
+        const toUpdate = document.getElementById("responsePlace");
+        toUpdate.firstChild.textContent = response.error;
+        toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
+        toUpdate.classList.remove("visually-hidden");
+    }
+</script>
 </html>

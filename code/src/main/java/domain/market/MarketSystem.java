@@ -113,19 +113,19 @@ public class MarketSystem {
         return ShopController.getInstance().getInfoOfProductInShop(shopID, f);
     }
     //TODO: f==null is ok? getAllInfoProduct..
-    public List<Product> searchProductByName(String userID, String name, Filter<Product> f) throws BlankDataExc {
+    public Map<Integer,List<Product>> searchProductByName(String userID, String name, Filter<Product> f) throws BlankDataExc {
         if (userID == null || name == null || f == null || !userController.HasUserEnteredMarket(userID))
             throw new BlankDataExc();
         return ShopController.getInstance().searchProductByName(name, f);
     }
     //TODO: f==null is ok? getAllInfoProduct..
-    public List<Product> searchProductByKeyword(String userID, String keyword, Filter<Product> f) throws BlankDataExc {
+    public Map<Integer,List<Product>> searchProductByKeyword(String userID, String keyword, Filter<Product> f) throws BlankDataExc {
         if (userID == null || keyword == null || f == null || !userController.HasUserEnteredMarket(userID))
             throw new BlankDataExc();
         return ShopController.getInstance().searchProductByKeyword(keyword, f);
     }
 
-    public List<Product> searchProductByCategory(String userID, String category, Filter<Product> f) throws BlankDataExc {
+    public Map<Integer,List<Product>> searchProductByCategory(String userID, String category, Filter<Product> f) throws BlankDataExc {
         if (userID == null || category == null || f == null || !userController.HasUserEnteredMarket(userID))
             throw new BlankDataExc();
         return ShopController.getInstance().searchProductByCategory(category, f);
