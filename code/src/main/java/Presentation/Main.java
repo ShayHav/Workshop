@@ -104,17 +104,19 @@ public class Main {
             String query = ctx.queryParam("query");
             String searchBy = ctx.queryParam("searchBy");
             PresentationUser user = userController.getUser(ctx);
-            switch (searchBy){
-                case "Product":
-                    ResponseMap<Integer, List<Product>> reposnse = Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
-                    if(reposnse.isErrorOccurred()){
-                        ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", reposnse.errorMessage));
-                        return;
-                    }
-                    List<PresentationProduct> searchResult = new ArrayList<>();
-                    reposnse.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
-                    ctx.render("searchProducts.jte", Map.of("products", searchResult));
+            ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
+                case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
+                case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, new SearchProductFilter());
+                case "" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
+                default -> new ResponseMap<Integer, List<Product>>("please choose a suitable query method");
+            } : new ResponseMap<Integer, List<Product>>("not suppose to happen");
+            if(response.isErrorOccurred()){
+                ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+                return;
             }
+            List<PresentationProduct> searchResult = new ArrayList<>();
+            response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
+            ctx.render("searchProducts.jte", Map.of("user", user,"products", searchResult));
         });
     }
 }

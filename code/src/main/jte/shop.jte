@@ -15,7 +15,8 @@
         <a href="/shops/${shop.id}/addProduct" class="btn btn-primary">Add Product</a>
         </div>
     @endif
-    <div class="container row mx-auto">
+    <div class="container row">
+        <h3 class="fs-5 mt-3">The things we sell</h3>
         @for(Presentation.Model.PresentationProduct product: shop.products)
             <div class="card m-1" style="width: 18rem">
                 <img src="https://images.unsplash.com/photo-1562186971-736d2e3ae153?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80"
