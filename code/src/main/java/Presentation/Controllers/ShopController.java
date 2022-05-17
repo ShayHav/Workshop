@@ -4,6 +4,7 @@ import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
+import domain.Response;
 import domain.ResponseList;
 import domain.ResponseT;
 import domain.shop.Product;
@@ -148,5 +149,17 @@ public class ShopController {
             return;
         }
         context.render("errorPage.jte",Map.of("status", 400, "errorMessage", "You have no permission to add products"));
+    }
+
+    public void removeProduct(Context context) {
+        PresentationUser user = userController.getUser(context);
+        int shopID = context.pathParamAsClass("shopID", Integer.class).get();
+        int serialNumber = context.pathParamAsClass("serialNumber", Integer.class).get();
+        Response response = services.RemoveProductFromShopInventory(serialNumber, user.getUsername(), shopID);
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+            return;
+        }
+        context.redirect(String.format("/shops/%d", shopID));
     }
 }

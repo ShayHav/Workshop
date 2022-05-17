@@ -44,6 +44,9 @@
                class="btn btn-success">Add To Cart</a>
             @if(user.hasInventoryPermission(shopId))
                 <a href="/shops/${shopId}/${product.serialNumber}" class="btn btn-warning">Edit Product</a>
+                <form method="post" action="/shops/${product.shop}/${product.serialNumber}">
+                    <button type="submit" class="btn btn-danger">Remove Product</button>
+                </form>
             @endif
         </div>
     </div>

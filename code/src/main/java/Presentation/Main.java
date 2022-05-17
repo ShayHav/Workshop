@@ -94,6 +94,7 @@ public class Main {
                     path("{serialNumber}", () ->{
                         get(shopController::renderProductPage);
                         post("/edit", shopController::editProduct);
+                        post("/remove", shopController::removeProduct);
                     });
                 });
             });
