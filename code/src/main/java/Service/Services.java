@@ -262,7 +262,7 @@ public class Services {
     //make:shahar
 
 
-    public Response RemoveFromShoppingCart(String userName, int shopId, int productId) throws InvalidSequenceOperationsExc {
+    public Response RemoveFromShoppingCart(String userName, int shopId, int productId) {
         try {
             return marketSystem.removeProductFromCart(userName, shopId, productId);
         } catch (InvalidSequenceOperationsExc e) {

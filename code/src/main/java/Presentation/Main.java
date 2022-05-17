@@ -36,14 +36,13 @@ public class Main {
 
     public static void main(String[] args) {
         Services.getInstance().StartMarket(new PaymentServiceImp(), new SupplyServiceImp(), "Admin", "Admin");
-        UserController userController  = new UserController();
+        UserController userController = new UserController();
         ShopController shopController = new ShopController(userController);
         Javalin app;
-        try{
-            ip =  Inet4Address.getLocalHost();
+        try {
+            ip = Inet4Address.getLocalHost();
             System.out.println(ip.getHostAddress());
-        }
-        catch (UnknownHostException e) {
+        } catch (UnknownHostException e) {
             return;
         }
         app = Javalin.create(JavalinConfig::enableWebjars).start(port);
@@ -61,62 +60,69 @@ public class Main {
             ctx.render("index.jte", Map.of("shops", shops, "user", user));
         });
 
-        app.routes(() ->{
+        app.routes(() -> {
             // all the users interfaces
-            path("users",() ->{
-                path("login", ()->{
+            path("users", () -> {
+                path("login", () -> {
                     get(userController::renderLogin);
                     post(userController::login);
                 });
-                path("new", () ->{
+                path("new", () -> {
                     get(userController::renderRegister);
                     ws(userController::register);
                 });
-                path("{id}/logout", () ->{
-                    post(userController::logout);
 
-                });
+                path("{id}", () -> {
+                    post("/logout", userController::logout);
+                    ws("/addToCart",userController::addToCart);
 
-                path("{id}/addToCart", ()->{
-                    ws(userController::addToCart);
-                });
-            });
 
-            //all the shop interfaces
-            path("shops", () -> {
-                post(shopController::createShop);
-
-                path("{shopID}", () ->{
-                    get(shopController::renderShop);
-                    get("/addProduct", shopController::renderAddProductPage);
-                    post("/addProduct",shopController::addProduct);
-
-                    path("{serialNumber}", () ->{
-                        get(shopController::renderProductPage);
-                        post("/edit", shopController::editProduct);
+                    path("cart", ()->{
+                        get(userController::renderCart);
+                        post("{serialNumber}/update", userController::updateAmountInCart);
+                        post("{serialNumber}/remove", userController::removeFromCart);
                     });
                 });
             });
-
         });
 
-        app.get("/search", ctx ->{
-            String query = ctx.queryParam("query");
-            String searchBy = ctx.queryParam("searchBy");
-            PresentationUser user = userController.getUser(ctx);
-            ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
-                case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
-                case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, new SearchProductFilter());
-                case "" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
-                default -> new ResponseMap<Integer, List<Product>>("please choose a suitable query method");
-            } : new ResponseMap<Integer, List<Product>>("not suppose to happen");
-            if(response.isErrorOccurred()){
-                ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
-                return;
-            }
-            List<PresentationProduct> searchResult = new ArrayList<>();
-            response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
-            ctx.render("searchProducts.jte", Map.of("user", user,"products", searchResult));
+        //all the shop interfaces
+        path("shops", () -> {
+            post(shopController::createShop);
+
+            path("{shopID}", () -> {
+                get(shopController::renderShop);
+                get("/addProduct", shopController::renderAddProductPage);
+                post("/addProduct", shopController::addProduct);
+
+                path("{serialNumber}", () -> {
+                    get(shopController::renderProductPage);
+                    post("/edit", shopController::editProduct);
+                });
+            });
         });
-    }
+
+    });
+
+        app.get("/search",ctx ->
+
+    {
+        String query = ctx.queryParam("query");
+        String searchBy = ctx.queryParam("searchBy");
+        PresentationUser user = userController.getUser(ctx);
+        ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
+            case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
+            case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, new SearchProductFilter());
+            case "" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
+            default -> new ResponseMap<Integer, List<Product>>("please choose a suitable query method");
+        } : new ResponseMap<Integer, List<Product>>("not suppose to happen");
+        if (response.isErrorOccurred()) {
+            ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+            return;
+        }
+        List<PresentationProduct> searchResult = new ArrayList<>();
+        response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
+        ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult));
+    });
+}
 }

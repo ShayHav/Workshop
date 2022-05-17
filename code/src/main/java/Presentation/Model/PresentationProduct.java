@@ -15,6 +15,7 @@ public class PresentationProduct {
     public double price;
     public int amount;
     public int shop;
+    public double finalPrice;
 
     public PresentationProduct(int serialNumber, String name, String description, String category, double price, int amount, int shopID){
         this.serialNumber = serialNumber;
@@ -38,5 +39,9 @@ public class PresentationProduct {
 
     public static List<PresentationProduct> convertProduct(List<Product> products, int shopID){
        return  products.stream().map(p-> new PresentationProduct(p, shopID)).collect(Collectors.toList());
+    }
+
+    public void setFinalPrice(double finalPrice) {
+        this.finalPrice = finalPrice;
     }
 }
