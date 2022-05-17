@@ -95,12 +95,13 @@ public class Main {
                 get("/addProduct", shopController::renderAddProductPage);
                 post("/addProduct", shopController::addProduct);
 
-                path("{serialNumber}", () -> {
-                    get(shopController::renderProductPage);
-                    post("/edit", shopController::editProduct);
+                    path("{serialNumber}", () ->{
+                        get(shopController::renderProductPage);
+                        post("/edit", shopController::editProduct);
+                        post("/remove", shopController::removeProduct);
+                    });
                 });
             });
-        });
 
     });
 

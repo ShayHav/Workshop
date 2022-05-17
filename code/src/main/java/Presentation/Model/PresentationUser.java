@@ -82,4 +82,5 @@ public class PresentationUser {
     public void setPermission(int shopID, List<ShopManagersPermissions> value) {
         permissions.put(shopID, value);
     }
+
 }
