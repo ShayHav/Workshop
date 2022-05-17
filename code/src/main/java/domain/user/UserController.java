@@ -2,7 +2,9 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
-import domain.Exceptions.*;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidAuthorizationException;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.shop.Order;
 import domain.shop.ShopController;
 import domain.user.filter.Filter;
@@ -16,7 +18,6 @@ public class UserController {
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
     private Map<String,User> activeUser; //TODO: temporary
-    private Map<String,User> guestUser;
     private static UserController instance = null;
     private List<User> adminUser;
     private int guestCounter = 0;
@@ -25,15 +26,13 @@ public class UserController {
         memberList = new HashMap<>();
         activeUser = new HashMap<>();
         adminUser = new LinkedList<>();
-        guestUser = new HashMap<>();
-    }
-
-    private static class UserControllerHolder{
-        private static final UserController uc = new UserController();
     }
 
     public static UserController getInstance() {
-       return UserControllerHolder.uc;
+        if (instance == null) {
+            instance = new UserController();
+        }
+        return instance;
     }
 
     //TODO: add logger and validate pre condition
@@ -58,11 +57,11 @@ public class UserController {
                 eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", id));
                 return output;
             } else {
-                throw new InvalidAuthorizationException("username or password given is incorrect.");
+                throw new InvalidAuthorizationException("Identifier not correct");
             }
         } else {
-            errorLogger.logMsg(Level.WARNING, "username or password given is incorrect.");
-            throw new InvalidAuthorizationException("username or password given is incorrect.");
+            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
+            throw new InvalidAuthorizationException();
         }
     }
 
@@ -122,7 +121,6 @@ public class UserController {
         guestCounter++;
         temp.enterMarket();
         activeUser.put(temp.getUserName(), temp);
-        guestUser.put(temp.getUserName(),temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
         return temp;
     }
@@ -130,11 +128,7 @@ public class UserController {
     public User getUser(String id) throws IncorrectIdentification {
         if(id == null)
             throw new IncorrectIdentification("id not exist");
-        User u =  memberList.getOrDefault(id, null);
-        if(u == null){
-            u = guestUser.get(id);
-        }
-        return u;
+        return memberList.getOrDefault(id, null);
     }
 
     public boolean deleteUserTest(String[] userId) throws InvalidSequenceOperationsExc {
@@ -165,8 +159,8 @@ public class UserController {
         }
     }
 
-    public List<String> checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc, BlankDataExc {
-        User user = getUser(userID);
+    public List<String> checkout(String userName,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
+        User user = getUser(userName);
         return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
     }
 
@@ -202,8 +196,8 @@ public class UserController {
         return orders;
     }
 
-    public synchronized boolean HasUserEnteredMarket(String userID) {
-        return activeUser.containsKey(userID) || guestUser.containsKey(userID);
+    public synchronized boolean HasUserEnteredMarket(String userName) {
+        return activeUser.containsKey(userName);
     }
 
     public boolean addProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {

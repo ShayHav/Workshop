@@ -3,6 +3,9 @@ package domain.market;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
+import domain.notifications.NotificationManager;
+import domain.notifications.Observer;
+import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
@@ -30,12 +33,11 @@ public class MarketSystem {
         externalConnector = new ExternalConnector();
     }
 
-    private static class MarketHolder{
-        private static final MarketSystem market = new MarketSystem();
-    }
-
     public static MarketSystem getInstance() {
-        return MarketHolder.market;
+        if (instance == null) {
+            instance = new MarketSystem();
+        }
+        return instance;
     }
 
 
@@ -159,6 +161,7 @@ public class MarketSystem {
     public Shop getShop(int shopID) throws ShopNotFoundException {
         return ShopController.getInstance().getShop(shopID);
     }
+
 
     //TODO: Services start here :)
     public User logIn(String username, String pw) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {

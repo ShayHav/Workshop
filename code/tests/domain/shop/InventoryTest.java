@@ -18,8 +18,22 @@ class InventoryTest {
     Inventory inv;
 
     @BeforeEach
-    void setUp() throws InvalidProductInfoException {
+    void setUp() throws Exception {
         inv = new Inventory();
+
+        try {
+            inv.addProduct("Iphone13", "Apples new overpriced smartphone", "smartphone",3499.90, 100);
+        }catch (InvalidProductInfoException invalidProductInfoException){
+            fail("add product should have succeeded, all product info is legal");
+            throw new Exception("Before each fail, abort");
+        }
+
+        try {
+            inv.addProduct("Galaxy s22", "Samsung new overpriced smartphone", "smartphone",2999.90, 0);
+        }catch (InvalidProductInfoException invalidProductInfoException){
+            fail("add product should have succeeded, all product info is legal");
+            throw new Exception("Before each fail, abort");
+        }
         inv.addProduct("Iphone13", "Apples new overpriced smartphone", "smartphone",3499.90, 100);
         inv.addProduct("Galaxy s22", "Samsung new overpriced smartphone", "smartphone",2999.90, 0);
     }

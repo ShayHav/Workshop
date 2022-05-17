@@ -7,9 +7,9 @@ import domain.market.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchOfficialsFilter;
-import domain.user.filter.SearchOrderFilter;
+import domain.user.filters.Filter;
+import domain.user.filters.SearchOfficialsFilter;
+import domain.user.filters.SearchOrderFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -50,13 +50,13 @@ public interface Bridge {
     Result<Boolean, String> RemovePaymentService(String path);
 
     //Guest-Visitor Shop option
-    Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<Shop> filter); //done
+    Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter); //done
 
-    Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<Product> f);
+    Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f);
 
-    Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<Product> f); //done
+    Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<ProductInfo> f); //done
 
-    Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<Product> f);    //done
+    Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<ProductInfo> f);    //done
 
     Response AddToShoppingCart(String userID, int shopID, int productId, int amount);
 

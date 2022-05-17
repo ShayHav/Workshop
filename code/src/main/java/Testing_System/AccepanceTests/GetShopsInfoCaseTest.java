@@ -5,8 +5,8 @@ import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchShopFilter;
+import domain.user.filters.Filter;
+import domain.user.filters.SearchShopFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,10 +18,10 @@ public class GetShopsInfoCaseTest extends Tester {
     private UserGenerator ug;
     private String[] validUsers;
     private String[] pws;
-    private Filter<Shop> f_1;
-    private Filter<Shop> f_2;
-    private Filter<Shop> f_3;
-    private Filter<Shop> f_4;
+    private Filter<ShopInfo> f_1;
+    private Filter<ShopInfo> f_2;
+    private Filter<ShopInfo> f_3;
+    private Filter<ShopInfo> f_4;
     private String user;
     private int shopID;
 

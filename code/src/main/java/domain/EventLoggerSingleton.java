@@ -14,6 +14,12 @@ public class EventLoggerSingleton {
         }
         return single_instance;
     }
+
+    /**
+     * write to the logger events
+     * @param l - level flag
+     * @param s - event message
+     */
     public void logMsg(Level l, String s){
         logger.log(l,s);
     }

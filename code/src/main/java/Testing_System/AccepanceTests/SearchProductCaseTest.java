@@ -4,8 +4,8 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.shop.*;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchProductFilter;
+import domain.user.filters.Filter;
+import domain.user.filters.SearchProductFilter;
 import domain.user.User;
 import org.junit.jupiter.api.*;
 
@@ -88,7 +88,7 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void SearchByNameTest()
     {
-        Filter<Product> f = new SearchProductFilter(null,null,null,null,null);
+        Filter<ProductInfo> f = new SearchProductFilter(null,null,null,null,null);
         for(int i = 0; i<ug.getNumOfUser()-1; i++)
             assertTrue(SearchProductByName(validUsers[i],pName_1,f).GetFirstElement());
 
@@ -98,7 +98,7 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void SearchByKeyword()
     {
-        Filter<Product> f = new SearchProductFilter(null,null,null,null,null);
+        Filter<ProductInfo> f = new SearchProductFilter(null,null,null,null,null);
         for(int i = 0; i<ug.getNumOfUser()-1; i++)
             assertTrue(SearchProductByKeyword(validUsers[i],"se",f).GetFirstElement() &&SearchProductByKeyword(validUsers[i],"se",f).GetSecondElement().size() ==2);
         assertTrue(SearchProductByKeyword(guestID,"geni",f).GetFirstElement() && SearchProductByKeyword(guestID,"geni",f).GetSecondElement().size() == 1);
@@ -107,7 +107,7 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void NoProductTest()
     {
-        Filter<Product> f = new SearchProductFilter(null,null,null,null,null);
+        Filter<ProductInfo> f = new SearchProductFilter(null,null,null,null,null);
         for(int i = 0; i<ug.getNumOfUser()-1; i++)
             assertTrue(SearchProductByKeyword(validUsers[i],"NoSuchProduct",f).GetFirstElement() && SearchProductByKeyword(validUsers[i],"NoSuchProduct",f).GetSecondElement().isEmpty());
         assertTrue(SearchProductByKeyword(guestID,"ResultIsGood",f).GetFirstElement() && SearchProductByKeyword(guestID,"ResultIsGood",f).GetSecondElement().isEmpty());
@@ -116,9 +116,9 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void SearchByCategory()
     {
-        Filter<Product> f_1 = new SearchProductFilter(null,null,null,null,pCat_1);
-        Filter<Product> f_2 = new SearchProductFilter(null,null,null,null,pCat_2);
-        Filter<Product> f_3 = new SearchProductFilter(null,null,null,null,"PPPPNOCAT");
+        Filter<ProductInfo> f_1 = new SearchProductFilter(null,null,null,null,pCat_1);
+        Filter<ProductInfo> f_2 = new SearchProductFilter(null,null,null,null,pCat_2);
+        Filter<ProductInfo> f_3 = new SearchProductFilter(null,null,null,null,"PPPPNOCAT");
         assertTrue(SearchProductByKeyword(guestID,"",f_1).GetFirstElement() && SearchProductByKeyword(guestID, "", f_1).GetSecondElement().size() == 1);
         assertTrue(SearchProductByKeyword(guestID,"",f_2).GetFirstElement() && SearchProductByKeyword(guestID, "", f_2).GetSecondElement().size() == 1);
         assertTrue(SearchProductByKeyword(guestID,"",f_3).GetFirstElement() && SearchProductByKeyword(guestID, "", f_3).GetSecondElement().isEmpty());
@@ -128,10 +128,10 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void SearchByFilter()
     {
-        Filter<Product> f_1 = new SearchProductFilter(10.0,20.0,null,null,null);
-        Filter<Product> f_2 = new SearchProductFilter(1.0,90.5,null,null,null);
-        Filter<Product> f_3 = new SearchProductFilter(50.0,100.0,null,null,null);
-        Filter<Product> f_4 = new SearchProductFilter(3.0,100.0,null,null,null);
+        Filter<ProductInfo> f_1 = new SearchProductFilter(10.0,20.0,null,null,null);
+        Filter<ProductInfo> f_2 = new SearchProductFilter(1.0,90.5,null,null,null);
+        Filter<ProductInfo> f_3 = new SearchProductFilter(50.0,100.0,null,null,null);
+        Filter<ProductInfo> f_4 = new SearchProductFilter(3.0,100.0,null,null,null);
         assertTrue(SearchProductByKeyword(guestID,"",f_1).GetFirstElement() && SearchProductByKeyword(guestID, "", f_1).GetSecondElement().size() == 0);
         assertTrue(SearchProductByKeyword(guestID,"",f_2).GetFirstElement() && SearchProductByKeyword(guestID, "", f_2).GetSecondElement().size() == 1);
         assertTrue(SearchProductByKeyword(guestID,"",f_3).GetFirstElement() && SearchProductByKeyword(guestID, "", f_3).GetSecondElement().size() == 1);
@@ -142,7 +142,7 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void NotRegisterUser()
     {
-        Filter<Product> f_1 = new SearchProductFilter(null,null,null,null,null);
+        Filter<ProductInfo> f_1 = new SearchProductFilter(null,null,null,null,null);
         assertFalse(SearchProductByKeyword(badUser[0],"",f_1).GetFirstElement());
 
     }
@@ -150,7 +150,7 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void NotLoggedUser()
     {
-        Filter<Product> f_1 = new SearchProductFilter(null,null,null,null,null);
+        Filter<ProductInfo> f_1 = new SearchProductFilter(null,null,null,null,null);
         Register(validUsers[ug.getNumOfUser()-1],pws[ug.getNumOfUser()-1]);
         assertFalse(SearchProductByKeyword(validUsers[ug.getNumOfUser()-1],"",f_1).GetFirstElement());
 
@@ -159,7 +159,7 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void changedInfoTest()
     {
-        Filter<Product> f_4 = new SearchProductFilter(3.0,100.0,null,null,null);
+        Filter<ProductInfo> f_4 = new SearchProductFilter(3.0,100.0,null,null,null);
         assertTrue(SearchProductByKeyword(guestID,"",f_4).GetFirstElement() && SearchProductByKeyword(guestID, "", f_4).GetSecondElement().size() == 2);
         Product newP = new ServiceProduct(p_1.getId(), p_1.getName(),p_1.getDescription(),p_1.getCategory(),1.0,90);
         ChangeProduct(user_1,newP,shopID_1);

@@ -14,5 +14,11 @@ public class ErrorLoggerSingleton {
         }
         return single_instance;
     }
+
+    /**
+     * write to the logger errors
+     * @param l - level flag
+     * @param s - error message
+     */
     public void logMsg(Level l, String s) { synchronized (this) { logger.log(l, s); } }
 }

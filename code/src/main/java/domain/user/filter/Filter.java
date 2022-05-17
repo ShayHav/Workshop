@@ -1,4 +1,4 @@
-package domain.user.filter;
+package domain.user.filters;
 
 import java.util.List;
 

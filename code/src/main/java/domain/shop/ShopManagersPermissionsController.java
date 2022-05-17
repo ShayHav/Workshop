@@ -58,6 +58,9 @@ public class ShopManagersPermissionsController {
     public boolean canOpenShop(String userId){
         return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.OpenShop);
     }
+    public boolean canDismissalOfStoreOwner(String userId){
+        return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.OpenShop);
+    }
     public boolean canRequestInformationOnShopsOfficials(String userId){
         return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.RequestInformationOnShopsOfficials);
     }
