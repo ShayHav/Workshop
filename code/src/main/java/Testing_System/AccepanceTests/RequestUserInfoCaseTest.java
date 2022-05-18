@@ -6,11 +6,13 @@ import domain.user.filter.SearchUserFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RequestUserInfoCaseTest extends Tester {
     private UserGenerator ug = new UserGenerator();
     private String[] validUserNames;

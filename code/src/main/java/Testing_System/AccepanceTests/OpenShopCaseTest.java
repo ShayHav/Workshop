@@ -5,10 +5,7 @@ import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OpenShopCaseTest extends Tester {
     private UserGenerator ug;
     private String[] validUsers;

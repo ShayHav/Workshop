@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CreateSystemManagerCaseTest extends Tester {
     private UserGenerator ug = new UserGenerator();
     private String[] validUserNames;
@@ -25,6 +26,7 @@ public class CreateSystemManagerCaseTest extends Tester {
     @BeforeAll
     public void SetUp()
     {
+        ug.InitTest();
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
         sadUserNames = ug.GetSadUsers();

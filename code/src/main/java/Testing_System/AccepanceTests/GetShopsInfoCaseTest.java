@@ -10,10 +10,13 @@ import domain.user.filter.SearchShopFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GetShopsInfoCaseTest extends Tester {
 
     private UserGenerator ug;
@@ -30,9 +33,9 @@ public class GetShopsInfoCaseTest extends Tester {
     @BeforeAll
     public void SetUp()
     {
-        user = validUsers[0];
         ug = new UserGenerator();
         validUsers = ug.GetValidUsers();
+        user = validUsers[0];
         pws = ug.GetPW();
         ug.InitTest();
         Register(validUsers[0],pws[0]);

@@ -64,7 +64,7 @@ public class UserController {
                 throw new InvalidAuthorizationException("Identifier not correct");
             }
         } else {
-            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %d.", id));
+            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %s.", id));
             throw new InvalidAuthorizationException();
         }
     }
