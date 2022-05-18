@@ -148,7 +148,7 @@ public class Services {
     }
     //Make:nitay
 
-    /***
+    /*
      * Create a store object to represent the relevant store in the app
      * @param description -  description of the created shop
      * @param username - user identifier
@@ -243,7 +243,7 @@ public class Services {
         }
     }
 
-    /***
+    /*
      * Query for certain products in the relevant store.
      * @param userName - user identifier
      * @param shopID - shop identifier

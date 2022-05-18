@@ -20,6 +20,18 @@ public class SearchUserFilter implements Filter<User> {
 
     public SearchUserFilter() {
     }
+    public SearchUserFilter(String b) {
+        switch (b){
+            case "isMember":
+                isMember=true;
+            case "isGuest":
+                isGuest=true;
+        }
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
 
     public List<User> applyFilter(List<User> orders) {
         throw new UnsupportedOperationException();

@@ -2,6 +2,7 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class CloseShopCaseTest extends Tester {
 
     private UserGenerator ug;
@@ -34,8 +36,8 @@ public class CloseShopCaseTest extends Tester {
         user_1 = validUsers[0];
         pw_1 = pws[0];
         Register(user_1, pw_1);
-        Login(user_1, pw_1);
-        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        Login(user_1, pw_1,null);
+        ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
@@ -54,8 +56,8 @@ public class CloseShopCaseTest extends Tester {
     @BeforeEach
     public void SetShop()
     {
-        Login(owner,owner_pw);
-        Login(manager,manager_pw);
+        Login(owner,owner_pw,null);
+        Login(manager,manager_pw,null);
         AddShopMangerPermissions(shopID_1,ls,manager,user_1);
         /**
          * Not supported offline --> Online shop
@@ -94,7 +96,7 @@ public class CloseShopCaseTest extends Tester {
     public void ManagerClosesShopNoPermission()
     {
         RemoveShopManagerPermissions(shopID_1,ls,manager,user_1);
-        assertFalse(CloseShop(shopID_1,manager).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,manager).isErrorOccurred());
 
     }
 
@@ -102,9 +104,9 @@ public class CloseShopCaseTest extends Tester {
     public void AlreadyClosedShopTest()
     {
         assertTrue(!CloseShop(shopID_1,user_1).isErrorOccurred());
-        assertFalse(CloseShop(shopID_1,user_1).isErrorOccurred());
-        assertFalse(CloseShop(shopID_1,owner).isErrorOccurred());
-        assertFalse(CloseShop(shopID_1,manager).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,user_1).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,owner).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,manager).isErrorOccurred());
 
     }
 
@@ -112,22 +114,22 @@ public class CloseShopCaseTest extends Tester {
     public void NotLoggedInTest()
     {
         Logout(owner);
-        assertFalse(CloseShop(shopID_1,owner).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,owner).isErrorOccurred());
 
     }
 
     @Test
     public void NotRegisteredTest()
     {
-        assertFalse(CloseShop(shopID_1,validUsers[ug.getNumOfUser()-1]).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,validUsers[ug.getNumOfUser()-1]).isErrorOccurred());
     }
 
     @Test
     public void BadInputsTest()
     {
-        assertFalse(CloseShop(shopID_1-1,user_1).isErrorOccurred());
-        assertFalse(CloseShop(-1,user_1).isErrorOccurred());
-        assertFalse(CloseShop(shopID_1,null).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1-1,user_1).isErrorOccurred());
+        assertFalse(!CloseShop(-1,user_1).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,null).isErrorOccurred());
 
     }
 

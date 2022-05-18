@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class RegisterCaseTest extends Tester {
 
     private UserGenerator ug = new UserGenerator();
@@ -61,7 +62,7 @@ public class RegisterCaseTest extends Tester {
     public void BadPWTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(validUserNames[i],badPWs[i] ).isErrorOccurred());
+            assertFalse(!Register(validUserNames[i],badPWs[i]).isErrorOccurred());
     }
 
     @Test

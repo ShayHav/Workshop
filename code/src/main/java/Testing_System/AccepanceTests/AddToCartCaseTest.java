@@ -1,11 +1,17 @@
 package Testing_System.AccepanceTests;
 
+import Presentation.Model.PresentationShop;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.shop.Shop;
 import domain.user.User;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 
 public class AddToCartCaseTest extends Tester {
 
@@ -36,6 +42,8 @@ public class AddToCartCaseTest extends Tester {
     private String pCat_2;
     private double price_2;
     private int amountToAdd_2;
+    private int pID_1;
+    private  int pID_2;
 
     @BeforeAll
     public void SetUp()
@@ -70,21 +78,50 @@ public class AddToCartCaseTest extends Tester {
         Register(user_2,pw_user_2);
         Register(user_3,pw_user_3);
 
-        Login(user_1,pw_user_1);
+        Login(user_1,pw_user_1,null);
 
-        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        ResponseT<Shop> shopResponseT = CreateShop("Test_1",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID = shopResponseT.getValue().getShopID();
+        pID_1 = AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID).getValue().getId();
+        pID_2 = AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID).getValue().getId();
     }
 
-    @BeforeEach
+    @AfterAll
     public void LogUsers()
     {
-        Login(user_2,pw_user_2);
-        Login(user_3,pw_user_3);
+        DeleteUserTest(validUsers);
+        ug.DeleteAdmin();
     }
 
+    @Test
+    public void AddGoodTest()
+    {
+        assertTrue(!AddToShoppingCart(user_2,shopID,pID_1,3).isErrorOccurred());
+        assertTrue(!AddToShoppingCart(user_2,shopID,pID_1,3).isErrorOccurred());
+        assertTrue(!AddToShoppingCart(user_3,shopID,pID_2,3).isErrorOccurred());
+    }
 
+    @Test
+    public void BadProductIDTest()
+    {
+        assertFalse(!AddToShoppingCart(user_2,shopID,400214,3).isErrorOccurred());
+    }
+
+    @Test
+    public void NotInStockTest()
+    {
+        assertFalse(!AddToShoppingCart(user_2,shopID,pID_2,20000).isErrorOccurred());
+        assertFalse(!AddToShoppingCart(user_1,shopID,pID_1,20000).isErrorOccurred());
+
+    }
+
+    @Test
+    public void EditCartTest()
+    {
+        AddToShoppingCart(user_2,shopID,pID_1,3);
+        assertTrue(!EditShoppingCart(user_2,shopID,pID_1,1).isErrorOccurred());
+    }
 
 
 

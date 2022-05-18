@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class LoginCaseTest extends Tester {
 
     UserGenerator ug = new UserGenerator();
@@ -24,7 +25,7 @@ public class LoginCaseTest extends Tester {
     }
 
     @AfterAll
-    public void CleanCase()
+    public void CleanUp()
     {
         DeleteUserTest(validUsernames);
     }
@@ -34,7 +35,7 @@ public class LoginCaseTest extends Tester {
     public void GoodLogin()
     {
         for (int i = 0; i < ug.getNumOfUser(); i++)
-            assertTrue(!Login(validUsernames[i], passwords[i]).isErrorOccurred());
+            assertTrue(!Login(validUsernames[i], passwords[i],null).isErrorOccurred());
 
     }
 
@@ -42,7 +43,7 @@ public class LoginCaseTest extends Tester {
     public void MissMatchUserPWTest()
     {
         for (int i = 1; i < ug.getNumOfUser(); i++)
-            assertFalse(Login(validUsernames[i], passwords[i-1]).isErrorOccurred());
+            assertFalse(!Login(validUsernames[i], passwords[i-1],null).isErrorOccurred());
     }
 
     @Test
@@ -50,8 +51,8 @@ public class LoginCaseTest extends Tester {
     {
         for (int i = 0; i < ug.getNumOfUser(); i++)
         {
-           assertTrue(!Login(validUsernames[i], passwords[i]).isErrorOccurred());
-           assertFalse(Login(validUsernames[i], passwords[i]).isErrorOccurred());
+           assertTrue(!Login(validUsernames[i], passwords[i],null).isErrorOccurred());
+           assertFalse(!Login(validUsernames[i], passwords[i],null).isErrorOccurred());
 
         }
     }
@@ -60,7 +61,7 @@ public class LoginCaseTest extends Tester {
     public void UserDoesNotExist()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertTrue(!Login(notRegisteredUsers[i], passwords[i]).isErrorOccurred());
+            assertFalse(!Login(notRegisteredUsers[i], passwords[i],null).isErrorOccurred());
 
     }
 

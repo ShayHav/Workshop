@@ -50,4 +50,7 @@ public class UserGenerator extends Tester {
         DeleteUserTest(arr);
     }
 
+    public String getAdmin()
+    {return adminID;}
+
 }

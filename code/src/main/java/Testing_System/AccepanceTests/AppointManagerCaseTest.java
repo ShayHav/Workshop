@@ -2,10 +2,13 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.shop.Shop;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 
 public class AppointManagerCaseTest extends Tester{
     private UserGenerator ug;
@@ -25,8 +28,8 @@ public class AppointManagerCaseTest extends Tester{
         user_1 = validUsers[0];
         pw_1 = pws[0];
         Register(user_1, pw_1);
-        Login(user_1, pw_1);
-        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        Login(user_1, pw_1,null);
+        ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
 
@@ -52,7 +55,7 @@ public class AppointManagerCaseTest extends Tester{
     public void GoodAppoint() {
         for (int i = 1; i < ug.getNumOfUser(); i++) {
             Register(validUsers[i], pws[i]);
-            Login(validUsers[i], pws[i]);
+            Login(validUsers[i], pws[i],null);
             assertTrue(!(AppointNewShopManager(shopID_1, validUsers[i], user_1).isErrorOccurred()));
         }
     }
@@ -69,11 +72,11 @@ public class AppointManagerCaseTest extends Tester{
     @Test
     public void NewOwnerAppointsManagerTest() {
         Register(validUsers[1], pws[1]);
-        Login(validUsers[1], pws[1]);
+        Login(validUsers[1], pws[1],null);
         AppointNewShopOwner(shopID_1, validUsers[1], user_1);
         for (int i = 2; i < ug.getNumOfUser(); i++) {
             Register(validUsers[i], pws[i]);
-            Login(validUsers[i], pws[i]);
+            Login(validUsers[i], pws[i],null);
             assertFalse(!(AppointNewShopManager(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred()));
         }
     }
@@ -81,24 +84,24 @@ public class AppointManagerCaseTest extends Tester{
     @Test
     public void FounderAppointFounderAsManagerTest() {
         Register(validUsers[1], pws[1]);
-        Login(validUsers[1], pws[1]);
-        ResponseT<Shop> shopResponseT = CreateShop(validUsers[1], "TestShop_2");
+        Login(validUsers[1], pws[1],null);
+        ResponseT<Shop> shopResponseT = CreateShop("Test_2",validUsers[1], "TestShop_2");
         int shopID_2 = -1;
         if(!shopResponseT.isErrorOccurred())
             shopID_2 = shopResponseT.getValue().getShopID();
         assertTrue(!(AppointNewShopManager(shopID_1, validUsers[1], user_1).isErrorOccurred()));
-        assertTrue(AppointNewShopManager(shopID_2, user_1, validUsers[1]).isErrorOccurred());
+        assertTrue(!AppointNewShopManager(shopID_2, user_1, validUsers[1]).isErrorOccurred());
     }
 
     @Test
     public void MultipleManagersDifferentShop() {
-        ResponseT<Shop> shopResponseT = CreateShop(user_1, "TestShop_2");
+        ResponseT<Shop> shopResponseT = CreateShop("Test_2",user_1, "TestShop_2");
         int shopID_2 = -1;
         if(!shopResponseT.isErrorOccurred())
             shopID_2 = shopResponseT.getValue().getShopID();
         Register(validUsers[1], pws[1]);
-        Login(validUsers[1], pws[1]);
-        shopResponseT =CreateShop(validUsers[1], "TestShop_3");
+        Login(validUsers[1], pws[1],null);
+        shopResponseT =CreateShop("Test_3",validUsers[1], "TestShop_3");
         int shopID_3 = -1;
         if(!shopResponseT.isErrorOccurred())
             shopID_3 = shopResponseT.getValue().getShopID();
@@ -114,23 +117,23 @@ public class AppointManagerCaseTest extends Tester{
         Register(validUsers[1], pws[1]);
         AppointNewShopOwner(shopID_1, validUsers[1], user_1);
         for (int i = 2; i < ug.getNumOfUser(); i++)
-            assertFalse(AppointNewShopManager(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred());
+            assertFalse(!AppointNewShopManager(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred());
 
     }
 
     @Test
     public void NotRegisteredUserTest() {
         for (int i = 1; i < ug.getNumOfUser(); i++)
-            assertFalse(AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
     }
 
     @Test
     public void BadValuesTest() {
         for (int i = 1; i < ug.getNumOfUser(); i++) {
             Register(validUsers[i],pws[i]);
-            assertFalse(AppointNewShopManager(shopID_1+1, validUsers[i], user_1).isErrorOccurred());
-            assertFalse(AppointNewShopManager(shopID_1, validUsers[i], null).isErrorOccurred());
-            assertFalse(AppointNewShopManager(shopID_1, null, user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopManager(shopID_1+1, validUsers[i], user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopManager(shopID_1, validUsers[i], null).isErrorOccurred());
+            assertFalse(!AppointNewShopManager(shopID_1, null, user_1).isErrorOccurred());
 
         }
     }
@@ -139,9 +142,9 @@ public class AppointManagerCaseTest extends Tester{
     public void MemberAppointManagerTest()
     {
         Register(validUsers[1],pws[1]);
-        Login(validUsers[1],pws[1]);
+        Login(validUsers[1],pws[1],null);
         Register(validUsers[2],pws[2]);
-        assertFalse(AppointNewShopManager(shopID_1,validUsers[2],validUsers[1]).isErrorOccurred());
+        assertFalse(!AppointNewShopManager(shopID_1,validUsers[2],validUsers[1]).isErrorOccurred());
     }
 
 }

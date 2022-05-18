@@ -128,7 +128,7 @@ public class ShopManagersPermissionsController {
         return output;
     }
 
-    protected List<ShopManagersPermissions> getPermissions(String username){
-        return shopManagersPermissionsMap.get(username);
+    public List<ShopManagersPermissions> getPermissions(String managerUsername) {
+        return shopManagersPermissionsMap.get(managerUsername);
     }
 }
