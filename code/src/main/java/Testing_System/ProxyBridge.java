@@ -187,6 +187,16 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
+    public Response OpenShop(int shopId, String userName) {
+        return null;
+    }
+
+    @Override
+    public ResponseMap<Integer, List<Product>> SearchProductByCategory(String userName, String category, Filter<Product> f) {
+        return null;
+    }
+
+    @Override
     public ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName) {
         return null;
     }
