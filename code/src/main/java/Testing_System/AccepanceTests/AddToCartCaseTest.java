@@ -4,6 +4,7 @@ import Presentation.Model.PresentationShop;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.shop.Shop;
 import domain.user.User;
 import org.junit.jupiter.api.*;
 
@@ -77,13 +78,13 @@ public class AddToCartCaseTest extends Tester {
         Register(user_2,pw_user_2);
         Register(user_3,pw_user_3);
 
-        Login(user_1,pw_user_1);
+        Login(user_1,pw_user_1,null);
 
-        ResponseT<PresentationShop> shopResponseT = CreateShop(user_1,"TestShop");
+        ResponseT<Shop> shopResponseT = CreateShop("Test_1",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID = shopResponseT.getValue().getShopID();
-        pID_1 = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID).getValue().getId();
-        pID_2 = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID).getValue().getId();
+        pID_1 = AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID).getValue().getId();
+        pID_2 = AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID).getValue().getId();
     }
 
     @AfterAll

@@ -2,7 +2,13 @@ package Testing_System;
 
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
+import domain.Exceptions.BlankDataExc;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Exceptions.ShopNotFoundException;
 import domain.Response;
+import domain.ResponseList;
+import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
@@ -13,6 +19,7 @@ import domain.user.TransactionInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -33,13 +40,13 @@ public class Tester {
 
     //Guest-Visitor General
     //done
-    public ResponseT<PresentationUser> Login(String username, String pw) {
-        return br.Login(username, pw);
+    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
+        return br.Login(username, pw,uo);
     }
 
     //done
-    public Response Register(String username, String pw, UserObserver uo) {
-        return br.Register(username, pw, uo);
+    public Response Register(String username, String pw) {
+        return br.Register(username, pw);
     }
 
     //done - not needed
@@ -48,30 +55,30 @@ public class Tester {
     }
 
     //done - not needed
-    public Response LeaveMarket() {
-        return br.LeaveMarket();
+    public Response LeaveMarket(String username) {
+        return br.LeaveMarket(username);
     }
 
     //Guest-Visitor Purchase
     //
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<Shop> filter) {
-        return br.GetShopsInfo(userID, filter);
+    public ResponseList<Shop> GetShopsInfo(String userName, Filter<Shop> filter) {
+        return br.GetShopsInfo(userName, filter);
     }
 
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<Product> f) {
-        return br.GetProductInfoInShop(userID, shopID, f);
+    public ResponseList<Product> GetProductInfoInShop(String userName, int shopID, Filter<Product> f) {
+        return br.GetProductInfoInShop(userName, shopID, f);
     }
 
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID ,String pName, Filter<Product> f) {
-        return br.SearchProductByName(userID, pName, f);
+    public ResponseMap<Integer,List<Product>> SearchProductByName(String userName, String pName, Filter<Product> f) {
+        return br.SearchProductByName(userName, pName, f);
     }
 
 //    public Result<Boolean, List<ProductInfo>> SearchProductByCategory(String userID ,String category,Filter<ProductInfo> f ) {
 //        return br.SearchProductByCategory(userID, category,f);
 //    }
 
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID ,String keyword, Filter<Product> f) {
-        return br.SearchProductByKeyword(userID, keyword, f);
+    public ResponseMap<Integer,List<Product>> SearchProductByKeyword(String userName, String keyword, Filter<Product> f) {
+        return br.SearchProductByKeyword(userName, keyword, f);
     }
 
     public Response AddToShoppingCart(String userID, int shopID, int productId, int amount) {
@@ -103,9 +110,9 @@ public class Tester {
     }
 
     //Shop-Owner Options
-    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID)
+    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID)
     {
-        return br.AddProductToShopInventory(pName,pDis, pCat, price, amount, username, shopID);
+        return br.AddProductToShopInventory(serialNumber, pName, pDis, pCat, price, amount, username, shopID);
     }
 
     public Response RemoveProductFromShopInventory(int productId, String username, int shopname) {
@@ -152,12 +159,12 @@ public class Tester {
     /*
     the following tests cover both cases for system manager as well
      */
-    public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userId) {
-        return br.RequestShopOfficialsInfo(shopName, f, userId);
+    public ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName) {
+        return br.RequestShopOfficialsInfo(shopName, f, userName);
     }
 
-    public Result<Boolean, List<Order>> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userId) {
-        return br.RequestShopSalesInfo(shopName, f, userId);
+    public ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName) {
+        return br.RequestInformationOfShopsSalesHistory(shopName, f, userName);
     }
 
 
@@ -168,7 +175,7 @@ public class Tester {
     }
 
     //done
-    public ResponseT<PresentationShop> CreateShop(String dis, String username, String shopname) {
+    public ResponseT<Shop> CreateShop(String dis, String username, String shopname) {
         return br.CreateShop(dis, username, shopname);
     }
 
@@ -178,11 +185,12 @@ public class Tester {
         return br.RealTimeNotification(users, msg);
     }
 
-    public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer,Integer> products) /*supply*/ {
+    public ResponseT<Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products)
+        /*supply*/ {
         return br.PurchaseDelivery(ti, products);
     }
 
-    public Result<Boolean, Boolean> Payment(TransactionInfo ti) {
+    public ResponseT<Boolean> Payment(TransactionInfo ti) {
         return br.Payment(ti);
     }
 
@@ -207,18 +215,26 @@ public class Tester {
         return br.RemovePaymentService(path);
     }
 
-
-
-
     public Result<Boolean, String> DeleteUserTest(String[] usernames)
     {
         return br.DeleteUserTest(usernames);
     }
 
+    public Response DismissalUserBySystemManager(String usernames,String targetUser) {
+        return br.DismissalUserBySystemManager(usernames, targetUser);
+    }
 
+    public Response DismissalOwnerByOwner(String usernames,String targetUser,int shop) {
+        return br.DismissalOwnerByOwner(usernames, targetUser, shop);
+    }
 
+    public ResponseList<User> RequestUserInfo(SearchUserFilter f, String userName)
+    {
+       return br.RequestUserInfo(f,userName);
+    }
 
-
-
+    public Response CreateSystemManager(String systemManager,String username, String pw) {
+        return br.CreateSystemManager(systemManager, username, pw);
+    }
 
 }

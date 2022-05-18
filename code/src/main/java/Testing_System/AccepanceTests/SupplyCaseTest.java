@@ -1,6 +1,5 @@
 package Testing_System.AccepanceTests;
 
-import Service.User.UserServices;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.market.*;
@@ -8,6 +7,7 @@ import domain.shop.Order;
 import domain.shop.Product;
 import domain.shop.ProductImp;
 import domain.user.TransactionInfo;
+import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,8 +25,8 @@ import java.util.Map;
 public class SupplyCaseTest extends Tester {
 
     private UserGenerator ug = new UserGenerator();
-    private String[] validUserNames =ug.GetValidUsers();
-    private String[] PW = ug.GetPW();
+    private String[] validUserNames;
+    private String[] pws;
     private final String shopname = "TestShop";
     private List<Order> orderList;
     private final int Test_1 = 6;
@@ -62,12 +62,15 @@ public class SupplyCaseTest extends Tester {
     private TransactionInfo ti_bad_3;
     private TransactionInfo ti_bad_4;
     private List<Product> pLs;
+    private int pID_1;
+    private int pID_2;
 
 
 
     @BeforeAll
     public void SetUp() {
-
+        validUserNames = ug.GetValidUsers();
+        pws = ug.GetPW();
         LocalDate t_date = LocalDate.of(2022, 4, 26);
         ti_good_1 = new TransactionInfo(validUserNames[0],"Ariel Ronen","Israel&Baer-Sheva&Ragar&1&-1&-1","0546840084", "4580000000000000","12/22",t_date, 200.2 );
         ti_good_2 = new TransactionInfo(validUserNames[1],"Nitay Vitkin","Israel&Baer-Sheva&Ragar&2&1&-1","0546840080", "4580000000000000","12/22",t_date, 5 );
@@ -95,6 +98,16 @@ public class SupplyCaseTest extends Tester {
         amountToAdd_2 = 50;
         payment = new PaymentServiceImp();
         supply = new SupplyServiceImp();
+        ug.InitTest();
+        for(int i =0; i< ug.getNumOfUser(); i++)
+        {
+            Register(validUserNames[i],pws[i]);
+            Login(validUserNames[i],pws[i],null);
+        }
+        shopID = CreateShop("Test",validUserNames[0],shopname).getValue().getShopID();
+        pID_1 = AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,validUserNames[0],shopID).getValue().getId();
+        pID_2 = AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,validUserNames[0],shopID).getValue().getId();
+
     }
 
     @AfterAll
@@ -107,6 +120,7 @@ public class SupplyCaseTest extends Tester {
     public void ConfirmedSupplyTest()
     {
         products.putIfAbsent(pi.getId(), 10);
+        PurchaseDelivery(ti_good_1,)
         assertTrue(PurchaseDelivery(ti_good_1,"");
     }
 

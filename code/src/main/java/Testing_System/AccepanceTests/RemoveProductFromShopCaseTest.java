@@ -56,7 +56,7 @@ public class RemoveProductFromShopCaseTest extends Tester {
         user_2 = validUsers[1];
         pw_1 = pws[0];
         pw_2 = pws[1];
-        Guest_Id = EnterMarket().getValue().getId();
+        Guest_Id = EnterMarket().getValue().getUserName();
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
         pCat_1 = "Sex";
@@ -73,20 +73,20 @@ public class RemoveProductFromShopCaseTest extends Tester {
     public void SetShops()
     {
         Register(user_1, pw_1);
-        Login(user_1,pw_1);
+        Login(user_1,pw_1,null);
         Register(user_2, pw_2);
-        Login(user_2,pw_2);
-        shopID_1 = CreateShop(user_1, "TestShop_1").getValue().getShopID();
-        shopID_2 = CreateShop(user_2, "TestShop_2").getValue().getShopID();
-        shopID_3 = CreateShop(user_2, "TestShop_3").getValue().getShopID();
-        pID_1 = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).getValue().getId();
-        pID_2 = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID_1).getValue().getId();
+        Login(user_2,pw_2,null);
+        shopID_1 = CreateShop("Test_1",user_1, "TestShop_1").getValue().getShopID();
+        shopID_2 = CreateShop("Test_2",user_2, "TestShop_2").getValue().getShopID();
+        shopID_3 = CreateShop("Test_3",user_2, "TestShop_3").getValue().getShopID();
+        pID_1 = AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).getValue().getId();
+        pID_2 = AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_1, shopID_1).getValue().getId();
 
-        pID_3 = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_2).getValue().getId();
-        pID_4 = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_2).getValue().getId();
+        pID_3 = AddProductToShopInventory(3,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_2).getValue().getId();
+        pID_4 = AddProductToShopInventory(4,pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_2).getValue().getId();
 
-        pID_5 = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_3).getValue().getId();
-        pID_6 = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_3).getValue().getId();
+        pID_5 = AddProductToShopInventory(5,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_3).getValue().getId();
+        pID_6 = AddProductToShopInventory(6,pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_3).getValue().getId();
 
     }
 
@@ -99,7 +99,7 @@ public class RemoveProductFromShopCaseTest extends Tester {
     @AfterAll
     public void CleanUp()
     {
-        LeaveMarket();
+        LeaveMarket(Guest_Id);
         ug.DeleteAdmin();
     }
 
@@ -127,7 +127,7 @@ public class RemoveProductFromShopCaseTest extends Tester {
     public void AppointOwnerRemovalTest()
     {
         Register(validUsers[2],pws[2]);
-        Login(validUsers[2],pws[2]);
+        Login(validUsers[2],pws[2],null);
         AppointNewShopOwner(shopID_1,validUsers[2],user_1);
         assertTrue(!RemoveProductFromShopInventory(pID_2, validUsers[2], shopID_1).isErrorOccurred());
         assertTrue(!RemoveProductFromShopInventory(pID_1, validUsers[2], shopID_1).isErrorOccurred());
@@ -137,7 +137,7 @@ public class RemoveProductFromShopCaseTest extends Tester {
     public void AppointManagerInsertTest()
     {
         Register(validUsers[2],pws[2]);
-        Login(validUsers[2],pws[2]);
+        Login(validUsers[2],pws[2],null);
         AppointNewShopManager(shopID_1,validUsers[2],user_1);
         ShopManagersPermissions sp = ShopManagersPermissions.RemoveProductFromInventory;
         List<ShopManagersPermissions> ls = new ArrayList<ShopManagersPermissions>();
@@ -162,11 +162,11 @@ public class RemoveProductFromShopCaseTest extends Tester {
     @Test
     public void NoPermissionRemovalTest() {
         Register(validUsers[2], pws[2]);
-        Login(validUsers[2], pws[2]);
+        Login(validUsers[2], pws[2],null);
         Register(validUsers[3], pws[3]);
-        Login(validUsers[3], pws[3]);
+        Login(validUsers[3], pws[3],null);
         Register(validUsers[ug.getNumOfUser() - 1], pws[ug.getNumOfUser() - 1]);
-        Login(validUsers[ug.getNumOfUser() - 1], pws[ug.getNumOfUser() - 1]);
+        Login(validUsers[ug.getNumOfUser() - 1], pws[ug.getNumOfUser() - 1],null);
         AppointNewShopManager(shopID_2, validUsers[ug.getNumOfUser() - 1], user_2); //appointed, no permissions were given yet
         AppointNewShopManager(shopID_1, validUsers[2], user_1);
         ShopManagersPermissions sp = ShopManagersPermissions.RemoveProductFromInventory;

@@ -2,6 +2,7 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
 
@@ -34,7 +35,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         user_1 = validUsers[0];
         pw_1 = pws[0];
         Register(user_1, pw_1);
-        Login(user_1, pw_1);
+        Login(user_1, pw_1,null);
         ResponseT<Shop> shopResponseT = CreateShop("Hello Darkness My Old friend", user_1, "TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
@@ -76,7 +77,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
             Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i]);
+            Login(validUsers[i],pws[i],null);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
@@ -91,7 +92,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
             Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i]);
+            Login(validUsers[i],pws[i],null);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
@@ -105,7 +106,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
             Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i]);
+            Login(validUsers[i],pws[i],null);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
@@ -120,13 +121,13 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
     @Test
     public void AppointedOwnerGivesPermissionTest()
     {
-        Login(owner,owner_pw);
+        Login(owner,owner_pw,null);
         ls.add(ShopManagersPermissions.AddProductToInventory);
 
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
             Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i]);
+            Login(validUsers[i],pws[i],null);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],owner).GetFirstElement());
         }
@@ -162,7 +163,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
             Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i]);
+            Login(validUsers[i],pws[i],null);
             assertFalse(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
         assertFalse(AddShopMangerPermissions(shopID_1,ls, owner,user_1).GetFirstElement());

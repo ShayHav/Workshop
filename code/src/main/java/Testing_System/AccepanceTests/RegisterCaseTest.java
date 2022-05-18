@@ -62,7 +62,7 @@ public class RegisterCaseTest extends Tester {
     public void BadPWTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(validUserNames[i],badPWs[i] ).isErrorOccurred());
+            assertFalse(!Register(validUserNames[i],badPWs[i]).isErrorOccurred());
     }
 
     @Test

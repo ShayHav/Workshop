@@ -54,14 +54,14 @@ public class ChangeProductInfoCaseTest extends Tester{
         manager = validUsers[2];
         manager_pw = pws[2];
         Register(user_1, pw_1);
-        Login(user_1, pw_1);
+        Login(user_1, pw_1,null);
         Register(owner,owner_pw);
         Register(manager, manager_pw);
         AppointNewShopManager(shopID_1,manager,user_1);
         AppointNewShopOwner(shopID_1,owner,user_1);
         ls = new ArrayList<ShopManagersPermissions>();
         ls.add(ShopManagersPermissions.ChangeProductsDetail);
-        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         pName_1 = "Durex";
@@ -85,8 +85,8 @@ public class ChangeProductInfoCaseTest extends Tester{
     @BeforeEach
     public void LogUsers()
     {
-        Login(owner, owner_pw);
-        Login(manager, manager_pw);
+        Login(owner, owner_pw,null);
+        Login(manager, manager_pw,null);
     }
 
     @Test

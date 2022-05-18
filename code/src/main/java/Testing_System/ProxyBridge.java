@@ -2,6 +2,8 @@ package Testing_System;
 
 import Presentation.Model.PresentationShop;
 import domain.Response;
+import domain.ResponseList;
+import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
@@ -12,150 +14,146 @@ import domain.user.TransactionInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
 
 public class ProxyBridge implements  Bridge {
+
     @Override
-    public ResponseT<User> Login(String username, String pw) {
-        return new ResponseT();
+    public ResponseT<User> Login(String username, String pw, UserObserver uo) {
+        return null;
     }
 
     @Override
-    public Response Register(String username, String pw, UserObserver uo) {
-        return new ResponseT();
+    public Response Register(String username, String pw) {
+        return null;
     }
 
     @Override
     public ResponseT<User> EnterMarket() {
-        return new ResponseT();
+        return null;
     }
 
     @Override
-    public Response LeaveMarket() {
-        return new ResponseT();
+    public Response LeaveMarket(String username) {
+        return null;
     }
 
     @Override
     public ResponseT<User> Logout(String username) {
-        return new ResponseT();
+        return null;
     }
 
     @Override
-    public ResponseT<PresentationShop> CreateShop(String username, String shopname) {
-        return new ResponseT();
+    public ResponseT<Shop> CreateShop(String dis, String username, String shopname) {
+        return null;
     }
 
     @Override
     public Result<Boolean, String> RealTimeNotification(List<String> users, String msg) {
-        return new Result<Boolean, String>(true,null);
+        return null;
     }
 
     @Override
-    public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
-        return new Result<Boolean, Boolean>(true,null);
+    public ResponseT<Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
+        return null;
     }
 
     @Override
-    public Result<Boolean, Boolean> Payment(TransactionInfo ti) {
-        return new Result(true,null);
+    public ResponseT<Boolean> Payment(TransactionInfo ti) {
+        return null;
     }
 
     @Override
     public Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
-        return new ResponseT();
+        return null;
     }
 
     @Override
     public Result<Boolean, String> AddSupplyService(String path) {
-        return new Result(true,null);
+        return null;
     }
 
     @Override
     public Result<Boolean, String> RemoveSupplyService(String path) {
-        return new Result(true,null);
+        return null;
     }
 
     @Override
     public Result<Boolean, String> AddPaymentService(String path) {
-        return new Result(true,null);
+        return null;
     }
 
     @Override
     public Result<Boolean, String> RemovePaymentService(String path) {
-        return new Result(true,null);
+        return null;
     }
 
     @Override
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<Shop> filter) {
-        {
-            return new Result(true,null);
-        }
+    public ResponseList<Shop> GetShopsInfo(String userName, Filter<Shop> filter) {
+        return null;
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID, int shopID, Filter<Product> f) {
-        {
-            return new Result(true,null);
-        }
+    public ResponseList<Product> GetProductInfoInShop(String userName, int shopID, Filter<Product> f) {
+        return null;
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID, String pName, Filter<Product> f) {
-        {
-            return new Result(true,null);
-        }
+    public ResponseMap<Integer, List<Product>> SearchProductByName(String userName, String pName, Filter<Product> f) {
+        return null;
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID, String keyword, Filter<Product> f) {
-        {
-            return new Result(true,null);
-        }
+    public ResponseMap<Integer, List<Product>> SearchProductByKeyword(String userName, String keyword, Filter<Product> f) {
+        return null;
     }
 
     @Override
     public Response AddToShoppingCart(String userID, int shopID, int productId, int amount) {
-        return new ResponseT();
+        return null;
     }
 
     @Override
     public Response EditShoppingCart(String userId, int shopId, int productId, int amount) {
-        return new ResponseT();
+        return null;
     }
 
     @Override
-    public Result<Boolean, List<String>> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate)  {
-        return new Result(true,null);
+    public Result<Boolean, List<String>> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+        return null;
     }
 
     @Override
-    public Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname)  {
-        return new Result(true,null);
+    public Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname) {
+        return null;
     }
 
     @Override
-    public Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname)  {
-        return new Result(true,null);
+    public Result<Boolean, Integer> CheckDiscountPolicyForProduct(Product p, String shopname) {
+        return null;
     }
+
     @Override
-    public Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname)  {
-        return new Result(true,null);
+    public Result<Boolean, Integer> CheckDiscountForProduct(Product p, String shopname) {
+        return null;
     }
+
     @Override
     public ResponseT<Boolean> CheckIfProductAvailable(Product p, int shopID) {
-        return new ResponseT();
+        return null;
     }
 
     @Override
-    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
-        return new ResponseT();
+    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
+        return null;
     }
 
     @Override
     public ResponseT<Product> ChangeProduct(String username, Product p, int shopID) {
-        return new ResponseT();
+        return null;
     }
 
     @Override
@@ -189,7 +187,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userId) {
+    public ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName) {
         return null;
     }
 
@@ -199,7 +197,27 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, List<Order>> RequestShopSalesInfo(int shopName, SearchOrderFilter f, String userId) {
+    public ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName) {
+        return null;
+    }
+
+    @Override
+    public Response DismissalUserBySystemManager(String usernames, String targetUser) {
+        return null;
+    }
+
+    @Override
+    public Response DismissalOwnerByOwner(String usernames, String targetUser, int shop) {
+        return null;
+    }
+
+    @Override
+    public ResponseList<User> RequestUserInfo(SearchUserFilter f, String userName) {
+        return null;
+    }
+
+    @Override
+    public Response CreateSystemManager(String systemManager, String username, String pw) {
         return null;
     }
 }

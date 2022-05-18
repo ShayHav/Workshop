@@ -2,6 +2,7 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
 
@@ -35,8 +36,8 @@ public class CloseShopCaseTest extends Tester {
         user_1 = validUsers[0];
         pw_1 = pws[0];
         Register(user_1, pw_1);
-        Login(user_1, pw_1);
-        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        Login(user_1, pw_1,null);
+        ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
@@ -55,8 +56,8 @@ public class CloseShopCaseTest extends Tester {
     @BeforeEach
     public void SetShop()
     {
-        Login(owner,owner_pw);
-        Login(manager,manager_pw);
+        Login(owner,owner_pw,null);
+        Login(manager,manager_pw,null);
         AddShopMangerPermissions(shopID_1,ls,manager,user_1);
         /**
          * Not supported offline --> Online shop

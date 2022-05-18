@@ -2,6 +2,7 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
 
@@ -37,8 +38,8 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
         user_1 = validUsers[0];
         pw_1 = pws[0];
         Register(user_1, pw_1);
-        Login(user_1, pw_1);
-        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        Login(user_1, pw_1,null);
+        ResponseT<Shop> shopResponseT = CreateShop("Test_1",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
@@ -82,7 +83,7 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     @Test
     public void RemovePermissionsSuccessTest()
     {
-        Login(manager,manager_pw);
+        Login(manager,manager_pw,null);
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
         assertTrue(!RemoveShopManagerPermissions(shopID_1,pToRemove, manager,user_1).isErrorOccurred());
     }
@@ -109,7 +110,7 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     @Test
     public void AppointedOwnerRemovesPermissionTest()
     {
-        Login(owner,owner_pw);
+        Login(owner,owner_pw,null);
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
         assertTrue(!RemoveShopManagerPermissions(shopID_1,ls, manager,owner).isErrorOccurred());
     }

@@ -26,7 +26,7 @@ public class LogoutCaseTest extends Tester {
     public void LogUsers()
     {
         for(int i = 0; i < ug.getNumOfUser()/2; i++)
-            Login(validUserNames[i], PWs[i]);
+            Login(validUserNames[i], PWs[i],null);
     }
 
 

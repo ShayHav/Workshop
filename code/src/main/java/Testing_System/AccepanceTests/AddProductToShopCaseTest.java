@@ -4,6 +4,7 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
 import domain.notifications.UserObserver;
+import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
 
@@ -67,18 +68,18 @@ public class AddProductToShopCaseTest extends Tester {
     @BeforeEach
     public void SetShops()
     {
-        Register(user_1, pw_1, null);
-        Login(user_1,pw_1);
-        Register(user_2, pw_2, null);
-        Login(user_2,pw_2);
-        ResponseT<PresentationShop> shopResponseT;
+        Register(user_1, pw_1);
+        Login(user_1,pw_1,null);
+        Register(user_2, pw_2);
+        Login(user_2,pw_2,null);
+        ResponseT<Shop> shopResponseT;
         shopResponseT= CreateShop("Test_1", user_1, "TestShop_1");
         if(!shopResponseT.isErrorOccurred())
-            shopID_1 = shopResponseT.getValue().;
-        shopResponseT= CreateShop(user_2, "TestShop_2");
+            shopID_1 = shopResponseT.getValue().getShopID();
+        shopResponseT= CreateShop("Test_2",user_2, "TestShop_2");
         if(!shopResponseT.isErrorOccurred())
             shopID_2 = shopResponseT.getValue().getShopID();
-        shopResponseT= CreateShop(user_2, "TestShop_3");
+        shopResponseT= CreateShop("Test_3",user_2, "TestShop_3");
         if(!shopResponseT.isErrorOccurred())
             shopID_3 = shopResponseT.getValue().getShopID();
 
@@ -93,7 +94,6 @@ public class AddProductToShopCaseTest extends Tester {
     @AfterAll
     public void CleanUp()
     {
-        LeaveMarket();
         ug.DeleteAdmin();
     }
 
@@ -102,22 +102,22 @@ public class AddProductToShopCaseTest extends Tester {
     {
         assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
         assertTrue(!(AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2, amountToAdd_2, user_2, shopID_2).isErrorOccurred()));
-        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_2, amountToAdd_2, user_2, shopID_3).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(3,pName_1,pDis_1,pCat_1,price_2, amountToAdd_2, user_2, shopID_3).isErrorOccurred()));
     }
 
     @Test
     public void SameProductDifferentShopInsertTest()
     {
         assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_1, shopID_1).isErrorOccurred()));
-        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_2).isErrorOccurred()));
-        assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_3).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(2,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_2).isErrorOccurred()));
+        assertTrue(!(AddProductToShopInventory(3,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, user_2, shopID_3).isErrorOccurred()));
     }
 
     @Test
     public void AppointOwnerInsertTest()
     {
         Register(validUsers[2],pws[2]);
-        Login(validUsers[2],pws[2]);
+        Login(validUsers[2],pws[2],null);
         AppointNewShopOwner(shopID_1,validUsers[2],user_1);
         assertTrue(!(AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1, amountToAdd_1, validUsers[2], shopID_1).isErrorOccurred()));
     }
@@ -126,7 +126,7 @@ public class AddProductToShopCaseTest extends Tester {
     public void AppointManagerInsertTest()
     {
         Register(validUsers[2],pws[2]);
-        Login(validUsers[2],pws[2]);
+        Login(validUsers[2],pws[2],null);
         AppointNewShopManager(shopID_1,validUsers[2],user_1);
         ShopManagersPermissions sp = ShopManagersPermissions.AddProductToInventory;
         List<ShopManagersPermissions> ls = new ArrayList<ShopManagersPermissions>();
@@ -152,11 +152,11 @@ public class AddProductToShopCaseTest extends Tester {
     public void NoPermissionTest()
     {
         Register(validUsers[2],pws[2]);
-        Login(validUsers[2],pws[2]);
+        Login(validUsers[2],pws[2],null);
         Register(validUsers[3],pws[3]);
-        Login(validUsers[3],pws[3]);
+        Login(validUsers[3],pws[3],null);
         Register(validUsers[ug.getNumOfUser()-1],pws[ug.getNumOfUser()-1]);
-        Login(validUsers[ug.getNumOfUser()-1],pws[ug.getNumOfUser()-1]);
+        Login(validUsers[ug.getNumOfUser()-1],pws[ug.getNumOfUser()-1],null);
         AppointNewShopManager(shopID_2,validUsers[ug.getNumOfUser()-1],user_2); //appointed, no permissions were given yet
         AppointNewShopManager(shopID_1,validUsers[2],user_1);
         ShopManagersPermissions sp = ShopManagersPermissions.AddProductToInventory;

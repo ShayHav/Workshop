@@ -55,8 +55,8 @@ public class CheckoutCaseTest extends Tester {
         Guest_Id = EnterMarket().getValue().getUserName();
         Register(user_1,pw_1);
         Register(user_2,pw_2);
-        Login(user_1,pw_1);
-        Login(user_2,pw_2);
+        Login(user_1,pw_1,null);
+        Login(user_2,pw_2,null);
 
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
@@ -70,11 +70,11 @@ public class CheckoutCaseTest extends Tester {
         amountToAdd_2 = 50;
 
         ResponseT<Shop> shopResponseT;
-        shopResponseT= CreateShop(user_1, "TestShop_1");
+        shopResponseT= CreateShop("Test",user_1, "TestShop_1");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
-        pID_1 = AddProductToShopInventory(pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1).getValue().getId();
-        pID_2 = AddProductToShopInventory(pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,user_1,shopID_1).getValue().getId();
+        pID_1 = AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1).getValue().getId();
+        pID_2 = AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,user_1,shopID_1).getValue().getId();
     }
 
     @AfterAll
@@ -100,7 +100,7 @@ public class CheckoutCaseTest extends Tester {
     {
         AddToShoppingCart(user_2,shopID_1,pID_2,2);
         Logout(user_2);
-        Login(user_2,pw_2);
+        Login(user_2,pw_2,null);
         assertTrue(Checkout(user_2,"Nitay Vitkin","TLV Bazal 15", "0546840084","4580000000010000","12/25").GetFirstElement());
     }
 
