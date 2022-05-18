@@ -27,7 +27,7 @@ public class SearchOfficialsFilter implements Filter<User> {
     @Override
     public List<User> applyFilter(List<User> userList){return null;}
 
-    public List<UserSearchInfo> applyFilter(List<User> userList, int shopId) {
+    public List<User> applyFilter(List<User> userList, int shopId) {
         EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filer for Shop: "+shopId);
         List<User> result = new ArrayList<>();
         List<UserSearchInfo> output = new LinkedList<>();
@@ -35,8 +35,6 @@ public class SearchOfficialsFilter implements Filter<User> {
         for(Role run : roleList){
             result = result.stream().filter(u -> u.getRoleList().get(shopId).contains(run)).collect(Collectors.toList());
         }
-        for(User user : result)
-            output.add(user.getUserInfo());
-        return output;
+        return result;
     }
 }
