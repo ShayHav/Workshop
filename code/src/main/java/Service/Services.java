@@ -364,19 +364,12 @@ public class Services {
      * @param expirationDate - user credit card expiration date
      * @return list of Response object
      */
-    public List<Response> Checkout(String userName, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        List<Response> checkout = new LinkedList<>();
+    public ResponseList<String> Checkout(String userName, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
         try {
-            List<String> temp = marketSystem.Checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
-            if (temp.size() > 0) {
-                for (String s : temp)
-                    checkout.add(new Response(s));
-                return checkout;
-            }
-            return null;
-        } catch (IncorrectIdentification | BlankDataExc incorrectIdentification) {
-            checkout.add(new Response(incorrectIdentification.getLocalizedMessage()));
-            return checkout;
+            List<String> list = marketSystem.Checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
+            return new ResponseList<>(list);
+        } catch (IncorrectIdentification | BlankDataExc e) {
+            return new ResponseList<>(e.getMessage());
         }
     }
 

@@ -75,6 +75,7 @@ public class ShoppingBasket {
             synchronized (productAmountList) {
                 productAmountList.remove(productID);
             }
+            this.calculateTotalAmount();
             eventLogger.logMsg(Level.INFO, String.format("product %d removed successfully from basket", productID));
         }
     }
@@ -94,12 +95,14 @@ public class ShoppingBasket {
                 synchronized (productAmountList) {
                     productAmountList.put(productID, amountToAdd);
                 }
+                this.calculateTotalAmount();
                 eventLogger.logMsg(Level.INFO, String.format("product %d with amount %d added to basket successfully", productID, amountToAdd));
             } else {
                 int currAmount = productAmountList.get(productID);
                 synchronized (productAmountList) {
                     productAmountList.replace(productID, (currAmount + amountToAdd));
                 }
+                this.calculateTotalAmount();
                 eventLogger.logMsg(Level.INFO, String.format("product %d with amount %d added to basket successfully", productID, currAmount));
             }
         } else {
@@ -113,7 +116,9 @@ public class ShoppingBasket {
      * @return total amount.
      */
     public double calculateTotalAmount() {
-        basketAmount = shop.calculateTotalAmountOfOrder(productAmountList);
+        synchronized (this) {
+            basketAmount = shop.calculateTotalAmountOfOrder(productAmountList);
+        }
         return basketAmount;
     }
 

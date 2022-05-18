@@ -23,6 +23,7 @@ public class PresentationCart {
             ShoppingBasket.ServiceBasket b = basketMap.get(shopId);
             baskets.put(shopId,new PresentationBasket(b));
         }
+        totalAmount = cart.getTotalAmount();
 
     }
 }

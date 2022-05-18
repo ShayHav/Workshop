@@ -77,6 +77,8 @@ public class Main {
 
 
                     path("cart", () -> {
+                        get("checkoutForm", userController::renderCheckoutForm);
+                        ws("checkout", userController::checkout);
                         get(userController::renderCart);
                         post("{serialNumber}/update", userController::updateAmountInCart);
                         post("{serialNumber}/remove", userController::removeFromCart);
@@ -95,6 +97,7 @@ public class Main {
 
                     path("{serialNumber}", () -> {
                         get(shopController::renderProductPage);
+                        get("/edit", shopController::renderEditProduct);
                         post("/edit", shopController::editProduct);
                         post("/remove", shopController::removeProduct);
                     });

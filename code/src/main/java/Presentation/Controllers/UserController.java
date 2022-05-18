@@ -3,6 +3,7 @@ package Presentation.Controllers;
 import Presentation.Model.*;
 import Service.Services;
 import domain.Response;
+import domain.ResponseList;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.user.Cart;
@@ -13,6 +14,7 @@ import io.javalin.websocket.WsMessageContext;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserController {
@@ -154,6 +156,22 @@ public class UserController {
                 ctx.cookieStore("uid", user.getUsername());
             }
         }
+    }
+
+    public void renderCheckoutForm(Context ctx){
+        PresentationUser user = getUser(ctx);
+        ctx.render("checkoutForm.jte", Map.of("user", user));
+    }
+
+    public void checkout(WsConfig wsConfig){
+        wsConfig.onMessage(ctx ->{
+            String username = ctx.pathParam("id");
+            CheckoutForm checkout = ctx.messageAsClass(CheckoutForm.class);
+            String expirationDate = checkout.getMonth() +"/" + checkout.getYear();
+            ResponseList<String> response = services.Checkout(username,checkout.getFullName(), checkout.getAddress(), checkout.getPhoneNumber(), checkout.getCardNumber(),expirationDate);
+            ctx.send(response.getValue());
+                });
+
     }
 
     private void updateFinalPriceOfProducts(PresentationCart cart) {

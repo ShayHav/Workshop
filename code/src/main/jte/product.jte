@@ -54,8 +54,8 @@
                 <a href="/shops/${shopId}/${product.serialNumber}/edit" class="btn btn-warning">Edit Product</a>
                 </div>
                 <div>
-                <form method="post" action="/shops/${product.shop}/${product.serialNumber}/remove">
-                    <button type="submit" class="btn btn-danger">Remove Product</button>
+                <form method="post" name="removeProductForm" action="/shops/${shopId}/${product.serialNumber}/remove">
+                    <button id="removeProduct" name="removeProduct" type="submit" class="btn btn-danger">Remove Product</button>
                 </form>
                 </div>
             @endif
@@ -77,12 +77,12 @@
     const shopID = "${shopId}"
     const serial = "${product.serialNumber}"
     const add_button = document.querySelector('#addProduct');
-    const f = function () {
+    const add = function () {
         const form = document.amountForm;
         const message = {username: username, shopID: shopID, serialNumber: serial, quantity: form.amount.value};
         socket.send(JSON.stringify(message));
     }
-    add_button.addEventListener('click', f);
+    add_button.addEventListener('click', add);
     socket.onmessage = async function (event) {
         const response = JSON.parse(event.data);
         if (!response.errorMessage) {

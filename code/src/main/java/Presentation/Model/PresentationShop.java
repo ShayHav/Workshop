@@ -23,6 +23,7 @@ public class PresentationShop {
         id = Integer.toString(shop.getShopID());
         name = shop.getName();
         products = new ArrayList<>();
+        description = shop.getDescription();
         // TODO: decide what to do with the product of shop
     }
 }

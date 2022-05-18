@@ -33,6 +33,7 @@ public class Cart {
                 ShoppingBasket newBasket = new ShoppingBasket(shop);
                 newBasket.addProductToBasket(productID, amount);
                 baskets.put(shopID, newBasket);
+                getTotalAmount();
                 eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
                 return new Response();
             } catch (IllegalArgumentException | ProductNotFoundException e) {
@@ -42,6 +43,7 @@ public class Cart {
         } else {
             try {
                 baskets.get(shopID).addProductToBasket(productID, amount);
+                getTotalAmount();
                 return new Response();
             } catch (IllegalArgumentException | ProductNotFoundException e) {
                 errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
@@ -57,6 +59,7 @@ public class Cart {
         }
         try {
             baskets.get(shopID).updateAmount(productID, amount);
+            getTotalAmount();
             return new Response();
 
         } catch (ProductNotFoundException | IllegalArgumentException e) {
@@ -71,6 +74,7 @@ public class Cart {
         }
         try {
             baskets.get(shopID).removeProduct(productID);
+            getTotalAmount();
             return new Response();
         } catch (ProductNotFoundException e) {
             return new Response(e.getMessage());
@@ -78,6 +82,7 @@ public class Cart {
     }
 
     public double getTotalAmount() {
+        totalAmount = 0;
         for (ShoppingBasket s : baskets.values()) {
             totalAmount += s.calculateTotalAmount();
         }

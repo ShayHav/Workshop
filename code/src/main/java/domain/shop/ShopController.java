@@ -39,7 +39,7 @@ public class ShopController {
     public synchronized Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
         Shop newShop;
         shopCounter++;
-        newShop = new Shop(name, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+        newShop = new Shop(name,description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
         shopList.put(shopCounter, newShop);
         eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
         return newShop;

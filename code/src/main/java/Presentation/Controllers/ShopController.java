@@ -82,8 +82,7 @@ public class ShopController {
         PresentationUser user = userController.getUser(ctx);
         ResponseT<Product> response =  services.getProduct(user.getUsername(),shopID, serialNumber);
         if(response.isErrorOccurred()){
-            ctx.status(400);
-            ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
             return;
         }
         ResponseList<ShopManagersPermissions> permission = services.CheckPermissionsForManager(user.getUsername(), shopID);
@@ -97,6 +96,19 @@ public class ShopController {
         ctx.render("product.jte", Map.of("user", user, "product", product, "shopId", shopID));
     }
 
+    public void renderEditProduct(Context ctx){
+        PresentationUser user = userController.getUser(ctx);
+        int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
+        int serialNumber = ctx.pathParamAsClass("serialNumber", Integer.class).get();
+        ResponseT<Product> response = services.getProduct(user.getUsername(),shopID,serialNumber);
+        if(response.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        PresentationProduct product = new PresentationProduct(response.getValue(),shopID);
+        ctx.render("editProduct.jte",Map.of("user", user, "shopID", shopID, "product", product));
+    }
+
     public void editProduct(Context ctx) {
         String username = ctx.cookieStore("uid");
         int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
@@ -104,6 +116,7 @@ public class ShopController {
         String name = ctx.formParam("name");
         String description = ctx.formParam("description");
         String category = ctx.formParam("category");
+        String path = "/shops/" + shopID + "/" + serialNumber;
         int amount = ctx.formParamAsClass("amount",Integer.class).get();
         double price = ctx.formParamAsClass("price", Double.class).get();
         ServiceProduct product = new ServiceProduct(serialNumber, name, description, category, price, amount);
@@ -111,9 +124,10 @@ public class ShopController {
         if(response.isErrorOccurred()){
             ctx.status(400);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
-            return;
         }
-        ctx.redirect(String.format("shops/%d/%d", shopID, serialNumber));
+        else {
+            ctx.redirect(path);
+        }
     }
 
     public void addProduct(Context ctx) {
@@ -125,7 +139,6 @@ public class ShopController {
         String category = ctx.formParam("category");
         double price = ctx.formParamAsClass("price", Double.class).get();
         int quantity = ctx.formParamAsClass("amount", Integer.class).get();
-        //TODO change all follow method to add serial number
         ResponseT<Product> response = services.AddProductToShopInventory(serialNumber,name,description, category, price, quantity, user.getUsername(), shopID);
         if(response.isErrorOccurred()){
             ctx.status(400);
@@ -157,8 +170,11 @@ public class ShopController {
         Response response = services.RemoveProductFromShopInventory(serialNumber, user.getUsername(), shopID);
         if(response.isErrorOccurred()){
             context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
-            return;
+
         }
-        context.redirect(String.format("/shops/%d", shopID));
+        else {
+            String path = "/shops/" + shopID;
+            context.redirect(path);
+        }
     }
 }

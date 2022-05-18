@@ -36,7 +36,7 @@ public class Shop {
     private boolean isOpen;
     private MarketSystem marketSystem;
 
-    public Shop(String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
+    public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
@@ -46,6 +46,7 @@ public class Shop {
         rank = -1;
         this.name = name;
         isOpen = true;
+        this.description = description;
         this.ShopFounder = shopFounder;
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
@@ -152,6 +153,9 @@ public class Shop {
         }
         if(productBasePrice < 0)
             return 0;
+        if(discountPolicy == null)
+            return productBasePrice;
+
         return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
     }
 
