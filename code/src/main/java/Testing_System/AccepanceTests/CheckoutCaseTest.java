@@ -3,13 +3,17 @@ package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.market.MarketSystem;
 import domain.shop.Shop;
 import domain.user.Guest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
@@ -83,7 +87,12 @@ public class CheckoutCaseTest extends Tester {
         ug.DeleteAdmin();
     }
 
-
+    @BeforeEach
+    public void Connect()
+    {
+        MarketSystem.getInstance().setPaymentConnection(true);
+        MarketSystem.getInstance().setSupplierConnection(true);
+    }
 
     @Test
     public void GoodCheckOut()
@@ -92,7 +101,9 @@ public class CheckoutCaseTest extends Tester {
         AddToShoppingCart(user_1,shopID_1,pID_1, 1);
         AddToShoppingCart(Guest_Id,shopID_1,pID_2, 1);
         assertTrue(Checkout(user_1,"Ariel Ronen","TLV Bazal 13", "0546840084","4580000000000000","12/25").GetFirstElement());
-        assertTrue(Checkout(user_2,"Nitay Vitkin","TLV Bazal 15", "0546840084","4580000000010000","12/25").GetFirstElement());
+        assertTrue(Checkout(user_2,"Nitay Vitkin","TLV Bazal 15", "0546844084","4580000000010000","12/25").GetFirstElement());
+        assertTrue(Checkout(Guest_Id,"Omry Vitkin","TLV Bazal 25", "0546842084","4580000000020000","12/25").GetFirstElement());
+
     }
 
     @Test
@@ -102,6 +113,29 @@ public class CheckoutCaseTest extends Tester {
         Logout(user_2);
         Login(user_2,pw_2,null);
         assertTrue(Checkout(user_2,"Nitay Vitkin","TLV Bazal 15", "0546840084","4580000000010000","12/25").GetFirstElement());
+    }
+
+    @Test
+    public void EmptyCartCheckoutTest()
+    {
+        assertFalse(Checkout(user_1,"Ariel Ronen","TLV Bazal 13", "0546840084","4580000000000000","12/25").GetFirstElement());
+    }
+
+    @Test
+    public void NoConnectionPaymentTest()
+    {
+        AddToShoppingCart(user_1,shopID_1,pID_1, 1);
+        MarketSystem.getInstance().setPaymentConnection(false);
+        assertFalse(Checkout(user_1,"Ariel Ronen","TLV Bazal 13", "0546840084","4580000000000000","12/25").GetFirstElement());
+
+    }
+
+    @Test
+    public void NoConnectionSupplierTest()
+    {
+        AddToShoppingCart(user_1,shopID_1,pID_1, 1);
+        MarketSystem.getInstance().setSupplierConnection(false);
+        assertFalse(Checkout(user_1,"Ariel Ronen","TLV Bazal 13", "0546840084","4580000000000000","12/25").GetFirstElement());
     }
 
 //    @Test

@@ -116,6 +116,13 @@ public class AddToCartCaseTest extends Tester {
 
     }
 
+    @Test
+    public void EditCartTest()
+    {
+        AddToShoppingCart(user_2,shopID,pID_1,3);
+        assertTrue(!EditShoppingCart(user_2,shopID,pID_1,1).isErrorOccurred());
+    }
+
 
 
 }
