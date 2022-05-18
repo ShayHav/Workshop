@@ -42,7 +42,7 @@ public class CreateSystemManagerCaseTest extends Tester {
     public void GoodCreateSystemManagerTest()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
+            assertTrue(!CreateSystemManager("admin",validUserNames[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
