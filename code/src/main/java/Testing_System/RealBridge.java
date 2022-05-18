@@ -201,6 +201,11 @@ public class RealBridge implements Bridge{
     }
 
     @Override
+    public Response OpenShop(int shopId, String userName) {
+        return sv.OpenShop(shopId,userName);
+    }
+
+    @Override
     public ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName) {
         return sv.RequestShopOfficialsInfo(shopName, f, userName);
     }

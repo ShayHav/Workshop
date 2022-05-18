@@ -156,6 +156,10 @@ public class Tester {
         return br.CloseShop(shopID, userID);
     }
 
+    public Response OpenShop(int shopId, String userName){
+        return br.OpenShop(shopId,userName);
+    }
+
     /*
     the following tests cover both cases for system manager as well
      */

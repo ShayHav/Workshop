@@ -111,6 +111,8 @@ public interface Bridge {
 
     Response CloseShop(int shopID, String username);//done
 
+    Response OpenShop(int shopId, String userName);
+
     ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName);
 
     Result<Boolean, String> DeleteUserTest(String[] usernames);
