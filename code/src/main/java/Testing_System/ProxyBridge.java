@@ -1,9 +1,11 @@
 package Testing_System;
 
+import Presentation.Model.PresentationShop;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
+import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
@@ -21,7 +23,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Response Register(String username, String pw) {
+    public Response Register(String username, String pw, UserObserver uo) {
         return new ResponseT();
     }
 
@@ -41,7 +43,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public ResponseT<Shop> CreateShop(String username, String shopname) {
+    public ResponseT<PresentationShop> CreateShop(String username, String shopname) {
         return new ResponseT();
     }
 

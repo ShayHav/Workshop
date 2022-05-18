@@ -1,7 +1,9 @@
 package Testing_System.AccepanceTests;
+import Presentation.Model.PresentationShop;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.ResponseT;
+import domain.notifications.UserObserver;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
 
@@ -66,13 +68,13 @@ public class AddProductToShopCaseTest extends Tester {
     public void SetShops()
     {
         Register(user_1, pw_1, null);
-        Login(user_1,pw_1, null);
-        Register(user_2, pw_2);
+        Login(user_1,pw_1);
+        Register(user_2, pw_2, null);
         Login(user_2,pw_2);
-        ResponseT<Shop> shopResponseT;
-        shopResponseT= CreateShop(user_1, "TestShop_1");
+        ResponseT<PresentationShop> shopResponseT;
+        shopResponseT= CreateShop("Test_1", user_1, "TestShop_1");
         if(!shopResponseT.isErrorOccurred())
-            shopID_1 = shopResponseT.getValue().getShopID();
+            shopID_1 = shopResponseT.getValue().;
         shopResponseT= CreateShop(user_2, "TestShop_2");
         if(!shopResponseT.isErrorOccurred())
             shopID_2 = shopResponseT.getValue().getShopID();

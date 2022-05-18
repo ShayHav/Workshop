@@ -52,7 +52,7 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public ResponseT<Shop> CreateShop(String dis, String username, String shopname) {
+    public ResponseT<PresentationShop> CreateShop(String dis, String username, String shopname) {
         return sv.CreateShop(dis, username, shopname);
     }
 

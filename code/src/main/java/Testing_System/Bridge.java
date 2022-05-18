@@ -31,7 +31,7 @@ public interface Bridge {
     //General Member-Visitor
     ResponseT<User> Logout(String username); //done
 
-    ResponseT<Shop> CreateShop(String username, String shopname); //done
+    ResponseT<PresentationShop> CreateShop(String dis, String username, String shopname); //done
 
 
     //System

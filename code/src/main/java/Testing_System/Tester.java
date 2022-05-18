@@ -1,9 +1,12 @@
 package Testing_System;
 
+import Presentation.Model.PresentationShop;
+import Presentation.Model.PresentationUser;
 import domain.Response;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
+import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
@@ -30,13 +33,13 @@ public class Tester {
 
     //Guest-Visitor General
     //done
-    public ResponseT<User> Login(String username, String pw) {
+    public ResponseT<PresentationUser> Login(String username, String pw) {
         return br.Login(username, pw);
     }
 
     //done
-    public Response Register(String username, String pw) {
-        return br.Register(username, pw);
+    public Response Register(String username, String pw, UserObserver uo) {
+        return br.Register(username, pw, uo);
     }
 
     //done - not needed
@@ -165,8 +168,8 @@ public class Tester {
     }
 
     //done
-    public ResponseT<Shop> CreateShop(String username, String shopname) {
-        return br.CreateShop(username, shopname);
+    public ResponseT<PresentationShop> CreateShop(String dis, String username, String shopname) {
+        return br.CreateShop(dis, username, shopname);
     }
 
 
