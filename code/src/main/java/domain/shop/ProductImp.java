@@ -9,13 +9,15 @@ public class ProductImp implements Product{
     private double basePrice;
     private int rank;
     private int shopRank;
+    private int quantity;
 
-    public ProductImp(int id, String name, String description, String category, double basePrice){
+    public ProductImp(int id, String name, String description, String category, double basePrice, int quantity){
         this.id = id;
         this.name = name;
         this.description = description;
         this.category = category;
         this.basePrice = basePrice;
+        this.quantity = quantity;
         //in the next versions, there will be a feedback from user that will change the rank initial value
         rank = -1;
     }
@@ -80,4 +82,11 @@ public class ProductImp implements Product{
         this.category = category;
     }
 
+    public int getAmount(){
+        return this.quantity;
+    }
+
+    public void setQuantity(int newQuantity) {
+        this.quantity = newQuantity;
+    }
 }

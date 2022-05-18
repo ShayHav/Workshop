@@ -69,6 +69,7 @@ public class NotificationManager {
 package domain.notifications;
 
 import domain.Exceptions.ShopNotFoundException;
+import domain.shop.ShopController;
 import domain.user.User;
 import domain.user.UserController;
 

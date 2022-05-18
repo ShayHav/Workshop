@@ -2,8 +2,7 @@ package domain.user.filter;
 
 import domain.EventLoggerSingleton;
 import domain.shop.Product;
-import domain.shop.ProductInfo;
-import domain.user.filter.Filter;
+import domain.shop.ServiceProduct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ public class SearchProductFilter implements Filter<Product> {
     private Integer shopRank;
     private String category;
 
-    public SearchProductFilter(){
+    public SearchProductFilter() {
         minPrice = 0d;
         maxPrice = Double.MAX_VALUE;
         productRank = null;
@@ -35,11 +34,12 @@ public class SearchProductFilter implements Filter<Product> {
         this.category = category;
     }
 
+
     public List<Product> applyFilter(List<Product> products) {
-        EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filer for products");
+        EventLoggerSingleton.getInstance().logMsg(Level.INFO, "Operate filer for products");
         List<Product> result = new ArrayList<>();
 
-        if(minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice)
+        if (minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice)
             return result;
 
         result = products.stream().filter(p -> (p.getPrice() >= minPrice & p.getPrice() <= maxPrice)).collect(Collectors.toList());
@@ -50,7 +50,7 @@ public class SearchProductFilter implements Filter<Product> {
         if (shopRank != null) {
             result = result.stream().filter(p -> p.getShopRank() == shopRank).collect(Collectors.toList());
         }
-        if(category != null){
+        if (category != null) {
             result = result.stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
         }
 

@@ -1,9 +1,7 @@
 package domain.user;
 
 
-import domain.ControllersBridge;
-import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
+import domain.*;
 import domain.Exceptions.*;
 import domain.Exceptions.IllegalStateException;
 import domain.ResponseT;
@@ -38,6 +36,7 @@ public class User {
         this.userName = userName;
         loggedIn = false;
         us = UserState2.disconnected;
+        userCart = new Cart();
         isSystemManager = false;
     }
 
@@ -124,7 +123,6 @@ public class User {
      */
     public void enterMarket() {
         us = UserState2.disconnected;
-        userCart = new Cart();
     }
 
 
@@ -374,19 +372,19 @@ public class User {
         return managerAppointeeList;
     }
 
-    public Cart.CartInfo showCart() {
+    public Cart.ServiceCart showCart() {
         return userCart.showCart();
     }
 
-    public boolean addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
+    public Response addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
         return userCart.addProductToCart(shopID, productID, amount);
     }
 
-    public boolean updateAmountOfProduct(int shopID, int productID, int amount) {
+    public Response updateAmountOfProduct(int shopID, int productID, int amount) {
         return userCart.updateAmountOfProduct(shopID, productID, amount);
     }
 
-    public boolean removeProductFromCart(int shopID, int productID) {
+    public Response removeProductFromCart(int shopID, int productID) {
         return userCart.removeProductFromCart(shopID, productID);
     }
 
@@ -432,14 +430,20 @@ public class User {
         return f.applyFilter(result);
     }
 
-    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID){
+    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
         UserController uc = UserController.getInstance();
         List<Order> result = uc.getOrderHistoryForUser(userID);
         return f.applyFilter(result);
     }
 
 
-/*
+    /**
+     * @param targetUser
+     * @param shop
+     * @param userId
+     * @param shopManagersPermissionsList
+     * @return
+     */
     public boolean addManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
         synchronized (this) {
             Shop shop1;
@@ -453,7 +457,6 @@ public class User {
             return shop1.addPermissions(shopManagersPermissionsList, targetUser, userId);
         }
     }
-    */
 
   /*  public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
         synchronized (this) {

@@ -3,9 +3,9 @@ package domain.user;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
+import domain.Response;
 import domain.shop.Order;
 import domain.shop.ShopController;
-import domain.user.filter.SearchUserFilter;
 import domain.user.filter.*;
 
 import java.util.*;
@@ -28,6 +28,8 @@ public class UserController {
         adminUser = new LinkedList<>();
         guestUser = new HashMap<>();
     }
+
+
 
     private static class UserControllerHolder{
         private static final UserController uc = new UserController();
@@ -66,6 +68,14 @@ public class UserController {
             throw new InvalidAuthorizationException();
         }
     }
+    public Cart.ServiceCart showCart(String username) {
+        User u = memberList.get(username);
+        if (u == null){
+            u = guestUser.get(username);
+        }
+        return u.showCart();
+    }
+
 
     private synchronized boolean isUserisLog(String id){
         return activeUser.containsKey(id);
@@ -122,15 +132,19 @@ public class UserController {
         guestCounter++;
         temp.enterMarket();
         activeUser.put(temp.getUserName(), temp);
-        guestUser.put(temp.getUserName(),temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
+        guestUser.put(temp.getUserName(), temp);
         return temp;
     }
 
     public User getUser(String id) throws IncorrectIdentification {
         if(id == null)
             throw new IncorrectIdentification("id not exist");
-        return memberList.getOrDefault(id, null);
+        User u =  memberList.getOrDefault(id, null);
+        if(u == null){
+            u = guestUser.get(id);
+        }
+        return u;
     }
 
     public boolean deleteUserTest(String[] userName) throws InvalidSequenceOperationsExc {
@@ -213,7 +227,7 @@ public class UserController {
         return activeUser.containsKey(userName);
     }
 
-    public boolean addProductToCart(String userName, int shopNumber, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+    public Response addProductToCart(String userName, int shopNumber, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
         if(!HasUserEnteredMarket(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
             throw new InvalidSequenceOperationsExc();
@@ -225,19 +239,19 @@ public class UserController {
     /**
      * Checking operation validity and performing
      * @param userName
-     * @param shopNumber
+     * @param shopID
      * @param productId
      * @param amount
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean updateAmountOfProduct(String userName, int shopNumber, int productId, int amount) throws InvalidSequenceOperationsExc {
+    public Response updateAmountOfProduct(String userName, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc {
         if(!HasUserEnteredMarket(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
             throw new InvalidSequenceOperationsExc();
         }
         User u = activeUser.get(userName);
-        return u.updateAmountOfProduct(shopNumber,productId,amount);
+        return u.updateAmountOfProduct(shopID,productId,amount);
     }
 
     /**
@@ -248,7 +262,7 @@ public class UserController {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean removeProductFromCart(String userName, int shopNumber, int productId) throws InvalidSequenceOperationsExc {
+    public Response removeProductFromCart(String userName, int shopNumber, int productId) throws InvalidSequenceOperationsExc {
         if(!HasUserEnteredMarket(userName))
             throw new InvalidSequenceOperationsExc();
         User u = activeUser.get(userName);

@@ -9,7 +9,6 @@ public class ResponseT<T> extends Response{
     public ResponseT(){
         super();
     }
-
     public ResponseT(T value){
         super();
         this.value = value;

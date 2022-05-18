@@ -7,19 +7,14 @@ import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.Product;
 import domain.Exceptions.ProductNotFoundException;
+import domain.shop.Shop;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
 public class ShoppingBasket {
-    enum status {
-        active,
-        completed,
-        failed_payment,
-        failed_supply,
-        failed_due_to_error
-    }
+
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final Shop shop;
@@ -39,14 +34,14 @@ public class ShoppingBasket {
      * @param amount desired amount
      * @return false if the product
      */
-    public boolean updateAmount(int productID, int amount) {
-        if(shop.isProductIsAvailable(productID,amount)) {
+    public void updateAmount(int productID, int amount) throws ProductNotFoundException,IllegalArgumentException {
+        if (shop.isProductIsAvailable(productID, amount)) {
             if (!productAmountList.containsKey(productID)) {
                 errorLogger.logMsg(Level.WARNING, String.format("update amount of product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
-                return false;
+                throw new ProductNotFoundException(String.format("requested product %d wasn't in the basket.", productID));
             } else if (amount < 0) {
                 errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - tried to update to negative amount.", productID, shop.getShopID()));
-                return false;
+                throw new IllegalArgumentException(String.format("tried to update product %d to negative amount. ", productID));
             } else {
                 if (amount == 0) {
                     synchronized (productAmountList) {
@@ -59,13 +54,11 @@ public class ShoppingBasket {
                     }
                     eventLogger.logMsg(Level.INFO, String.format("product %d amount in basket %d was updated to amount %d", productID, shop.getShopID(), amount));
                 }
-
-                return true;
             }
-        }
-        else {
+        } else {
             errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - product is not available.", productID, shop.getShopID()));
-            return false;}
+            throw new ProductNotFoundException(String.format("product %d is not available.", productID));
+        }
     }
 
     /***
@@ -74,16 +67,15 @@ public class ShoppingBasket {
      * @param productID id of product
      * @return false if the product
      */
-    public boolean removeProduct(int productID) {
+    public void removeProduct(int productID) throws ProductNotFoundException {
         if (!productAmountList.containsKey(productID)) {
             errorLogger.logMsg(Level.WARNING, String.format("remove product in basket of shop %d failed - requested product %d wasn't in the basket.", shop.getShopID(), productID));
-            return false;
+            throw new ProductNotFoundException(String.format("requested product %d wasn't in the basket.", productID));
         } else {
             synchronized (productAmountList) {
                 productAmountList.remove(productID);
             }
             eventLogger.logMsg(Level.INFO, String.format("product %d removed successfully from basket", productID));
-            return true;
         }
     }
 
@@ -93,11 +85,11 @@ public class ShoppingBasket {
      * @param productID product id
      * @param amountToAdd amount to add
      */
-    public boolean addProductToBasket(int productID, int amountToAdd) {
+    public void addProductToBasket(int productID, int amountToAdd) throws IllegalArgumentException, ProductNotFoundException{
         if (shop.isProductIsAvailable(productID, amountToAdd)) {
-            if (amountToAdd < 0) {
+            if (amountToAdd <= 0) {
                 errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
-                return false;
+                throw new IllegalArgumentException(String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
             } else if (!productAmountList.containsKey(productID)) {
                 synchronized (productAmountList) {
                     productAmountList.put(productID, amountToAdd);
@@ -110,10 +102,9 @@ public class ShoppingBasket {
                 }
                 eventLogger.logMsg(Level.INFO, String.format("product %d with amount %d added to basket successfully", productID, currAmount));
             }
-            return true;
         } else {
             errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - product is not available.", productID, shop.getShopID()));
-            return false;
+           throw new ProductNotFoundException(String.format("product %d is unavailable in shop %d", productID,shop.getShopID()));
         }
     }
 
@@ -134,35 +125,35 @@ public class ShoppingBasket {
         return shop.checkout(productAmountList, billingInfo);
     }
 
-    public BasketInfo showBasket() {
+    public ServiceBasket showBasket() {
         Map<Product,Integer> productWithAmount = new HashMap<>();
         for(Integer product: productAmountList.keySet()){
             Product p;
             try {
                 p = shop.getInfoOnProduct(product);
             }catch (ProductNotFoundException pnfe){
-                removeProduct(product);
+                productAmountList.remove(product);
                 continue;
             }
             int amount = productAmountList.get(product);
             productWithAmount.put(p,amount);
         }
         basketAmount = calculateTotalAmount();
-        return new BasketInfo(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
+        return new ServiceBasket(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
     }
 
     public Map<Integer, Integer> getProductAmountList() {
         return productAmountList;
     }
 
-    public class BasketInfo{
+    public class ServiceBasket {
 
         private int shopId;
         private String shopName;
         private Map<Product,Integer> productWithAmount;
         private double totalAmount;
 
-        public BasketInfo(int shopId, String shopName, Map<Product, Integer> productWithAmount, double totalAmount){
+        public ServiceBasket(int shopId, String shopName, Map<Product, Integer> productWithAmount, double totalAmount){
             this.shopId = shopId;
             this.shopName = shopName;
             this.productWithAmount = productWithAmount;

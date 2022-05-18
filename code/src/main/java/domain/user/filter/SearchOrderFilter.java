@@ -2,7 +2,6 @@ package domain.user.filter;
 
 import domain.EventLoggerSingleton;
 import domain.shop.Order;
-import domain.user.filter.Filter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class SearchOrderFilter implements Filter<Order> {
     LocalDate minDate;
     LocalDate maxDate;
 
-    public SearchOrderFilter(){
+    public SearchOrderFilter() {
         minPrice = 0d;
         maxPrice = Double.MAX_VALUE;
         minDate = null;
@@ -32,12 +31,12 @@ public class SearchOrderFilter implements Filter<Order> {
     }
 
     public List<Order> applyFilter(List<Order> orders) {
-        EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filer for Orders");
+        EventLoggerSingleton.getInstance().logMsg(Level.INFO, "Operate filer for Orders");
         List<Order> result = new ArrayList<>();
 
-        if(minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice
-            || minDate.isAfter(LocalDate.now()) || maxDate.isAfter(LocalDate.now())
-            || maxDate.isBefore(minDate)) {
+        if (minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice
+                || minDate.isAfter(LocalDate.now()) || maxDate.isAfter(LocalDate.now())
+                || maxDate.isBefore(minDate)) {
             return result;
         }
 
@@ -51,4 +50,5 @@ public class SearchOrderFilter implements Filter<Order> {
         }
         return result;
     }
+
 }
