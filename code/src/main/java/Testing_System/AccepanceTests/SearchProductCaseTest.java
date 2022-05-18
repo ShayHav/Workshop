@@ -116,12 +116,16 @@ public class SearchProductCaseTest extends Tester {
     @Test
     public void SearchByCategory()
     {
-        Filter<Product> f_1 = new SearchProductFilter(null,null,null,null,pCat_1);
+        /*Filter<Product> f_1 = new SearchProductFilter(null,null,null,null,pCat_1);
         Filter<Product> f_2 = new SearchProductFilter(null,null,null,null,pCat_2);
         Filter<Product> f_3 = new SearchProductFilter(null,null,null,null,"PPPPNOCAT");
         assertTrue(!SearchProductByKeyword(guestID,"",f_1).isErrorOccurred() && SearchProductByKeyword(guestID, "", f_1).getValue().size() == 1);
         assertTrue(!SearchProductByKeyword(guestID,"",f_2).isErrorOccurred() && SearchProductByKeyword(guestID, "", f_2).getValue().size() == 1);
         assertTrue(!SearchProductByKeyword(guestID,"",f_3).isErrorOccurred() && SearchProductByKeyword(guestID, "", f_3).getValue().isEmpty());
+         */
+        assertTrue(!SearchProductByCategory(validUsers[0],"sex",new SearchProductFilter()).isErrorOccurred());
+        assertTrue(!SearchProductByCategory(validUsers[0],"Funny",new SearchProductFilter()).isErrorOccurred());
+        assertTrue(SearchProductByCategory(validUsers[0],"sports",new SearchProductFilter()).getValue().size()==0);
 
     }
 

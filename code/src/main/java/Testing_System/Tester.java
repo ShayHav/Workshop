@@ -240,5 +240,8 @@ public class Tester {
     public Response CreateSystemManager(String systemManager,String username, String pw) {
         return br.CreateSystemManager(systemManager, username, pw);
     }
+    public ResponseMap<Integer, List<Product>> SearchProductByCategory(String userName, String category, Filter<Product> f){
+            return br.SearchProductByCategory(userName,category,f);
+    }
 
 }

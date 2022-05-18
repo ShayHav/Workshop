@@ -113,6 +113,8 @@ public interface Bridge {
 
     Response OpenShop(int shopId, String userName);
 
+    ResponseMap<Integer,List<Product>> SearchProductByCategory(String userName, String category, Filter<Product> f);
+
     ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName);
 
     Result<Boolean, String> DeleteUserTest(String[] usernames);

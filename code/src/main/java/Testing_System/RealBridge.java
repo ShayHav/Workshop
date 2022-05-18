@@ -206,6 +206,11 @@ public class RealBridge implements Bridge{
     }
 
     @Override
+    public ResponseMap<Integer, List<Product>> SearchProductByCategory(String userName, String category, Filter<Product> f) {
+        return sv.SearchProductByCategory(userName,category,f);
+    }
+
+    @Override
     public ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName) {
         return sv.RequestShopOfficialsInfo(shopName, f, userName);
     }
@@ -240,4 +245,6 @@ public class RealBridge implements Bridge{
     public Response CreateSystemManager(String systemManager,String username, String pw) {
         return sv.CreateSystemManager(systemManager, username, pw);
     }
+
+
 }
