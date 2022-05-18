@@ -203,9 +203,12 @@ public class MarketSystem {
 
     public User LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
         User u = UserController.getInstance().getUser(s);
+        if(!u.isEnteredMarket()) {
+            errorLogger.logMsg(Level.WARNING,String.format("attempt to leaveMarket without enterMarket user: %s",s));
+            throw new InvalidSequenceOperationsExc(String.format("attempt to leaveMarket without enterMarket user: %s",s));
+        }
         if(u.isLoggedIn())
             logout(s);
-        u.enterMarket();
         notificationManager.disConnected(u);
         return null;
     }
@@ -215,7 +218,9 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: username");
             throw new BlankDataExc("username");
         }
-        return UserController.getInstance().logOut(username);
+        User u = UserController.getInstance().logOut(username);
+        notificationManager.disConnected(u);
+        return u;
     }
 
     public int RemoveProductFromShopInventory(int productId, String userID, int shopname) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc {

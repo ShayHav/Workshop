@@ -24,6 +24,7 @@ public class User {
     private boolean isSystemManager;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    private boolean enteredMarket;
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
@@ -38,6 +39,11 @@ public class User {
         userCart = new Cart();
         isSystemManager = false;
     }
+
+    public boolean isEnteredMarket() {
+        return enteredMarket;
+    }
+
 
     public boolean isSystemManager() {
         return isSystemManager;
@@ -122,6 +128,7 @@ public class User {
      */
     public void enterMarket() {
         us = UserState2.disconnected;
+        enteredMarket=true;
     }
 
 
@@ -129,7 +136,7 @@ public class User {
      * leave market - user has no state
      */
     public void leaveMarket() {
-        us = null;
+        us = null; enteredMarket=false;
     }
 
     /*
