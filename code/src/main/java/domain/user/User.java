@@ -5,6 +5,7 @@ import domain.*;
 import domain.Exceptions.*;
 import domain.Exceptions.IllegalStateException;
 import domain.ResponseT;
+import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.user.filter.*;
 
@@ -347,6 +348,7 @@ public class User {
     public boolean isLoggedIn() {
         return this.loggedIn;
     }
+
 
     public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
         List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);

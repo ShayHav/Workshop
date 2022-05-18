@@ -1,21 +1,31 @@
 package Testing_System;
 
+import Presentation.Model.PresentationShop;
+import Presentation.Model.PresentationUser;
 import Service.Services;
+import domain.Exceptions.BlankDataExc;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Exceptions.ShopNotFoundException;
 import domain.Response;
+import domain.ResponseList;
+import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
+import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchOfficialsFilter;
 import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
 
-public class RealBridge implements  Bridge{
+public class RealBridge implements Bridge{
 
     private Services sv;
     public RealBridge()
@@ -24,8 +34,8 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public ResponseT<User> Login(String username, String pw) {
-        return sv.Login(username, pw);
+    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
+        return sv.Login(username, pw,uo);
     }
 
     @Override
@@ -39,8 +49,8 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Response LeaveMarket() {
-        return sv.LeaveMarket();
+    public Response LeaveMarket(String username) {
+        return sv.LeaveMarket(username);
     }
 
     @Override
@@ -49,8 +59,8 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public ResponseT<Shop> CreateShop(String username, String shopname) {
-        return sv.CreateShop(username, shopname);
+    public ResponseT<Shop> CreateShop(String dis, String username, String shopname) {
+        return sv.CreateShop(dis, username, shopname);
     }
 
     @Override
@@ -59,12 +69,12 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
+    public ResponseT<Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
         return sv.PurchaseDelivery(ti, products);
     }
 
     @Override
-    public Result<Boolean, Boolean> Payment(TransactionInfo ti) {
+    public ResponseT<Boolean> Payment(TransactionInfo ti) {
         return sv.Payment(ti);
     }
 
@@ -94,24 +104,24 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, List<ShopInfo>> GetShopsInfo(String userID, Filter<ShopInfo> filter) {
-        return (Result<Boolean, List<ShopInfo>>) sv.GetShopsInfo(userID, filter);
+    public ResponseList<Shop> GetShopsInfo(String userName, Filter<Shop> filter) {
+        return sv.GetShopsInfo(userName, filter);
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> GetProductInfoInShop(String userID ,int shopID, Filter<ProductInfo> f) {
-        return (Result<Boolean, List<ProductInfo>>) sv.GetProductInfoInShop(userID, shopID, f);
+    public ResponseList<Product> GetProductInfoInShop(String userName, int shopID, Filter<Product> f) {
+        return sv.GetProductInfoInShop(userName, shopID, f);
     }
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByName(String userID, String pName, Filter<ProductInfo> f) {
-        return (Result<Boolean, List<ProductInfo>>) sv.SearchProductByName(userID, pName, f);
+    public ResponseMap<Integer,List<Product>> SearchProductByName(String userName, String pName, Filter<Product> f) {
+        return sv.SearchProductByName(userName, pName, f);
     }
 
 
     @Override
-    public Result<Boolean, List<ProductInfo>> SearchProductByKeyword(String userID, String keyword, Filter<ProductInfo> f) {
-        return (Result<Boolean, List<ProductInfo>>) sv.SearchProductByKeyword(userID, keyword, f);
+    public ResponseMap<Integer,List<Product>> SearchProductByKeyword(String userName, String keyword, Filter<Product> f) {
+        return  sv.SearchProductByKeyword(userName, keyword, f);
     }
 
     @Override
@@ -150,8 +160,9 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public ResponseT<Product> AddProductToShopInventory(String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
-        return sv.AddProductToShopInventory(pName, pDis, pCat, price, amount, username, shopID);
+    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID)
+    {
+        return sv.AddProductToShopInventory(serialNumber, pName, pDis, pCat, price, amount, username, shopID);
     }
 
     @Override
@@ -190,8 +201,13 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, List<UserSearchInfo>> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userId) {
-        return (Result<Boolean, List<UserSearchInfo>>) sv.RequestShopOfficialsInfo(shopName, f, userId);
+    public Response OpenShop(int shopId, String userName) {
+        return sv.OpenShop(shopId,userName);
+    }
+
+    @Override
+    public ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName) {
+        return sv.RequestShopOfficialsInfo(shopName, f, userName);
     }
 
     @Override
@@ -200,7 +216,28 @@ public class RealBridge implements  Bridge{
     }
 
     @Override
-    public Result<Boolean, List<Order>> RequestShopSalesInfo(int shopName, SearchOrderFilter f, String userId) {
-        return (Result<Boolean, List<Order>>) sv.RequestInformationOfShopsSalesHistory(shopName, f, userId);
+    public ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName) {
+        return sv.RequestInformationOfShopsSalesHistory(shopName, f, userName);
+    }
+
+    @Override
+    public Response DismissalUserBySystemManager(String usernames,String targetUser) {
+        return sv.DismissalUserBySystemManager(usernames,targetUser);
+    }
+
+    @Override
+    public Response DismissalOwnerByOwner(String usernames,String targetUser,int shop) {
+     return sv.DismissalOwnerByOwner(usernames, targetUser, shop);
+    }
+
+    @Override
+    public ResponseList<User> RequestUserInfo(SearchUserFilter f, String userName)
+    {
+        return sv.RequestUserInfo(f, userName);
+    }
+
+    @Override
+    public Response CreateSystemManager(String systemManager,String username, String pw) {
+        return sv.CreateSystemManager(systemManager, username, pw);
     }
 }

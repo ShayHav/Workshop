@@ -11,6 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class ChangeProductInfoCaseTest extends Tester{
     private UserGenerator ug;
     private String[] validUsers;
@@ -53,14 +54,14 @@ public class ChangeProductInfoCaseTest extends Tester{
         manager = validUsers[2];
         manager_pw = pws[2];
         Register(user_1, pw_1);
-        Login(user_1, pw_1);
+        Login(user_1, pw_1,null);
         Register(owner,owner_pw);
         Register(manager, manager_pw);
         AppointNewShopManager(shopID_1,manager,user_1);
         AppointNewShopOwner(shopID_1,owner,user_1);
         ls = new ArrayList<ShopManagersPermissions>();
         ls.add(ShopManagersPermissions.ChangeProductsDetail);
-        ResponseT<Shop> shopResponseT = CreateShop(user_1,"TestShop");
+        ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         pName_1 = "Durex";
@@ -84,8 +85,8 @@ public class ChangeProductInfoCaseTest extends Tester{
     @BeforeEach
     public void LogUsers()
     {
-        Login(owner, owner_pw);
-        Login(manager, manager_pw);
+        Login(owner, owner_pw,null);
+        Login(manager, manager_pw,null);
     }
 
     @Test
@@ -95,20 +96,20 @@ public class ChangeProductInfoCaseTest extends Tester{
         assertTrue(!ChangeProduct(owner,pID_1,shopID_1).isErrorOccurred());
         assertTrue(!ChangeProduct(manager,pID_1,shopID_1).isErrorOccurred());
         RemoveShopManagerPermissions(shopID_1,ls,manager,user_1);
-        assertFalse(ChangeProduct(manager,pID_1,shopID_1).isErrorOccurred());
+        assertFalse(!ChangeProduct(manager,pID_1,shopID_1).isErrorOccurred());
     }
 
     @Test
     public void NotLoggedInTest()
     {
         Logout(owner);
-        assertFalse(ChangeProduct(owner,pID_1,shopID_1).isErrorOccurred());
+        assertFalse(!ChangeProduct(owner,pID_1,shopID_1).isErrorOccurred());
 
     }
 
     @Test
     public void NotRegisteredTest()
     {
-        assertFalse(ChangeProduct(validUsers[3],pID_1,shopID_1).isErrorOccurred());
+        assertFalse(!ChangeProduct(validUsers[3],pID_1,shopID_1).isErrorOccurred());
     }
 }

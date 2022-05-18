@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class InitMarketCaseTest extends Tester {
 
     /*Result<Boolean, Boolean> StartMarket(PaymentService payment, SupplyService supply, String userID, String password)*/
@@ -41,7 +42,7 @@ public class InitMarketCaseTest extends Tester {
     {
         payment = null;
         supply = new SupplyServiceImp();
-        assertFalse(StartMarket(payment,supply,userID,pw).isErrorOccurred());
+        assertFalse(!StartMarket(payment,supply,userID,pw).isErrorOccurred());
     }
 
     @Test
@@ -49,7 +50,7 @@ public class InitMarketCaseTest extends Tester {
     {
         payment = new PaymentServiceImp();
         supply = null;
-        assertFalse(StartMarket(payment,supply,userID,pw).isErrorOccurred());
+        assertFalse(!StartMarket(payment,supply,userID,pw).isErrorOccurred());
     }
 
     @Test
@@ -57,7 +58,7 @@ public class InitMarketCaseTest extends Tester {
     {
         payment = new PaymentServiceImp();
         supply = new SupplyServiceImp();
-        assertFalse(StartMarket(payment,supply,userID,null).isErrorOccurred());
+        assertFalse(!StartMarket(payment,supply,userID,null).isErrorOccurred());
     }
 
 }
