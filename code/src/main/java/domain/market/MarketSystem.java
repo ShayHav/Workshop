@@ -186,7 +186,7 @@ public class MarketSystem {
 
 
     //TODO: Services start here :)
-    public User logIn(String username, String pw) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+    public User logIn(String username, String pw,UserObserver observer) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
         User output;
         if(username == null ) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: username");
@@ -197,13 +197,16 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: password");
         }
         output = UserController.getInstance().logIn(username, pw);
-        notificationManager.getMessage(output);
+        notificationManager.newSocketChannel(output,observer);
         return output;
     }
 
     public User LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
-        if(UserController.getInstance().getUser(s).isLoggedIn())
+        User u = UserController.getInstance().getUser(s);
+        if(u.isLoggedIn())
             logout(s);
+        u.enterMarket();
+        notificationManager.disConnected(u);
         return null;
     }
 
@@ -428,7 +431,7 @@ public class MarketSystem {
         else return false;
     }
 
-    public boolean DismissalOwner(String usernames, String targetUser, int shop, UserObserver observer) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException {
+    public boolean DismissalOwner(String usernames, String targetUser, int shop) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException {
         if(usernames==null)
             throw new BlankDataExc("parameter is null: usernames");
         if(targetUser== null)
@@ -447,7 +450,7 @@ public class MarketSystem {
         return userController.RequestUserInfo(f,userName);
     }
 
-    public boolean createSystemManager(String systemManager, String username, String pw,UserObserver observer) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
+    public boolean createSystemManager(String systemManager, String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
         if(username == null )
             throw new BlankDataExc("parameter is null: username");
         if(pw == null)
@@ -457,7 +460,6 @@ public class MarketSystem {
         if(UserController.getInstance().getUser(systemManager).isSystemManager()) {
             if(UserController.getInstance().createSystemManager(username, pw)){
                 User u = UserController.getInstance().getUser(username);
-                notificationManager.newSocketChannel(u,observer);
                 return true;
             }
         }

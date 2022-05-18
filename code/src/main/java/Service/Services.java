@@ -68,10 +68,10 @@ public class Services {
      * @param pw - given password
      * @return - Response object
      */
-    public ResponseT<User> Login(String username, String pw) {
+    public ResponseT<User> Login(String username, String pw,UserObserver observer) {
         ResponseT<User> output;
         try {
-            User b = marketSystem.logIn(username, pw);
+            User b = marketSystem.logIn(username, pw,observer);
             output = new ResponseT<>(b);
             return output;
         } catch (BlankDataExc blankDataExc) {
@@ -121,9 +121,9 @@ public class Services {
      * User closes the system
      * @return - null
      */
-    public Response LeaveMarket() {
+    public Response LeaveMarket(String username) {
         try {
-            User output = marketSystem.LeaveMarket("");
+            User output = marketSystem.LeaveMarket(username);
             return new Response();
         } catch (IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc e) {
             return new Response(e.getLocalizedMessage());
@@ -733,9 +733,9 @@ public class Services {
      * @param shop - shop identifier
      * @return Response object
      */
-    public Response DismissalOwnerByOwner(String usernames,String targetUser,int shop, UserObserver observer) {
+    public Response DismissalOwnerByOwner(String usernames,String targetUser,int shop) {
         try {
-            if(marketSystem.DismissalOwner(usernames,targetUser,shop,observer))
+            if(marketSystem.DismissalOwner(usernames,targetUser,shop))
                 return new Response();
             return new ResponseT(null,"");
         }
@@ -777,9 +777,9 @@ public class Services {
      * @param pw
      * @return
      */
-    public Response CreateSystemManager(String systemManager,String username, String pw,UserObserver observer) {
+    public Response CreateSystemManager(String systemManager,String username, String pw) {
         try {
-            if(marketSystem.createSystemManager(systemManager,username, pw,observer))
+            if(marketSystem.createSystemManager(systemManager,username, pw))
                 return new Response();
         } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());

@@ -512,7 +512,7 @@ public class User {
             }
         }
         errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not system manager: %s",targetUser));
-        throw new InvalidSequenceOperationsExc("");
+        throw new InvalidSequenceOperationsExc(String.format("attempt to dismiss user by not system manager: %s",targetUser));
     }
 
 }
