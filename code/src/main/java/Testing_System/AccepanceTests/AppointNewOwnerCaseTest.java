@@ -120,30 +120,30 @@ public class AppointNewOwnerCaseTest extends Tester {
         Register(validUsers[1],pws[1]);
         Login(validUsers[1],pws[1],null);
         Register(validUsers[2],pws[2]);
-        assertFalse(AppointNewShopOwner(shopID_1,validUsers[2],validUsers[1]).isErrorOccurred());
+        assertFalse(!AppointNewShopOwner(shopID_1,validUsers[2],validUsers[1]).isErrorOccurred());
     }
     @Test
     public void NotLoggedAppointerTest() {
         Register(validUsers[1], pws[1]);
         assertTrue(!AppointNewShopOwner(shopID_1, validUsers[1], user_1).isErrorOccurred());
         for (int i = 2; i < ug.getNumOfUser(); i++)
-            assertFalse(AppointNewShopOwner(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred());
+            assertFalse(!AppointNewShopOwner(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred());
 
     }
 
     @Test
     public void NotRegisteredUserTest() {
         for (int i = 1; i < ug.getNumOfUser(); i++)
-            assertFalse(AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
     }
 
     @Test
     public void BadValuesTest() {
         for (int i = 1; i < ug.getNumOfUser(); i++) {
             Register(validUsers[i],pws[i]);
-            assertFalse(AppointNewShopOwner(shopID_1+1, validUsers[i], user_1).isErrorOccurred());
-            assertFalse(AppointNewShopOwner(shopID_1, validUsers[i], null).isErrorOccurred());
-            assertFalse(AppointNewShopOwner(shopID_1, null, user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopOwner(shopID_1+1, validUsers[i], user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopOwner(shopID_1, validUsers[i], null).isErrorOccurred());
+            assertFalse(!AppointNewShopOwner(shopID_1, null, user_1).isErrorOccurred());
 
         }
     }

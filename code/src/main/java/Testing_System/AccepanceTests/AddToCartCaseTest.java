@@ -105,14 +105,14 @@ public class AddToCartCaseTest extends Tester {
     @Test
     public void BadProductIDTest()
     {
-        assertFalse(AddToShoppingCart(user_2,shopID,400214,3).isErrorOccurred());
+        assertFalse(!AddToShoppingCart(user_2,shopID,400214,3).isErrorOccurred());
     }
 
     @Test
     public void NotInStockTest()
     {
-        assertFalse(AddToShoppingCart(user_2,shopID,pID_2,20000).isErrorOccurred());
-        assertFalse(AddToShoppingCart(user_1,shopID,pID_1,20000).isErrorOccurred());
+        assertFalse(!AddToShoppingCart(user_2,shopID,pID_2,20000).isErrorOccurred());
+        assertFalse(!AddToShoppingCart(user_1,shopID,pID_1,20000).isErrorOccurred());
 
     }
 

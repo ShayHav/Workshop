@@ -126,7 +126,7 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     public void NotLoggedInCaseFailTest()
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, manager,owner).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1,pToRemove, manager,owner).isErrorOccurred());
     }
 
     @Test
@@ -134,8 +134,8 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
         Register(validUsers[3],pws[3]);
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).isErrorOccurred());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, owner,user_1).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1,pToRemove, owner,user_1).isErrorOccurred());
 
     }
 
@@ -143,7 +143,7 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     public void RemoveNotRegisteredTest()
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).isErrorOccurred());
     }
 
     @Test
@@ -153,12 +153,12 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
         List<ShopManagersPermissions> ls_2 = new ArrayList<ShopManagersPermissions>();
         Register(validUsers[3],pws[3]);
         AppointNewShopManager(shopID_1,validUsers[2],user_1);
-        assertFalse(RemoveShopManagerPermissions(shopID_1+1,pToRemove, validUsers[3], user_1).isErrorOccurred());
-        assertFalse(RemoveShopManagerPermissions(-1,pToRemove, validUsers[3], user_1).isErrorOccurred());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,ls_2, validUsers[3], user_1).isErrorOccurred());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,null, validUsers[3], user_1).isErrorOccurred());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, null, user_1).isErrorOccurred());
-        assertFalse(RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], null).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1+1,pToRemove, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(-1,pToRemove, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1,ls_2, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1,null, validUsers[3], user_1).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1,pToRemove, null, user_1).isErrorOccurred());
+        assertFalse(!RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], null).isErrorOccurred());
 
 
     }

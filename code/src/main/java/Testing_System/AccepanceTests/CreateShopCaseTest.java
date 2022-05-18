@@ -69,10 +69,10 @@ public class CreateShopCaseTest extends Tester {
     @Test
     public void BadNameShopTest()
     {
-        assertFalse(CreateShop("Test_1",validUsers[0], "T#$hop").isErrorOccurred());
-        assertFalse(CreateShop("Test_2",validUsers[1], "Tes%&%p_2").isErrorOccurred());
-        assertFalse(CreateShop("Test_3",validUsers[2], "A").isErrorOccurred());
-        assertFalse(CreateShop("Test_4",validUsers[3], null).isErrorOccurred());
+        assertFalse(!CreateShop("Test_1",validUsers[0], "T#$hop").isErrorOccurred());
+        assertFalse(!CreateShop("Test_2",validUsers[1], "Tes%&%p_2").isErrorOccurred());
+        assertFalse(!CreateShop("Test_3",validUsers[2], "A").isErrorOccurred());
+        assertFalse(!CreateShop("Test_4",validUsers[3], null).isErrorOccurred());
 
     }
 
@@ -80,20 +80,20 @@ public class CreateShopCaseTest extends Tester {
     public void DuplicateNames()
     {
         assertTrue(!CreateShop("Test_1",validUsers[0], "TestShop").isErrorOccurred());
-        assertFalse(CreateShop("Test_2",validUsers[1], "TestShop").isErrorOccurred());
+        assertFalse(!CreateShop("Test_2",validUsers[1], "TestShop").isErrorOccurred());
     }
 
     @Test
     public void NotRegisteredUser()
     {
-        assertFalse(CreateShop("Test","notregis", "ValidName").isErrorOccurred());
+        assertFalse(!CreateShop("Test","notregis", "ValidName").isErrorOccurred());
     }
 
     @Test
     public void NotLoggedUser()
     {
         Logout(validUsers[0]);
-        assertFalse(CreateShop("Test_1",validUsers[0], "TestShop").isErrorOccurred());
+        assertFalse(!CreateShop("Test_1",validUsers[0], "TestShop").isErrorOccurred());
 
     }
 

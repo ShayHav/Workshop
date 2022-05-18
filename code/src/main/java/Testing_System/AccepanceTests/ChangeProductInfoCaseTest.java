@@ -96,20 +96,20 @@ public class ChangeProductInfoCaseTest extends Tester{
         assertTrue(!ChangeProduct(owner,pID_1,shopID_1).isErrorOccurred());
         assertTrue(!ChangeProduct(manager,pID_1,shopID_1).isErrorOccurred());
         RemoveShopManagerPermissions(shopID_1,ls,manager,user_1);
-        assertFalse(ChangeProduct(manager,pID_1,shopID_1).isErrorOccurred());
+        assertFalse(!ChangeProduct(manager,pID_1,shopID_1).isErrorOccurred());
     }
 
     @Test
     public void NotLoggedInTest()
     {
         Logout(owner);
-        assertFalse(ChangeProduct(owner,pID_1,shopID_1).isErrorOccurred());
+        assertFalse(!ChangeProduct(owner,pID_1,shopID_1).isErrorOccurred());
 
     }
 
     @Test
     public void NotRegisteredTest()
     {
-        assertFalse(ChangeProduct(validUsers[3],pID_1,shopID_1).isErrorOccurred());
+        assertFalse(!ChangeProduct(validUsers[3],pID_1,shopID_1).isErrorOccurred());
     }
 }

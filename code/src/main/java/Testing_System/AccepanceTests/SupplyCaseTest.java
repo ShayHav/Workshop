@@ -24,7 +24,7 @@ import java.util.Map;
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 public class SupplyCaseTest extends Tester {
 
-    private UserGenerator ug = new UserGenerator();
+    private UserGenerator ug;
     private String[] validUserNames;
     private String[] pws;
     private final String shopname = "TestShop";
@@ -69,7 +69,9 @@ public class SupplyCaseTest extends Tester {
 
     @BeforeAll
     public void SetUp() {
+        ug = new UserGenerator();
         validUserNames = ug.GetValidUsers();
+        products = new HashMap<Integer,Integer>();
         pws = ug.GetPW();
         LocalDate t_date = LocalDate.of(2022, 4, 26);
         ti_good_1 = new TransactionInfo(validUserNames[0],"Ariel Ronen","Israel&Baer-Sheva&Ragar&1&-1&-1","0546840084", "4580000000000000","12/22",t_date, 200.2 );
@@ -104,40 +106,73 @@ public class SupplyCaseTest extends Tester {
             Register(validUserNames[i],pws[i]);
             Login(validUserNames[i],pws[i],null);
         }
+        guest_id = EnterMarket().getValue().getUserName();
         shopID = CreateShop("Test",validUserNames[0],shopname).getValue().getShopID();
         pID_1 = AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,validUserNames[0],shopID).getValue().getId();
         pID_2 = AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,validUserNames[0],shopID).getValue().getId();
-
+        products.putIfAbsent(pID_1, 10);
+        products.putIfAbsent(pID_2, 10);
     }
 
     @AfterAll
     public void CleanUp()
     {
-
+        LeaveMarket(guest_id);
+        ug.DeleteUserTest(validUserNames);
+        ug.DeleteAdmin();
     }
 
     @Test
     public void ConfirmedSupplyTest()
     {
-        products.putIfAbsent(pi.getId(), 10);
-        PurchaseDelivery(ti_good_1,)
-        assertTrue(PurchaseDelivery(ti_good_1,"");
+        assertTrue(!PurchaseDelivery(ti_good_1,products).isErrorOccurred());
+        assertTrue(!PurchaseDelivery(ti_good_2,products).isErrorOccurred());
+        assertTrue(!PurchaseDelivery(ti_good_3,products).isErrorOccurred());
+        assertTrue(!PurchaseDelivery(ti_good_4,products).isErrorOccurred());
+        assertTrue(!PurchaseDelivery(ti_good_5,products).isErrorOccurred());
+        assertTrue(!PurchaseDelivery(ti_good_guest,products).isErrorOccurred());
+
+
     }
 
     @Test
     public void NotSupplyConnectionTest()
     {
         MarketSystem.getInstance().setSupplierConnection(false);
-        for(Order o : orderList)
-            assertFalse(PurchaseDelivery(o));
+        assertFalse(!PurchaseDelivery(ti_good_1,products).isErrorOccurred());
+        assertFalse(!PurchaseDelivery(ti_good_2,products).isErrorOccurred());
+        assertFalse(!PurchaseDelivery(ti_good_3,products).isErrorOccurred());
+        assertFalse(!PurchaseDelivery(ti_good_4,products).isErrorOccurred());
+        assertFalse(!PurchaseDelivery(ti_good_5,products).isErrorOccurred());
+        assertFalse(!PurchaseDelivery(ti_good_guest,products).isErrorOccurred());
+        MarketSystem.getInstance().setSupplierConnection(true);
+
     }
 
     @Test
-    public void CantFindSupplyDateTest()
+    public void SameAddressTest()
     {
-        for(Order o : orderList)
-            assertFalse(PurchaseDelivery(o));
+        assertTrue(!PurchaseDelivery(ti_good_3,products).isErrorOccurred());
+        assertTrue(!PurchaseDelivery(ti_good_same_address_3,products).isErrorOccurred());
+
     }
+
+    @Test
+    public void SameUserDifferentLocationTest()
+    {
+        assertTrue(!PurchaseDelivery(ti_good_same_user_different_location_1,products).isErrorOccurred());
+        assertTrue(!PurchaseDelivery(ti_good_1,products).isErrorOccurred());
+    }
+
+    @Test
+    public void BadTITest()
+    {
+        assertFalse(!PurchaseDelivery(ti_bad_1,products).isErrorOccurred());
+        assertFalse(!PurchaseDelivery(ti_bad_2,products).isErrorOccurred());
+        assertFalse(!PurchaseDelivery(ti_bad_3,products).isErrorOccurred());
+        assertFalse(!PurchaseDelivery(ti_bad_4,products).isErrorOccurred());
+    }
+
 
 
 

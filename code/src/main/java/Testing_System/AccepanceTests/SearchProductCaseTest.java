@@ -143,7 +143,7 @@ public class SearchProductCaseTest extends Tester {
     public void NotRegisterUser()
     {
         Filter<Product> f_1 = new SearchProductFilter(null,null,null,null,null);
-        assertFalse(SearchProductByKeyword(badUser[0],"",f_1).isErrorOccurred());
+        assertFalse(!SearchProductByKeyword(badUser[0],"",f_1).isErrorOccurred());
 
     }
 
@@ -152,7 +152,7 @@ public class SearchProductCaseTest extends Tester {
     {
         Filter<Product> f_1 = new SearchProductFilter(null,null,null,null,null);
         Register(validUsers[ug.getNumOfUser()-1],pws[ug.getNumOfUser()-1]);
-        assertFalse(SearchProductByKeyword(validUsers[ug.getNumOfUser()-1],"",f_1).isErrorOccurred());
+        assertFalse(!SearchProductByKeyword(validUsers[ug.getNumOfUser()-1],"",f_1).isErrorOccurred());
 
     }
 

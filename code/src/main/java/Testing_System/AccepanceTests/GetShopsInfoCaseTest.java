@@ -65,7 +65,7 @@ public class GetShopsInfoCaseTest extends Tester {
     @Test
     public void NoFilterCaseTest()
     {
-        assertFalse(GetShopsInfo(user,null).isErrorOccurred());
+        assertFalse(!GetShopsInfo(user,null).isErrorOccurred());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class GetShopsInfoCaseTest extends Tester {
     {
         assertTrue(!GetShopsInfo(user,f_1).isErrorOccurred() && GetShopsInfo(user,f_1).getValue().size() == 1);
         CloseShop(shopID,user);
-        assertFalse(GetShopsInfo(user,f_1).isErrorOccurred() && GetShopsInfo(user,f_1).getValue().size() == 1);
+        assertFalse(!GetShopsInfo(user,f_1).isErrorOccurred() && GetShopsInfo(user,f_1).getValue().size() == 1);
     }
 
 

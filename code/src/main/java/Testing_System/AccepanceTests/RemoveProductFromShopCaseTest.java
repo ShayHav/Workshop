@@ -105,11 +105,11 @@ public class RemoveProductFromShopCaseTest extends Tester {
 
     @Test
     public void GoodRemovalTest() {
-        assertTrue(RemoveProductFromShopInventory(pID_1, user_1, shopID_1).isErrorOccurred());
-        assertTrue(RemoveProductFromShopInventory(pID_2, user_1, shopID_1).isErrorOccurred());
+        assertTrue(!RemoveProductFromShopInventory(pID_1, user_1, shopID_1).isErrorOccurred());
+        assertTrue(!RemoveProductFromShopInventory(pID_2, user_1, shopID_1).isErrorOccurred());
 
-        assertTrue(RemoveProductFromShopInventory(pID_3, user_2, shopID_2).isErrorOccurred());
-        assertTrue(RemoveProductFromShopInventory(pID_4, user_2, shopID_2).isErrorOccurred());
+        assertTrue(!RemoveProductFromShopInventory(pID_3, user_2, shopID_2).isErrorOccurred());
+        assertTrue(!RemoveProductFromShopInventory(pID_4, user_2, shopID_2).isErrorOccurred());
 
     }
 
@@ -149,14 +149,14 @@ public class RemoveProductFromShopCaseTest extends Tester {
     @Test
     public void NotRegisteredUserTest()
     {
-        assertFalse(RemoveProductFromShopInventory(pID_2, validUsers[2], shopID_1).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_2, validUsers[2], shopID_1).isErrorOccurred());
     }
 
     @Test
     public void NotLoggedInUserTest()
     {
         Logout(user_1);
-        assertFalse(RemoveProductFromShopInventory(pID_2, user_1, shopID_1).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_2, user_1, shopID_1).isErrorOccurred());
     }
 
     @Test
@@ -175,14 +175,14 @@ public class RemoveProductFromShopCaseTest extends Tester {
         AddShopMangerPermissions(shopID_1, ls, validUsers[2], user_1);
         AppointNewShopOwner(shopID_1, validUsers[3], user_1);
 
-        assertFalse(RemoveProductFromShopInventory(pID_2, validUsers[ug.getNumOfUser() - 1], shopID_2).isErrorOccurred());
-        assertFalse(RemoveProductFromShopInventory(pID_1, validUsers[ug.getNumOfUser() - 1], shopID_2).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_2, validUsers[ug.getNumOfUser() - 1], shopID_2).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_1, validUsers[ug.getNumOfUser() - 1], shopID_2).isErrorOccurred());
 
-        assertFalse(RemoveProductFromShopInventory(pID_1, validUsers[2], shopID_2).isErrorOccurred());
-        assertFalse(RemoveProductFromShopInventory(pID_2, validUsers[2], shopID_2).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_1, validUsers[2], shopID_2).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_2, validUsers[2], shopID_2).isErrorOccurred());
 
-        assertFalse(RemoveProductFromShopInventory(pID_2, validUsers[3], shopID_2).isErrorOccurred());
-        assertFalse(RemoveProductFromShopInventory(pID_1, validUsers[3], shopID_2).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_2, validUsers[3], shopID_2).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_1, validUsers[3], shopID_2).isErrorOccurred());
 
 
     }
@@ -191,14 +191,14 @@ public class RemoveProductFromShopCaseTest extends Tester {
     public void ProductAlreadyRemovedTest()
     {
         assertTrue(!RemoveProductFromShopInventory(pID_1, user_1, shopID_1).isErrorOccurred());
-        assertFalse(RemoveProductFromShopInventory(pID_2, user_1, shopID_1).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_2, user_1, shopID_1).isErrorOccurred());
     }
 
     @Test
     public void BadProductInputsTest() {
-        assertFalse(RemoveProductFromShopInventory(-1, user_1, shopID_1).isErrorOccurred());
-        assertFalse(RemoveProductFromShopInventory(pID_2, null, shopID_1).isErrorOccurred());
-        assertFalse(RemoveProductFromShopInventory(pID_2, user_1, -1).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(-1, user_1, shopID_1).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_2, null, shopID_1).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_2, user_1, -1).isErrorOccurred());
 
     }
 

@@ -90,7 +90,7 @@ public class AppointManagerCaseTest extends Tester{
         if(!shopResponseT.isErrorOccurred())
             shopID_2 = shopResponseT.getValue().getShopID();
         assertTrue(!(AppointNewShopManager(shopID_1, validUsers[1], user_1).isErrorOccurred()));
-        assertTrue(AppointNewShopManager(shopID_2, user_1, validUsers[1]).isErrorOccurred());
+        assertTrue(!AppointNewShopManager(shopID_2, user_1, validUsers[1]).isErrorOccurred());
     }
 
     @Test
@@ -117,23 +117,23 @@ public class AppointManagerCaseTest extends Tester{
         Register(validUsers[1], pws[1]);
         AppointNewShopOwner(shopID_1, validUsers[1], user_1);
         for (int i = 2; i < ug.getNumOfUser(); i++)
-            assertFalse(AppointNewShopManager(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred());
+            assertFalse(!AppointNewShopManager(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred());
 
     }
 
     @Test
     public void NotRegisteredUserTest() {
         for (int i = 1; i < ug.getNumOfUser(); i++)
-            assertFalse(AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
     }
 
     @Test
     public void BadValuesTest() {
         for (int i = 1; i < ug.getNumOfUser(); i++) {
             Register(validUsers[i],pws[i]);
-            assertFalse(AppointNewShopManager(shopID_1+1, validUsers[i], user_1).isErrorOccurred());
-            assertFalse(AppointNewShopManager(shopID_1, validUsers[i], null).isErrorOccurred());
-            assertFalse(AppointNewShopManager(shopID_1, null, user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopManager(shopID_1+1, validUsers[i], user_1).isErrorOccurred());
+            assertFalse(!AppointNewShopManager(shopID_1, validUsers[i], null).isErrorOccurred());
+            assertFalse(!AppointNewShopManager(shopID_1, null, user_1).isErrorOccurred());
 
         }
     }
@@ -144,7 +144,7 @@ public class AppointManagerCaseTest extends Tester{
         Register(validUsers[1],pws[1]);
         Login(validUsers[1],pws[1],null);
         Register(validUsers[2],pws[2]);
-        assertFalse(AppointNewShopManager(shopID_1,validUsers[2],validUsers[1]).isErrorOccurred());
+        assertFalse(!AppointNewShopManager(shopID_1,validUsers[2],validUsers[1]).isErrorOccurred());
     }
 
 }

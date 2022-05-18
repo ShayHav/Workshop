@@ -25,7 +25,7 @@ public class LoginCaseTest extends Tester {
     }
 
     @AfterAll
-    public void CleanCase()
+    public void CleanUp()
     {
         DeleteUserTest(validUsernames);
     }
@@ -43,7 +43,7 @@ public class LoginCaseTest extends Tester {
     public void MissMatchUserPWTest()
     {
         for (int i = 1; i < ug.getNumOfUser(); i++)
-            assertFalse(Login(validUsernames[i], passwords[i-1],null).isErrorOccurred());
+            assertFalse(!Login(validUsernames[i], passwords[i-1],null).isErrorOccurred());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class LoginCaseTest extends Tester {
         for (int i = 0; i < ug.getNumOfUser(); i++)
         {
            assertTrue(!Login(validUsernames[i], passwords[i],null).isErrorOccurred());
-           assertFalse(Login(validUsernames[i], passwords[i],null).isErrorOccurred());
+           assertFalse(!Login(validUsernames[i], passwords[i],null).isErrorOccurred());
 
         }
     }
@@ -61,7 +61,7 @@ public class LoginCaseTest extends Tester {
     public void UserDoesNotExist()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertTrue(!Login(notRegisteredUsers[i], passwords[i],null).isErrorOccurred());
+            assertFalse(!Login(notRegisteredUsers[i], passwords[i],null).isErrorOccurred());
 
     }
 
