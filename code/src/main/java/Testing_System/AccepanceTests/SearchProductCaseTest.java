@@ -13,9 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SearchProductCaseTest extends Tester {
 
-    private UserGenerator ug;
+    private UserGenerator ug = new UserGenerator();
     private String[] badUser;
     private String[] validUsers;
     private String[] pws;

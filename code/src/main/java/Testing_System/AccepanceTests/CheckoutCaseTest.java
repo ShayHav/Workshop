@@ -6,10 +6,7 @@ import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.Shop;
 import domain.user.Guest;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CheckoutCaseTest extends Tester {
 
     private UserGenerator ug;

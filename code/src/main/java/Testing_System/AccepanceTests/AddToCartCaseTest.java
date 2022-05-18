@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AddToCartCaseTest extends Tester {
 
     private String[] validUsers;
@@ -59,6 +59,8 @@ public class AddToCartCaseTest extends Tester {
         pCat_2 = "Funny";
         price_2 = 99.9;
         ug = new UserGenerator();
+        validUsers = ug.GetValidUsers();
+        pws = ug.GetPW();
         validUsers = ug.GetValidUsers();
         badUser = ug.GetBadUsers();
         ug.InitTest();

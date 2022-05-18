@@ -8,11 +8,13 @@ import domain.user.filter.SearchUserFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DismissalOwnerByOwnerCaseTest extends Tester {
     private UserGenerator ug = new UserGenerator();
     private String[] validUserNames;
@@ -31,7 +33,7 @@ public class DismissalOwnerByOwnerCaseTest extends Tester {
         shopID_1 = -1;
         ug = new UserGenerator();
         validUserNames = ug.GetValidUsers();
-        PWs = ug.GetPW();
+        pws = ug.GetPW();
         ug.InitTest();
         user_1 = validUserNames[0];
         pw_1 = pws[0];

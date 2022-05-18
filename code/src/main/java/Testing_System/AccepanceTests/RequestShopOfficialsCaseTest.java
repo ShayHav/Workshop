@@ -9,6 +9,7 @@ import domain.user.filter.SearchOfficialsFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RequestShopOfficialsCaseTest extends Tester {
 
-    private UserGenerator ug;
+    private UserGenerator ug = new UserGenerator();
     private String[] validUsers;
     private String[] pws;
     private String user_1;

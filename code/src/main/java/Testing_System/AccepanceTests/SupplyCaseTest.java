@@ -8,10 +8,8 @@ import domain.shop.Product;
 import domain.shop.ProductImp;
 import domain.user.TransactionInfo;
 import org.eclipse.jetty.util.log.Log;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SupplyCaseTest extends Tester {
 
     private UserGenerator ug;
