@@ -68,10 +68,10 @@ public class Services {
      * @param pw - given password
      * @return - Response object
      */
-    public ResponseT<User> Login(String username, String pw,UserObserver observer) {
+    public ResponseT<User> Login(String username, String pw, UserObserver o) {
         ResponseT<User> output;
         try {
-            User b = marketSystem.logIn(username, pw,observer);
+            User b = marketSystem.logIn(username, pw, null);
             output = new ResponseT<>(b);
             return output;
         } catch (BlankDataExc blankDataExc) {
