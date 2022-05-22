@@ -22,7 +22,7 @@ public class Shop {
     private String name;
     private final int shopID;
     private int rank;
-    private User ShopFounder;
+    private final User ShopFounder;
     private String description;
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
@@ -455,4 +455,7 @@ public class Shop {
         return output;
     }
 
+    public User getShopFounder() {
+        return ShopFounder;
+    }
 }

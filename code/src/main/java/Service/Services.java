@@ -551,12 +551,10 @@ public class Services {
      * @param userName
      * @return Response object
      */
-    public Response CloseShop(int shopId, String userName) {
+    public Response closeShop(int shopId, String userName) {
         try {
-            String s = marketSystem.CloseShop(shopId, userName);
-            if (s != null)
-                return new Response(s);
-            return null;
+            marketSystem.CloseShop(shopId, userName);
+            return new Response();
         } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification) {
             return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
         }
@@ -568,12 +566,10 @@ public class Services {
      * @param userName
      * @return Response object
      */
-    public Response OpenShop(int shopId, String userName) {
+    public Response reopenShop(int shopId, String userName) {
         try {
-            String s = marketSystem.OpenShop(shopId, userName);
-            if (s != null)
-                return new Response(s);
-            return null;
+            marketSystem.OpenShop(shopId, userName);
+            return new Response();
         } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification) {
             return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
         }

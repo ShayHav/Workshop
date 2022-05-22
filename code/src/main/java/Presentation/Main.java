@@ -45,6 +45,7 @@ public class Main {
             return;
         }
         app = Javalin.create(JavalinConfig::enableWebjars).start(port);
+
         app.before(userController::validateUser);
 
         app.get("/", ctx -> {
@@ -94,6 +95,8 @@ public class Main {
                     get(shopController::renderShop);
                     get("/addProduct", shopController::renderAddProductPage);
                     post("/addProduct", shopController::addProduct);
+                    post("/closeShop", shopController::closeShop);
+                    post("/reopenShop", shopController::reopenShop);
 
                     path("{serialNumber}", () -> {
                         get(shopController::renderProductPage);

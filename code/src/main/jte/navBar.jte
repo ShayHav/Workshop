@@ -82,7 +82,7 @@
 </nav>
 
 @if (user.isLoggedIn())
-<div class="collapse container border border-2 mt-3 col-6" id="createShop">
+<div class="collapse container border border-2 mt-3 col-6 rounded" id="createShop">
     <form class="m-3" method="post" action="/shops">
         <h3 class="fs-5">create new shop in market:</h3>
         <div class=" mb-2">
