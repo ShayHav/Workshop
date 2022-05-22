@@ -234,27 +234,25 @@ public class MarketSystem {
         return -1;
     }
 
-    public String CloseShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public void CloseShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if(userID == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
         if(userController.isLogin(userID)) {
             notificationManager.systeManagerMessage(String.format("ShopId: %d  is Close",shopId));
-            return ShopController.getInstance().closeShop(shopId, userID);
+            ShopController.getInstance().closeShop(shopId, userID);
         }
-        return null;
     }
-    public String OpenShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public void OpenShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if(userID == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
         if(userController.isLogin(userID)) {
             notificationManager.systeManagerMessage(String.format("ShopId: %d  is Open",shopId));
-            return ShopController.getInstance().openShop(shopId, userID);
+            ShopController.getInstance().openShop(shopId, userID);
         }
-        return null;
     }
 
     public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc {

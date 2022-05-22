@@ -15,10 +15,7 @@ import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ShopController {
 
@@ -175,6 +172,30 @@ public class ShopController {
         else {
             String path = "/shops/" + shopID;
             context.redirect(path);
+        }
+    }
+
+    public void closeShop(Context context) {
+        int shopId = context.pathParamAsClass("shopID", Integer.class).get();
+        String username = context.cookieStore("uid");
+        Response response = services.closeShop(shopId, username);
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+        }
+        else{
+            context.redirect("/shops/"+shopId);
+        }
+    }
+
+    public void reopenShop(Context context){
+        int shopId = context.pathParamAsClass("shopID", Integer.class).get();
+        String username = context.cookieStore("uid");
+        Response response = services.reopenShop(shopId, username);
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+        }
+        else{
+            context.redirect("/shops/"+shopId);
         }
     }
 }
