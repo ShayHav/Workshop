@@ -64,16 +64,16 @@ public class ShopController {
             return;
         }
 
-
         shop.products = PresentationProduct.convertProduct(products.getValue(), shopID);
         ResponseList<ShopManagersPermissions> permission = services.CheckPermissionsForManager(user.getUsername(), shopID);
         if(permission.isErrorOccurred()){
             ctx.status(400);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
-            return;
         }
-        user.setPermission(shopID, permission.getValue());
-        ctx.render("shop.jte", Map.of("user", user, "shop", shop));
+        else {
+            user.setPermission(shopID, permission.getValue());
+            ctx.render("shop.jte", Map.of("user", user, "shop", shop));
+        }
     }
 
     public void renderProductPage(Context ctx) {

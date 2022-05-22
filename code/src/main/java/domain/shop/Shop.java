@@ -428,7 +428,7 @@ public class Shop {
 
     public List<ShopManagersPermissions> requestInfoOnManagerPermissions(String managerUsername) throws IllegalArgumentException {
         if(!ShopManagers.containsKey(managerUsername) && !ShopOwners.containsKey(managerUsername) && !ShopFounder.getUserName().equals(managerUsername))
-            throw new IllegalArgumentException("username "+managerUsername+" is not authorize in the shop " + shopID);
+            return new ArrayList<>();
         return shopManagersPermissionsController.getPermissions(managerUsername);
     }
 

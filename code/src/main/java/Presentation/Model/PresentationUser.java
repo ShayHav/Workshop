@@ -27,7 +27,7 @@ public class PresentationUser {
         username = user.getUserName();
         loggedIn = user.isLoggedIn();
         permissions = new HashMap<>();
-        roleList = user.getRoleList();
+        roleList = user.getRoleList() == null ? new HashMap<>() : user.getRoleList();
     }
 
     public PresentationUser(){

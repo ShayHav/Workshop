@@ -1,6 +1,7 @@
 package domain.user;
 
 import domain.shop.Product;
+import domain.shop.Shop;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
