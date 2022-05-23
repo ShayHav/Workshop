@@ -43,7 +43,7 @@
             <form class="form mb-2" method="post" name="amountForm">
                 <div class="mb-2">
                     <label for="amount" class="form-label fw-bold">Quantity:</label>
-                    <input type="number" min="0" step="1" id="amount" name="amount" required>
+                    <input type="number" min="0" max="${product.amount}" step="1" id="amount" name="amount" required>
                 </div>
                 <div>
                     <button type="button" id="addProduct" class="btn btn-success">AddToCart</button>
