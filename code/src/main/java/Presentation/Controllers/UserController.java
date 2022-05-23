@@ -169,7 +169,14 @@ public class UserController {
             CheckoutForm checkout = ctx.messageAsClass(CheckoutForm.class);
             String expirationDate = checkout.getMonth() + "/" + checkout.getYear();
             ResponseList<String> response = services.Checkout(username, checkout.getFullName(), checkout.getAddress(), checkout.getPhoneNumber(), checkout.getCardNumber(), expirationDate);
-            ctx.send(response.getValue());
+            StringBuilder error = new StringBuilder(response.isErrorOccurred() ? response.errorMessage : "");
+            if(response.getValue().size() > 0){
+                for (String s: response.getValue()) {
+                    error.append("/n").append(s);
+                }
+
+            }
+            ctx.send(error);
         });
 
     }

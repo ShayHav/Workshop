@@ -34,7 +34,7 @@ public class Shop {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final OrderHistory orders;
     private boolean isOpen;
-    private MarketSystem marketSystem;
+    private MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
@@ -193,6 +193,8 @@ public class Shop {
     }
 
     public boolean purchasePolicyLegal(String userID, int prodID, double price,int amount){
+        if(purchasePolicy == null)
+            return true;
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
