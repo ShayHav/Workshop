@@ -198,4 +198,16 @@ public class ShopController {
             context.redirect("/shops/"+shopId);
         }
     }
+
+    public void renderEditShop(Context context){
+        int shopId = context.pathParamAsClass("shopID", Integer.class).get();
+        PresentationUser user = userController.getUser(context);
+        ResponseT<Shop> response = services.GetShop(shopId);
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+            return;
+        }
+        PresentationShop shop = new PresentationShop(response.getValue());
+        services.Per
+    }
 }

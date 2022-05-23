@@ -457,6 +457,10 @@ public class Shop {
         return output;
     }
 
+    public List<User> getShopsManagers(){
+        return new ArrayList<>(this.ShopManagers.values());
+    }
+
     public User getShopFounder() {
         return ShopFounder;
     }
