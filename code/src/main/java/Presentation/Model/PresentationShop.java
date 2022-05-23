@@ -4,6 +4,7 @@ import domain.shop.Shop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PresentationShop {
 
@@ -13,6 +14,7 @@ public class PresentationShop {
     public List<PresentationProduct> products;
     public PresentationUser founder;
     public boolean isOpen;
+    public List<PresentationUser> managers;
 
     public PresentationShop(String id, String name, String description, List<PresentationProduct> products){
         this.id = id;
@@ -28,6 +30,7 @@ public class PresentationShop {
         description = shop.getDescription();
         founder = new PresentationUser(shop.getShopFounder());
         isOpen = shop.isOpen();
+        managers = shop.getShopsManagers().stream().map(PresentationUser::new).collect(Collectors.toList());
     }
 
     public boolean isFounder(PresentationUser user){
@@ -36,5 +39,9 @@ public class PresentationShop {
 
     public boolean isOpen(){
         return isOpen;
+    }
+
+    public boolean isManager(PresentationUser user){
+        return managers.stream().anyMatch(manager -> manager.getUsername().equals(user.getUsername()));
     }
 }
