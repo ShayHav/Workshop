@@ -1,5 +1,6 @@
 package Presentation.Controllers;
 
+import Presentation.Model.PresentationOrder;
 import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
@@ -7,15 +8,15 @@ import Service.Services;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseT;
-import domain.shop.Product;
-import domain.shop.ServiceProduct;
-import domain.shop.Shop;
-import domain.shop.ShopManagersPermissions;
+import domain.shop.*;
+import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ShopController {
 
@@ -208,6 +209,19 @@ public class ShopController {
             return;
         }
         PresentationShop shop = new PresentationShop(response.getValue());
-        services.Per
+    }
+
+    public void renderOrderHistory(Context ctx) {
+        PresentationUser user= userController.getUser(ctx);
+        int shopID = ctx.pathParamAsClass("shopID",Integer.class).get();
+
+        ResponseList<Order> response = services.RequestInformationOfShopsSalesHistory(shopID,new SearchOrderFilter(), user.getUsername());
+        if(response.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+            return;
+        }
+        List<PresentationOrder> orders = response.getValue().stream().map(o-> new PresentationOrder(o, shopID)).collect(Collectors.toList());
+
+        ctx.render("orderHistory.jte", Map.of("user", user, "orders",orders));
     }
 }

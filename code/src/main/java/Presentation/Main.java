@@ -97,6 +97,7 @@ public class Main {
                     post("/addProduct", shopController::addProduct);
                     post("/closeShop", shopController::closeShop);
                     post("/reopenShop", shopController::reopenShop);
+                    get("/orders", shopController::renderOrderHistory);
 
                     path("{serialNumber}", () -> {
                         get(shopController::renderProductPage);

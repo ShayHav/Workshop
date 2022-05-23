@@ -11,31 +11,36 @@
         <p class="fs-5">${shop.description}</p>
     </div>
     <div class="container row">
-    @if(user.hasInventoryPermission(Integer.parseInt(shop.id)))
-        <div class="col-2">
-            @if(shop.isOpen)
-                <a href="/shops/${shop.id}/addProduct" class="btn btn-primary">Add Product</a>
-            @else
-                <a href="/shops/${shop.id}/addProduct" class="btn btn-primary disabled" aria-disabled="true">Add Product</a>
-            @endif
-
-        </div>
-    @endif
-    @if(shop.isFounder(user))
-        @if(shop.isOpen())
+        @if(user.hasInventoryPermission(Integer.parseInt(shop.id)))
             <div class="col-2">
-                <form action="/shops/${shop.id}/closeShop" method="post">
-                    <button type="submit" class="btn btn-danger">Close Shop</button>
-                </form>
-            </div>
-        @else
-            <div class="col-2">
-                <form action="/shops/${shop.id}/reopenShop" method="post">
-                    <button type="submit" class="btn btn-success">Open Shop</button>
-                </form>
+                @if(shop.isOpen)
+                    <a href="/shops/${shop.id}/addProduct" class="btn btn-primary">Add Product</a>
+                @else
+                    <a href="/shops/${shop.id}/addProduct" class="btn btn-primary disabled" aria-disabled="true">Add
+                        Product</a>
+                @endif
             </div>
         @endif
-    @endif
+        @if(user.hasOrdersPermissions(Integer.parseInt(shop.id)))
+            <div class="col-2">
+                <a href="/shops/${shop.id}/orders" class="btn btn-info">Sales History</a>
+            </div>
+        @endif
+        @if(shop.isFounder(user))
+            @if(shop.isOpen())
+                <div class="col-2">
+                    <form action="/shops/${shop.id}/closeShop" method="post">
+                        <button type="submit" class="btn btn-danger">Close Shop</button>
+                    </form>
+                </div>
+            @else
+                <div class="col-2">
+                    <form action="/shops/${shop.id}/reopenShop" method="post">
+                        <button type="submit" class="btn btn-success">Open Shop</button>
+                    </form>
+                </div>
+            @endif
+        @endif
     </div>
     <div class="container row mx-auto">
         <h3 class="fs-5 mt-3">The things we sell</h3>
@@ -49,7 +54,8 @@
                     @if(product.amount > 0)
                         <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary">Show Product</a>
                     @else
-                        <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary disabled" aria-disabled="true">Show Product</a>
+                        <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary disabled"
+                           aria-disabled="true">Show Product</a>
                     @endif
                 </div>
             </div>

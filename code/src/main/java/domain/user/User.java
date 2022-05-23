@@ -39,6 +39,7 @@ public class User {
         us = UserState2.disconnected;
         userCart = new Cart();
         isSystemManager = false;
+        orderHistory = new ArrayList<>();
     }
 
     public boolean isEnteredMarket() {
@@ -327,8 +328,8 @@ public class User {
             ownerAppointmentList = new ArrayList<>();
         if (managerAppointeeList == null)
             managerAppointeeList = new ArrayList<>();
-        if (orderHistory == null)
-            orderHistory = new ArrayList<>();
+
+        orderHistory = new ArrayList<>();
         loggedIn = true;
     }
 

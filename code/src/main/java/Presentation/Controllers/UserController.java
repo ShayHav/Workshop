@@ -10,11 +10,9 @@ import domain.user.Cart;
 import domain.user.User;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
-import io.javalin.websocket.WsMessageContext;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class UserController {
@@ -166,7 +164,7 @@ public class UserController {
     public void checkout(WsConfig wsConfig) {
         wsConfig.onMessage(ctx -> {
             String username = ctx.pathParam("id");
-            CheckoutForm checkout = ctx.messageAsClass(CheckoutForm.class);
+            CheckoutFormMessage checkout = ctx.messageAsClass(CheckoutFormMessage.class);
             String expirationDate = checkout.getMonth() + "/" + checkout.getYear();
             ResponseList<String> response = services.Checkout(username, checkout.getFullName(), checkout.getAddress(), checkout.getPhoneNumber(), checkout.getCardNumber(), expirationDate);
             StringBuilder error = new StringBuilder(response.isErrorOccurred() ? response.errorMessage : "");

@@ -595,14 +595,14 @@ public class Services {
 
     /**
      * Query for store purchase history
-     * @param shopName - shop identifier
+     * @param shopID - shop identifier
      * @param f
      * @param userName - user identifier
      * @return list of Response object
      */
-    public ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName) {
+    public ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userName) {
         try {
-            List<Order> orders = marketSystem.RequestInformationOfShopsSalesHistory(shopName, f, userName);
+            List<Order> orders = marketSystem.RequestInformationOfShopsSalesHistory(shopID, f, userName);
             return new ResponseList<>(orders);
         } catch (IncorrectIdentification | ShopNotFoundException incorrectIdentification) {
             return new ResponseList<>(incorrectIdentification.getLocalizedMessage());

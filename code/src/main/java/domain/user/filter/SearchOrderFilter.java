@@ -35,8 +35,9 @@ public class SearchOrderFilter implements Filter<Order> {
         List<Order> result = new ArrayList<>();
 
         if (minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice
-                || minDate.isAfter(LocalDate.now()) || maxDate.isAfter(LocalDate.now())
-                || maxDate.isBefore(minDate)) {
+                || (minDate != null && minDate.isAfter(LocalDate.now()))
+                || (maxDate!= null && maxDate.isAfter(LocalDate.now()))
+                || (minDate!= null && maxDate!= null && maxDate.isBefore(minDate))) {
             return result;
         }
 
