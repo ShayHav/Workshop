@@ -483,8 +483,8 @@ public class Services {
     /**
      * Appoint a new Shop manager
      * @param key - shop identifier
-     * @param targetUser - Passive user identifier
-     * @param userName - Active user identifier
+     * @param targetUser - the username of the user requested to be appointing to shop manager
+     * @param userName - the username of the appointed of the new manager
      * @return Response object
      */
     //done  IncorrectIdentification, BlankDataExc
@@ -774,6 +774,16 @@ public class Services {
             return new Response(blankDataExc.getLocalizedMessage());
         }
         return new Response();
+    }
+
+    public Response removeManager(int shopID, String remover, String managerToRemove){
+        try{
+            marketSystem.removeManger(shopID, remover, managerToRemove);
+            return new Response();
+        }
+        catch (Exception e){
+            return new Response(e.getMessage());
+        }
     }
 
 }

@@ -44,4 +44,8 @@ public class PresentationShop {
     public boolean isManager(PresentationUser user){
         return managers.stream().anyMatch(manager -> manager.getUsername().equals(user.getUsername()));
     }
+
+    public int getID(){
+        return Integer.parseInt(id);
+    }
 }

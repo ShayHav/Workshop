@@ -39,6 +39,8 @@ public class User {
         us = UserState2.disconnected;
         userCart = new Cart();
         isSystemManager = false;
+        managerAppointeeList = new ArrayList<>();
+        ownerAppointmentList = new ArrayList<>();
     }
 
     public boolean isEnteredMarket() {
@@ -366,9 +368,15 @@ public class User {
 
     public void addRole(int shop,Role role) {
         List<Role> useRoleList = roleList.get(shop);
-        if(useRoleList!=null)
-            if(useRoleList.contains(role))
+        if(useRoleList!=null) {
+            if (!useRoleList.contains(role))
                 useRoleList.add(role);
+        }
+        else{
+            List<Role> newRoleList = new ArrayList<>();
+            newRoleList.add(role);
+            roleList.put(shop, newRoleList);
+        }
     }
 
     public List<OwnerAppointment> getOwnerAppointmentList() {
@@ -522,6 +530,10 @@ public class User {
         }
         errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not system manager: %s",targetUser));
         throw new InvalidSequenceOperationsExc(String.format("attempt to dismiss user by not system manager: %s",targetUser));
+    }
+
+    public void dismissManager(String targetUser, int shop){
+
     }
 
 }

@@ -18,7 +18,6 @@
             @else
                 <a href="/shops/${shop.id}/addProduct" class="btn btn-primary disabled" aria-disabled="true">Add Product</a>
             @endif
-
         </div>
     @endif
     @if(shop.isFounder(user))
@@ -36,6 +35,9 @@
             </div>
         @endif
     @endif
+        <div class="col-2">
+            <a class="btn btn-warning" href="/shops/${shop.id}/edit">Edit Shop</a>
+        </div>
     </div>
     <div class="container row mx-auto">
         <h3 class="fs-5 mt-3">The things we sell</h3>

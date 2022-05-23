@@ -1,12 +1,11 @@
 package Presentation.Model;
 
 import domain.shop.ShopManagersPermissions;
+import domain.user.ManagerAppointment;
 import domain.user.Role;
 import domain.user.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PresentationUser {
 
@@ -15,6 +14,7 @@ public class PresentationUser {
     private boolean loggedIn;
     Map<Integer, List<Role>> roleList;
     Map<Integer, List<ShopManagersPermissions>> permissions;
+    private List<ManagerAppointment> myApointments;
 
     public PresentationUser(String username, boolean loggedIn){
         this.username = username;
@@ -28,6 +28,7 @@ public class PresentationUser {
         loggedIn = user.isLoggedIn();
         permissions = new HashMap<>();
         roleList = user.getRoleList() == null ? new HashMap<>() : user.getRoleList();
+        myApointments = Collections.unmodifiableList(user.getManagerAppointeeList());
     }
 
     public PresentationUser(){
@@ -83,4 +84,30 @@ public class PresentationUser {
         permissions.put(shopID, value);
     }
 
+    public boolean isMyApointed(int shopID, PresentationUser user){
+        for(ManagerAppointment appointment: myApointments){
+            if(appointment.getShop().getShopID() == shopID && user.equals(appointment.getAppointed()))
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if(o.getClass() == PresentationUser.class) {
+            PresentationUser that = (PresentationUser) o;
+            return username.equals(that.username);
+        }
+        if(o.getClass() == User.class){
+            return username.equals(((User) o).getUserName());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
 }
