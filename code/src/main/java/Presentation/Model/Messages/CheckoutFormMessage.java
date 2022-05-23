@@ -1,4 +1,4 @@
-package Presentation.Model;
+package Presentation.Model.Messages;
 
 public class CheckoutFormMessage {
     private String fullName;
