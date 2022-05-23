@@ -1,9 +1,12 @@
 package Presentation.Controllers;
 
+import Presentation.Model.Messages.AppointMangerMessage;
+import Presentation.Model.Messages.EditShopMessage;
 import Presentation.Model.PresentationOrder;
 import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
+import Presentation.Model.PresentationOrder;
 import Service.Services;
 import domain.Response;
 import domain.ResponseList;
@@ -13,6 +16,7 @@ import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
+import io.javalin.websocket.WsConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -209,6 +213,26 @@ public class ShopController {
             return;
         }
         PresentationShop shop = new PresentationShop(response.getValue());
+        context.render("editShop.jte", Map.of("user", user, "shop", shop));
+    }
+
+    public void editShop(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx -> {});
+        wsConfig.onMessage(ctx->{
+            EditShopMessage message = ctx.messageAsClass(EditShopMessage.class);
+            int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
+            switch (message.type) {
+                case "removeManager" -> {
+                    Response r = services.removeManager(shopID, message.requestingUser, message.subject);
+                    ctx.send(r);
+                }
+                case "addManager" -> {
+                    Response response = services.AppointNewShopManager(shopID, message.subject, message.getRequestingUser());
+                    AppointMangerMessage returnMessage = new AppointMangerMessage(response.errorMessage, message.getRequestingUser());
+                    ctx.send(returnMessage);
+                }
+            }
+        });
     }
 
     public void renderOrderHistory(Context ctx) {

@@ -94,6 +94,7 @@ public class Main {
                 path("{shopID}", () -> {
                     get(shopController::renderShop);
                     get("/addProduct", shopController::renderAddProductPage);
+                    get("/edit", shopController::renderEditShop);
                     post("/addProduct", shopController::addProduct);
                     post("/closeShop", shopController::closeShop);
                     post("/reopenShop", shopController::reopenShop);
@@ -105,6 +106,8 @@ public class Main {
                         post("/edit", shopController::editProduct);
                         post("/remove", shopController::removeProduct);
                     });
+
+                    ws(shopController::editShop);
                 });
             });
         });

@@ -37,7 +37,6 @@ public class MarketSystem {
         return ShopController.getInstance().checkPermissionsForManager(managerUsername,shopID);
     }
 
-
     private static class MarketHolder{
         private static final MarketSystem market = new MarketSystem();
     }
@@ -149,6 +148,7 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: foundId");
         User shopFounder = getUser(foundId);
         Shop s = ShopController.getInstance().createShop(description ,name, discountPolicy, purchasePolicy, shopFounder);
+        shopFounder.addRole(s.getShopID(), Role.ShopFounder);
         //notificationManager.systeManagerMessage(String.format("ShopId: %d  was Create. ShopFounder: %s",s.getShopID(),shopFounder.getUserName()));
         return s;
     }
@@ -468,4 +468,16 @@ public class MarketSystem {
         }
         return false;
     }
+
+    public void removeManger(int shopID, String remover, String managerToRemove) throws IncorrectIdentification, BlankDataExc, InvalidAuthorizationException {
+        if(remover == null || managerToRemove == null)
+            throw new BlankDataExc("parameters cannot be null");
+        User user = userController.getUser(remover);
+        if(!userController.isLogin(remover)){
+            throw new InvalidAuthorizationException("user is not logged in");
+        }
+        User manager = userController.getUser(managerToRemove);
+        //TODO remove the manager
+    }
+
 }
