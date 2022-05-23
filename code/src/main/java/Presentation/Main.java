@@ -118,7 +118,7 @@ public class Main {
             ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
                 case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
                 case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, new SearchProductFilter());
-                case "keyboard" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
+                case "keyword" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
                 default -> new ResponseMap<Integer, List<Product>>("please choose a suitable query method");
             } : new ResponseMap<Integer, List<Product>>("not suppose to happen");
             if (response.isErrorOccurred()) {

@@ -61,12 +61,12 @@
             <a href="users/${user.getUsername()}/cart" class="mb-2 btn btn-danger">Cancel</a>
         </div>
     </form>
-    <div id="responsePlace" class="container mt-5 col-4 visually-hidden">
+    <div id="responsePlace" class="container mt-3 col-4 visually-hidden">
         <p class="fs-5"></p>
     </div>
 </main>
 <script>
-    const socket = new WebSocket("ws://localhost:${Presentation.Main.port}users/${user.getUsername()}/cart/checkout")
+    const socket = new WebSocket("ws://localhost:${Presentation.Main.port}/users/${user.getUsername()}/cart/checkout")
     socket.onopen = function (event) {
         console.log("connected to checkout form web-socket in port: ",${Presentation.Main.port})
     }
@@ -75,7 +75,6 @@
     const add = function () {
         const form = document.checkoutForm;
         const message = {
-            username: username,
             fullName: form.fullName.value,
             address: form.address.value,
             phoneNumber: form.phoneNumber.value,
@@ -87,24 +86,21 @@
     }
     checkout_button.addEventListener('click', add);
     socket.onmessage = async function (event) {
-        const response = JSON.parse(event.data);
-        if (response.errorMessage) {
-            const toUpdate = document.getElementById("responsePlace");
-            toUpdate.firstChild.textContent = response.errorMessage;
-            toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
-            toUpdate.classList.remove("visually-hidden");
-        } else if (response.value.size() > 0) {
-            const toUpdate = document.getElementById("responsePlace");
-            toUpdate.firstChild.textContent = response.value;
-            toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
-            toUpdate.classList.remove("visually-hidden");
-        } else {
+        const error = JSON.parse(event.data);
+        if (error === "") {
             const toUpdate = document.getElementById("responsePlace");
             toUpdate.firstChild.textContent = "The checkout completed successfully";
             toUpdate.classList.add("border", "border-success", "border-3", "rounded");
             toUpdate.classList.remove("visually-hidden");
-            await new Promise(r => setTimeout(r, 1500));
+            await new Promise(r => setTimeout(r, 2000));
+            window.location.replace("/users/${user.getUsername()}/cart");
+        } else {
+            const toUpdate = document.getElementById("responsePlace");
+            toUpdate.firstChild.textContent = error;
+            toUpdate.classList.add("border", "border-danger", "border-3", "rounded");
+            toUpdate.classList.remove("visually-hidden");
         }
+
     }
 </script>
 </body>
