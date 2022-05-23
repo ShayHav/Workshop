@@ -126,5 +126,7 @@ public class Main {
             response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
             ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult));
     });
+
+
 }
 }

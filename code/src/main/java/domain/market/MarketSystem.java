@@ -186,7 +186,7 @@ public class MarketSystem {
 
 
     //TODO: Services start here :)
-    public User logIn(String username, String pw,UserObserver observer) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+    public User logIn(String username, String pw, UserObserver o) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
         User output;
         if(username == null ) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: username");
@@ -197,7 +197,7 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: password");
         }
         output = UserController.getInstance().logIn(username, pw);
-        notificationManager.newSocketChannel(output,observer);
+        //notificationManager.newSocketChannel(output,observer);
         return output;
     }
 

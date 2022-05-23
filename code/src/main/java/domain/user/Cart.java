@@ -74,6 +74,9 @@ public class Cart {
         }
         try {
             baskets.get(shopID).removeProduct(productID);
+            if(baskets.get(shopID).getProductAmountList().size() == 0){
+                baskets.remove(shopID);
+            }
             getTotalAmount();
             return new Response();
         } catch (ProductNotFoundException e) {

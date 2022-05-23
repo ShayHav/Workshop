@@ -127,22 +127,22 @@ public class UserController {
         int shopID = ctx.formParamAsClass("shopID", Integer.class).get();
         int serialNumber = ctx.pathParamAsClass("serialNumber", Integer.class).get();
         int quantity = ctx.formParamAsClass("quantity", Integer.class).get();
-        Response response = services.EditShoppingCart(username,shopID,serialNumber,quantity);
-        if(response.isErrorOccurred())
+        Response response = services.EditShoppingCart(username, shopID, serialNumber, quantity);
+        if (response.isErrorOccurred())
             ctx.status(400).render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
 
-        ctx.redirect(String.format("/users/%s/cart",username));
+        ctx.redirect(String.format("/users/%s/cart", username));
     }
 
     public void removeFromCart(Context ctx) {
         String username = ctx.pathParam("id");
         int shopID = ctx.formParamAsClass("shopID", Integer.class).get();
         int serialNumber = ctx.pathParamAsClass("serialNumber", Integer.class).get();
-        Response response = services.RemoveFromShoppingCart(username,shopID,serialNumber);
-        if(response.isErrorOccurred())
+        Response response = services.RemoveFromShoppingCart(username, shopID, serialNumber);
+        if (response.isErrorOccurred())
             ctx.status(400).render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
 
-        ctx.redirect(String.format("/users/%s/cart",username));
+        ctx.redirect(String.format("/users/%s/cart", username));
     }
 
     public void validateUser(Context ctx) {
@@ -158,19 +158,19 @@ public class UserController {
         }
     }
 
-    public void renderCheckoutForm(Context ctx){
+    public void renderCheckoutForm(Context ctx) {
         PresentationUser user = getUser(ctx);
         ctx.render("checkoutForm.jte", Map.of("user", user));
     }
 
-    public void checkout(WsConfig wsConfig){
-        wsConfig.onMessage(ctx ->{
+    public void checkout(WsConfig wsConfig) {
+        wsConfig.onMessage(ctx -> {
             String username = ctx.pathParam("id");
             CheckoutForm checkout = ctx.messageAsClass(CheckoutForm.class);
-            String expirationDate = checkout.getMonth() +"/" + checkout.getYear();
-            ResponseList<String> response = services.Checkout(username,checkout.getFullName(), checkout.getAddress(), checkout.getPhoneNumber(), checkout.getCardNumber(),expirationDate);
+            String expirationDate = checkout.getMonth() + "/" + checkout.getYear();
+            ResponseList<String> response = services.Checkout(username, checkout.getFullName(), checkout.getAddress(), checkout.getPhoneNumber(), checkout.getCardNumber(), expirationDate);
             ctx.send(response.getValue());
-                });
+        });
 
     }
 

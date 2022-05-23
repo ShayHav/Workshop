@@ -61,7 +61,7 @@
             @endif
         </div>
     </div>
-    <div id="responsePlace" class="container mt-5 col-4 visually-hidden">
+    <div id="responsePlace" class="container mt-2 col-4 visually-hidden">
         <p class="fs-5"></p>
     </div>
 </main>
