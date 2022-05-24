@@ -1,6 +1,7 @@
 package Presentation.Controllers;
 
 import Presentation.Model.Messages.AppointMangerMessage;
+import Presentation.Model.Messages.AppointOwnerMessage;
 import Presentation.Model.Messages.EditShopMessage;
 import Presentation.Model.PresentationOrder;
 import Presentation.Model.PresentationProduct;
@@ -227,8 +228,17 @@ public class ShopController {
                 }
                 case "addManager" -> {
                     Response response = services.AppointNewShopManager(shopID, message.subject, message.getRequestingUser());
-                    AppointMangerMessage returnMessage = new AppointMangerMessage(response.errorMessage, message.getRequestingUser());
+                    AppointMangerMessage returnMessage = new AppointMangerMessage(response.errorMessage, message.subject);
                     ctx.send(returnMessage);
+                }
+                case "addOwner" -> {
+                    Response response = services.AppointNewShopOwner(shopID, message.subject, message.getRequestingUser());
+                    AppointOwnerMessage returnMessage = new AppointOwnerMessage(response.errorMessage, message.subject);
+                    ctx.send(returnMessage);
+                }
+                case "removeOwner" -> {
+                    Response response = services.DismissalOwnerByOwner(message.requestingUser, message.subject, shopID);
+                    ctx.send(response);
                 }
             }
         });

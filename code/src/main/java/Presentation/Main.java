@@ -38,6 +38,10 @@ public class Main {
         UserController userController = new UserController();
         ShopController shopController = new ShopController(userController);
         Javalin app;
+
+        // FOR MY SANITY ADD SOME OBJECTS TO THE SYSTEM
+        fillData();
+
         try {
             ip = Inet4Address.getLocalHost();
             System.out.println(ip.getHostAddress());
@@ -113,7 +117,7 @@ public class Main {
             });
         });
 
-        app.get("/search",ctx -> {
+        app.get("/search", ctx -> {
             String query = ctx.queryParam("query");
             String searchBy = ctx.queryParam("searchBy");
             PresentationUser user = userController.getUser(ctx);
@@ -130,8 +134,20 @@ public class Main {
             List<PresentationProduct> searchResult = new ArrayList<>();
             response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
             ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult));
-    });
+        });
 
+    }
 
-}
+    public static void fillData(){
+        Services services = Services.getInstance();
+        services.Register("shay", "123");
+        services.Register("shahar", "123");
+        services.Login("shay","123",null);
+        services.CreateShop("testing shop","shay","shop");
+        services.AddProductToShopInventory(1, "Product1", "testing product", "test",1.90,15, "shay", 1);
+        services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", 1);
+        services.AddProductToShopInventory(3, "Product3", "testing product", "test",20,0, "shay", 1);
+        services.Logout("shay");
+        //services.AppointNewShopManager(1, "shahar","shay");
+    }
 }

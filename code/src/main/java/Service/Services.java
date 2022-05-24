@@ -465,12 +465,14 @@ public class Services {
     //done IncorrectIdentification, BlankDataExc
     public Response AppointNewShopOwner(int key, String targetUser, String userName) {
         try {
-            String s = marketSystem.AppointNewShopOwner(key, targetUser, userName);
-            if (s != null)
-                return new Response(s);
-            return null;
-        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
-            return new Response(e.getMessage());
+            marketSystem.AppointNewShopOwner(key, targetUser, userName);
+            return new Response();
+        } catch (IncorrectIdentification incorrectIdentification) {
+            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
+        } catch (BlankDataExc blankDataExc) {
+            return new ResponseT<>(null, blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc | ShopNotFoundException exception) {
+            return new Response(exception.getMessage());
         }
     }
 
@@ -484,12 +486,14 @@ public class Services {
     //done  IncorrectIdentification, BlankDataExc
     public Response AppointNewShopManager(int key, String targetUser, String userName) {
         try {
-            String s = marketSystem.AppointNewShopManager(key, targetUser, userName);
-            if (s != null)
-                return new Response(s);
-            return null;
-        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException | InvalidSequenceOperationsExc e) {
-            return new Response(e.getMessage());
+            marketSystem.AppointNewShopManager(key, targetUser, userName);
+            return new ResponseT<>();
+        } catch (IncorrectIdentification incorrectIdentification) {
+            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
+        } catch (BlankDataExc | ShopNotFoundException blankDataExc) {
+            return new ResponseT<>(null, blankDataExc.getMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new ResponseT<>(invalidSequenceOperationsExc.getMessage());
         }
     }
 

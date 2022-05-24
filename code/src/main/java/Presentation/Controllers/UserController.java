@@ -27,6 +27,9 @@ public class UserController {
         services = Services.getInstance();
     }
 
+    public PresentationUser getUser(String username){
+        return requestedUsers.get(username);
+    }
 
     public void login(Context ctx) {
         String username = ctx.formParam("username");

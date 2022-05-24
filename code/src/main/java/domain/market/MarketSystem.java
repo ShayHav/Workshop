@@ -3,7 +3,6 @@ package domain.market;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
-import domain.ResponseT;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
 import domain.Response;
@@ -308,8 +307,7 @@ public class MarketSystem {
         }
     }
 
-    public String AppointNewShopManager(int shopID, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
-        String output;
+    public void AppointNewShopManager(int shopID, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
         if(targetUser == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
@@ -317,16 +315,14 @@ public class MarketSystem {
         if(username == null)
             throw new BlankDataExc("parameter is null: username");
         if(userController.isLogin(username)) {
-            output = ShopController.getInstance().AppointNewShopManager(shopID, targetUser, username);
-            return output;
+            ShopController.getInstance().AppointNewShopManager(shopID, targetUser, username);
         }
         else{
             throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
         }
     }
 
-    public String AppointNewShopOwner(int shopID, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
-        String output;
+    public void AppointNewShopOwner(int shopID, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
         if(targetUser == null ) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
@@ -336,8 +332,8 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: username");
         }
         if(userController.isLogin(username)) {
-            output = ShopController.getInstance().AppointNewShopOwner(shopID, targetUser, username);
-            return output;
+            ShopController.getInstance().AppointNewShopOwner(shopID, targetUser, username);
+
         }
         else{
             throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
