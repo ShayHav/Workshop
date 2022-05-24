@@ -228,8 +228,8 @@ public class User {
     }
     */
 
-    private boolean isAppointedMeOwner(User user, String id) {
-        List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
+    private boolean isAppointedMeOwner(String id) {
+        List<OwnerAppointment> Appointmentusers = ownerAppointmentList;
         for (OwnerAppointment run : Appointmentusers) {
             if (run.getAppointed().getUserName().equals(id))
                 return true;
@@ -494,7 +494,7 @@ public class User {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
@@ -514,7 +514,7 @@ public class User {
      */
     public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException {
         if(loggedIn){
-            if(isAppointedMeOwner(this,targetUser)) {
+            if(isAppointedMeOwner(targetUser)) {
                 ControllersBridge.getInstance().DismissalOwner(userName, targetUser, shop);
                 eventLogger.logMsg(Level.INFO, String.format("user has been dismiss: %s", targetUser));
                 return true;

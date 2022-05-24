@@ -9,6 +9,7 @@ import domain.shop.ShopController;
 import domain.user.filter.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 public class UserController {
@@ -29,6 +30,37 @@ public class UserController {
         guestUser = new HashMap<>();
     }
 
+    public boolean canBeDismiss(String targetUser) throws IncorrectIdentification {
+        AtomicBoolean output = new AtomicBoolean(true);
+        User u =getUser(targetUser);
+        if(u.isSystemManager())
+            return false;
+        u.getRoleList().values().forEach((r) -> {
+            if(r.contains(Role.ShopFounder) | r.contains(Role.ShopOwner) | r.contains(Role.ShopManager))
+                output.set(false);
+        });
+        return output.get();
+    }
+
+    public boolean DismissalOwner(String usernames, String targetUser, int shop) throws IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException {
+        User u1 = getUser(usernames);
+        User u2 = getUser(targetUser);
+        if(u1.DismissalOwner(targetUser,shop)){
+            u2.getOwnerAppointmentList().forEach((o)-> {
+                try {
+                    DismissalOwner(targetUser,o.getAppointed().getUserName(),o.getShop().getShopID());
+                } catch (IncorrectIdentification e) {
+                    e.printStackTrace();
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                } catch (ShopNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
+            return true;
+        }
+        return false;
+    }
 
 
     private static class UserControllerHolder{
@@ -159,7 +191,7 @@ public class UserController {
             throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s", s));
         }
         deleteUser(s);
-        return memberList.containsKey(s);
+        return !memberList.containsKey(s);
     }
 
     /**

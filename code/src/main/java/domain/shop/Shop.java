@@ -442,8 +442,10 @@ public class Shop {
 
     public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc {
         if(ShopOwners.containsKey(userName) & ShopOwners.containsKey(targetUser)){
-            if (shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) //TODO: need to check if OK.
+            if (shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) {
+                ShopOwners.remove(targetUser);
                 return true;
+            }
         }
         throw new InvalidSequenceOperationsExc();
     }
