@@ -6,7 +6,6 @@
 @param List<PresentationOrder> orders
 
 @template.navBar(user = user, title = "Orders")
-
 <div class="mt-3 mb-2 row">
     <div class="col-2">
         <h5>Order Number</h5>
@@ -23,7 +22,7 @@
 </div>
 <div id="accordion">
     @for(PresentationOrder order : orders)
-        <div class="card">
+        <div class="card rounded">
             <div class="card-header row" id="heading${order.id}">
                 <div class="col-2">
                     <p>${order.id}</p>
@@ -38,16 +37,16 @@
                     <p>${order.totalAmount}</p>
                 </div>
                 <div class="col-2">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${order.id}"
+                    <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${order.id}"
                            aria-expanded="false" aria-controls="collapse${order.id}"
                             id="collapseButton${order.id}" >Show Items in order
                     </button>
                 </div>
             </div>
             <div id="collapse${order.id}" class="collapse">
-                <div class="card-body">
+                <div class="card-body rounded-1">
                     @for(PresentationProduct product: order.productsBoughtWithPrices.keySet())
-                        <ul class="container card row mx-auto list-group-flush list-group">
+                        <ul class="container rounded-1 card row mx-auto list-group-flush list-group">
                             <li class="container list-group-item">
                                 <div class="col">
                                     <p>Product Name: ${product.name}</p>
@@ -68,16 +67,6 @@
 </div>
 
 </body>
-
-<script>
-    @for(PresentationOrder o: orders)
-    const button_${o.id} = document.getElementById('collapseButton${o.id}');
-    button_${o.id}.addEventListener('click',function (){
-        const toCollapse = document.getElementById('collapse${o.id}');
-        toCollapse.classList.toggle('collapse');
-    })
-    @endfor
-</script>
 
 </html>
 

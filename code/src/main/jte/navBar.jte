@@ -7,6 +7,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
     <title>${title}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -32,7 +33,7 @@
                 </li>
                 @if (user.isLoggedIn())
                 <li class="nav-item">
-                    <button id="createShopBtn" class="nav-link bg-dark border-0">
+                    <button id="createShopBtn" data-bs-toggle="collapse" data-bs-target="#createShop" aria-expanded="false" aria-controls="createShop" class="nav-link bg-dark border-0">
                     Create Shop
                     </button>
                 </li>
@@ -56,15 +57,24 @@
             </div>
             <div class="col-2">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    @if (!user.isLoggedIn())
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/users/login">Sign in</a>
-                        </li>
-                    @else
-                        <form method="post" action="/users/${user.getUsername()}/logout">
-                            <button class="btn btn-dark text-warning">Logout</button>
-                        </form>
-                    @endif
+                    <div class="dropdown">
+                        <button class="nav-link bg-dark border-0 dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                            Account
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+                            @if(!user.isLoggedIn())
+                                <li><a class="dropdown-item-text" href="/users/login">Sign in</a></li>
+                            @else
+                                <li><p class="dropdown-item-text">Welcome back, ${user.getUsername()}</p></li>
+                                <form method="post" action="/users/${user.getUsername()}/logout">
+                                    <button class="dropdown-item">Logout</button>
+                                </form>
+                            @endif
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item active" href="/users/${user.getUsername()}/orders">My Orders</a></li>
+                            <li><a class="dropdown-item" href="/users/${user.getUsername()}/shops">My Shops</a></li>
+                        </ul>
+                    </div>
                     <li class="nav-item">
                         <a class="nav-link" href="/users/${user.getUsername()}/cart">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -82,7 +92,7 @@
 </nav>
 
 @if (user.isLoggedIn())
-<div class="collapse container border border-2 mt-3 col-6 rounded" id="createShop">
+<div class="collapse container border border-1 mt-3 col-6 rounded" id="createShop">
     <form class="m-3" method="post" action="/shops">
         <h3 class="fs-5">create new shop in market:</h3>
         <div class=" mb-2">
@@ -94,12 +104,4 @@
         <button class="btn btn-success" type="submit">create new shop</button>
     </form>
 </div>
-
-<script>
-    const button = document.querySelector("#createShopBtn");
-    button.addEventListener('click',function (){
-        const toCollapse = document.querySelector("#createShop");
-        toCollapse.classList.toggle('collapse');
-    })
-</script>
 @endif

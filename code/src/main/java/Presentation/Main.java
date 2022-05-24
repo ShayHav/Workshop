@@ -79,7 +79,8 @@ public class Main {
                 path("{id}", () -> {
                     post("/logout", userController::logout);
                     ws("/addToCart", userController::addToCart);
-
+                    get("/orders", userController::renderUserOrderHistory);
+                    get("/shops", userController::renderUserShops);
 
                     path("cart", () -> {
                         get("checkoutForm", userController::renderCheckoutForm);

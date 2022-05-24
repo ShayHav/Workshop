@@ -49,17 +49,17 @@
     <div class="container row mx-auto">
         <h3 class="fs-5 mt-3">The things we sell</h3>
         @for(Presentation.Model.PresentationProduct product: shop.products)
-            <div class="card m-1" style="width: 18rem">
+            <div class="card mt-1 mb-1" style="width: 18rem">
                 <img src="https://images.unsplash.com/photo-1562186971-736d2e3ae153?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80"
-                     class="card-img-top" alt="product front image">
+                     class="card-img-top mt-2" alt="product front image">
                 <div class="card-body">
                     <h2 class="card-title">${product.name}</h2>
                     <p class="card-text">${product.description}</p>
                     @if(product.amount > 0)
                         <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary">Show Product</a>
                     @else
-                        <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary disabled"
-                           aria-disabled="true">Show Product</a>
+                        <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary">Show Product</a>
+                        <p class="mt-2 card-text text-danger">Out Of Stock</p>
                     @endif
                 </div>
             </div>

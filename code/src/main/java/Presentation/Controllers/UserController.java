@@ -195,4 +195,10 @@ public class UserController {
         }
     }
 
+    public void renderUserOrderHistory(Context ctx) {
+
+    }
+
+    public void renderUserShops(Context ctx) {
+    }
 }
