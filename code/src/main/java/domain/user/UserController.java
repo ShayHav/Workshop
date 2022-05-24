@@ -16,8 +16,8 @@ public class UserController {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private static final SecurePasswordStorage securePasswordStorage = SecurePasswordStorage.getSecurePasswordStorage_singleton();
     private Map<String, User> memberList; //TODO: At a later stage there will be a list of Thread by users
-    private Map<String,User> activeUser; //TODO: temporary
-    private Map<String,User> guestUser;
+    private Map<String, User> activeUser; //TODO: temporary
+    private Map<String, User> guestUser;
     private static UserController instance = null;
     private List<User> adminUser;
     private int guestCounter = 0;
@@ -30,16 +30,16 @@ public class UserController {
     }
 
 
-
-    private static class UserControllerHolder{
+    private static class UserControllerHolder {
         private static final UserController uc = new UserController();
     }
 
     public static UserController getInstance() {
-       return UserControllerHolder.uc;
+        return UserControllerHolder.uc;
     }
 
     //TODO: add logger and validate pre condition
+
     /***
      * login to the market system
      * pre-condition - user is registered to the system, not yet logged in
@@ -68,27 +68,29 @@ public class UserController {
             throw new InvalidAuthorizationException();
         }
     }
+
     public Cart.ServiceCart showCart(String username) {
         User u = memberList.get(username);
-        if (u == null){
+        if (u == null) {
             u = guestUser.get(username);
         }
         return u.showCart();
     }
 
 
-    private synchronized boolean isUserisLog(String id){
+    private synchronized boolean isUserisLog(String id) {
         return activeUser.containsKey(id);
     }
 
     //TODO: add logger and validate user is registered and logged in- when transferring to concurrency
+
     /***
      * logout from system
      * pre-condition - user is registered and logged-in
      */
     public User logOut(String userName) throws IncorrectIdentification, InvalidSequenceOperationsExc {
         if (activeUser != null) {
-            if(activeUser.containsKey(userName)) {
+            if (activeUser.containsKey(userName)) {
                 synchronized (activeUser) {
                     User u = getUser(userName);
                     u.logout();
@@ -127,8 +129,8 @@ public class UserController {
     /***
      * enter to the market - active user is now a guest
      */
-    public User enterMarket(){
-        User temp = new User(String.format("-Guest%d",guestCounter));
+    public User enterMarket() {
+        User temp = new User(String.format("-Guest%d", guestCounter));
         guestCounter++;
         temp.enterMarket();
         activeUser.put(temp.getUserName(), temp);
@@ -138,10 +140,10 @@ public class UserController {
     }
 
     public User getUser(String id) throws IncorrectIdentification {
-        if(id == null)
+        if (id == null)
             throw new IncorrectIdentification("id not exist");
-        User u =  memberList.getOrDefault(id, null);
-        if(u == null){
+        User u = memberList.getOrDefault(id, null);
+        if (u == null) {
             u = guestUser.get(id);
         }
         return u;
@@ -153,8 +155,9 @@ public class UserController {
         }
         return true;
     }
+
     public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc {
-        if(!memberList.containsKey(s)) {
+        if (!memberList.containsKey(s)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to delete not exist user: %s", s));
             throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s", s));
         }
@@ -164,6 +167,7 @@ public class UserController {
 
     /**
      * for each user that we delete we need to close this shop (Founder of shop)
+     *
      * @param useID
      * @throws InvalidSequenceOperationsExc
      */
@@ -180,20 +184,21 @@ public class UserController {
         }
     }
 
-    public List<String> checkout(String userName,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
+    public List<String> checkout(String userName, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
         User user = getUser(userName);
-        return user.checkout(fullName,address,phoneNumber,cardNumber,expirationDate);
+        return user.checkout(fullName, address, phoneNumber, cardNumber, expirationDate);
     }
 
     /**
      * Create system manager
-     * @param id - user identifier
+     *
+     * @param id   - user identifier
      * @param pass - given password
      * @return
      * @throws InvalidSequenceOperationsExc
      */
     public boolean createSystemManager(String id, String pass) throws InvalidSequenceOperationsExc {
-        register(id,pass);
+        register(id, pass);
         User u = memberList.get(id);
         synchronized (adminUser) {
             adminUser.add(u);
@@ -201,43 +206,35 @@ public class UserController {
         u.makeSystemManager();
         return true;
     }
-    public List<Order> getOrderHistoryForUser(List<String>  userName){
+
+    public List<Order> getOrderHistoryForUser() {
         List<Order> orders = new ArrayList<>();
-        if(userName == null) {
-            synchronized (memberList) {
-                for (User user : memberList.values()) {
-                    orders.addAll(user.getHistoryOfOrders());
-                }
-            }
-        }
-        else{
-            for(String id: userName){
-                User user = memberList.get(id);
-                if(user == null){
-                  errorLogger.logMsg(Level.WARNING,String.format("user not exist: %s",id));
-                  return null;
-                }
+        synchronized (memberList) {
+            for (User user : memberList.values()) {
                 orders.addAll(user.getHistoryOfOrders());
             }
+
+            return orders;
         }
-        return orders;
     }
 
     public synchronized boolean HasUserEnteredMarket(String userName) {
         return activeUser.containsKey(userName);
     }
 
-    public Response addProductToCart(String userName, int shopNumber, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
-        if(!HasUserEnteredMarket(userName)) {
+    public Response addProductToCart(String userName, int shopNumber, int productId, int amount) throws
+            InvalidSequenceOperationsExc, ShopNotFoundException {
+        if (!HasUserEnteredMarket(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
             throw new InvalidSequenceOperationsExc();
         }
         User u = activeUser.get(userName);
-        return u.addProductToCart(shopNumber,productId,amount);
+        return u.addProductToCart(shopNumber, productId, amount);
     }
 
     /**
      * Checking operation validity and performing
+     *
      * @param userName
      * @param shopID
      * @param productId
@@ -245,69 +242,75 @@ public class UserController {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public Response updateAmountOfProduct(String userName, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc {
-        if(!HasUserEnteredMarket(userName)) {
+    public Response updateAmountOfProduct(String userName, int shopID, int productId, int amount) throws
+            InvalidSequenceOperationsExc {
+        if (!HasUserEnteredMarket(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
             throw new InvalidSequenceOperationsExc();
         }
         User u = activeUser.get(userName);
-        return u.updateAmountOfProduct(shopID,productId,amount);
+        return u.updateAmountOfProduct(shopID, productId, amount);
     }
 
     /**
      * Checking operation validity and performing
+     *
      * @param userName
      * @param shopNumber
      * @param productId
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public Response removeProductFromCart(String userName, int shopNumber, int productId) throws InvalidSequenceOperationsExc {
-        if(!HasUserEnteredMarket(userName))
+    public Response removeProductFromCart(String userName, int shopNumber, int productId) throws
+            InvalidSequenceOperationsExc {
+        if (!HasUserEnteredMarket(userName))
             throw new InvalidSequenceOperationsExc();
         User u = activeUser.get(userName);
-        return u.removeProductFromCart(shopNumber,productId);
+        return u.removeProductFromCart(shopNumber, productId);
     }
 
     /**
      * Checking operation validity and performing
+     *
      * @param userName
      * @param f
-     * @param shopNumber
      * @return
      * @throws InvalidAuthorizationException
      */
-    public List<Order> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopNumber) throws InvalidAuthorizationException, ShopNotFoundException {
-        if(!activeUser.containsKey(userName)){
+    public List<Order> getOrderHistoryForShops(String userName, Filter<Order> f) throws
+            InvalidAuthorizationException, ShopNotFoundException {
+        if (!activeUser.containsKey(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
             throw new InvalidAuthorizationException();
         }
         User u = activeUser.get(userName);
-            return u.getOrderHistoryForShops(f, shopNumber);
+        return u.getOrderHistoryForShops(f);
     }
 
     /**
      * Checking operation validity and performing
+     *
      * @param userName
      * @param f
-     * @param userNames
      * @return
      * @throws InvalidAuthorizationException
      */
-    public List<Order> getOrderHistoryForUser(String userName, Filter<Order> f, List<String>  userNames) throws InvalidAuthorizationException {
-        if(!activeUser.containsKey(userName)){
+    public List<Order> getOrderHistoryForUser(String userName, Filter<Order> f) throws
+            InvalidAuthorizationException {
+        if (!activeUser.containsKey(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
         }
         User u = activeUser.get(userName);
-        return u.getOrderHistoryForUser(f,userNames);
+        return u.getOrderHistoryForUser(f);
     }
 
     public boolean isLogin(String userName) throws IncorrectIdentification {
         return getUser(userName).isLoggedIn();
     }
 
-    public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws InvalidSequenceOperationsExc, IncorrectIdentification {
-        if(getUser(userName).isSystemManager()){
+    public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws
+            InvalidSequenceOperationsExc, IncorrectIdentification {
+        if (getUser(userName).isSystemManager()) {
             User[] result = (User[]) memberList.values().toArray(); //TODO: better way to solve.
             return f.applyFilter(Arrays.asList(result));
         }

@@ -421,34 +421,34 @@ public class User {
         return new UserSearchInfo(userName);
     }
 
-    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, ShopNotFoundException {
+    public List<Order> getOrderHistoryForShops(Filter<Order> f) throws InvalidAuthorizationException, ShopNotFoundException {
         if(isSystemManager && us == UserState2.member)
-            return systemManagerGetOrderHistoryForShops(f,shopID);
+            return systemManagerGetOrderHistoryForShops(f);
         else {
-            errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+            errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
             throw new InvalidAuthorizationException("SystemManager", us.toString());
         }
     }
 
-    public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
+    public List<Order> getOrderHistoryForUser(Filter<Order> f) throws InvalidAuthorizationException {
         if(isSystemManager && us == UserState2.member)
-            return systemManagerGetOrderHistoryForUser(f,userID);
+            return systemManagerGetOrderHistoryForUser(f);
         else {
-            errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+            errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
             throw new InvalidAuthorizationException("SystemManager", us.toString());
         }
     }
 
 
-    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws ShopNotFoundException {
+    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
         ControllersBridge cb = ControllersBridge.getInstance();
-        List<Order> result = cb.getOrderHistoryForShops(shopID);
+        List<Order> result = cb.getOrderHistoryForShops();
         return f.applyFilter(result);
     }
 
-    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
+    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f) throws InvalidAuthorizationException {
         UserController uc = UserController.getInstance();
-        List<Order> result = uc.getOrderHistoryForUser(userID);
+        List<Order> result = uc.getOrderHistoryForUser();
         return f.applyFilter(result);
     }
 

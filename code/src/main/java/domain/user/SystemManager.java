@@ -12,13 +12,13 @@ public class SystemManager extends User {
 
     public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws ShopNotFoundException {
         ShopController sc = ShopController.getInstance();
-        List<Order> result = sc.getOrderHistoryForShops(shopID);
+        List<Order> result = sc.getOrderHistoryForShops();
         return f.applyFilter(result);
     }
 
     public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
         UserController uc = UserController.getInstance();
-        List<Order> result = uc.getOrderHistoryForUser(userID);
+        List<Order> result = uc.getOrderHistoryForUser();
         return f.applyFilter(result);
     }
 }

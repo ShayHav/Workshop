@@ -13,9 +13,7 @@ import domain.user.User;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class UserController {
 

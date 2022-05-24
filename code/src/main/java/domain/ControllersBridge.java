@@ -53,11 +53,10 @@ public class ControllersBridge {
 
     /**
      * a OrderHistory query is sent to shopController
-     * @param shopId - identifier
      * @return
      */
-    public List<Order> getOrderHistoryForShops(List<Integer> shopId) throws ShopNotFoundException {
-        return ShopController.getInstance().getOrderHistoryForShops(shopId);
+    public List<Order> getOrderHistoryForShops() throws ShopNotFoundException {
+        return ShopController.getInstance().getOrderHistoryForShops();
     }
 
     /**

@@ -403,15 +403,15 @@ public class MarketSystem {
         return new Response();
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException {
+    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException {
         if(userController.isLogin(userID))
-            return userController.getOrderHistoryForShops(userID, f, shopID);
+            return userController.getOrderHistoryForShops(userID, f);
         else return null;
     }
 
-    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f, List<String> userIDs) throws InvalidAuthorizationException, IncorrectIdentification {
+    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification {
         if(userController.isLogin(userID))
-            return userController.getOrderHistoryForUser(userID, f, userIDs);
+            return userController.getOrderHistoryForUser(userID, f);
         else return null;
     }
 

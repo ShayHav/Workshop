@@ -665,7 +665,7 @@ public class Services {
      */
     public ResponseList<Order> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID) {
         try {
-            List<Order> result = marketSystem.getOrderHistoryForShops(userName, f, shopID);
+            List<Order> result = marketSystem.getOrderHistoryForShops(userName, f);
             return new ResponseList<>(result);
         } catch (IncorrectIdentification | ShopNotFoundException | InvalidAuthorizationException exception) {
             return new ResponseList<>(exception.getLocalizedMessage());
@@ -682,7 +682,7 @@ public class Services {
      */
     public ResponseList<Order> getOrderHistoryForUser(String userName, Filter<Order> f, List<String> userNames) {
         try {
-            List<Order> result = marketSystem.getOrderHistoryForUser(userName, f, userNames);
+            List<Order> result = marketSystem.getOrderHistoryForUser(userName, f);
             return new ResponseList<>(result);
         } catch (InvalidAuthorizationException | IncorrectIdentification e) {
             return new ResponseList<>(e.getMessage());
