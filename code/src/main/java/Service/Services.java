@@ -447,10 +447,8 @@ public class Services {
         Product changed;
         try {
             changed = shop.changeProductDetail(p.getId(), p.getName(), p.getDescription(), p.getCategory(), username, newAmount, newPrice);
-        } catch (ProductNotFoundException pnfe) {
-            return new ResponseT<>(null, pnfe.getLocalizedMessage());
-        } catch (InvalidProductInfoException ipie) {
-            return new ResponseT<>(null, ipie.getLocalizedMessage());
+        } catch (ProductNotFoundException | InvalidProductInfoException e) {
+            return new ResponseT<>(e.getMessage());
         }
         return new ResponseT<>(changed);
     }
@@ -467,12 +465,8 @@ public class Services {
         try {
             marketSystem.AppointNewShopOwner(key, targetUser, userName);
             return new Response();
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
-        } catch (BlankDataExc blankDataExc) {
-            return new ResponseT<>(null, blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc | ShopNotFoundException exception) {
-            return new Response(exception.getMessage());
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | ShopNotFoundException | InvalidAuthorizationException e) {
+            return new Response(e.getMessage());
         }
     }
 
@@ -487,13 +481,9 @@ public class Services {
     public Response AppointNewShopManager(int key, String targetUser, String userName) {
         try {
             marketSystem.AppointNewShopManager(key, targetUser, userName);
-            return new ResponseT<>();
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
-        } catch (BlankDataExc | ShopNotFoundException blankDataExc) {
-            return new ResponseT<>(null, blankDataExc.getMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new ResponseT<>(invalidSequenceOperationsExc.getMessage());
+            return new Response();
+        } catch (IncorrectIdentification | BlankDataExc | ShopNotFoundException | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
+            return new Response( e.getMessage());
         }
     }
 
