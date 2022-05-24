@@ -4,7 +4,11 @@
 
 @template.navBar(user = user, title = "Market")
 <main class="container">
-    <h1 class="fs-1">Welcome to the MarketPlace!</h1>
+    @if(user.isLoggedIn())
+        <h1 class="fs-1">Welcome Back, ${user.getUsername()}!</h1>
+    @else
+        <h1 class="fs-1">Welcome to the MarketPlace!</h1>
+    @endif
     <div class="container row mx-auto">
         @for(Presentation.Model.PresentationShop shop: shops)
             <div class="card m-1" style="width: 18rem">
