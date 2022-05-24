@@ -24,7 +24,7 @@ public final class JtenavBarGenerated {
 			jteOutput.writeUserContent(user.getUsername());
 			jteOutput.writeContent("/logout\">\r\n                                    <button class=\"dropdown-item\">Logout</button>\r\n                                </form>\r\n                            ");
 		}
-		jteOutput.writeContent("\r\n                            <li><hr class=\"dropdown-divider\"></li>\r\n                            <li><a class=\"dropdown-item active\" href=\"/users/");
+		jteOutput.writeContent("\r\n                            <li><hr class=\"dropdown-divider\"></li>\r\n                            <li><a class=\"dropdown-item\" href=\"/users/");
 		jteOutput.setContext("a", "href");
 		jteOutput.writeUserContent(user.getUsername());
 		jteOutput.writeContent("/orders\">My Orders</a></li>\r\n                            <li><a class=\"dropdown-item\" href=\"/users/");

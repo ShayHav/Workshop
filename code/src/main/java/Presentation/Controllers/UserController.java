@@ -208,5 +208,13 @@ public class UserController {
     }
 
     public void renderUserShops(Context ctx) {
+        PresentationUser user = getUser(ctx);
+        ResponseList<Shop> response = services.GetAllUserShops(user.getUsername());
+        if(response.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+        }
+
+        List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
+        ctx.render("userShops.jte", Map.of("user", user, "shops", shops));
     }
 }

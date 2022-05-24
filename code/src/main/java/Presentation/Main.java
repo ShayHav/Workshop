@@ -57,7 +57,7 @@ public class Main {
             ResponseList<Shop> response = Services.getInstance().GetShopsInfo(username, new SearchShopFilter());
             if (response.isErrorOccurred()) {
                 ctx.status(503);
-                ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 503));
             }
             List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
             PresentationUser user = userController.getUser(ctx);

@@ -281,4 +281,13 @@ public class ShopController {
             ShopNotFoundException, InvalidSequenceOperationsExc {
         return getShop(shop).DismissalOwner(userName, targetUser);
     }
+
+    public List<Shop> getAllUserShops(String username) {
+        List<Shop> shops = new ArrayList<>();
+        for(Shop shop: shopList.values()){
+            if(shop.getShopFounder().getUserName().equals(username))
+                shops.add(shop);
+        }
+        return shops;
+    }
 }

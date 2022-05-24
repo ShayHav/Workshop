@@ -5,9 +5,9 @@
 @param PresentationUser user
 @param List<PresentationOrder> orders
 
-@template.navBar(user = user, title = "Orders")
+@template.navBar(user = user, title = "My orders")
 <div class="mt-3 mb-2 row">
-    <div class="col-1">
+    <div class="col-2">
         <h5>Shop name</h5>
     </div>
     <div class="col-2">
@@ -27,7 +27,7 @@
     @for(PresentationOrder order : orders)
         <div class="card rounded">
             <div class="card-header row" id="heading${order.id}">
-                <div class="col-1">
+                <div class="col-2">
                     <p>${order.shopName}</p>
                 </div>
                 <div class="col-2">
