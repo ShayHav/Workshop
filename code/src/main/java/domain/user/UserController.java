@@ -42,21 +42,25 @@ public class UserController {
         return output.get();
     }
 
-    public boolean DismissalOwner(String usernames, String targetUser, int shop) throws IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException {
+    public boolean DismissalOwner(String usernames, String targetUser, int shop) throws IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException, BlankDataExc {
         User u1 = getUser(usernames);
         User u2 = getUser(targetUser);
-        if(u1.DismissalOwner(targetUser,shop)){
-            u2.getOwnerAppointmentList().forEach((o)-> {
-                try {
-                    DismissalOwner(targetUser,o.getAppointed().getUserName(),o.getShop().getShopID());
-                } catch (IncorrectIdentification e) {
-                    e.printStackTrace();
-                } catch (InvalidSequenceOperationsExc e) {
-                    e.printStackTrace();
-                } catch (ShopNotFoundException e) {
-                    e.printStackTrace();
-                }
-            });
+        if(u1.CanDismissalOwner(targetUser)){
+            List<OwnerAppointment> run = u2.getOwnerAppointmentList();
+            if(run !=null) {
+                run.forEach((o) -> {
+                    try {
+                        DismissalOwner(targetUser, o.getAppointed().getUserName(), o.getShop().getShopID());
+                    } catch (IncorrectIdentification e) {
+                        e.printStackTrace();
+                    } catch (InvalidSequenceOperationsExc e) {
+                        e.printStackTrace();
+                    } catch (ShopNotFoundException | BlankDataExc e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            u1.DismissalOwner(targetUser,shop);
             return true;
         }
         return false;

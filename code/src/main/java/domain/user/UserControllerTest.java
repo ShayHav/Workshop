@@ -1,9 +1,9 @@
 package domain.user;
 
 import Testing_System.UserGenerator;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidAuthorizationException;
-import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Exceptions.*;
+import domain.shop.Shop;
+import domain.shop.ShopController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,8 @@ import java.util.function.BooleanSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
-    private UserController userController;
+    private UserController userController = UserController.getInstance();;
+    private ShopController shopController = ShopController.getInstance();
     private UserGenerator userGenerator = new UserGenerator();
     private String[] userName = userGenerator.GetValidUsers();
     private String admin = userGenerator.GetAdminID();
@@ -23,7 +24,6 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userController = UserController.getInstance();
         for(int i=0;i<userName.length;i++) {
             try {
                 userController.register(userName[i], userPass[i]);
@@ -95,5 +95,21 @@ public class UserControllerTest {
         catch (IncorrectIdentification | InvalidSequenceOperationsExc exception) {
             fail();
         }
+    }
+    @Test
+    void DismissalOwner() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, ShopNotFoundException {
+        userController.logIn(userName[0],userPass[0]);
+        User u = userController.getUser(userName[0]);
+        Shop s = shopController.createShop("","",null,null, u);
+        shopController.AppointNewShopOwner(s.getShopID(),userName[1], userName[0]);
+        User u1 = userController.getUser(userName[1]);
+        assertTrue(u1.getRoleList().get(s.getShopID()).contains(Role.ShopOwner));
+        userController.logIn(userName[1],userPass[1]);
+        shopController.AppointNewShopOwner(s.getShopID(),userName[2], userName[1]);
+        User u2 = userController.getUser(userName[2]);
+        assertTrue(u2.getRoleList().get(s.getShopID()).contains(Role.ShopOwner));
+        userController.DismissalOwner(userName[0], userName[1],s.getShopID());
+        assertFalse(u1.getRoleList().get(s.getShopID()).contains(Role.ShopOwner));
+        assertFalse(u2.getRoleList().get(s.getShopID()).contains(Role.ShopOwner));
     }
 }

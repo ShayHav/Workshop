@@ -36,11 +36,12 @@ public class ShopController {
         return shopCounter;
     }
 
-    public synchronized Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
+    public synchronized Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) throws InvalidSequenceOperationsExc {
         Shop newShop;
         shopCounter++;
         newShop = new Shop(name,description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
         shopList.put(shopCounter, newShop);
+        shopFounder.addRole(shopCounter,Role.ShopFounder);
         eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
         return newShop;
 
@@ -290,7 +291,7 @@ public class ShopController {
         return true;
     }
 
-    public boolean DismissalOwner(String userName, String targetUser, int shop) throws ShopNotFoundException, InvalidSequenceOperationsExc {
+    public boolean DismissalOwner(String userName, String targetUser, int shop) throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         return getShop(shop).DismissalOwner(userName,targetUser);
     }
 }

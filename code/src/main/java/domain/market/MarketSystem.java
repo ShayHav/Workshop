@@ -142,7 +142,7 @@ public class MarketSystem {
         return UserController.getInstance().getUser(id);
     }
 
-    public Shop createShop(String description ,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification {
+    public Shop createShop(String description ,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
         if(name == null )
             throw new BlankDataExc("parameter is null: name");
         if(foundId == null )

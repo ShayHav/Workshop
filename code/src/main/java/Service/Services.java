@@ -160,7 +160,7 @@ public class Services {
             Shop output = marketSystem.createShop(description, shopName, null, null, username);
             ;
             return new ResponseT<>(output);
-        } catch (BlankDataExc | IncorrectIdentification e) {
+        } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc e) {
             return new ResponseT<>(e.getLocalizedMessage());
         }
     }
