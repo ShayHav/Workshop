@@ -430,9 +430,9 @@ public class User {
         }
     }
 
-    public List<Order> getOrderHistoryForUser(Filter<Order> f) throws InvalidAuthorizationException {
+    public List<Order> getOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
         if(isSystemManager && us == UserState2.member)
-            return systemManagerGetOrderHistoryForUser(f);
+            return systemManagerGetOrderHistoryForUsers(f);
         else {
             errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
             throw new InvalidAuthorizationException("SystemManager", us.toString());
@@ -446,9 +446,9 @@ public class User {
         return f.applyFilter(result);
     }
 
-    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f) throws InvalidAuthorizationException {
+    private List<Order> systemManagerGetOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
         UserController uc = UserController.getInstance();
-        List<Order> result = uc.getOrderHistoryForUser();
+        List<Order> result = uc.getOrderHistoryForUsers();
         return f.applyFilter(result);
     }
 

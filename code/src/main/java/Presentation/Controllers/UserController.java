@@ -7,6 +7,7 @@ import Service.Services;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseT;
+import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.Cart;
 import domain.user.User;
@@ -14,6 +15,7 @@ import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserController {
 
@@ -59,7 +61,7 @@ public class UserController {
         ResponseT<User> response = services.GetUser(username);
         if (response.isErrorOccurred()) {
             ctx.status(503);
-            ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+            ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 503));
             return null;
         }
         PresentationUser user = new PresentationUser(response.getValue());
@@ -112,7 +114,7 @@ public class UserController {
         PresentationUser user = getUser(ctx);
         ResponseT<Cart.ServiceCart> response = services.ShowCart(user.getUsername());
         if (response.isErrorOccurred()) {
-            ctx.status(400).render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
         }
         PresentationCart cart = new PresentationCart(response.getValue());
         //update final price after discounts for each product in cart
@@ -127,7 +129,7 @@ public class UserController {
         int quantity = ctx.formParamAsClass("quantity", Integer.class).get();
         Response response = services.EditShoppingCart(username, shopID, serialNumber, quantity);
         if (response.isErrorOccurred())
-            ctx.status(400).render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
 
         ctx.redirect(String.format("/users/%s/cart", username));
     }
@@ -138,7 +140,7 @@ public class UserController {
         int serialNumber = ctx.pathParamAsClass("serialNumber", Integer.class).get();
         Response response = services.RemoveFromShoppingCart(username, shopID, serialNumber);
         if (response.isErrorOccurred())
-            ctx.status(400).render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
 
         ctx.redirect(String.format("/users/%s/cart", username));
     }
@@ -148,7 +150,7 @@ public class UserController {
             ResponseT<User> response = services.EnterMarket();
             if (response.isErrorOccurred()) {
                 ctx.status(503);
-                ctx.render("errorPage.jte", Collections.singletonMap("errorMessage", response.errorMessage));
+                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 503));
             } else {
                 PresentationUser user = new PresentationUser(response.getValue());
                 ctx.cookieStore("uid", user.getUsername());
@@ -191,7 +193,15 @@ public class UserController {
     }
 
     public void renderUserOrderHistory(Context ctx) {
+        PresentationUser user = getUser(ctx);
+        ResponseList<Order> response = services.getOrderHistoryOfUser(user.getUsername());
 
+        if(response.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+        }
+
+        List<PresentationOrder> orders = response.getValue().stream().map(PresentationOrder::new).collect(Collectors.toList());
+        ctx.render("UserOrderHistory.jte", Map.of("user", user, "orders",orders));
     }
 
     public void renderUserShops(Context ctx) {

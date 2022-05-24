@@ -207,7 +207,7 @@ public class UserController {
         return true;
     }
 
-    public List<Order> getOrderHistoryForUser() {
+    public List<Order> getOrderHistoryForUsers() {
         List<Order> orders = new ArrayList<>();
         synchronized (memberList) {
             for (User user : memberList.values()) {
@@ -295,17 +295,25 @@ public class UserController {
      * @return
      * @throws InvalidAuthorizationException
      */
-    public List<Order> getOrderHistoryForUser(String userName, Filter<Order> f) throws
+    public List<Order> getOrderHistoryForUsers(String userName, Filter<Order> f) throws
             InvalidAuthorizationException {
         if (!activeUser.containsKey(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
         }
         User u = activeUser.get(userName);
-        return u.getOrderHistoryForUser(f);
+        return u.getOrderHistoryForUsers(f);
     }
 
     public boolean isLogin(String userName) throws IncorrectIdentification {
         return getUser(userName).isLoggedIn();
+    }
+
+    public List<Order> getOrderHistoryOfUser(String username) throws InvalidSequenceOperationsExc {
+        User user = memberList.get(username);
+        if(user == null){
+            throw new InvalidSequenceOperationsExc(String.format("guest user: %s has no access to past orders since he is not registered",username));
+        }
+        return user.getHistoryOfOrders();
     }
 
     public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws

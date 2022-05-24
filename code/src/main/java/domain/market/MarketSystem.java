@@ -201,16 +201,20 @@ public class MarketSystem {
         return output;
     }
 
-    public User LeaveMarket(String s) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
-        User u = UserController.getInstance().getUser(s);
+    public User LeaveMarket(String username) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException {
+        User u = UserController.getInstance().getUser(username);
         if(!u.isEnteredMarket()) {
-            errorLogger.logMsg(Level.WARNING,String.format("attempt to leaveMarket without enterMarket user: %s",s));
-            throw new InvalidSequenceOperationsExc(String.format("attempt to leaveMarket without enterMarket user: %s",s));
+            errorLogger.logMsg(Level.WARNING,String.format("attempt to leaveMarket without enterMarket user: %s",username));
+            throw new InvalidSequenceOperationsExc(String.format("attempt to leaveMarket without enterMarket user: %s",username));
         }
-        if(u.isLoggedIn())
-            logout(s);
-        notificationManager.disConnected(u);
-        return null;
+        if(u.isLoggedIn()) {
+            logout(username);
+            //notificationManager.disConnected(u);
+        }
+        else{
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
+        }
+        return u;
     }
 
     public User logout(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
@@ -223,39 +227,48 @@ public class MarketSystem {
         return u;
     }
 
-    public int RemoveProductFromShopInventory(int productId, String userID, int shopname) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc {
-        if(userID == null) {
+    public int RemoveProductFromShopInventory(int productId, String username, int shopname) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc {
+        if(username == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: username");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userController.isLogin(userID)) {
-            return ShopController.getInstance().RemoveProductFromShopInventory(productId, userID, shopname);
+        if(userController.isLogin(username)) {
+            return ShopController.getInstance().RemoveProductFromShopInventory(productId, username, shopname);
         }
-        return -1;
+        else{
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
+        }
     }
 
-    public void CloseShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if(userID == null) {
-            errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
+    public void CloseShop(int shopId, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+        if(username == null) {
+            errorLogger.logMsg(Level.WARNING,"BlankDataExc: username");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userController.isLogin(userID)) {
+        if(userController.isLogin(username)) {
             notificationManager.systeManagerMessage(String.format("ShopId: %d  is Close",shopId));
-            ShopController.getInstance().closeShop(shopId, userID);
+            ShopController.getInstance().closeShop(shopId, username);
         }
-    }
-    public void OpenShop(int shopId, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if(userID == null) {
-            errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
-            throw new BlankDataExc("parameter is null: username");
-        }
-        if(userController.isLogin(userID)) {
-            notificationManager.systeManagerMessage(String.format("ShopId: %d  is Open",shopId));
-            ShopController.getInstance().openShop(shopId, userID);
+        else{
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
         }
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc {
+    public void OpenShop(int shopId, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+        if(username == null) {
+            errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
+            throw new BlankDataExc("parameter is null: username");
+        }
+        if(userController.isLogin(username)) {
+            notificationManager.systeManagerMessage(String.format("ShopId: %d  is Open",shopId));
+            ShopController.getInstance().openShop(shopId, username);
+        }
+        else{
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
+        }
+    }
+
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidAuthorizationException {
         if(shopManagersPermissionsList == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: shopManagersPermissionsList");
             throw new BlankDataExc("parameter is null: shopManagersPermissionsList");
@@ -264,16 +277,18 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: targetUser");
         }
-        if(userID == null) {
+        if(username == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userController.isLogin(userID))
-            return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, targetUser, userID);
-        return null;
+        if(userController.isLogin(username))
+            return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, targetUser, username);
+        else{
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
+        }
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
         if(shopManagersPermissionsList == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: shopManagersPermissionsList");
             throw new BlankDataExc("parameter is null: username");
@@ -282,49 +297,56 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userID == null) {
+        if(username == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userController.isLogin(userID))
-            return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, userID);
-        return null;
+        if(userController.isLogin(username))
+            return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, username);
+        else{
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
+        }
     }
 
-    public String AppointNewShopManager(int shopID, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public String AppointNewShopManager(int shopID, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
         String output;
         if(targetUser == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userID == null)
+        if(username == null)
             throw new BlankDataExc("parameter is null: username");
-        if(userController.isLogin(userID)) {
-            output = ShopController.getInstance().AppointNewShopManager(shopID, targetUser, userID);
+        if(userController.isLogin(username)) {
+            output = ShopController.getInstance().AppointNewShopManager(shopID, targetUser, username);
             return output;
         }
-        return null;
+        else{
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
+        }
     }
 
-    public String AppointNewShopOwner(int shopID, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public String AppointNewShopOwner(int shopID, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
         String output;
         if(targetUser == null ) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userID == null) {
+        if(username == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
-        if(userController.isLogin(userID)) {
-            output = ShopController.getInstance().AppointNewShopOwner(shopID, targetUser, userID);
+        if(userController.isLogin(username)) {
+            output = ShopController.getInstance().AppointNewShopOwner(shopID, targetUser, username);
             return output;
         }
-        return null;
+        else{
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
+        }
+
     }
 
-    public List<String> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
-        if (userID == null) {
+    public List<String> Checkout(String username, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
+        if (username == null) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
@@ -348,16 +370,15 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: expirationDate");
             throw new BlankDataExc("parameter is null: expirationDate");
         }
-        List<String> output =userController.checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
-        return output;
+        return userController.checkout(username, fullName, address, phoneNumber, cardNumber, expirationDate);
     }
 
     public void setExternalConnector(ExternalConnector ec) {
         externalConnector = ec;
     }
 
-    public List<User> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String userID) throws IncorrectIdentification, ShopNotFoundException {
-        if(userController.isLogin(userID)) {
+    public List<User> RequestShopOfficialsInfo(int shopID, SearchOfficialsFilter f, String username) throws IncorrectIdentification, ShopNotFoundException, InvalidAuthorizationException {
+        if(userController.isLogin(username)) {
             Shop shop1;
             try{
                 shop1 = ShopController.getInstance().getShop(shopID);
@@ -365,14 +386,14 @@ public class MarketSystem {
                 errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shopID));
                 throw snfe;
             }
-            return shop1.RequestShopOfficialsInfo(f, userID);
+            return shop1.RequestShopOfficialsInfo(f, username);
         }
         else
-            return null;
+            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
-    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String userID) throws IncorrectIdentification, ShopNotFoundException, InvalidSequenceOperationsExc {
-        if(userController.isLogin(userID)) {
+    public List<Order> RequestInformationOfShopsSalesHistory(int shopID, SearchOrderFilter f, String username) throws IncorrectIdentification, ShopNotFoundException, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+        if(userController.isLogin(username)) {
             Shop shop1;
             try{
                 shop1 = ShopController.getInstance().getShop(shopID);
@@ -380,9 +401,9 @@ public class MarketSystem {
                 errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shopID));
                 throw snfe;
             }
-            return shop1.RequestInformationOfShopsSalesHistory(f, userID);
+            return shop1.RequestInformationOfShopsSalesHistory(f, username);
         }
-        else throw new InvalidSequenceOperationsExc();
+        else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
     public User EnterMarket() {
@@ -403,21 +424,30 @@ public class MarketSystem {
         return new Response();
     }
 
-    public List<Order> getOrderHistoryForShops(String userID, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException {
-        if(userController.isLogin(userID))
-            return userController.getOrderHistoryForShops(userID, f);
-        else return null;
+    public List<Order> getOrderHistoryForShops(String username, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException {
+        if(userController.isLogin(username))
+            return userController.getOrderHistoryForShops(username, f);
+        else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
-    public List<Order> getOrderHistoryForUser(String userID, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification {
-        if(userController.isLogin(userID))
-            return userController.getOrderHistoryForUser(userID, f);
-        else return null;
+    public List<Order> getOrderHistoryOfUser(String username) throws InvalidAuthorizationException, IncorrectIdentification, InvalidSequenceOperationsExc {
+        if(userController.isLogin(username))
+            return userController.getOrderHistoryOfUser(username);
+        else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
-    public Product getProduct(String username, int shopId, int serialNumber) throws ShopNotFoundException, ProductNotFoundException {
-        Shop shop = ShopController.getInstance().getShop(shopId);
-        return shop.getProduct(serialNumber);
+    public List<Order> getOrderHistoryForUsers(String username, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification {
+        if(userController.isLogin(username))
+            return userController.getOrderHistoryForUsers(username, f);
+        else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
+    }
+
+    public Product getProduct(String username, int shopId, int serialNumber) throws ShopNotFoundException, ProductNotFoundException, IncorrectIdentification, InvalidAuthorizationException {
+        if(userController.isLogin(username)){
+            Shop shop = ShopController.getInstance().getShop(shopId);
+            return shop.getProduct(serialNumber);
+        }
+        else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
     public boolean DismissalUser(String usernames, String targetUser) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {

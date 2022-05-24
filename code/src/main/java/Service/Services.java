@@ -97,10 +97,8 @@ public class Services {
         try {
             marketSystem.register(username, pw);
             return new Response();
-        } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
-            return new Response(blankDataExc.getLocalizedMessage());
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new Response(incorrectIdentification.getMessage());
+        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification e) {
+            return new Response(e.getMessage());
         }
 
     }
@@ -125,7 +123,7 @@ public class Services {
         try {
             User output = marketSystem.LeaveMarket(username);
             return new Response();
-        } catch (IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc e) {
+        } catch (IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc | InvalidAuthorizationException e) {
             return new Response(e.getLocalizedMessage());
         }
     }
@@ -471,12 +469,8 @@ public class Services {
             if (s != null)
                 return new Response(s);
             return null;
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
-        } catch (BlankDataExc blankDataExc) {
-            return new ResponseT<>(null, blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getMessage());
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
+            return new Response(e.getMessage());
         }
     }
 
@@ -494,12 +488,8 @@ public class Services {
             if (s != null)
                 return new Response(s);
             return null;
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
-        } catch (BlankDataExc blankDataExc) {
-            return new ResponseT<>(null, blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getMessage());
+        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException | InvalidSequenceOperationsExc e) {
+            return new Response(e.getMessage());
         }
     }
 
@@ -517,12 +507,8 @@ public class Services {
             if (s != null)
                 return new Response(s);
             return null;
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
-        } catch (BlankDataExc blankDataExc) {
-            return new ResponseT<>(null, blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getMessage());
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
+            return new Response(e.getMessage());
         }
     }
 
@@ -540,8 +526,8 @@ public class Services {
             if (s != null)
                 return new Response(s);
             return null;
-        } catch (IncorrectIdentification | BlankDataExc incorrectIdentification) {
-            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
+        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException incorrectIdentification) {
+            return new Response(incorrectIdentification.getLocalizedMessage());
         }
     }
 
@@ -555,8 +541,8 @@ public class Services {
         try {
             marketSystem.CloseShop(shopId, userName);
             return new Response();
-        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification) {
-            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException incorrectIdentification) {
+            return new Response(incorrectIdentification.getLocalizedMessage());
         }
     }
 
@@ -570,8 +556,8 @@ public class Services {
         try {
             marketSystem.OpenShop(shopId, userName);
             return new Response();
-        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc incorrectIdentification) {
-            return new ResponseT<>(null, incorrectIdentification.getLocalizedMessage());
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException incorrectIdentification) {
+            return new Response(incorrectIdentification.getLocalizedMessage());
         }
     }
 
@@ -586,10 +572,8 @@ public class Services {
         try {
             List<User> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
             return new ResponseList<>(s);
-        } catch (IncorrectIdentification incorrectIdentification) {
-            return new ResponseList<>(incorrectIdentification.getLocalizedMessage());
-        } catch (ShopNotFoundException e) {
-            return new ResponseList<User>(e.getMessage());
+        } catch (IncorrectIdentification | ShopNotFoundException | InvalidAuthorizationException e) {
+            return new ResponseList<>(e.getMessage());
         }
     }
 
@@ -604,10 +588,8 @@ public class Services {
         try {
             List<Order> orders = marketSystem.RequestInformationOfShopsSalesHistory(shopID, f, userName);
             return new ResponseList<>(orders);
-        } catch (IncorrectIdentification | ShopNotFoundException incorrectIdentification) {
-            return new ResponseList<>(incorrectIdentification.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new ResponseList<Order>(invalidSequenceOperationsExc.getMessage());
+        } catch (IncorrectIdentification | ShopNotFoundException | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
+            return new ResponseList<>(e.getMessage());
         }
     }
 
@@ -616,10 +598,8 @@ public class Services {
         try {
             marketSystem.deleteUserTest(usernames);
             return new Response();
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getMessage());
-        } catch (BlankDataExc blankDataExc) {
-            return new Response(blankDataExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc | BlankDataExc e) {
+            return new Response(e.getMessage());
         }
 
     }
@@ -629,10 +609,8 @@ public class Services {
         try {
             if (marketSystem.deleteUser(usernames))
                 return new Response();
-        } catch (BlankDataExc blankDataExc) {
-            return new Response(blankDataExc.getLocalizedMessage());
-        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (BlankDataExc | InvalidSequenceOperationsExc e) {
+            return new Response(e.getMessage());
         }
         return null;
     }
@@ -673,6 +651,15 @@ public class Services {
 
     }
 
+    public ResponseList<Order> getOrderHistoryOfUser(String username){
+        try {
+            List<Order> result = marketSystem.getOrderHistoryOfUser(username);
+            return new ResponseList<>(result);
+        } catch (InvalidAuthorizationException | IncorrectIdentification | InvalidSequenceOperationsExc e) {
+            return new ResponseList<>(e.getMessage());
+        }
+    }
+
     /**
      * Query for the user's purchase history
      * @param userName
@@ -680,9 +667,9 @@ public class Services {
      * @param userNames
      * @return list of Response object
      */
-    public ResponseList<Order> getOrderHistoryForUser(String userName, Filter<Order> f, List<String> userNames) {
+    public ResponseList<Order> getOrderHistoryForUsers(String userName, Filter<Order> f, List<String> userNames) {
         try {
-            List<Order> result = marketSystem.getOrderHistoryForUser(userName, f);
+            List<Order> result = marketSystem.getOrderHistoryForUsers(userName, f);
             return new ResponseList<>(result);
         } catch (InvalidAuthorizationException | IncorrectIdentification e) {
             return new ResponseList<>(e.getMessage());
@@ -693,7 +680,7 @@ public class Services {
         try {
             Product p = marketSystem.getProduct(username, shopId, serialNumber);
             return new ResponseT<>(p);
-        } catch (ShopNotFoundException | ProductNotFoundException e) {
+        } catch (ShopNotFoundException | ProductNotFoundException | IncorrectIdentification | InvalidAuthorizationException e) {
             return new ResponseT<>(e.getMessage());
         }
     }
@@ -708,7 +695,7 @@ public class Services {
         try {
             if(marketSystem.DismissalUser(usernames,targetUser))
                 return new Response();
-            return new ResponseT(null,"");
+            return new Response("");
         }
         catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc blankDataExc){
             return new Response(blankDataExc.getLocalizedMessage());
@@ -726,19 +713,10 @@ public class Services {
         try {
             if(marketSystem.DismissalOwner(usernames,targetUser,shop))
                 return new Response();
-            return new ResponseT(null,"");
+            return new Response("");
         }
-        catch (BlankDataExc blankDataExc){
-            return new Response(blankDataExc.getLocalizedMessage());
-        }
-        catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc){
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
-        }
-        catch ( IncorrectIdentification incorrectIdentification){
-            return new Response(incorrectIdentification.getLocalizedMessage());
-        }
-        catch (ShopNotFoundException shopNotFoundException){
-            return new Response(shopNotFoundException.getLocalizedMessage());
+        catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification | ShopNotFoundException e){
+            return new Response(e.getMessage());
         }
     }
 

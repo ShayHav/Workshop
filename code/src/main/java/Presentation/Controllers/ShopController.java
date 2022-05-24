@@ -243,8 +243,8 @@ public class ShopController {
             ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
             return;
         }
-        List<PresentationOrder> orders = response.getValue().stream().map(o-> new PresentationOrder(o, shopID)).collect(Collectors.toList());
+        List<PresentationOrder> orders = response.getValue().stream().map(PresentationOrder::new).collect(Collectors.toList());
 
-        ctx.render("orderHistory.jte", Map.of("user", user, "orders",orders));
+        ctx.render("ShopOrderHistory.jte", Map.of("user", user, "orders",orders));
     }
 }

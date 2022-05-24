@@ -18,7 +18,7 @@ public class SystemManager extends User {
 
     public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
         UserController uc = UserController.getInstance();
-        List<Order> result = uc.getOrderHistoryForUser();
+        List<Order> result = uc.getOrderHistoryForUsers();
         return f.applyFilter(result);
     }
 }

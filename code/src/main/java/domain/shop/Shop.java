@@ -276,7 +276,7 @@ public class Shop {
             double price = product_PricePer.get(Product);
             boughtProducts.add(new ProductHistory(p,price , products.get(Product)));
         }
-        Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID());
+        Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID(), shopID, name);
         orders.addOrder(o);
         return o;
     }

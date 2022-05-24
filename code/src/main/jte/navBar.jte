@@ -71,7 +71,7 @@
                                 </form>
                             @endif
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item active" href="/users/${user.getUsername()}/orders">My Orders</a></li>
+                            <li><a class="dropdown-item" href="/users/${user.getUsername()}/orders">My Orders</a></li>
                             <li><a class="dropdown-item" href="/users/${user.getUsername()}/shops">My Shops</a></li>
                         </ul>
                     </div>

@@ -19,6 +19,7 @@ public class PresentationOrder {
     public Map<PresentationProduct, Double> productsBoughtWithPrices;
     public double totalAmount;
     public int shopID;
+    public String shopName;
 
     public PresentationOrder(int shopID, long id, LocalDateTime buyingTime, List<PresentationProduct> products, double totalAmount, String userBought) {
         this.id = id;
@@ -30,16 +31,17 @@ public class PresentationOrder {
         this.shopID = shopID;
     }
 
-    public PresentationOrder(Order order, int shopID) {
+    public PresentationOrder(Order order) {
         id = order.getOrderId();
         buyingTime = order.getBuyingTime();
         userBought = order.getUserID();
         totalAmount = order.getTotalAmount();
-        this.shopID = shopID;
+        this.shopID = order.getShopID();
         List<PresentationProduct> products = order.getBroughtItem().stream().map(p -> new PresentationProduct(p, shopID)).collect(Collectors.toUnmodifiableList());
         updateFinalPriceOfProducts(products);
         productsBoughtWithPrices = new HashMap<>();
         products.forEach(p -> productsBoughtWithPrices.put(p, (p.finalPrice * p.amount)));
+        this.shopName = order.getShopName();
 
     }
 
