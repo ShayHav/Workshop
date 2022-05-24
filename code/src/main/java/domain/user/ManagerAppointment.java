@@ -4,13 +4,13 @@ import domain.shop.Shop;
 
 public class ManagerAppointment {
     private Shop shop;
-    private String appointeeId;
-    private User appointed;
+    private User appointee; // the user who decide to appoint the new manager
+    private User appointed; // the user whe got appointed to be a new manager
 
-    public ManagerAppointment(Shop shop,String appointee , User appointed){
+    public ManagerAppointment(Shop shop,User appointee , User appointed){
         this.appointed=appointed;
         this.shop = shop;
-        this.appointeeId =appointee;
+        this.appointee =appointee;
     }
 
     public User getAppointed() {
@@ -20,4 +20,6 @@ public class ManagerAppointment {
     public Shop getShop() {
         return shop;
     }
+
+    public User getAppointee(){return appointee;}
 }

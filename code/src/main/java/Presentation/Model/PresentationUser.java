@@ -14,7 +14,7 @@ public class PresentationUser {
     private boolean loggedIn;
     Map<Integer, List<Role>> roleList;
     Map<Integer, List<ShopManagersPermissions>> permissions;
-    private List<ManagerAppointment> myApointments;
+    private List<ManagerAppointment> myAppointments;
 
     public PresentationUser(String username, boolean loggedIn) {
         this.username = username;
@@ -28,7 +28,7 @@ public class PresentationUser {
         loggedIn = user.isLoggedIn();
         permissions = new HashMap<>();
         roleList = user.getRoleList() == null ? new HashMap<>() : user.getRoleList();
-        myApointments = Collections.unmodifiableList(user.getManagerAppointeeList());
+        myAppointments = Collections.unmodifiableList(user.getManagerAppointeeList());
     }
 
     public PresentationUser() {
@@ -107,7 +107,7 @@ public class PresentationUser {
     }
 
     public boolean isMyApointed(int shopID, PresentationUser user){
-        for(ManagerAppointment appointment: myApointments){
+        for(ManagerAppointment appointment: myAppointments){
             if(appointment.getShop().getShopID() == shopID && user.equals(appointment.getAppointed()))
                 return true;
         }
@@ -132,4 +132,5 @@ public class PresentationUser {
     public int hashCode() {
         return Objects.hash(username);
     }
+
 }

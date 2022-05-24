@@ -3,7 +3,6 @@ package domain.market;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
-import domain.ResponseT;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
 import domain.Response;
@@ -291,8 +290,7 @@ public class MarketSystem {
         return null;
     }
 
-    public String AppointNewShopManager(int shopID, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        String output;
+    public void AppointNewShopManager(int shopID, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException {
         if(targetUser == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
@@ -300,13 +298,13 @@ public class MarketSystem {
         if(userID == null)
             throw new BlankDataExc("parameter is null: username");
         if(userController.isLogin(userID)) {
-            output = ShopController.getInstance().AppointNewShopManager(shopID, targetUser, userID);
-            return output;
+            ShopController.getInstance().AppointNewShopManager(shopID, targetUser, userID);
+            return;
         }
-        return null;
+        throw new InvalidSequenceOperationsExc("user is not logged in");
     }
 
-    public String AppointNewShopOwner(int shopID, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public void AppointNewShopOwner(int shopID, String targetUser, String userID) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException {
         String output;
         if(targetUser == null ) {
             errorLogger.logMsg(Level.WARNING,"BlankDataExc: targetUser");
@@ -317,10 +315,10 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: username");
         }
         if(userController.isLogin(userID)) {
-            output = ShopController.getInstance().AppointNewShopOwner(shopID, targetUser, userID);
-            return output;
+            ShopController.getInstance().AppointNewShopOwner(shopID, targetUser, userID);
+            return;
         }
-        return null;
+        throw new InvalidSequenceOperationsExc("user is not logged in");
     }
 
     public List<String> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {

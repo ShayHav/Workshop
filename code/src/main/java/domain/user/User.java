@@ -42,6 +42,7 @@ public class User {
         managerAppointeeList = new ArrayList<>();
         ownerAppointmentList = new ArrayList<>();
         orderHistory = new ArrayList<>();
+        roleList = new HashMap<>();
     }
 
     public boolean isEnteredMarket() {
@@ -255,8 +256,9 @@ public class User {
         List<Role> useRolelist = roleList.get(shopName);
         if(useRolelist==null)
             throw new InvalidSequenceOperationsExc();
-        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
+        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member) {
             return true;
+        }
         else {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
             throw new InvalidSequenceOperationsExc();
