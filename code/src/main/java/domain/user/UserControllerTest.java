@@ -36,7 +36,7 @@ public class UserControllerTest {
 
     @Test
     void logIn() throws IncorrectIdentification, InvalidSequenceOperationsExc, InvalidAuthorizationException {
-        for(int i = 0; i < userName.length; i++){
+        for(int i = 1; i < userName.length; i++){
             assertTrue(userController.logIn(userName[i], userPass[i])!=null);
             userController.logOut(userName[i]);
         }
@@ -112,4 +112,44 @@ public class UserControllerTest {
         assertFalse(u1.getRoleList().get(s.getShopID()).contains(Role.ShopOwner));
         assertFalse(u2.getRoleList().get(s.getShopID()).contains(Role.ShopOwner));
     }
+   /* @Test
+    void ThreadLogIn() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, InterruptedException {
+        Thread t0 = new Thread(new Runnable() {
+            @Override
+            public void run(){
+                try {
+                    userController.logIn(userName[0], userPass[0]);
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                } catch (IncorrectIdentification e) {
+                    e.printStackTrace();
+                } catch (InvalidAuthorizationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run(){
+                try {
+                    userController.logIn(userName[1], userPass[1]);
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                } catch (IncorrectIdentification e) {
+                    e.printStackTrace();
+                } catch (InvalidAuthorizationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t0.start();
+        t1.start();
+
+        t1.join();
+
+        assertTrue(userController.isLogin(userName[0]));
+        assertTrue(userController.isLogin(userName[1]));
+    }
+
+     */
 }

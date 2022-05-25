@@ -239,6 +239,9 @@ public class User {
     public void AppointedMeOwner(Shop s,String id) throws IncorrectIdentification, BlankDataExc {
         ownerAppointmentList.add(new OwnerAppointment(s,userName,ControllersBridge.getInstance().getUser(id)));
     }
+    public void AppointedMeManager(Shop s,String id) throws IncorrectIdentification, BlankDataExc {
+        managerAppointeeList.add(new ManagerAppointment(s,userName,ControllersBridge.getInstance().getUser(id)));
+    }
 
     public boolean appointManager(int shopName) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         List<Role> useRolelist = roleList.get(shopName);
