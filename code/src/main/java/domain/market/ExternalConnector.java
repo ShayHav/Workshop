@@ -26,7 +26,7 @@ public class ExternalConnector {
     }
 
     public boolean connectToSupplyService(SupplyService service) {
-        if (service.connect()) {
+        if (service != null && service.connect()) {
             synchronized (this) {
                 supplyServices.add(service);
             }
