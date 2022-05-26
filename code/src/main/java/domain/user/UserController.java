@@ -66,6 +66,10 @@ public class UserController {
         return false;
     }
 
+    public boolean userExist(String userName) {
+        return memberList.containsKey(userName) | guestUser.containsKey(userName);
+    }
+
 
     private static class UserControllerHolder{
         private static final UserController uc = new UserController();
@@ -127,8 +131,14 @@ public class UserController {
             if(activeUser.containsKey(userName)) {
                 synchronized (activeUser) {
                     User u = getUser(userName);
-                    u.logout();
-                    activeUser.remove(userName);
+                    if(u!=null) {
+                        u.logout();
+                        activeUser.remove(userName);
+                    }
+                    else {
+                        errorLogger.logMsg(Level.WARNING, "attempt of logOut for user who is not Registered.");
+                        throw new InvalidSequenceOperationsExc("attempt of logOut for user who is not Registered.");
+                    }
                 }
                 eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", userName));
             }
@@ -229,11 +239,14 @@ public class UserController {
      * @throws InvalidSequenceOperationsExc
      */
     public boolean createSystemManager(String id, String pass) throws InvalidSequenceOperationsExc {
+        System.out.println("createSystemManager: "+id);
         register(id,pass);
+        System.out.println("register: "+id);
         User u = memberList.get(id);
         synchronized (adminUser) {
             adminUser.add(u);
         }
+        System.out.println("makeSystemManager: "+id);
         u.makeSystemManager();
         return true;
     }

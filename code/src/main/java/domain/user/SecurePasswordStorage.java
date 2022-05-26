@@ -1,6 +1,7 @@
 package domain.user;
 
 import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
 
 
 import java.security.SecureRandom;
@@ -33,6 +34,7 @@ public class SecurePasswordStorage {
 
     public boolean passwordCheck(String inputUser, String inputPass){
         try{
+            EventLoggerSingleton.getInstance().logMsg(Level.INFO,String.format("passwordCheck for user: %s",inputUser));
             return authenticateUser(inputUser,inputPass);
         }catch (Exception e) {
             errorLogger.logMsg(Level.WARNING,String.format("passwordCheck of %s failed.",inputUser));
@@ -96,5 +98,8 @@ public class SecurePasswordStorage {
         userDatabase.put(user.userid, user);
     }
 
+    public boolean isUserRole(String userName) {
+        return userDatabase.get(userName)!=null;
+    }
 }
 
