@@ -9,10 +9,11 @@ import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.user.filter.*;
 
+import javax.persistence.Entity;
 import java.util.*;
 import java.util.logging.Level;
 
-
+@Entity
 public class User {
     private String userName;
     private UserState2 us;
