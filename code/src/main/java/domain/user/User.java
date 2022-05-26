@@ -141,7 +141,8 @@ public class User {
      * leave market - user has no state
      */
     public void leaveMarket() {
-        us = null; enteredMarket=false;
+        us = null;
+        enteredMarket=false;
     }
 
     /*

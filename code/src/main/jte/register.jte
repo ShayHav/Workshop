@@ -38,7 +38,7 @@
     const button = document.querySelector('#submitButton');
     const f = function () {
         const form = document.registerForm;
-        const message = {username: form.username.value, password: form.password.value};
+        const message = {guestUsername:"${r_user.getUsername()}", username: form.username.value, password: form.password.value};
         socket.send(JSON.stringify(message));
     }
     button.addEventListener('click', f);

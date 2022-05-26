@@ -64,15 +64,22 @@
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
                             @if(!user.isLoggedIn())
                                 <li><a class="dropdown-item-text" href="/users/login">Sign in</a></li>
+
                             @else
                                 <li><p class="dropdown-item-text">Signed in as ${user.getUsername()}</p></li>
+                                <li><hr class="dropdown-divider"></li>
+                                @if(user.isAdmin())
+                                    <li><a class="dropdown-item" href="/admin/systemMonitor">System Information</a></li>
+                                @endif
+                                <li><a class="dropdown-item" href="/users/${user.getUsername()}/orders">My Orders</a></li>
+                                <li><a class="dropdown-item" href="/users/${user.getUsername()}/shops">My Shops</a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <form method="post" action="/users/${user.getUsername()}/logout">
                                     <button class="dropdown-item">Logout</button>
                                 </form>
                             @endif
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/users/${user.getUsername()}/orders">My Orders</a></li>
-                            <li><a class="dropdown-item" href="/users/${user.getUsername()}/shops">My Shops</a></li>
+
+
                         </ul>
                     </div>
                     <li class="nav-item">

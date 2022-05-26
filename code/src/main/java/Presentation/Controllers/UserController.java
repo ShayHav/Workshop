@@ -3,6 +3,7 @@ package Presentation.Controllers;
 import Presentation.Model.*;
 import Presentation.Model.Messages.AddToCartMessage;
 import Presentation.Model.Messages.CheckoutFormMessage;
+import Presentation.Model.Messages.RegisterMessage;
 import Service.Services;
 import domain.Response;
 import domain.ResponseList;
@@ -13,6 +14,7 @@ import domain.user.Cart;
 import domain.user.User;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
+import org.eclipse.jetty.util.ajax.JSON;
 
 import javax.naming.AuthenticationException;
 import java.util.*;
@@ -83,9 +85,8 @@ public class UserController {
         });
 
         wsConfig.onMessage(ctx -> {
-            String username = ctx.cookie("id");
-            PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);
-            Response response = services.Register(username,requestedUser.getUsername(), requestedUser.getPassword());
+            RegisterMessage message = ctx.messageAsClass(RegisterMessage.class);
+            Response response = services.Register(message.getGuestUsername(), message.getUsername(),message.getPassword());
             ctx.send(response);
         });
     }
@@ -226,7 +227,19 @@ public class UserController {
         PresentationUser currentUser = getUser(context);
         String requestedUsername = context.pathParam("id");
         if(!currentUser.getUsername().equals(requestedUsername)){
-            throw new AuthenticationException("you don't have previlige to view this page");
+            throw new AuthenticationException("you don't have privilege to view this page");
+        }
+    }
+
+
+    public void renderAdminPage(Context ctx){
+        PresentationUser user = getUser(ctx);
+        if(!user.isAdmin()){
+            String errorMessage = "you don't have privilege to view this page";
+            ctx.status(403).render("errorPage.jte", Map.of("errorMessage", errorMessage, "status", 403));
+        }
+        else{
+            ctx.render("adminManagingPage.jte", Map.of("admin", user));
         }
     }
 }

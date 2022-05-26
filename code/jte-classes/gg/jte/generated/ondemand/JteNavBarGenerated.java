@@ -1,7 +1,7 @@
 package gg.jte.generated.ondemand;
 public final class JtenavBarGenerated {
 	public static final String JTE_NAME = "navBar.jte";
-	public static final int[] JTE_LINE_INFO = {0,0,0,0,10,10,10,10,33,33,39,39,41,41,64,64,66,66,67,67,67,68,68,68,71,71,73,73,73,74,74,74,78,78,78,93,93,106,106,107};
+	public static final int[] JTE_LINE_INFO = {0,0,0,0,10,10,10,10,33,33,39,39,41,41,64,64,67,67,68,68,68,70,70,72,72,73,73,73,74,74,74,76,76,76,79,79,85,85,85,100,100,113,113,114};
 	public static void render(gg.jte.html.HtmlTemplateOutput jteOutput, gg.jte.html.HtmlInterceptor jteHtmlInterceptor, Presentation.Model.PresentationUser user, String title) {
 		jteOutput.writeContent("<!doctype html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\"\r\n          content=\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0\">\r\n    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\r\n    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js\" integrity=\"sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT\" crossorigin=\"anonymous\"></script>\r\n    <title>");
 		jteOutput.setContext("title", null);
@@ -14,23 +14,27 @@ public final class JtenavBarGenerated {
 		}
 		jteOutput.writeContent("\r\n            </ul>\r\n            <div class=\"me-auto col-7\">\r\n                <form class=\"d-flex\" method=\"get\" action=\"/search\">\r\n                    <div class=\"col-3\">\r\n                        <select class=\"form-select border-end-0 rounded-start\" name=\"searchBy\"\r\n                                aria-label=\"Disabled select example\">\r\n                            <option selected value=\"products\">Product's Name</option>\r\n                            <option value=\"category\">Category</option>\r\n                            <option value=\"keyword\">Keyword</option>\r\n                        </select>\r\n                    </div>\r\n                    <input class=\"form-control me-2\" name=\"query\" type=\"search\" placeholder=\"Search\" aria-label=\"Search\">\r\n                    <button class=\"btn btn-outline-success\" type=\"submit\">Search</button>\r\n                </form>\r\n            </div>\r\n            <div class=\"col-2\">\r\n                <ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\r\n                    <div class=\"dropdown\">\r\n                        <button class=\"nav-link bg-dark border-0 dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton2\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\r\n                            Account\r\n                        </button>\r\n                        <ul class=\"dropdown-menu dropdown-menu-dark\" aria-labelledby=\"dropdownMenuButton2\">\r\n                            ");
 		if (!user.isLoggedIn()) {
-			jteOutput.writeContent("\r\n                                <li><a class=\"dropdown-item-text\" href=\"/users/login\">Sign in</a></li>\r\n                            ");
+			jteOutput.writeContent("\r\n                                <li><a class=\"dropdown-item-text\" href=\"/users/login\">Sign in</a></li>\r\n\r\n                            ");
 		} else {
-			jteOutput.writeContent("\r\n                                <li><p class=\"dropdown-item-text\">Welcome back, ");
+			jteOutput.writeContent("\r\n                                <li><p class=\"dropdown-item-text\">Signed in as ");
 			jteOutput.setContext("p", null);
 			jteOutput.writeUserContent(user.getUsername());
-			jteOutput.writeContent("</p></li>\r\n                                <form method=\"post\" action=\"/users/");
+			jteOutput.writeContent("</p></li>\r\n                                <li><hr class=\"dropdown-divider\"></li>\r\n                                ");
+			if (user.isAdmin()) {
+				jteOutput.writeContent("\r\n                                    <li><a class=\"dropdown-item\" href=\"/admin/systemMonitor\">System Information</a></li>\r\n                                ");
+			}
+			jteOutput.writeContent("\r\n                                <li><a class=\"dropdown-item\" href=\"/users/");
+			jteOutput.setContext("a", "href");
+			jteOutput.writeUserContent(user.getUsername());
+			jteOutput.writeContent("/orders\">My Orders</a></li>\r\n                                <li><a class=\"dropdown-item\" href=\"/users/");
+			jteOutput.setContext("a", "href");
+			jteOutput.writeUserContent(user.getUsername());
+			jteOutput.writeContent("/shops\">My Shops</a></li>\r\n                                <li><hr class=\"dropdown-divider\"></li>\r\n                                <form method=\"post\" action=\"/users/");
 			jteOutput.setContext("form", "action");
 			jteOutput.writeUserContent(user.getUsername());
 			jteOutput.writeContent("/logout\">\r\n                                    <button class=\"dropdown-item\">Logout</button>\r\n                                </form>\r\n                            ");
 		}
-		jteOutput.writeContent("\r\n                            <li><hr class=\"dropdown-divider\"></li>\r\n                            <li><a class=\"dropdown-item\" href=\"/users/");
-		jteOutput.setContext("a", "href");
-		jteOutput.writeUserContent(user.getUsername());
-		jteOutput.writeContent("/orders\">My Orders</a></li>\r\n                            <li><a class=\"dropdown-item\" href=\"/users/");
-		jteOutput.setContext("a", "href");
-		jteOutput.writeUserContent(user.getUsername());
-		jteOutput.writeContent("/shops\">My Shops</a></li>\r\n                        </ul>\r\n                    </div>\r\n                    <li class=\"nav-item\">\r\n                        <a class=\"nav-link\" href=\"/users/");
+		jteOutput.writeContent("\r\n\r\n\r\n                        </ul>\r\n                    </div>\r\n                    <li class=\"nav-item\">\r\n                        <a class=\"nav-link\" href=\"/users/");
 		jteOutput.setContext("a", "href");
 		jteOutput.writeUserContent(user.getUsername());
 		jteOutput.writeContent("/cart\">\r\n                            <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\"\r\n                                 class=\"bi bi-cart-check\" viewBox=\"0 0 16 16\">\r\n                                <path d=\"M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z\"/>\r\n                                <path d=\"M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z\"/>\r\n                            </svg>\r\n                        </a>\r\n                    </li>\r\n\r\n                </ul>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</nav>\r\n\r\n");

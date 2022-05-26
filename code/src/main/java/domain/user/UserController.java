@@ -30,6 +30,7 @@ public class UserController {
     }
 
 
+
     private static class UserControllerHolder {
         private static final UserController uc = new UserController();
     }
@@ -60,7 +61,9 @@ public class UserController {
 
                     //remove the old instance of guest we gave to the user.
                     activeUser.remove(guestUsername);
-                    guestUser.remove(guestUsername);
+                    synchronized (guestUser) {
+                        guestUser.remove(guestUsername);
+                    }
                 }
                 eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", username));
                 return output;
@@ -142,6 +145,24 @@ public class UserController {
         guestUser.put(temp.getUserName(), temp);
         return temp;
     }
+
+    public User leaveMarket(String username) throws IncorrectIdentification {
+        User u = getUser(username);
+        //if the user is member and wants to leave market before logout
+        if(u.isLoggedIn()){
+            u.logout();
+            u.leaveMarket();
+            activeUser.remove(username);
+        }
+        //else, the user is guest, and we should remove him from guest list.
+        else{
+            u.leaveMarket();
+            activeUser.remove(username);
+            guestUser.remove(username);
+        }
+        return u;
+    }
+
 
     public User getUser(String id) throws IncorrectIdentification {
         if (id == null)

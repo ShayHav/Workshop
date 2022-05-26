@@ -69,6 +69,12 @@ public class Main {
         });
 
         app.routes(() -> {
+
+            //admin interface
+            path("admin/systemMonitor",() -> {
+                get(userController::renderAdminPage);
+            });
+
             // all the users interfaces
             path("users", () -> {
                 path("login", () -> {
@@ -148,21 +154,24 @@ public class Main {
     public static void fillData(){
         Services services = Services.getInstance();
         ResponseT<User> r = services.EnterMarket();
-        String guest1 = r.getValue().getUserName();
-        services.Register(guest1,"shay", "123");
+        String shay_guest = r.getValue().getUserName();
+        services.Register(shay_guest,"shay", "123");
 
         r = services.EnterMarket();
-        String guest2 = r.getValue().getUserName();
-        services.Register(guest2,"shahar", "123");
+        String shahar_guest = r.getValue().getUserName();
+        services.Register(shahar_guest,"shahar", "123");
 
-        services.Login(guest1,"shay","123",null);
+        services.Login(shay_guest,"shay","123",null);
         services.CreateShop("testing shop","shay","shop");
         services.AddProductToShopInventory(1, "Product1", "testing product", "test",1.90,15, "shay", 1);
         services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", 1);
         services.AddProductToShopInventory(3, "Product3", "testing product", "test",20,0, "shay", 1);
         services.AddToShoppingCart("shay",1,1,5);
         services.Checkout("shay","shay havivyan","patish", "0506874838", "12345", "02/24");
-        services.Logout("shay");
+        r = services.Logout("shay");
+        shay_guest = r.getValue().getUserName();
+        services.LeaveMarket(shay_guest);
+        services.LeaveMarket(shahar_guest);
         //services.AppointNewShopManager(1, "shahar","shay");
     }
 }

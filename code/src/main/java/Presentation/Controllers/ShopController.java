@@ -59,6 +59,14 @@ public class ShopController {
             return;
         }
         PresentationShop shop = new PresentationShop(response.getValue());
+
+        if(!shop.isOpen()){
+            ctx.status(403);
+            String errorMessage = "You have no privilege to access this page";
+            ctx.render("errorPage.jte", Map.of("errorMessage", errorMessage, "status", 403));
+            return;
+        }
+
         ResponseList<Product> products= services.GetProductInfoInShop(user.getUsername(), shopID,new SearchProductFilter());
         if(products.isErrorOccurred()) {
             ctx.status(400);

@@ -7,7 +7,7 @@
 
 @template.navBar(user = user, title = "Orders")
 <main class="mx-4">
-    <h3>My Shops</h3>
+    <h3 class="mt-3">Shop sales history</h3>
 <div class="mt-3 mb-2 row">
     <div class="col-2">
         <h5>Order Number</h5>

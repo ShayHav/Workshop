@@ -4,6 +4,7 @@
 
 @template.navBar(user = user, title = "My shops")
 <main class="container">
+    <h3 class="mt-3">My shops</h3>
     <div class="container row mt-3 mx-auto">
         @for(Presentation.Model.PresentationShop shop: shops)
             <div class="card mt-1" style="width: 18rem">

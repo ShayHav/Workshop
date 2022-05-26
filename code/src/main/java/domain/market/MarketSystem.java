@@ -220,18 +220,14 @@ public class MarketSystem {
     }
 
     public User LeaveMarket(String username) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException {
-        User u = UserController.getInstance().getUser(username);
-        if (!u.isEnteredMarket()) {
+        if(username == null){
+            throw new BlankDataExc("username given is null");
+        }
+        if(!userController.HasUserEnteredMarket(username)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to leaveMarket without enterMarket user: %s", username));
-            throw new InvalidSequenceOperationsExc(String.format("attempt to leaveMarket without enterMarket user: %s", username));
+            throw new InvalidSequenceOperationsExc(String.format("user %s has not entered market. cannot leave market", username));
         }
-        if (u.isLoggedIn()) {
-            logout(username);
-            //notificationManager.disConnected(u);
-        } else {
-            throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
-        }
-        return u;
+        return userController.leaveMarket(username);
     }
 
     public User logout(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
