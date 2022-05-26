@@ -36,11 +36,13 @@ public class ShopController {
         return shopCounter;
     }
 
-    public synchronized Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) throws InvalidSequenceOperationsExc {
+    public Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) throws InvalidSequenceOperationsExc {
         Shop newShop;
-        shopCounter++;
-        newShop = new Shop(name,description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
-        shopList.put(shopCounter, newShop);
+        synchronized(this) {
+            shopCounter++;
+            newShop = new Shop(name, description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+            shopList.put(shopCounter, newShop);
+        }
         shopFounder.addRole(shopCounter,Role.ShopFounder);
         eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
         return newShop;
@@ -116,6 +118,17 @@ public class ShopController {
         }
         eventLogger.logMsg(Level.INFO, "getShop succeeded");
         return shopList.get(shopID);
+    }
+
+    public Shop shopExist(String shopName) throws ShopNotFoundException {
+        for (Shop s : shopList.values()) {
+            if (s.getName().equals(shopName))
+                eventLogger.logMsg(Level.INFO, "getShop succeeded");
+            return s;
+        }
+
+        errorLogger.logMsg(Level.WARNING, String.format("shopName %s isn't a valid shop in market", shopName));
+        throw new ShopNotFoundException("shop does not exist in market");
     }
 
     public String closeShop(int key, String user) throws InvalidSequenceOperationsExc {
