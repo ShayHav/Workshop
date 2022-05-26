@@ -84,6 +84,7 @@ public class Main {
                     ws("/addToCart", userController::addToCart);
                     get("/orders", userController::renderUserOrderHistory);
                     get("/shops", userController::renderUserShops);
+                    ws("/messages", userController::messagesHandler);
 
                     path("cart", () -> {
                         get("checkoutForm", userController::renderCheckoutForm);

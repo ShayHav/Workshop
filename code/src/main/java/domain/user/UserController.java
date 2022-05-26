@@ -149,14 +149,14 @@ public class UserController {
         return u;
     }
 
-    public boolean deleteUserTest(String[] userName) throws InvalidSequenceOperationsExc {
+    public boolean deleteUserTest(String[] userName) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         for (int i = 0; i < userName.length; i++) {
             deleteUser(userName[i]);
         }
         return true;
     }
 
-    public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc {
+    public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if (!memberList.containsKey(s)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to delete not exist user: %s", s));
             throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s", s));
@@ -171,7 +171,7 @@ public class UserController {
      * @param useID
      * @throws InvalidSequenceOperationsExc
      */
-    private void deleteUser(String useID) throws InvalidSequenceOperationsExc {
+    private void deleteUser(String useID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         User u = memberList.get(useID);
         if (u != null) {
             Map<Integer, List<Role>> useRoleList = u.getRoleList();

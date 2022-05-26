@@ -226,4 +226,25 @@ public class UserController {
             throw new AuthenticationException("you don't have previlige to view this page");
         }
     }
+
+    public void messagesHandler(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx ->{
+            PresentationUser currentUser = getUser(ctx.cookie("uid"));
+            Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
+                if(message.getAddressee().getUserName().equals(currentUser.getUsername())){
+                    ctx.send(message);
+                }
+            });
+            if(response.isErrorOccurred()){
+                ctx.send(response);
+            }
+        });
+
+        wsConfig.onClose(ctx -> {
+            PresentationUser currentUser = getUser(ctx.cookie("uid"));
+            services.removeFromNotificationCenter(currentUser.getUsername());
+        });
+
+
+    }
 }
