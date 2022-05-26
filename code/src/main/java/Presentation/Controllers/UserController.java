@@ -14,6 +14,7 @@ import domain.user.User;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
 
+import javax.naming.AuthenticationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -216,5 +217,13 @@ public class UserController {
 
         List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
         ctx.render("userShops.jte", Map.of("user", user, "shops", shops));
+    }
+
+    public void checkUser(Context context) throws AuthenticationException {
+        PresentationUser currentUser = getUser(context);
+        String requestedUsername = context.pathParam("id");
+        if(!currentUser.getUsername().equals(requestedUsername)){
+            throw new AuthenticationException("you don't have previlige to view this page");
+        }
     }
 }
