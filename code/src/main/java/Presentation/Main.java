@@ -19,6 +19,8 @@ import domain.user.filter.SearchShopFilter;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
+import javax.naming.AuthenticationException;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 import java.net.Inet4Address;
@@ -79,6 +81,7 @@ public class Main {
                 });
 
                 path("{id}", () -> {
+                    before(userController::checkUser);
                     post("/logout", userController::logout);
                     ws("/addToCart", userController::addToCart);
                     get("/orders", userController::renderUserOrderHistory);
@@ -138,6 +141,8 @@ public class Main {
             ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult));
         });
 
+        app.exception(AuthenticationException.class, ((e, ctx) ->
+                ctx.status(400).render("errorPage.jte", Map.of("errorMessage", e.getExplanation(), "status", 400))));
     }
 
     public static void fillData(){

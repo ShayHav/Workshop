@@ -118,6 +118,13 @@ public class PresentationUser {
         return false;
     }
 
+    public boolean hasRoleInShop(int shopID){
+        if(roleList.containsKey(shopID)){
+            return roleList.get(shopID).stream().anyMatch(role -> role.equals(Role.ShopFounder) || role.equals(Role.ShopOwner) || role.equals(Role.ShopManager));
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

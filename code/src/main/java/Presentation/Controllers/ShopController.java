@@ -108,7 +108,11 @@ public class ShopController {
             return;
         }
         PresentationProduct product = new PresentationProduct(response.getValue(),shopID);
-        ctx.render("editProduct.jte",Map.of("user", user, "shopID", shopID, "product", product));
+        if(user.hasInventoryPermission(shopID)) {
+            ctx.render("editProduct.jte", Map.of("user", user, "shopID", shopID, "product", product));
+            return;
+        }
+        ctx.status(400).render("errorPage.jte", Map.of("errorMessage", "you don't have permission to view this page", "status", 400));
     }
 
     public void editProduct(Context ctx) {
@@ -213,7 +217,11 @@ public class ShopController {
             return;
         }
         PresentationShop shop = new PresentationShop(response.getValue());
-        context.render("editShop.jte", Map.of("user", user, "shop", shop));
+        if(user.hasRoleInShop(shopId)) {
+            context.render("editShop.jte", Map.of("user", user, "shop", shop));
+            return;
+        }
+        context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", "you don't have permission to view this page"));
     }
 
     public void editShop(WsConfig wsConfig) {
