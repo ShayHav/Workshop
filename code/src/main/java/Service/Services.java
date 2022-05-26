@@ -13,7 +13,6 @@ import domain.user.TransactionInfo;
 import domain.user.filter.*;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,14 +89,15 @@ public class Services {
 
     /**
      * User logged in to the system
-     * @param username - user identifier
+     * @param guestUsername - user current identity
+     * @param username - presented username credential for login
      * @param pw - given password
      * @return - Response object
      */
-    public ResponseT<User> Login(String username, String pw, UserObserver o) {
+    public ResponseT<User> Login(String guestUsername, String username, String pw, UserObserver o) {
         ResponseT<User> output;
         try {
-            User b = marketSystem.logIn(username, pw, null);
+            User b = marketSystem.login(guestUsername,username, pw, null);
             output = new ResponseT<>(b);
             return output;
         } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification blankDataExc) {
@@ -111,15 +111,16 @@ public class Services {
 
     /**
      * User registered to the market
-     * @param username - given user identifier
+     * @param guestUsername - given user identifier
+     * @param registerUsername - desired username for register
      * @param pw - given user password
      * @return
      */
-    public Response Register(String username, String pw) {
+    public Response Register(String guestUsername, String registerUsername, String pw) {
         try {
-            marketSystem.register(username, pw);
+            marketSystem.register(guestUsername, registerUsername, pw);
             return new Response();
-        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification e) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification | InvalidAuthorizationException e) {
             return new Response(e.getMessage());
         }
 
@@ -816,5 +817,6 @@ public class Services {
             return new Response(e.getMessage());
         }
     }
+
 
 }

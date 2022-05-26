@@ -65,7 +65,7 @@
                             @if(!user.isLoggedIn())
                                 <li><a class="dropdown-item-text" href="/users/login">Sign in</a></li>
                             @else
-                                <li><p class="dropdown-item-text">Welcome back, ${user.getUsername()}</p></li>
+                                <li><p class="dropdown-item-text">Signed in as ${user.getUsername()}</p></li>
                                 <form method="post" action="/users/${user.getUsername()}/logout">
                                     <button class="dropdown-item">Logout</button>
                                 </form>

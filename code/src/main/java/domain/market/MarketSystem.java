@@ -37,6 +37,7 @@ public class MarketSystem {
     }
 
 
+
     private static class MarketHolder {
         private static final MarketSystem market = new MarketSystem();
     }
@@ -155,14 +156,19 @@ public class MarketSystem {
         return s;
     }
 
-    public boolean register(String username, String pw) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
-        if (username == null)
-            throw new BlankDataExc("parameter is null: username");
+    public boolean register(String guestUsername, String registerUsername, String pw) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
+        if (guestUsername == null)
+            throw new BlankDataExc("parameter is null: guestUsername");
+        if (registerUsername == null)
+            throw new BlankDataExc("parameter is null: registerUsername");
         if (pw == null)
             throw new BlankDataExc("parameter is null: pw");
+        if(!userController.HasUserEnteredMarket(guestUsername)){
+            throw new InvalidAuthorizationException(String.format("user %s has not entered market", guestUsername));
+        }
 
-        if (UserController.getInstance().register(username, pw)) {
-            User u = UserController.getInstance().getUser(username);
+        if (UserController.getInstance().register(registerUsername, pw)) {
+            User u = UserController.getInstance().getUser(registerUsername);
             return true;
         }
         return false;
@@ -190,8 +196,12 @@ public class MarketSystem {
 
 
     //TODO: Services start here :)
-    public User logIn(String username, String pw, UserObserver o) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+    public User login(String guestUsername, String username, String pw, UserObserver o) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
         User output;
+        if (guestUsername == null) {
+            errorLogger.logMsg(Level.WARNING, "BlankDataExc: guestUsername");
+            throw new BlankDataExc("parameter is null: guestUsername");
+        }
         if (username == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: username");
             throw new BlankDataExc("parameter is null: username");
@@ -200,7 +210,11 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: pw");
             throw new BlankDataExc("parameter is null: password");
         }
-        output = UserController.getInstance().logIn(username, pw);
+        if(!userController.HasUserEnteredMarket(guestUsername)){
+            throw new InvalidAuthorizationException(String.format("user %s has not entered market", guestUsername));
+        }
+
+        output = UserController.getInstance().login(guestUsername,username, pw);
         //notificationManager.newSocketChannel(output,observer);
         return output;
     }
@@ -225,7 +239,7 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: username");
             throw new BlankDataExc("username");
         }
-        User u = UserController.getInstance().logOut(username);
+        User u = UserController.getInstance().logout(username);
         notificationManager.disConnected(u);
         return u;
     }

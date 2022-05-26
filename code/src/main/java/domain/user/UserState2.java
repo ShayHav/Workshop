@@ -1,6 +1,6 @@
 package domain.user;
 
-enum UserState2 {
+public enum UserState2 {
     systemManager,
     member,
     guest,

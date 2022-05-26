@@ -8,10 +8,12 @@ import Presentation.Model.PresentationUser;
 import Service.Services;
 import domain.ResponseList;
 import domain.ResponseMap;
+import domain.ResponseT;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
 import domain.shop.Product;
 import domain.shop.Shop;
+import domain.user.User;
 import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.Javalin;
@@ -140,9 +142,15 @@ public class Main {
 
     public static void fillData(){
         Services services = Services.getInstance();
-        services.Register("shay", "123");
-        services.Register("shahar", "123");
-        services.Login("shay","123",null);
+        ResponseT<User> r = services.EnterMarket();
+        String guest1 = r.getValue().getUserName();
+        services.Register(guest1,"shay", "123");
+
+        r = services.EnterMarket();
+        String guest2 = r.getValue().getUserName();
+        services.Register(guest2,"shahar", "123");
+
+        services.Login(guest1,"shay","123",null);
         services.CreateShop("testing shop","shay","shop");
         services.AddProductToShopInventory(1, "Product1", "testing product", "test",1.90,15, "shay", 1);
         services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", 1);

@@ -32,9 +32,10 @@ public class UserController {
     }
 
     public void login(Context ctx) {
+        String guest = ctx.cookieStore("uid");
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
-        ResponseT<User> response = services.Login(username, password,null);
+        ResponseT<User> response = services.Login(guest,username, password,null);
         if (response.isErrorOccurred()) {
             int errorCode = 401;
             ctx.status(errorCode);
@@ -45,6 +46,7 @@ public class UserController {
             synchronized (requestedUsers) {
                 requestedUsers.put(user.getUsername(), user);
             }
+
             ctx.cookieStore("uid", user.getUsername());
             ctx.redirect("/");
         }
@@ -80,8 +82,9 @@ public class UserController {
         });
 
         wsConfig.onMessage(ctx -> {
+            String username = ctx.cookie("id");
             PresentationUser requestedUser = ctx.messageAsClass(PresentationUser.class);
-            Response response = services.Register(requestedUser.getUsername(), requestedUser.getPassword());
+            Response response = services.Register(username,requestedUser.getUsername(), requestedUser.getPassword());
             ctx.send(response);
         });
     }
