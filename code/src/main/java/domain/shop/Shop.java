@@ -331,17 +331,29 @@ public class Shop {
         throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s failed", usertarget));
     }
 
-    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc {
+    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if(shopManagersPermissionsController.canCloseShop(userID)) {
-            if (isOpen)
+            if (isOpen) {
                 isOpen = false;
+                User user = ControllersBridge.getInstance().getUser(userID);
+                getShopOwners().forEach(owner -> {
+                    marketSystem.sendMessage(owner, user, String.format("store %s was closed by %s", name, user.getUserName()));
+                });
+            }
             else throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s",userID));
         }
     }
-    public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc {
+    public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if(shopManagersPermissionsController.canOpenShop(userID)) {
-            if (!isOpen)
+            if (!isOpen) {
                 isOpen = true;
+                User opener = ControllersBridge.getInstance().getUser(userID);
+                getShopOwners().forEach(owner -> {
+                    String message = String.format("User %s reopened shop %s", opener.getUserName(),name);
+                    marketSystem.sendMessage(owner, opener, message);
+                });
+
+            }
             else throw new InvalidSequenceOperationsExc(String.format("attempt to Open Opened Shop userID: %s",userID));
         }
     }
@@ -463,5 +475,9 @@ public class Shop {
 
     public User getShopFounder() {
         return ShopFounder;
+    }
+
+    public String getShopName() {
+        return this.name;
     }
 }

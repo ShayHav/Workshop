@@ -37,7 +37,6 @@ public class MarketSystem {
     }
 
 
-
     private static class MarketHolder {
         private static final MarketSystem market = new MarketSystem();
     }
@@ -174,7 +173,7 @@ public class MarketSystem {
         return false;
     }
 
-    public boolean deleteUserTest(String[] username) throws InvalidSequenceOperationsExc, BlankDataExc {
+    public boolean deleteUserTest(String[] username) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification {
 
         for (String user : username) {
             if (user == null)
@@ -183,7 +182,7 @@ public class MarketSystem {
         return UserController.getInstance().deleteUserTest(username);
     }
 
-    public boolean deleteUser(String username) throws BlankDataExc, InvalidSequenceOperationsExc {
+    public boolean deleteUser(String username) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");
         return UserController.getInstance().deleteUserName(username);
@@ -235,9 +234,7 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: username");
             throw new BlankDataExc("username");
         }
-        User u = UserController.getInstance().logout(username);
-        notificationManager.disConnected(u);
-        return u;
+        return UserController.getInstance().logout(username);
     }
 
     public int RemoveProductFromShopInventory(int productId, String username, int shopname) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc {
@@ -258,7 +255,6 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: username");
         }
         if (userController.isLogin(username)) {
-            notificationManager.systeManagerMessage(String.format("ShopId: %d  is Close", shopId));
             ShopController.getInstance().closeShop(shopId, username);
         } else {
             throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
@@ -271,7 +267,6 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: username");
         }
         if (userController.isLogin(username)) {
-            notificationManager.systeManagerMessage(String.format("ShopId: %d  is Open", shopId));
             ShopController.getInstance().openShop(shopId, username);
         } else {
             throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
@@ -473,9 +468,7 @@ public class MarketSystem {
         if (targetUser == null)
             throw new BlankDataExc("parameter is null: targetUser");
         User u = userController.getUser(usernames);
-        notificationManager.disConnected(u);
         if (u.DismissalUser(targetUser)) {
-            notificationManager.systeManagerMessage(String.format("user has dismissal: %s", targetUser));
             return true;
         } else return false;
     }
@@ -486,9 +479,9 @@ public class MarketSystem {
         if (targetUser == null)
             throw new BlankDataExc("parameter is null: targetUser");
         User u = userController.getUser(usernames);
-        notificationManager.disConnected(u);
         if (u.DismissalOwner(targetUser, shop)) {
-            notificationManager.shopOwnerMessage(shop, String.format("Owner of shop: %d has dismissal: %s", shop, targetUser));
+            String message = String.format("User: %s remove you from being an owner of shop %s", usernames, getShop(shop).getShopName());
+            notificationManager.sendMessage(getUser(targetUser), "", u);
             return true;
         }
         return false;
@@ -534,4 +527,19 @@ public class MarketSystem {
         } else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
+    public void registerForMessages(String username, UserObserver observer) throws IncorrectIdentification, BlankDataExc {
+        if(username == null || username.isEmpty() || observer == null){
+            throw new BlankDataExc("Ilegal paramaters");
+        }
+        User user = userController.getUser(username);
+        notificationManager.registerObserver(user, observer);
+    }
+
+    public void removeFromNotificationCenter(String username){
+        notificationManager.removeFromObserversList(username);
+    }
+
+    public void sendMessage(User addressee, User sender, String content){
+        notificationManager.sendMessage(addressee, content, sender);
+    }
 }

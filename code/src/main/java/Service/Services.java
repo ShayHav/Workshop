@@ -9,7 +9,6 @@ import domain.market.*;
 import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.user.*;
-import domain.user.TransactionInfo;
 import domain.user.filter.*;
 
 import java.util.Collections;
@@ -44,7 +43,7 @@ public class Services {
     /***
      * get user in market
      * @param username user identifier
-     * @return
+     * @return response with the user if succeed or error message if not
      */
     public ResponseT<User> GetUser(String username) {
         try {
@@ -57,8 +56,8 @@ public class Services {
 
     /**
      * return all the shops in which the user is the founder
-     * @param username
-     * @return
+     * @param username username of the user who requesting his shops
+     * @return response with a list of the user's shop if succeed or error message if not
      */
     public ResponseList<Shop> GetAllUserShops(String username){
         try{
@@ -169,12 +168,12 @@ public class Services {
     }
     //Make:nitay
 
-    /*
+    /**
      * Create a store object to represent the relevant store in the app
      * @param description -  description of the created shop
      * @param username - user identifier
      * @param shopName - shop name
-     * @return Response object
+     * @return Response with the shop is created successfully or error message if not
      */
     public ResponseT<Shop> CreateShop(String description ,String username, String shopName) {
         try {
@@ -220,7 +219,7 @@ public class Services {
      */
     public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password) {
         try {
-            boolean b = marketSystem.start(payment, supply, userName, password);
+            marketSystem.start(payment, supply, userName, password);
             return new Response();
         } catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc) {
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
@@ -268,7 +267,7 @@ public class Services {
      * Query for certain products in the relevant store.
      * @param userName - user identifier
      * @param shopID - shop identifier
-     * @param f
+     * @param f filter object to filter the result of the search querying by
      * @return list of Response object
      */
     public ResponseList<Product> GetProductInfoInShop(String userName, int shopID, Filter<Product> f) {
@@ -285,7 +284,7 @@ public class Services {
      * Query for certain products by name in the relevant store
      * @param userName - user identifier
      * @param pName - shop's name
-     * @param f
+     * @param f filter object to filter the product search results by
      * @return list of Response object
      */
     public ResponseMap<Integer,List<Product>> SearchProductByName(String userName, String pName, Filter<Product> f) //done
@@ -456,11 +455,8 @@ public class Services {
         Product p;
         try {
             p = shop.addListing(serialNumber, pName, pDis, pCat, price, amount, username);
-        } catch (InvalidAuthorizationException iae) {
+        } catch (InvalidAuthorizationException | InvalidProductInfoException iae) {
             return new ResponseT<>(null, iae.getLocalizedMessage());
-        } catch (InvalidProductInfoException ipie) {
-            //todo prints????
-            return new ResponseT<>(null, ipie.getLocalizedMessage());
         }
         if (p == null) {
             return null;
@@ -633,7 +629,7 @@ public class Services {
         try {
             marketSystem.deleteUserTest(usernames);
             return new Response();
-        } catch (InvalidSequenceOperationsExc | BlankDataExc e) {
+        } catch (InvalidSequenceOperationsExc | BlankDataExc | IncorrectIdentification e) {
             return new Response(e.getMessage());
         }
 
@@ -644,7 +640,7 @@ public class Services {
         try {
             if (marketSystem.deleteUser(usernames))
                 return new Response();
-        } catch (BlankDataExc | InvalidSequenceOperationsExc e) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification e) {
             return new Response(e.getMessage());
         }
         return null;
@@ -818,5 +814,21 @@ public class Services {
         }
     }
 
+    public Response registerForMessages(String username, UserObserver observer){
+        try{
+            marketSystem.registerForMessages(username, observer);
+            return new Response();
+        } catch (IncorrectIdentification | BlankDataExc incorrectIdentification) {
+            return new Response(incorrectIdentification.getMessage());
+        }
+    }
 
+    public Response removeFromNotificationCenter(String username){
+        try{
+            marketSystem.removeFromNotificationCenter(username);
+            return new Response();
+        } catch (Exception e){
+            return new Response(e.getMessage());
+        }
+    }
 }

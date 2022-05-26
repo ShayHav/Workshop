@@ -497,7 +497,7 @@ public class User {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
@@ -515,7 +515,7 @@ public class User {
      * @throws InvalidSequenceOperationsExc
      * @throws ShopNotFoundException
      */
-    public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+    public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
         if(loggedIn){
             if(isAppointedMeOwner(this,targetUser)) {
                 ControllersBridge.getInstance().DismissalOwner(userName, targetUser, shop);

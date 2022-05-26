@@ -8,6 +8,7 @@ import Service.Services;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseT;
+import domain.notifications.Message;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.Cart;
@@ -241,5 +242,46 @@ public class UserController {
         else{
             ctx.render("adminManagingPage.jte", Map.of("admin", user));
         }
+    }
+
+    public void messagesHandler(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx ->{
+            PresentationUser currentUser = getUser(ctx.pathParam("id"));
+            Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
+                if(message.getAddressee().getUserName().equals(currentUser.getUsername())){
+                    ctx.send(message);
+                }
+            });
+            if(response.isErrorOccurred()){
+                ctx.send(response);
+            }
+        });
+
+        wsConfig.onMessage(ctx ->{
+            Message message = ctx.messageAsClass(Message.class);
+        });
+
+        wsConfig.onClose(ctx -> {
+            PresentationUser currentUser = getUser(ctx.cookie("uid"));
+            services.removeFromNotificationCenter(currentUser.getUsername());
+        });
+
+
+    }
+
+    public void renderInbox(Context context) {
+        PresentationUser user = getUser(context);
+        context.render("inbox.jte", Map.of("user", user));
+    }
+
+    public void getMessagesCount(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx-> {
+            PresentationUser currentUser = getUser(ctx.pathParam("id"));
+            Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
+                if(message.getAddressee().getUserName().equals(currentUser.getUsername())){
+                    ctx.send(message);
+                }
+            });
+        });
     }
 }

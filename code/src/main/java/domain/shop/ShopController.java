@@ -116,7 +116,7 @@ public class ShopController {
         return shopList.get(shopID);
     }
 
-    public String closeShop(int key, String user) throws InvalidSequenceOperationsExc {
+    public String closeShop(int key, String user) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         Shop s;
         try {
             s = getShop(key);
@@ -129,7 +129,7 @@ public class ShopController {
         return s.getName();
     }
 
-    public String openShop(int key, String user) throws InvalidSequenceOperationsExc {
+    public String openShop(int key, String user) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         Shop s;
         try {
             s = getShop(key);
