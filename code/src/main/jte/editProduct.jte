@@ -2,8 +2,11 @@
 @param Presentation.Model.PresentationUser user
 @param int shopID
 @template.navBar(user = user, title = product.name)
-<main class="container align-content-center mb-4">
-    <div class="container col-5 mt-5  border">
+<main class="container mb-4" >
+    <div class="me-4 my-3">
+        <h3 class="" style="text-align: center" >${product.name}</h3>
+    </div>
+    <div class="container col-5 border">
         <form class="form" method="post" action="/shops/${shopID}/${product.serialNumber}/edit">
             <div class="mb-3">
                 <label for="name" class="form-label">SerialNumber</label>
@@ -15,9 +18,7 @@
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
-                <textarea id="description" name="description" class="form-control" rows="3">
-                    ${product.description}
-                </textarea>
+                <textarea id="description" name="description" class="form-control" rows="3">${product.description}</textarea>
             </div>
             <div class="mb-3">
                 <label for="category" class="form-label">Product name</label>

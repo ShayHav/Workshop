@@ -319,21 +319,12 @@ public class User {
      * login to the system
      */
     public void login() {
-        //todo: checks if is actual user????
         if(isSystemManager) {
-            us = UserState2.member;
+            us = UserState2.systemManager;
         }
         else {
             us = UserState2.member;
         }
-        if(roleList == null)
-            roleList = new HashMap<>();
-        if (ownerAppointmentList == null)
-            ownerAppointmentList = new ArrayList<>();
-        if (managerAppointeeList == null)
-            managerAppointeeList = new ArrayList<>();
-
-        orderHistory = new ArrayList<>();
         loggedIn = true;
     }
 
