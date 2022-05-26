@@ -4,8 +4,10 @@ import domain.shop.ShopManagersPermissions;
 import domain.user.ManagerAppointment;
 import domain.user.Role;
 import domain.user.User;
+import domain.user.UserState2;
 
 import java.util.*;
+
 
 public class PresentationUser {
 
@@ -15,6 +17,7 @@ public class PresentationUser {
     Map<Integer, List<Role>> roleList;
     Map<Integer, List<ShopManagersPermissions>> permissions;
     private List<ManagerAppointment> myAppointments;
+    private UserState2 state;
 
     public PresentationUser(String username, boolean loggedIn) {
         this.username = username;
@@ -29,6 +32,7 @@ public class PresentationUser {
         permissions = new HashMap<>();
         roleList = user.getRoleList() == null ? new HashMap<>() : user.getRoleList();
         myAppointments = Collections.unmodifiableList(user.getManagerAppointeeList());
+        state = user.getUs();
     }
 
     public PresentationUser() {
@@ -139,5 +143,10 @@ public class PresentationUser {
     public int hashCode() {
         return Objects.hash(username);
     }
+
+    public boolean isAdmin(){
+        return state == UserState2.systemManager;
+    }
+
 
 }

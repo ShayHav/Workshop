@@ -530,6 +530,9 @@ public class User {
 
     }
 
+    public UserState2 getUs() {
+        return us;
+    }
 }
 
 

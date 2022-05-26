@@ -43,28 +43,32 @@ public class UserController {
     /***
      * login to the market system
      * pre-condition - user is registered to the system, not yet logged in
-     * @param id the unique identifier of the user
+     * @param username the unique identifier of the user
      * @param pass password given by the user
      */
-    public User logIn(String id, String pass) throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
+    public User login(String guestUsername, String username, String pass) throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
         User output;
-        if (isUserisLog(id)) {
-            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %s failed. user is already logged in", id));
+        if (isUserisLog(username)) {
+            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %s failed. user is already logged in", username));
             throw new InvalidSequenceOperationsExc("attempt of logIn for logged in user");
-        } else if (memberList.get(id) != null) {
-            if (securePasswordStorage.passwordCheck(id, pass)) {
+        } else if (memberList.get(username) != null) {
+            if (securePasswordStorage.passwordCheck(username, pass)) {
                 synchronized (activeUser) {
-                    activeUser.put(id, memberList.get(id));
-                    output = getUser(id);
+                    activeUser.put(username, memberList.get(username));
+                    output = getUser(username);
                     output.login();
+
+                    //remove the old instance of guest we gave to the user.
+                    activeUser.remove(guestUsername);
+                    guestUser.remove(guestUsername);
                 }
-                eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", id));
+                eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", username));
                 return output;
             } else {
                 throw new InvalidAuthorizationException("Identifier not correct");
             }
         } else {
-            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %s.", id));
+            errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for unregistered user with id: %s.", username));
             throw new InvalidAuthorizationException();
         }
     }
@@ -88,7 +92,7 @@ public class UserController {
      * logout from system
      * pre-condition - user is registered and logged-in
      */
-    public User logOut(String userName) throws IncorrectIdentification, InvalidSequenceOperationsExc {
+    public User logout(String userName) throws IncorrectIdentification, InvalidSequenceOperationsExc {
         if (activeUser != null) {
             if (activeUser.containsKey(userName)) {
                 synchronized (activeUser) {
@@ -324,6 +328,7 @@ public class UserController {
         }
         throw new InvalidSequenceOperationsExc();
     }
+
 
     public List<User> getAdminUser() {
         return adminUser;
