@@ -11,6 +11,15 @@
     <title>${title}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script>
+        const messagesSocket = new WebSocket('ws://localhost:${Presentation.Main.port}/${user.getUsername()}/messages/getCount');
+
+        messagesSocket.onmessage = (event) =>{
+            let counter = document.querySelector('#messageCount');
+            let count = counter.textContent === '' ? 0 : parseInt(counter.textContent);
+            counter.textContent = ++count;
+        }
+    </script>
 </head>
 <body>
 <nav class="sticky-top navbar navbar-expand-lg navbar-dark bg-dark">
@@ -41,7 +50,7 @@
                     <a class="nav-link" href="/users/login">Create Shop</a>
                 @endif
             </ul>
-            <div class="me-auto col-7">
+            <div class="me-auto col-6">
                 <form class="d-flex" method="get" action="/search">
                     <div class="col-3">
                         <select class="form-select border-end-0 rounded-start" name="searchBy"
@@ -55,6 +64,12 @@
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>
+            <button type="button" class="btn btn-primary position-relative">
+                Inbox
+                <span id='messageCount' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            <span class="visually-hidden">unread messages</span>
+            </span>
+            </button>
             <div class="col-2">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <div class="dropdown">
