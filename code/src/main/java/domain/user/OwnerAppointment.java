@@ -16,4 +16,8 @@ public class OwnerAppointment {
     public User getAppointed() {
         return appointed;
     }
+
+    public Shop getShop() {
+        return shop;
+    }
 }

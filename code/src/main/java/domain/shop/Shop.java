@@ -288,13 +288,14 @@ public class Shop {
     }
 
     public String AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if (shopManagersPermissionsController.canAppointNewShopOwner(userId)| ShopOwners.containsKey(userId)) {
+        if ( ShopFounder.getUserName().equals(userId) || ShopOwners.containsKey(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointOwner(shopID)){
-                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        managerUser.AppointedMeOwner(this,usertarget);
+                        ShopOwners.putIfAbsent(usertarget, newManager);
                         newManager.addRole(shopID,Role.ShopOwner);
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                         return String.format("Appoint New ShopManager User: %s", usertarget);
@@ -311,12 +312,13 @@ public class Shop {
     }
 
     public String AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if (shopManagersPermissionsController.canAppointNewShopManager(userId)| ShopOwners.containsKey(userId)) {
+        if (ShopFounder.getUserName().equals(userId) || ShopOwners.containsKey(userId) ||shopManagersPermissionsController.canAppointNewShopOwner(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
+                        managerUser.AppointedMeManager(this,usertarget);
                         ShopManagers.putIfAbsent(usertarget, newManager);
                         newManager.addRole(shopID,Role.ShopManager);
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
@@ -440,10 +442,13 @@ public class Shop {
         return isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser);
     }
 
-    public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc {
-        if(ShopOwners.containsKey(userName) & ShopOwners.containsKey(targetUser)){
-            if (shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) //TODO: need to check if OK.
+    public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+        if(( ShopFounder.getUserName().equals(userName) ||ShopOwners.containsKey(userName)) & ShopOwners.containsKey(targetUser)){
+            if (ShopFounder.getUserName().equals(userName)|| ShopOwners.containsKey(userName) ||shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) {
+                ShopOwners.remove(targetUser);
+                ControllersBridge.getInstance().getUser(targetUser).removeRole(Role.ShopOwner,shopID);
                 return true;
+            }
         }
         throw new InvalidSequenceOperationsExc();
     }

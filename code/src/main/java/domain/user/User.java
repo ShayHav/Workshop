@@ -229,13 +229,19 @@ public class User {
     }
     */
 
-    private boolean isAppointedMeOwner(User user, String id) {
-        List<OwnerAppointment> Appointmentusers = user.getOwnerAppointmentList();
+    private boolean isAppointedMeOwner(String id) {
+        List<OwnerAppointment> Appointmentusers = ownerAppointmentList;
         for (OwnerAppointment run : Appointmentusers) {
             if (run.getAppointed().getUserName().equals(id))
                 return true;
         }
         return false;
+    }
+    public void AppointedMeOwner(Shop s,String id) throws IncorrectIdentification, BlankDataExc {
+        ownerAppointmentList.add(new OwnerAppointment(s,userName,ControllersBridge.getInstance().getUser(id)));
+    }
+    public void AppointedMeManager(Shop s,String id) throws IncorrectIdentification, BlankDataExc {
+        managerAppointeeList.add(new ManagerAppointment(s,userName,ControllersBridge.getInstance().getUser(id)));
     }
 
     public boolean appointManager(int shopName) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
@@ -365,11 +371,22 @@ public class User {
     }
 
 
-    public void addRole(int shop,Role role) {
+    public void addRole(int shop,Role role) throws InvalidSequenceOperationsExc {
+        if (roleList == null) {
+            roleList = new HashMap<>();
+        }
         List<Role> useRoleList = roleList.get(shop);
-        if(useRoleList!=null)
-            if(useRoleList.contains(role))
+        if (useRoleList != null) {
+            if (!useRoleList.contains(role)) {
                 useRoleList.add(role);
+            }
+            else throw new InvalidSequenceOperationsExc("Trying to give a role that already exists");
+        }
+        else {
+            useRoleList = new LinkedList<>();
+            useRoleList.add(role);
+            roleList.put(shop, useRoleList);
+        }
     }
 
     public List<OwnerAppointment> getOwnerAppointmentList() {
@@ -495,7 +512,7 @@ public class User {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
@@ -513,18 +530,28 @@ public class User {
      * @throws InvalidSequenceOperationsExc
      * @throws ShopNotFoundException
      */
-    public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+    public boolean CanDismissalOwner(String targetUser) throws InvalidSequenceOperationsExc {
         if(loggedIn){
-            if(isAppointedMeOwner(this,targetUser)) {
-                ControllersBridge.getInstance().DismissalOwner(userName, targetUser, shop);
-                eventLogger.logMsg(Level.INFO, String.format("user has been dismiss: %s", targetUser));
+            if(isAppointedMeOwner(targetUser)) {
                 return true;
             }
+            else {
+                errorLogger.logMsg(Level.WARNING, String.format("attempt to dismiss user by not Appointed user: %s", userName));
+                throw new InvalidSequenceOperationsExc(String.format("attempt to dismiss user by not Appointed user: %s", userName));
+            }
         }
-        errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not system manager: %s",targetUser));
-        throw new InvalidSequenceOperationsExc(String.format("attempt to dismiss user by not system manager: %s",targetUser));
+        errorLogger.logMsg(Level.WARNING,String.format("attempt to dismiss user by not loggedIn user: %s",userName));
+        throw new InvalidSequenceOperationsExc(String.format("attempt to dismiss user by not loggedIn user: %s",userName));
     }
 
+    public void DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
+        ControllersBridge.getInstance().DismissalOwner(userName, targetUser, shop);
+        eventLogger.logMsg(Level.INFO, String.format("user has been dismiss: %s", targetUser));
+    }
+
+    public void removeRole(Role shopOwner, int shopID) {
+        roleList.get(shopID).remove(shopOwner);
+    }
 }
 
 

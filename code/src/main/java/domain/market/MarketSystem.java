@@ -142,7 +142,7 @@ public class MarketSystem {
         return UserController.getInstance().getUser(id);
     }
 
-    public Shop createShop(String description ,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification {
+    public Shop createShop(String description ,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, String foundId) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
         if(name == null )
             throw new BlankDataExc("parameter is null: name");
         if(foundId == null )
@@ -442,8 +442,8 @@ public class MarketSystem {
         if(targetUser== null)
             throw new BlankDataExc("parameter is null: targetUser");
         User u = userController.getUser(usernames);
-        notificationManager.disConnected(u);
-        if(u.DismissalOwner(targetUser,shop)){
+        if(userController.DismissalOwner(usernames,targetUser,shop)){
+            notificationManager.disConnected(u);
             notificationManager.shopOwnerMessage(shop,String.format("Owner of shop: %d has dismissal: %s",shop,targetUser));
             return true;
         }

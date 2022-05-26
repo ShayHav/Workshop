@@ -160,7 +160,7 @@ public class Services {
             Shop output = marketSystem.createShop(description, shopName, null, null, username);
             ;
             return new ResponseT<>(output);
-        } catch (BlankDataExc | IncorrectIdentification e) {
+        } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc e) {
             return new ResponseT<>(e.getLocalizedMessage());
         }
     }
@@ -710,11 +710,10 @@ public class Services {
      */
     public Response DismissalUserBySystemManager(String usernames,String targetUser) {
         try {
-            if(marketSystem.DismissalUser(usernames,targetUser))
+            if (marketSystem.DismissalUser(usernames, targetUser))
                 return new Response();
-            return new ResponseT(null,"");
-        }
-        catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc blankDataExc){
+            return new ResponseT(null, "");
+        } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
         }
     }

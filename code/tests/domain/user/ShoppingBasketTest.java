@@ -1,7 +1,8 @@
 package domain.user;
 
-import domain.shop.Product;
+import domain.shop.ProductInfo;
 import domain.Exceptions.ProductNotFoundException;
+import domain.shop.Shop;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,12 +18,12 @@ class ShoppingBasketTest {
 
     ShoppingBasket basket;
     Shop shop;
-    Product productInfo;
+    ProductInfo productInfo;
 
     @BeforeEach
     void setUp() {
         shop = mock(Shop.class);
-        productInfo = mock(Product.class);
+        productInfo = mock(ProductInfo.class);
         basket = new ShoppingBasket(shop);
         Map<Integer, Integer> productsWithAmount = basket.getProductAmountList();
         productsWithAmount.put(1, 100);
@@ -30,13 +31,13 @@ class ShoppingBasketTest {
 
 
     @Test
-    void addProductToBasket() throws ProductNotFoundException {
-        when(shop.isProductIsAvailable(5)).thenReturn(true);
-        assertThrows(IllegalArgumentException.class,()->basket.addProductToBasket(5, -1));
-        basket.addProductToBasket(5,50);
-        assertEquals(50,basket.getProductAmountList().get(5));
+    void addProductToBasket() {
+        assertFalse(basket.addProductToBasket(5, -1));
+        assertTrue(basket.addProductToBasket(5, 0));
         assertTrue(basket.getProductAmountList().containsKey(5));
+        assertTrue(basket.addProductToBasket(5, 50));
         assertNotEquals(basket.getProductAmountList().get(1),50);
+        assertTrue(basket.addProductToBasket(1, 50));
         assertEquals(basket.getProductAmountList().get(1), 150);
 
     }
@@ -52,24 +53,21 @@ class ShoppingBasketTest {
     }
 
     @Test
-    void updateAmount() throws ProductNotFoundException {
-        when(shop.isProductIsAvailable(5)).thenReturn(true);
-        assertThrows(IllegalArgumentException.class, ()->basket.updateAmount(1, -1));
+    void updateAmount() {
+        assertFalse(basket.updateAmount(1, -1));
         assertTrue(basket.getProductAmountList().containsKey(1));
-        basket.updateAmount(1, 50);
-        assertEquals(50,basket.getProductAmountList().get(5));
+        assertTrue(basket.updateAmount(1, 50));
         assertTrue(basket.getProductAmountList().containsKey(1));
-        basket.updateAmount(1, 0);
+        assertTrue(basket.updateAmount(1, 0));
         assertFalse(basket.getProductAmountList().containsKey(1));
     }
 
     @Test
-    void removeProduct() throws ProductNotFoundException {
-        when(shop.isProductIsAvailable(5)).thenReturn(true);
+    void removeProduct() {
         basket.getProductAmountList().put(2,200);
-        basket.removeProduct(1);
+        assertTrue(basket.removeProduct(1));
         assertFalse(basket.getProductAmountList().containsKey(1));
-        basket.removeProduct(2);
+        assertTrue(basket.removeProduct(2));
         assertFalse(basket.getProductAmountList().containsKey(2));
     }
 
@@ -80,7 +78,7 @@ class ShoppingBasketTest {
         when(shop.getName()).thenReturn("david&sons");
         when(shop.getInfoOnProduct(1)).thenReturn(productInfo);
         when(shop.calculateTotalAmountOfOrder(basket.getProductAmountList())).thenReturn(100.0);
-        ShoppingBasket.ServiceBasket info = basket.showBasket();
+        ShoppingBasket.BasketInfo info = basket.showBasket();
         assertEquals(info.getShopId(),1);
         assertEquals(info.getShopName(),"david&sons");
         assertEquals(info.getProductWithAmount().get(productInfo), 100);

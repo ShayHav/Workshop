@@ -65,8 +65,8 @@ public class ControllersBridge {
      * @param targetUser
      * @throws InvalidSequenceOperationsExc
      */
-    public void DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
-        if(ShopController.getInstance().canBeDismiss(targetUser))
+    public void DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        if(UserController.getInstance().canBeDismiss(targetUser))
             UserController.getInstance().deleteUserName(targetUser);
         throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s",targetUser));
     }
@@ -79,9 +79,12 @@ public class ControllersBridge {
      * @throws InvalidSequenceOperationsExc
      * @throws ShopNotFoundException
      */
-    public void DismissalOwner(String userName, String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException {
-        if(ShopController.getInstance().DismissalOwner(userName,targetUser,shop))
+    public void DismissalOwner(String userName, String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
+        if(ShopController.getInstance().DismissalOwner(userName,targetUser,shop)) {
             UserController.getInstance().deleteUserName(targetUser);
-        throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s",targetUser));
+        }
+        else {
+            throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s", targetUser));
+        }
     }
 }
