@@ -332,7 +332,7 @@ public class Shop {
     }
 
     public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc {
-        if(shopManagersPermissionsController.canCloseShop(userID)) {
+        if(ShopFounder.getUserName().equals(userID) || shopManagersPermissionsController.canCloseShop(userID)) {
             if (isOpen)
                 isOpen = false;
             else throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s",userID));
