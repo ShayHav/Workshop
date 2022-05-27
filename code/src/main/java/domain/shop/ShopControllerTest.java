@@ -1,10 +1,8 @@
 package domain.shop;
 
 import Testing_System.UserGenerator;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidAuthorizationException;
-import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Exceptions.ShopNotFoundException;
+import domain.Exceptions.*;
+import domain.user.Role;
 import domain.user.User;
 import domain.user.UserController;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,8 +82,43 @@ class ShopControllerTest {
     }
 
     @Test
-    void closeShop() {
+    void closeShop() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, InterruptedException {
+        shopController.createShop("","nitay",null,null,userController.getUser(userName[0]));
+        userController.logIn(userName[0],userPass[0]);
+        shopController.AppointNewShopManager(1,userName[1],userName[0]);
+        assertTrue(userController.getUser(userName[1]).getRoleList().get(1).contains(Role.ShopManager));
+        shopController.AddShopMangerPermissions(1,ShopManagersPermissions.CloseShop,userName[1],userName[0]);
+        userController.logIn(userName[1],userPass[1]);
+        //shopController.closeShop(1,userName[1]);
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    shopController.closeShop(1,userName[1]);
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Thread t2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    shopController.closeShop(1,userName[0]);
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+        assertTrue(shopController.isShopClose(1));
+        userController.logOut(userName[1]);
+        userController.logOut(userName[0]);
     }
 
     @Test

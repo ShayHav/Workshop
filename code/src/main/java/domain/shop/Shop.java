@@ -69,6 +69,14 @@ public class Shop {
             return false;
         }
     }
+    public synchronized boolean addPermissions(ShopManagersPermissions shopManagersPermissionsList, String targetUser, String id) {
+        if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id))
+            return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
+        else {
+            errorLogger.logMsg(Level.WARNING, String.format("user: %s cannot change permissions", id) );
+            return false;
+        }
+    }
 
     public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
         if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id)) {
@@ -458,6 +466,10 @@ public class Shop {
         ShopOwners.values().forEach((u)->output.add(u));
         output.add(ShopFounder);
         return output;
+    }
+
+    public boolean isProductAvailable(int prodID){
+        return inventory.isInStock(prodID);
     }
 
 }

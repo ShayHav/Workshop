@@ -106,6 +106,19 @@ public class ShopManagersPermissionsController {
             return PermissionExist(shopManagersPermissionsList, targetUser);
         } else return false;
     }
+    public boolean addPermissions(ShopManagersPermissions shopManagersPermissionsList, String targetUser) {
+        List<ShopManagersPermissions> shopManagersPermissions = new LinkedList<>();
+        if (shopManagersPermissionsList != null) {
+            List<ShopManagersPermissions> userShopManagersPermissionsList = shopManagersPermissionsMap.get(targetUser);
+            if (userShopManagersPermissionsList != null) {
+                        userShopManagersPermissionsList.add(shopManagersPermissionsList);
+            } else synchronized (shopManagersPermissionsMap){
+                shopManagersPermissions.add(shopManagersPermissionsList);
+                shopManagersPermissionsMap.put(targetUser, shopManagersPermissions);
+            }
+            return PermissionExist(shopManagersPermissions, targetUser);
+        } else return false;
+    }
 
     private boolean PermissionExist(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser) {
         boolean output = true;

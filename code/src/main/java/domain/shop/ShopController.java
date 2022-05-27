@@ -204,6 +204,20 @@ public class ShopController {
         } else
             return null;
     }
+    public String AddShopMangerPermissions(int key, ShopManagersPermissions shopManagersPermissionsList, String tragetUser, String userName) {
+        Shop s;
+        try {
+            s = getShop(key);
+        } catch (ShopNotFoundException snfe) {
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
+        if (s.addPermissions(shopManagersPermissionsList, tragetUser, userName)) {
+            eventLogger.logMsg(Level.INFO, "AddShopMangerPermissions succeeded");
+            return "ShopManagerPermissionsAdd";
+        } else
+            return null;
+    }
 
     public String AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         Shop s;
@@ -306,5 +320,9 @@ public class ShopController {
 
     public boolean DismissalOwner(String userName, String targetUser, int shop) throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         return getShop(shop).DismissalOwner(userName,targetUser);
+    }
+
+    public boolean isShopClose(int i) {
+        return !shopList.get(i).isOpen();
     }
 }
