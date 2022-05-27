@@ -31,6 +31,7 @@ public class UserController {
 
 
 
+
     private static class UserControllerHolder {
         private static final UserController uc = new UserController();
     }
@@ -187,7 +188,7 @@ public class UserController {
             throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s", s));
         }
         deleteUser(s);
-        return memberList.containsKey(s);
+        return !memberList.containsKey(s);
     }
 
     /**
@@ -350,6 +351,61 @@ public class UserController {
         throw new InvalidSequenceOperationsExc();
     }
 
+    public Integer getCurrentActiveUsers(String username) throws IncorrectIdentification, InvalidAuthorizationException {
+        User u = getUser(username);
+        if(!u.isSystemManager()){
+            throw new InvalidAuthorizationException(String.format("current user %s is not a system manager",username));
+        }
+        return activeUser.keySet().size();
+    }
+
+    public Integer getCurrentActiveMembers(String username) throws IncorrectIdentification, InvalidAuthorizationException {
+        User u = getUser(username);
+        if(!u.isSystemManager()){
+            throw new InvalidAuthorizationException(String.format("current user %s is not a system manager",username));
+        }
+        int activeMembers = activeUser.keySet().size() - guestUser.keySet().size();
+        return activeMembers;
+    }
+
+    public Integer getCurrentActiveGuests(String username) throws IncorrectIdentification, InvalidAuthorizationException {
+        User u = getUser(username);
+        if(!u.isSystemManager()){
+            throw new InvalidAuthorizationException(String.format("current user %s is not a system manager",username));
+        }
+        return guestUser.keySet().size();
+    }
+
+    public Integer getTotalMembers(String username) throws IncorrectIdentification, InvalidAuthorizationException {
+        User u = getUser(username);
+        if(!u.isSystemManager()){
+            throw new InvalidAuthorizationException(String.format("current user %s is not a system manager",username));
+        }
+        return memberList.keySet().size();
+    }
+
+    public Map<Integer, User> getAllUsers(String username) throws InvalidAuthorizationException, IncorrectIdentification {
+        User u = getUser(username);
+        if(!u.isSystemManager()){
+            throw new InvalidAuthorizationException(String.format("current user %s is not a system manager",username));
+        }
+        Map<Integer,User> users = new HashMap<>();
+        int index = 1;
+        for(User user: memberList.values()){
+            users.put(index,user);
+            index++;
+        }
+        for (User user: guestUser.values()){
+            users.put(index,user);
+            index++;
+        }
+        return users;
+    }
+
+    public boolean isAdmin(String username) throws IncorrectIdentification {
+        User u = getUser(username);
+        return u.isSystemManager();
+    }
 
     public List<User> getAdminUser() {
         return adminUser;

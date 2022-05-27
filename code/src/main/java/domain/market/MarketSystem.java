@@ -3,6 +3,7 @@ package domain.market;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
+import domain.notifications.AdminObserver;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
 import domain.Response;
@@ -35,6 +36,8 @@ public class MarketSystem {
     public List<ShopManagersPermissions> checkPermissionsForManager(String managerUsername, int shopID) throws ShopNotFoundException, IllegalArgumentException {
         return ShopController.getInstance().checkPermissionsForManager(managerUsername, shopID);
     }
+
+
 
 
     private static class MarketHolder {
@@ -168,6 +171,7 @@ public class MarketSystem {
 
         if (UserController.getInstance().register(registerUsername, pw)) {
             User u = UserController.getInstance().getUser(registerUsername);
+            notificationManager.notifyAdmin();
             return true;
         }
         return false;
@@ -182,10 +186,24 @@ public class MarketSystem {
         return UserController.getInstance().deleteUserTest(username);
     }
 
-    public boolean deleteUser(String username) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification {
+    public boolean deleteUser(String admin, String username) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");
-        return UserController.getInstance().deleteUserName(username);
+        if (admin == null)
+            throw new BlankDataExc("parameter is null: admin");
+
+        if(!userController.isLogin(admin)){
+            throw new InvalidSequenceOperationsExc(String.format("user %s us not logged-in",admin));
+        }
+        if(!userController.isAdmin(admin)){
+            throw new InvalidAuthorizationException(String.format("user %s us not authorized to perform this action",admin));
+        }
+        boolean result =  UserController.getInstance().deleteUserName(username);
+
+        if(result)
+            notificationManager.notifyAdmin();
+
+        return result;
     }
 
     //TODO: need to get inside  //TODO: not in use
@@ -210,11 +228,11 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: password");
         }
         if(!userController.HasUserEnteredMarket(guestUsername)){
-            throw new InvalidAuthorizationException(String.format("user %s has not entered market", guestUsername));
+            throw new InvalidSequenceOperationsExc(String.format("user %s has not entered market", guestUsername));
         }
 
         output = UserController.getInstance().login(guestUsername,username, pw);
-        //notificationManager.newSocketChannel(output,observer);
+        notificationManager.notifyAdmin();
         return output;
     }
 
@@ -529,10 +547,18 @@ public class MarketSystem {
 
     public void registerForMessages(String username, UserObserver observer) throws IncorrectIdentification, BlankDataExc {
         if(username == null || username.isEmpty() || observer == null){
-            throw new BlankDataExc("Ilegal paramaters");
+            throw new BlankDataExc("Illegal parameters");
         }
         User user = userController.getUser(username);
         notificationManager.registerObserver(user, observer);
+    }
+
+    public void registerForAdminMessages(String username, AdminObserver observer) throws IncorrectIdentification, BlankDataExc {
+        if(username == null || username.isEmpty() || observer == null){
+            throw new BlankDataExc("Illegal parameters");
+        }
+        User user = userController.getUser(username);
+        notificationManager.registerAdminObserver(user, observer);
     }
 
     public void removeFromNotificationCenter(String username){
@@ -541,5 +567,55 @@ public class MarketSystem {
 
     public void sendMessage(User addressee, User sender, String content){
         notificationManager.sendMessage(addressee, content, sender);
+    }
+
+    public Integer getCurrentActiveUsers(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+        if(username == null){
+            throw new BlankDataExc("parameter is null: username");
+        }
+        if(!userController.HasUserEnteredMarket(username) || !userController.isLogin(username)){
+            throw new InvalidSequenceOperationsExc(String.format("user %s has not entered market", username));
+        }
+        return userController.getCurrentActiveUsers(username);
+    }
+
+    public Integer getCurrentActiveMembers(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+        if(username == null){
+            throw new BlankDataExc("parameter is null: username");
+        }
+        if(!userController.HasUserEnteredMarket(username) || !userController.isLogin(username)){
+            throw new InvalidSequenceOperationsExc(String.format("user %s has not entered market", username));
+        }
+        return userController.getCurrentActiveMembers(username);
+    }
+
+    public Integer getCurrentActiveGuests(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+        if(username == null){
+            throw new BlankDataExc("parameter is null: username");
+        }
+        if(!userController.HasUserEnteredMarket(username) || !userController.isLogin(username)){
+            throw new InvalidSequenceOperationsExc(String.format("user %s has not entered market", username));
+        }
+        return userController.getCurrentActiveGuests(username);
+    }
+
+    public Integer getTotalMembers(String username) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+        if(username == null){
+            throw new BlankDataExc("parameter is null: username");
+        }
+        if(!userController.HasUserEnteredMarket(username) || !userController.isLogin(username)){
+            throw new InvalidSequenceOperationsExc(String.format("user %s has not entered market", username));
+        }
+        return userController.getTotalMembers(username);
+    }
+
+    public Map<Integer, User> getAllUsers(String username) throws BlankDataExc, IncorrectIdentification, InvalidAuthorizationException, InvalidSequenceOperationsExc {
+        if(username == null){
+            throw new BlankDataExc("parameter is null: username");
+        }
+        if(!userController.HasUserEnteredMarket(username) || !userController.isLogin(username)){
+            throw new InvalidSequenceOperationsExc(String.format("user %s has not entered market", username));
+        }
+        return userController.getAllUsers(username);
     }
 }

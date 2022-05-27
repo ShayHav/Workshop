@@ -1,15 +1,14 @@
 package domain.notifications;
 
-import domain.Exceptions.ShopNotFoundException;
-import domain.shop.ShopController;
 import domain.user.User;
-import domain.user.UserController;
+
 import java.util.*;
 
 public class NotificationManager {
     private static NotificationManager single_instance = null;
     private final Map<String, List<UserObserver>> observers;
     private final Map<User, List<Message>> userMessages;
+    private final Map<User, List<AdminObserver>> adminObservers;
 
     public static NotificationManager getInstance(){
         if(single_instance == null){
@@ -21,6 +20,7 @@ public class NotificationManager {
     private NotificationManager() {
         userMessages = new HashMap<>();
         observers = new HashMap<>();
+        adminObservers = new HashMap<>();
     }
 
     public synchronized void removeFromObserversList(String user){
@@ -44,5 +44,21 @@ public class NotificationManager {
         userMessages.putIfAbsent(user, new ArrayList<>());
         List<Message> messages = userMessages.get(user);
         messages.forEach(observer::notify);
+    }
+
+    public void registerAdminObserver(User user, AdminObserver adminObserver){
+        if(!adminObservers.containsKey(user)){
+            adminObservers.put(user, new ArrayList<>());
+        }
+        adminObservers.get(user).add(adminObserver);
+    }
+
+    public synchronized void notifyAdmin(){
+        for (User admin: adminObservers.keySet()) {
+            if(admin.isLoggedIn()){
+                if(adminObservers.containsKey(admin))
+                    adminObservers.get(admin).forEach(AdminObserver::notifyAdmin);
+            }
+        }
     }
 }

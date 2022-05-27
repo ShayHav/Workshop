@@ -148,5 +148,9 @@ public class PresentationUser {
         return state == UserState2.systemManager;
     }
 
+    public boolean isGuest(){
+        return state == UserState2.guest;
+    }
+
 
 }

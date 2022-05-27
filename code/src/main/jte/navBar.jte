@@ -91,11 +91,14 @@
                                 <li><a class="dropdown-item-text" href="/users/login">Sign in</a></li>
 
                             @else
-                                <li><p class="dropdown-item-text">Signed in as ${user.getUsername()}</p></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li><p class="dropdown-item-text">Signed in as <span style="font-weight: bold; color: #59c03c ">${user.getUsername()}</span></p></li>
+
                                 @if(user.isAdmin())
-                                    <li><a class="dropdown-item" href="/admin/systemMonitor">System Information</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/admin/${user.getUsername()}/systemMonitor">Users Information</a></li>
+                                    <li><a class="dropdown-item" href="/admin/${user.getUsername()}/sales">All Sales History</a></li>
                                 @endif
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/users/${user.getUsername()}/orders">My Orders</a></li>
                                 <li><a class="dropdown-item" href="/users/${user.getUsername()}/shops">My Shops</a></li>
                                 <li><hr class="dropdown-divider"></li>

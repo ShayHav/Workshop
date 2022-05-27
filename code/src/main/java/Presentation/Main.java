@@ -71,8 +71,14 @@ public class Main {
         app.routes(() -> {
 
             //admin interface
-            path("admin/systemMonitor",() -> {
-                get(userController::renderAdminPage);
+            path("admin",() -> {
+                path("{id}", ()->{
+                    get("systemMonitor",userController::renderAdminPage);
+                    ws("systemMonitor",userController::getSystemInfo);
+
+                    post("removeUser",userController::deleteUserPermanently);
+                });
+
             });
 
             // all the users interfaces

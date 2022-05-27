@@ -6,6 +6,7 @@ import domain.ResponseList;
 import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.*;
+import domain.notifications.AdminObserver;
 import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.user.*;
@@ -635,12 +636,12 @@ public class Services {
 
     }
 
-    //TODO:
-    public Response DeleteUser(String usernames) {
+
+    public Response DeleteUser(String admin, String username) {
         try {
-            if (marketSystem.deleteUser(usernames))
+            if (marketSystem.deleteUser(admin, username))
                 return new Response();
-        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification e) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification | InvalidAuthorizationException e) {
             return new Response(e.getMessage());
         }
         return null;
@@ -823,12 +824,66 @@ public class Services {
         }
     }
 
+    public Response registerForAdminMessages(String username, AdminObserver observer){
+        try{
+            marketSystem.registerForAdminMessages(username, observer);
+            return new Response();
+        } catch (IncorrectIdentification | BlankDataExc incorrectIdentification) {
+            return new Response(incorrectIdentification.getMessage());
+        }
+    }
+
     public Response removeFromNotificationCenter(String username){
         try{
             marketSystem.removeFromNotificationCenter(username);
             return new Response();
         } catch (Exception e){
             return new Response(e.getMessage());
+        }
+    }
+
+    public ResponseT<Integer> getCurrentActiveUsers(String username){
+        try{
+            Integer result = marketSystem.getCurrentActiveUsers(username);
+            return new ResponseT<>(result);
+        } catch (IncorrectIdentification | InvalidSequenceOperationsExc | InvalidAuthorizationException | BlankDataExc e) {
+            return new ResponseT<>(e.getMessage());
+        }
+    }
+
+    public ResponseT<Integer> getCurrentActiveMembers(String username){
+        try{
+            Integer result = marketSystem.getCurrentActiveMembers(username);
+            return new ResponseT<>(result);
+        } catch (IncorrectIdentification | InvalidSequenceOperationsExc | InvalidAuthorizationException | BlankDataExc e) {
+            return new ResponseT<>(e.getMessage());
+        }
+    }
+
+    public ResponseT<Integer> getCurrentActiveGuests(String username){
+        try{
+            Integer result = marketSystem.getCurrentActiveGuests(username);
+            return new ResponseT<>(result);
+        } catch (IncorrectIdentification | InvalidSequenceOperationsExc | InvalidAuthorizationException | BlankDataExc e) {
+            return new ResponseT<>(e.getMessage());
+        }
+    }
+
+    public ResponseT<Integer> getTotalMembers(String username){
+        try{
+            Integer result = marketSystem.getTotalMembers(username);
+            return new ResponseT<>(result);
+        } catch (IncorrectIdentification | InvalidSequenceOperationsExc | InvalidAuthorizationException | BlankDataExc e) {
+            return new ResponseT<>(e.getMessage());
+        }
+    }
+
+    public ResponseMap<Integer,User> getAllUsers(String username){
+        try{
+            Map<Integer,User> result = marketSystem.getAllUsers(username);
+            return new ResponseMap<>(result);
+        } catch (IncorrectIdentification | InvalidSequenceOperationsExc | InvalidAuthorizationException | BlankDataExc e) {
+            return new ResponseMap<>(e.getMessage());
         }
     }
 }

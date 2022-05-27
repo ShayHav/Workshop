@@ -7,8 +7,10 @@ import Presentation.Model.Messages.RegisterMessage;
 import Service.Services;
 import domain.Response;
 import domain.ResponseList;
+import domain.ResponseMap;
 import domain.ResponseT;
 import domain.notifications.Message;
+import domain.notifications.SystemInfoMessage;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.Cart;
@@ -31,7 +33,7 @@ public class UserController {
         services = Services.getInstance();
     }
 
-    public PresentationUser getUser(String username){
+    public PresentationUser getUser(String username) {
         return requestedUsers.get(username);
     }
 
@@ -39,7 +41,7 @@ public class UserController {
         String guest = ctx.cookieStore("uid");
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
-        ResponseT<User> response = services.Login(guest,username, password,null);
+        ResponseT<User> response = services.Login(guest, username, password, null);
         if (response.isErrorOccurred()) {
             int errorCode = 401;
             ctx.status(errorCode);
@@ -87,7 +89,7 @@ public class UserController {
 
         wsConfig.onMessage(ctx -> {
             RegisterMessage message = ctx.messageAsClass(RegisterMessage.class);
-            Response response = services.Register(message.getGuestUsername(), message.getUsername(),message.getPassword());
+            Response response = services.Register(message.getGuestUsername(), message.getUsername(), message.getPassword());
             ctx.send(response);
         });
     }
@@ -179,8 +181,8 @@ public class UserController {
             String expirationDate = checkout.getMonth() + "/" + checkout.getYear();
             ResponseList<String> response = services.Checkout(username, checkout.getFullName(), checkout.getAddress(), checkout.getPhoneNumber(), checkout.getCardNumber(), expirationDate);
             StringBuilder error = new StringBuilder(response.isErrorOccurred() ? response.errorMessage : "");
-            if(response.getValue().size() > 0){
-                for (String s: response.getValue()) {
+            if (response.getValue().size() > 0) {
+                for (String s : response.getValue()) {
                     error.append("/n").append(s);
                 }
 
@@ -205,18 +207,18 @@ public class UserController {
         PresentationUser user = getUser(ctx);
         ResponseList<Order> response = services.getOrderHistoryOfUser(user.getUsername());
 
-        if(response.isErrorOccurred()){
+        if (response.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
         }
 
         List<PresentationOrder> orders = response.getValue().stream().map(PresentationOrder::new).collect(Collectors.toList());
-        ctx.render("UserOrderHistory.jte", Map.of("user", user, "orders",orders));
+        ctx.render("UserOrderHistory.jte", Map.of("user", user, "orders", orders));
     }
 
     public void renderUserShops(Context ctx) {
         PresentationUser user = getUser(ctx);
         ResponseList<Shop> response = services.GetAllUserShops(user.getUsername());
-        if(response.isErrorOccurred()){
+        if (response.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
         }
 
@@ -227,37 +229,65 @@ public class UserController {
     public void checkUser(Context context) throws AuthenticationException {
         PresentationUser currentUser = getUser(context);
         String requestedUsername = context.pathParam("id");
-        if(!currentUser.getUsername().equals(requestedUsername)){
+        if (!currentUser.getUsername().equals(requestedUsername)) {
             throw new AuthenticationException("you don't have privilege to view this page");
         }
     }
 
 
-    public void renderAdminPage(Context ctx){
+    public void renderAdminPage(Context ctx) {
         PresentationUser user = getUser(ctx);
-        if(!user.isAdmin()){
+        String username = user.getUsername();
+
+        ResponseMap<Integer, User> users = services.getAllUsers(username);
+        ResponseT<Integer> activeUsers = Services.getInstance().getCurrentActiveUsers(username);
+        ResponseT<Integer> activeMembers = Services.getInstance().getCurrentActiveMembers(username);
+        ResponseT<Integer> activeGuests = Services.getInstance().getCurrentActiveGuests(username);
+        ResponseT<Integer> totalRegistered = Services.getInstance().getTotalMembers(username);
+
+        if (users.isErrorOccurred()) {
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", users.errorMessage, "status", 400));
+        }
+        else if (activeUsers.isErrorOccurred()) {
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", activeUsers.errorMessage, "status", 400));
+        }
+        else if (activeMembers.isErrorOccurred()) {
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", activeMembers.errorMessage, "status", 400));
+        }
+        else if (activeGuests.isErrorOccurred()) {
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", activeGuests.errorMessage, "status", 400));
+        }
+        else if (totalRegistered.isErrorOccurred()) {
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", totalRegistered.errorMessage, "status", 400));
+        }
+        else if (!user.isAdmin()) {
             String errorMessage = "you don't have privilege to view this page";
             ctx.status(403).render("errorPage.jte", Map.of("errorMessage", errorMessage, "status", 403));
         }
-        else{
-            ctx.render("adminManagingPage.jte", Map.of("admin", user));
+        else {
+            Map<Integer, PresentationUser> presentationUsers = new HashMap<>();
+            for (Integer i : users.getValue().keySet()
+            ) {
+                presentationUsers.put(i, new PresentationUser(users.getValue().get(i)));
+            }
+            ctx.render("adminManagingPage.jte", Map.of("admin", user, "users", presentationUsers, "activeUsers", activeUsers.getValue(), "activeMembers", activeMembers.getValue(), "activeGuests", activeGuests.getValue(), "totalRegistered", totalRegistered.getValue()));
         }
     }
 
     public void messagesHandler(WsConfig wsConfig) {
-        wsConfig.onConnect(ctx ->{
+        wsConfig.onConnect(ctx -> {
             PresentationUser currentUser = getUser(ctx.pathParam("id"));
             Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
-                if(message.getAddressee().getUserName().equals(currentUser.getUsername())){
+                if (message.getAddressee().getUserName().equals(currentUser.getUsername())) {
                     ctx.send(message);
                 }
             });
-            if(response.isErrorOccurred()){
+            if (response.isErrorOccurred()) {
                 ctx.send(response);
             }
         });
 
-        wsConfig.onMessage(ctx ->{
+        wsConfig.onMessage(ctx -> {
             Message message = ctx.messageAsClass(Message.class);
         });
 
@@ -275,13 +305,51 @@ public class UserController {
     }
 
     public void getMessagesCount(WsConfig wsConfig) {
-        wsConfig.onConnect(ctx-> {
+        wsConfig.onConnect(ctx -> {
             PresentationUser currentUser = getUser(ctx.pathParam("id"));
             Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
-                if(message.getAddressee().getUserName().equals(currentUser.getUsername())){
+                if (message.getAddressee().getUserName().equals(currentUser.getUsername())) {
                     ctx.send(message);
                 }
             });
         });
+    }
+
+    public void getSystemInfo(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx -> {
+            PresentationUser currentUser = getUser(ctx.pathParam("id"));
+            String username = currentUser.getUsername();
+
+            Response response = services.registerForAdminMessages(username, () -> {
+                ResponseT<Integer> currentActiveUsers = Services.getInstance().getCurrentActiveUsers(username);
+                ResponseT<Integer> currentActiveMembers = Services.getInstance().getCurrentActiveMembers(username);
+                ResponseT<Integer> currentActiveGuests = Services.getInstance().getCurrentActiveGuests(username);
+                ResponseT<Integer> totalRegistered = Services.getInstance().getTotalMembers(username);
+                ResponseMap<Integer, User> users = Services.getInstance().getAllUsers(username);
+
+                Map<Integer, PresentationUser> presentationUsers = new HashMap<>();
+                for (Integer i : users.getValue().keySet()
+                ) {
+                    presentationUsers.put(i, new PresentationUser(users.getValue().get(i)));
+
+                }
+                SystemInfoMessage message = new SystemInfoMessage(currentActiveUsers.getValue(), currentActiveMembers.getValue(), currentActiveGuests.getValue(), totalRegistered.getValue(), presentationUsers);
+                ctx.send(message);
+            });
+
+        });
+    }
+
+    public void deleteUserPermanently(Context ctx) {
+        String admin = ctx.pathParam("id");
+        String username = ctx.formParam("username");
+        Response response = services.DeleteUser(admin,username);
+        if(response.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+        }
+        else{
+            String path = "/admin/" + admin + "/systemMonitor";
+            ctx.redirect(path);
+        }
     }
 }
