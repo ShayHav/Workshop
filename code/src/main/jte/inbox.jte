@@ -20,7 +20,7 @@
             <div id="messageView" class="container visually-hidden">
                 <h3>Current Message</h3>
                 <h4>From: <span id="sender"></span></h4>
-                <p class="fs-5"><span id="messageContent"></span></p>
+                <p id="messageContent" class="fs-5" style="white-space: pre-line"></p>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
     socket.onmessage = function (event){
         const message = JSON.parse(event.data);
         messages.push(message);
-
+        console.log(message)
         let newBtn = document.createElement('button');
         newBtn.classList.add('list-group-item', 'list-group-item-action');
         if(!message.readed){
@@ -50,7 +50,7 @@
         document.querySelector("#messageView").classList.remove("visually-hidden");
         document.querySelector('#messageView').classList.add('border', 'rounded');
         btn.classList.remove('fw-bold');
-        message.readed = true;
+        message.read = true;
         let counter = document.querySelector('#messageCount');
         let count = parseInt(counter.textContent);
         counter.textContent = isNaN(count) ? '' : count === 1 ? '' : --count;

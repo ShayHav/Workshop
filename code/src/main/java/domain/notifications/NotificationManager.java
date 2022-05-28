@@ -61,4 +61,11 @@ public class NotificationManager {
             }
         }
     }
+
+    public long getNumberOfUnreadMessage(User addressee){
+        if(userMessages.containsKey(addressee)){
+            return userMessages.get(addressee).stream().filter(message -> !message.isRead()).count();
+        }
+        return 0;
+    }
 }

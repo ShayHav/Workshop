@@ -484,14 +484,15 @@ public class Shop {
 
     private void sendCheckoutMessage(Order order){
         MarketSystem  market = MarketSystem.getInstance();
+        String message = order.checkoutMessage();
         User buyer = null;
         try {
             buyer = market.getUser(order.getUserID());
         }catch (Exception e){}
         User finalBuyer = buyer;
         ShopOwners.values().forEach(owner -> {
-              market.sendMessage(owner, finalBuyer, "someone bought something from your store");
+              market.sendMessage(owner, finalBuyer,message );
         });
-        market.sendMessage(ShopFounder, finalBuyer, "someone bought something from your store");
+        market.sendMessage(ShopFounder, finalBuyer, message);
     }
 }
