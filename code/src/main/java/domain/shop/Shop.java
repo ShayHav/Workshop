@@ -266,6 +266,7 @@ public class Shop {
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(products, transaction, product_PricePer);
+        sendCheckoutMessage(o);
         return new ResponseT<>(o);
     }
 
@@ -479,5 +480,18 @@ public class Shop {
 
     public String getShopName() {
         return this.name;
+    }
+
+    private void sendCheckoutMessage(Order order){
+        MarketSystem  market = MarketSystem.getInstance();
+        User buyer = null;
+        try {
+            buyer = market.getUser(order.getUserID());
+        }catch (Exception e){}
+        User finalBuyer = buyer;
+        ShopOwners.values().forEach(owner -> {
+              market.sendMessage(owner, finalBuyer, "someone bought something from your store");
+        });
+        market.sendMessage(ShopFounder, finalBuyer, "someone bought something from your store");
     }
 }
