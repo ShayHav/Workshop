@@ -232,7 +232,7 @@ class MarketSystemTest {
     }
 
     @Test
-    void leaveMarket() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    void registerLogInCreateAppointManagerAddPermissionCloseShopOpenAddProduct() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         List<ShopManagersPermissions> shopManagersPermissionsList = new LinkedList<>();
         shopManagersPermissionsList.add(ShopManagersPermissions.OpenShop);
         shopManagersPermissionsList.add(ShopManagersPermissions.CloseShop);
@@ -260,6 +260,8 @@ class MarketSystemTest {
                         marketSystem.logout(nitayName[finalI]);
                         marketSystem.logIn(userName[finalI], userPass[finalI],null);
                         marketSystem.CloseShop(s.getShopID(),userName[finalI]);
+                        marketSystem.OpenShop(s.getShopID(),userName[finalI]);
+                        marketSystem.AddProductToShopInventory(001,"basketball","sports","sports",50.0,50,userName[finalI],s.getShopID());
                     } catch (InvalidSequenceOperationsExc e) {
                         e.printStackTrace();
                     } catch (IncorrectIdentification incorrectIdentification) {
@@ -286,7 +288,7 @@ class MarketSystemTest {
         }
         for(int i =1;i<4;i++){
             Shop s = marketSystem.getShop(i);
-            assertFalse(s.isOpen());
+            assertTrue(s.isOpen());
         }
     }
 
