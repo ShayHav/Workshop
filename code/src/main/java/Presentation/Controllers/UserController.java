@@ -3,6 +3,7 @@ package Presentation.Controllers;
 import Presentation.Model.*;
 import Presentation.Model.Messages.AddToCartMessage;
 import Presentation.Model.Messages.CheckoutFormMessage;
+import Presentation.Model.Messages.NotificationMessage;
 import Presentation.Model.Messages.RegisterMessage;
 import Service.Services;
 import domain.Response;
@@ -280,7 +281,8 @@ public class UserController {
             PresentationUser currentUser = getUser(ctx.pathParam("id"));
             Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
                 if (message.getAddressee().getUserName().equals(currentUser.getUsername())) {
-                    ctx.send(message);
+                    NotificationMessage notification = new NotificationMessage(message);
+                    ctx.send(notification);
                 }
             });
             if (response.isErrorOccurred()) {
@@ -289,7 +291,8 @@ public class UserController {
         });
 
         wsConfig.onMessage(ctx -> {
-            Message message = ctx.messageAsClass(Message.class);
+            NotificationMessage message = ctx.messageAsClass(NotificationMessage.class);
+
         });
 
         wsConfig.onClose(ctx -> {
@@ -309,8 +312,9 @@ public class UserController {
         wsConfig.onConnect(ctx -> {
             PresentationUser currentUser = getUser(ctx.pathParam("id"));
             Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
-                if (message.getAddressee().getUserName().equals(currentUser.getUsername())) {
-                    ctx.send(message);
+                ResponseT<Long> numberOfUnreadMessages = services.getNumberOfUnreadMessages(currentUser.getUsername());
+                if(!numberOfUnreadMessages.isErrorOccurred()){
+                    ctx.send(numberOfUnreadMessages.getValue());
                 }
             });
         });

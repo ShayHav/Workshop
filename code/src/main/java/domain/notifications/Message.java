@@ -4,15 +4,23 @@ import domain.user.User;
 
 public class Message {
 
-    private final User sender;
+    private final String sender;
     private final User addressee;
     private final String content;
-    private boolean readed;
+    private boolean read;
 
     public Message(User sender, User addressee, String content){
+        this.sender = sender.getUserName();
+        this.addressee = addressee;
+        this.content = content;
+        read = false;
+    }
+
+    public Message(String sender, User addressee, String content){
         this.sender = sender;
         this.addressee = addressee;
         this.content = content;
+        read = false;
     }
 
     public String getContent() {
@@ -23,7 +31,15 @@ public class Message {
         return addressee;
     }
 
-    public User getSender() {
+    public String getSender() {
         return sender;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void markAsRead(){
+        read = true;
     }
 }

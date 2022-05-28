@@ -886,4 +886,12 @@ public class Services {
             return new ResponseMap<>(e.getMessage());
         }
     }
+
+    public ResponseT<Long> getNumberOfUnreadMessages(String username){
+        try{
+            return new ResponseT<>(marketSystem.getNumberOfUnreadMessages(username));
+        } catch (IncorrectIdentification | BlankDataExc error) {
+            return new ResponseT<>(error.getMessage());
+        }
+    }
 }

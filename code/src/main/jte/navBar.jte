@@ -14,12 +14,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script>
-        const messagesSocket = new WebSocket('ws://localhost:${Presentation.Main.port}/${user.getUsername()}/messages/getCount');
-
+        const messagesSocket = new WebSocket('ws://localhost:${Presentation.Main.port}/users/${user.getUsername()}/messages/getCount');
         messagesSocket.onmessage = (event) => {
+            let count = event.data;
             let counter = document.querySelector('#messageCount');
-            let count = counter.textContent === '' ? 0 : parseInt(counter.textContent);
-            counter.textContent = ++count;
+            counter.textContent = count === 0 ? '' : count;
         }
     </script>
 </head>
@@ -74,9 +73,7 @@
                         <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
                     </svg>
                     <span id='messageCount'
-                          class="position-absolute top-35 start-100 translate-middle badge rounded-pill bg-danger">0
-                        <span class="visually-hidden">unread messages</span>
-                    </span>
+                          class="position-absolute top-35 start-100 translate-middle badge rounded-pill bg-danger"></span>
                 </a>
             </div>
             <div class="col-2">

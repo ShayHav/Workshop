@@ -619,4 +619,9 @@ public class MarketSystem {
         }
         return userController.getAllUsers(username);
     }
+
+    public long getNumberOfUnreadMessages(String username) throws IncorrectIdentification, BlankDataExc {
+        User user = getUser(username);
+        return notificationManager.getNumberOfUnreadMessage(user);
+    }
 }
