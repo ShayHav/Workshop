@@ -329,6 +329,7 @@ public class Shop {
                         managerUser.AppointedMeManager(this,usertarget);
                         ShopManagers.putIfAbsent(usertarget, newManager);
                         newManager.addRole(shopID,Role.ShopManager);
+                        shopManagersPermissionsController.initManager(newManager.getUserName());
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                         return String.format("Appoint New ShopManager User: %s", usertarget);
                     }
@@ -472,4 +473,7 @@ public class Shop {
         return inventory.isInStock(prodID);
     }
 
+    public boolean isManager(String userName) {
+        return ShopManagers.containsKey(userName);
+    }
 }

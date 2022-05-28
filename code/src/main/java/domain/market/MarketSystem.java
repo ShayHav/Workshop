@@ -26,7 +26,7 @@ public class MarketSystem {
     private ExternalConnector externalConnector;
     private NotificationManager notificationManager = NotificationManager.getInstance();
     private final UserController userController = UserController.getInstance();
-    //private final ShopController shopController = ShopController.getInstance();
+    private final ShopController shopController = ShopController.getInstance();
 
     private MarketSystem() {
         eventLogger.logMsg(Level.INFO, "System start");

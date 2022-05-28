@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class ShopManagersPermissionsController {
+    private List<ShopManagersPermissions> managerinit = List.of(new ShopManagersPermissions[]{ShopManagersPermissions.AddProductToInventory, ShopManagersPermissions.RemoveProductFromInventory});
     private Map<String, List<ShopManagersPermissions>> shopManagersPermissionsMap;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
 
@@ -143,5 +144,12 @@ public class ShopManagersPermissionsController {
 
     public List<ShopManagersPermissions> getPermissions(String managerUsername) {
         return shopManagersPermissionsMap.get(managerUsername);
+    }
+
+    public void initManager(String userName) {
+        List<ShopManagersPermissions> init = new LinkedList<>();
+        for(ShopManagersPermissions shopManagersPermissions : managerinit)
+            init.add(shopManagersPermissions);
+        shopManagersPermissionsMap.put(userName,init);
     }
 }
