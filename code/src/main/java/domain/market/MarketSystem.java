@@ -3,6 +3,7 @@ package domain.market;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
+import domain.ResponseMap;
 import domain.notifications.AdminObserver;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
@@ -448,7 +449,7 @@ public class MarketSystem {
         return userController.removeProductFromCart(username, shopId, productId);
     }
 
-    public List<Order> getOrderHistoryForShops(String username, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException, BlankDataExc {
+    public Map<Shop, List<Order>> getOrderHistoryForShops(String username, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification, ShopNotFoundException, BlankDataExc {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");
         if (userController.isLogin(username))
@@ -464,7 +465,7 @@ public class MarketSystem {
         else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
-    public List<Order> getOrderHistoryForUsers(String username, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc {
+    public Map<User, List<Order>> getOrderHistoryForUsers(String username, Filter<Order> f) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");
         if (userController.isLogin(username))

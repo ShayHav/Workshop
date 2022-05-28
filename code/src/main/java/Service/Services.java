@@ -673,12 +673,12 @@ public class Services {
      * @param shopID
      * @return
      */
-    public ResponseList<Order> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID) {
+    public ResponseMap<Shop, List<Order>> getOrderHistoryForShops(String userName, Filter<Order> f, List<Integer> shopID) {
         try {
-            List<Order> result = marketSystem.getOrderHistoryForShops(userName, f);
-            return new ResponseList<>(result);
+            Map<Shop, List<Order>> result = marketSystem.getOrderHistoryForShops(userName, f);
+            return new ResponseMap<Shop, List<Order>>(result);
         } catch (IncorrectIdentification | ShopNotFoundException | InvalidAuthorizationException | BlankDataExc exception) {
-            return new ResponseList<>(exception.getLocalizedMessage());
+            return new ResponseMap<>(exception.getLocalizedMessage());
         }
 
     }
@@ -704,12 +704,12 @@ public class Services {
      * @param userNames
      * @return list of Response object
      */
-    public ResponseList<Order> getOrderHistoryForUsers(String userName, Filter<Order> f, List<String> userNames) {
+    public ResponseMap<User, List<Order>>  getOrderHistoryForUsers(String userName, Filter<Order> f, List<String> userNames) {
         try {
-            List<Order> result = marketSystem.getOrderHistoryForUsers(userName, f);
-            return new ResponseList<>(result);
+            Map<User, List<Order>> result  = marketSystem.getOrderHistoryForUsers(userName, f);
+            return new ResponseMap<>(result);
         } catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc e) {
-            return new ResponseList<>(e.getMessage());
+            return new ResponseMap<>(e.getMessage());
         }
     }
 

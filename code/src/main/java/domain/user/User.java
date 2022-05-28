@@ -415,8 +415,8 @@ public class User {
         return new UserSearchInfo(userName);
     }
 
-    public List<Order> getOrderHistoryForShops(Filter<Order> f) throws InvalidAuthorizationException, ShopNotFoundException {
-        if(isSystemManager && us == UserState2.member)
+    public Map<Shop, List<Order>> getOrderHistoryForShops(Filter<Order> f) throws InvalidAuthorizationException, ShopNotFoundException {
+        if(isSystemManager && us == UserState2.systemManager)
             return systemManagerGetOrderHistoryForShops(f);
         else {
             errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
@@ -424,8 +424,8 @@ public class User {
         }
     }
 
-    public List<Order> getOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
-        if(isSystemManager && us == UserState2.member)
+    public Map<User, List<Order>> getOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
+        if(isSystemManager && us == UserState2.systemManager)
             return systemManagerGetOrderHistoryForUsers(f);
         else {
             errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
@@ -434,16 +434,15 @@ public class User {
     }
 
 
-    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
+    private Map<Shop, List<Order>> systemManagerGetOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
         ControllersBridge cb = ControllersBridge.getInstance();
-        List<Order> result = cb.getOrderHistoryForShops();
-        return f.applyFilter(result);
+        return cb.getOrderHistoryForShops(f);
     }
 
-    private List<Order> systemManagerGetOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
+    private Map<User, List<Order>> systemManagerGetOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
         UserController uc = UserController.getInstance();
-        List<Order> result = uc.getOrderHistoryForUsers();
-        return f.applyFilter(result);
+        return uc.getOrderHistoryForUsers(f);
+
     }
 
 

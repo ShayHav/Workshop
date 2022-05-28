@@ -245,10 +245,12 @@ public class ShopController {
       * @param shopId
       * @return
       */
-    public List<Order> getOrderHistoryForShops() throws ShopNotFoundException {
-        List<Order> orders = new ArrayList<>();
+    public Map<Shop,List<Order>> getOrderHistoryForShops(Filter<Order> filter) throws ShopNotFoundException {
+        Map<Shop,List<Order>> orders = new HashMap<>();
         for (Shop s : shopList.values()) {
-            orders.addAll(s.getOrders());
+            List<Order> shopOrders = s.getOrders();
+            if(shopOrders.size()> 0)
+                orders.put(s, filter.applyFilter(shopOrders));
         }
         return orders;
     }

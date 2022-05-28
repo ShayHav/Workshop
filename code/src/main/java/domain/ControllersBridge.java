@@ -9,8 +9,10 @@ import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
 import domain.user.User;
 import domain.user.UserController;
+import domain.user.filter.Filter;
 
 import java.util.List;
+import java.util.Map;
 
 public class ControllersBridge {
     private static ControllersBridge instance = null;
@@ -55,8 +57,8 @@ public class ControllersBridge {
      * a OrderHistory query is sent to shopController
      * @return
      */
-    public List<Order> getOrderHistoryForShops() throws ShopNotFoundException {
-        return ShopController.getInstance().getOrderHistoryForShops();
+    public Map<Shop, List<Order>> getOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
+        return ShopController.getInstance().getOrderHistoryForShops(f);
     }
 
     /**

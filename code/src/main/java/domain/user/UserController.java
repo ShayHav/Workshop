@@ -5,6 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
 import domain.Response;
 import domain.shop.Order;
+import domain.shop.Shop;
 import domain.shop.ShopController;
 import domain.user.filter.*;
 
@@ -233,11 +234,13 @@ public class UserController {
         return true;
     }
 
-    public List<Order> getOrderHistoryForUsers() {
-        List<Order> orders = new ArrayList<>();
+    public Map<User, List<Order>> getOrderHistoryForUsers(Filter<Order> f) {
+        Map<User, List<Order>> orders = new HashMap<>();
         synchronized (memberList) {
             for (User user : memberList.values()) {
-                orders.addAll(user.getHistoryOfOrders());
+                List<Order> userOrders = user.getHistoryOfOrders();
+                if(userOrders.size() > 0)
+                    orders.put(user,f.applyFilter(userOrders));
             }
 
             return orders;
@@ -303,7 +306,7 @@ public class UserController {
      * @return
      * @throws InvalidAuthorizationException
      */
-    public List<Order> getOrderHistoryForShops(String userName, Filter<Order> f) throws
+    public Map<Shop, List<Order>> getOrderHistoryForShops(String userName, Filter<Order> f) throws
             InvalidAuthorizationException, ShopNotFoundException {
         if (!activeUser.containsKey(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
@@ -321,7 +324,7 @@ public class UserController {
      * @return
      * @throws InvalidAuthorizationException
      */
-    public List<Order> getOrderHistoryForUsers(String userName, Filter<Order> f) throws
+    public Map<User, List<Order>> getOrderHistoryForUsers(String userName, Filter<Order> f) throws
             InvalidAuthorizationException {
         if (!activeUser.containsKey(userName)) {
             errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");

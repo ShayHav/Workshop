@@ -15,6 +15,7 @@ import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.Cart;
 import domain.user.User;
+import domain.user.filter.SearchOrderFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
 import org.eclipse.jetty.util.ajax.JSON;
@@ -352,4 +353,38 @@ public class UserController {
             ctx.redirect(path);
         }
     }
+
+    public void renderAllHistorySales(Context ctx) {
+        PresentationUser user = getUser(ctx);
+        String username = user.getUsername();
+        ResponseMap<User,List<Order>> usersResponse = services.getOrderHistoryForUsers(username, new SearchOrderFilter(), null);
+        ResponseMap<Shop,List<Order>> shopsResponse = services.getOrderHistoryForShops(username,new SearchOrderFilter(), null);
+
+        if(usersResponse.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", usersResponse.errorMessage, "status", 400));
+        }
+        else if(shopsResponse.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", usersResponse.errorMessage, "status", 400));
+        }
+        else if (!user.isAdmin()) {
+            String errorMessage = "you don't have privilege to view this page";
+            ctx.status(403).render("errorPage.jte", Map.of("errorMessage", errorMessage, "status", 403));
+        }
+
+        Map<PresentationUser,List<PresentationOrder>> usersHistory = new HashMap<>();
+        for(User u: usersResponse.getValue().keySet()){
+            List<PresentationOrder> orders = usersResponse.getValue().get(u).stream().map(PresentationOrder::new).collect(Collectors.toList());
+            usersHistory.put(new PresentationUser(u),orders);
+        }
+
+        Map<PresentationShop,List<PresentationOrder>> shopHistory = new HashMap<>();
+        for(Shop s: shopsResponse.getValue().keySet()){
+            List<PresentationOrder> orders = shopsResponse.getValue().get(s).stream().map(PresentationOrder::new).collect(Collectors.toList());
+            shopHistory.put(new PresentationShop(s),orders);
+        }
+
+        ctx.render("allSalesHistory.jte", Map.of("user", user, "userOrders", usersHistory, "shopOrders", shopHistory));
+    }
+
+
 }

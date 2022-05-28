@@ -77,6 +77,8 @@ public class Main {
                     ws("systemMonitor",userController::getSystemInfo);
 
                     post("removeUser",userController::deleteUserPermanently);
+
+                    get("sales",userController::renderAllHistorySales);
                 });
 
             });
