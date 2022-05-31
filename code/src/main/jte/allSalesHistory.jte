@@ -49,7 +49,7 @@
                         <h5>Total Amount</h5>
                     </div>
                 </div>
-                <div>
+                <div style="align-items: center">
                     @for(PresentationOrder order : shopOrders.get(shop))
                         <div class="card">
                             <div class="card-header" id="heading${order.id}">

@@ -14,11 +14,16 @@
                     <h2 class="card-title">${shop.name}</h2>
                     <p class="card-text">${shop.description}</p>
                     @if(shop.isOpen())
-                        <p class="card-text text-success">The shop is open</p>
+                        <p class="card-text text-success fw-bold">The shop is open</p>
+                        <a href="/shops/${shop.id}" class="btn btn-primary">Visit Shop</a>
                     @else
-                        <p class="card-text text-danger">The shop is closed</p>
+                        @if(!shop.isFounder(user))
+                            <p class="card-text text-danger fw-bold">The shop is closed</p>
+                        @else
+                            <p class="card-text text-danger fw-bold">The shop is closed</p>
+                            <a href="/shops/${shop.id}" class="btn btn-primary">Visit Shop</a>
+                        @endif
                     @endif
-                    <a href="/shops/${shop.id}" class="btn btn-primary">Visit Shop</a>
                 </div>
             </div>
         @endfor

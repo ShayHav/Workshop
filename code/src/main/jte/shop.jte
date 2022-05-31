@@ -14,9 +14,9 @@
         @if(user.hasInventoryPermission(Integer.parseInt(shop.id)))
             <div class="col-2">
                 @if(shop.isOpen)
-                    <a href="/shops/${shop.id}/addProduct" class="btn btn-primary">Add Product</a>
+                    <a href="/shops/${shop.id}/addProduct" class="btn btn-success">Add Product</a>
                 @else
-                    <a href="/shops/${shop.id}/addProduct" class="btn btn-primary disabled" aria-disabled="true">Add
+                    <a href="/shops/${shop.id}/addProduct" class="btn btn-success disabled" aria-disabled="true">Add
                         Product</a>
                 @endif
             </div>
@@ -59,7 +59,7 @@
                         <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary">Show Product</a>
                     @else
                         <a href="/shops/${shop.id}/${product.serialNumber}" class="btn btn-primary">Show Product</a>
-                        <p class="mt-2 card-text text-danger">Out Of Stock</p>
+                        <p class="mt-2 card-text text-danger fw-bold">Out Of Stock</p>
                     @endif
                 </div>
             </div>

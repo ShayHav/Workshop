@@ -17,7 +17,7 @@
             @for(PresentationUser owner: shop.managers)
                 <li id="${owner.getUsername()}" class="list-group-item">
                     <h3 class="fs-5">${owner.getUsername()}</h3>
-                    @if(user.isMyApointed(shop.getID(), owner))
+                    @if(user.isMyAppointed(shop.getID(), owner) || shop.isFounder(user))
                         <form class="remove-owner">
                             <input class="visually-hidden" name="ownerID" type="text" value="${owner.getUsername()}"
                                    readonly>
@@ -33,7 +33,7 @@
                     <div class="row align-items-end">
                         <div class="col-8">
                             <label for="ownerID">Owner's Username</label>
-                            <input id="ownerID" name="ownerID" class="form-text form-control" type="text" required>
+                            <input placeholder="username to appoint" id="ownerID" name="ownerID" class="form-text form-control" type="text" required>
                         </div>
                         <div class="col-4 mb-0">
                             <button type="button" id="add-owner-btn" class="btn btn-success">Add Owner</button>
@@ -50,7 +50,7 @@
             @for(PresentationUser manager: shop.managers)
                 <li id="${manager.getUsername()}" class="list-group-item">
                     <h3 class="fs-5">${manager.getUsername()}</h3>
-                    @if(user.isMyApointed(shop.getID(), manager))
+                    @if(user.isMyAppointed(shop.getID(), manager) || shop.isFounder(user))
                         <form class="remove-manager">
                             <input class="visually-hidden" name="managerID" type="text" value="${manager.getUsername()}"
                                    readonly>

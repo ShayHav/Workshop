@@ -243,11 +243,12 @@ public class User {
     }
 
     public boolean appointManager(int shopName) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        List<Role> useRolelist = roleList.get(shopName);
-        if(useRolelist==null)
+        List<Role> userolelist = roleList.get(shopName);
+        if(userolelist==null)
             throw new InvalidSequenceOperationsExc();
-        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
+        if ((userolelist.contains(Role.ShopFounder) || userolelist.contains(Role.ShopOwner)) && us == UserState2.member) {
             return true;
+        }
         else {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
             throw new InvalidSequenceOperationsExc();

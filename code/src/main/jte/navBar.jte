@@ -92,7 +92,7 @@
 
                                 @if(user.isAdmin())
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="/admin/${user.getUsername()}/systemMonitor">Users Information</a></li>
+                                    <li><a class="dropdown-item" href="/admin/${user.getUsername()}/systemMonitor">System Information</a></li>
                                     <li><a class="dropdown-item" href="/admin/${user.getUsername()}/sales">All Sales History</a></li>
                                 @endif
                                 <li><hr class="dropdown-divider"></li>

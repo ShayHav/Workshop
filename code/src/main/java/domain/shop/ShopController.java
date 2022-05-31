@@ -284,10 +284,11 @@ public class ShopController {
         return getShop(shop).DismissalOwner(userName, targetUser);
     }
 
-    public List<Shop> getAllUserShops(String username) {
+    public List<Shop> getAllUserShops(String username) throws IncorrectIdentification {
         List<Shop> shops = new ArrayList<>();
         for(Shop shop: shopList.values()){
-            if(shop.getShopFounder().getUserName().equals(username))
+            User user = UserController.getInstance().getUser(username);
+            if(shop.getShopFounder().getUserName().equals(username) || shop.getShopsManagers().contains(user) || shop.getShopOwners().contains(user))
                 shops.add(shop);
         }
         return shops;

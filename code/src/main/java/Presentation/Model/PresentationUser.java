@@ -110,7 +110,7 @@ public class PresentationUser {
         return false;
     }
 
-    public boolean isMyApointed(int shopID, PresentationUser user){
+    public boolean isMyAppointed(int shopID, PresentationUser user){
         for(ManagerAppointment appointment: myAppointments){
             if(appointment.getShop().getShopID() == shopID && user.equals(appointment.getAppointed()))
                 return true;
