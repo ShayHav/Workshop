@@ -36,7 +36,7 @@
         console.log(message)
         let newBtn = document.createElement('button');
         newBtn.classList.add('list-group-item', 'list-group-item-action');
-        if(!message.readed){
+        if(!message.read){
             newBtn.classList.add('fw-bold');
         }
         newBtn.innerText = (message.content.substr(0, 15) + '...');
