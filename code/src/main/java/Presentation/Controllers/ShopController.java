@@ -60,7 +60,7 @@ public class ShopController {
         }
         PresentationShop shop = new PresentationShop(response.getValue());
 
-        if(!shop.isOpen()){
+        if(!shop.isOpen() && !shop.isFounder(user)){
             ctx.status(403);
             String errorMessage = "You have no privilege to access this page";
             ctx.render("errorPage.jte", Map.of("errorMessage", errorMessage, "status", 403));
