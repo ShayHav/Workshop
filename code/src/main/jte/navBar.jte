@@ -16,6 +16,7 @@
     <script>
         const messagesSocket = new WebSocket('ws://localhost:${Presentation.Main.port}/users/${user.getUsername()}/messages/getCount');
         messagesSocket.onmessage = (event) => {
+            console.log(event.data);
             let count = event.data;
             let counter = document.querySelector('#messageCount');
             counter.textContent = count === 0 ? '' : count;

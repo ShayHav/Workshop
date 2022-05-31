@@ -277,11 +277,13 @@ public class UserController {
     }
 
     public void messagesHandler(WsConfig wsConfig) {
+        Map<NotificationMessage,Message> sentMessages = new HashMap<>();
         wsConfig.onConnect(ctx -> {
             PresentationUser currentUser = getUser(ctx.pathParam("id"));
             Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
                 if (message.getAddressee().getUserName().equals(currentUser.getUsername())) {
                     NotificationMessage notification = new NotificationMessage(message);
+                    sentMessages.put(notification, message);
                     ctx.send(notification);
                 }
             });
@@ -292,6 +294,10 @@ public class UserController {
 
         wsConfig.onMessage(ctx -> {
             NotificationMessage message = ctx.messageAsClass(NotificationMessage.class);
+            if(sentMessages.containsKey(message)){
+                Message m = sentMessages.get(message);
+                m.markAsRead();
+            }
 
         });
 
