@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,17 +35,19 @@ class MarketSystemTest {
     private PaymentService ps1 = mock(PaymentService.class);
     private SupplyService ss2 = mock(SupplyService.class);
 
-    /*@BeforeAll
-    void start() throws InvalidSequenceOperationsExc, BlankDataExc {
-        PaymentService ps1 = mock(PaymentService.class);
-        when(ps1.connect()).thenReturn(true);
-        SupplyService ss2 = mock(SupplyService.class);
-        when(ss2.connect()).thenReturn(true);
-        marketSystem.start(ps1,ss2,"admin","admin");
-        marketSystem.register(userName[0],userPass[0] );
-    }
+//    @BeforeAll
+//    void start() throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification {
+//        PaymentService ps1 = mock(PaymentService.class);
+//        when(ps1.connect()).thenReturn(true);
+//        SupplyService ss2 = mock(SupplyService.class);
+//        when(ss2.connect()).thenReturn(true);
+//        marketSystem.start(ps1,ss2,"admin","admin");
+//        marketSystem.register(userName[0],userPass[0] );
+//        DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
+//        PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
+//    }
 
-     */
+
 
     @Test
     void getInfoOfShops() {
@@ -80,6 +83,7 @@ class MarketSystemTest {
         marketSystem.register(userName[0],userPass[0] );
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
+        when(purchasePolicy.checkIfProductRulesAreMet(anyString(), anyInt(), anyDouble(), anyInt())).thenReturn(true);
         ExecutorService pool = Executors.newFixedThreadPool(nitayName.length);
         for(int i =0;i<nitayName.length;i++){
             int finalI = i;
@@ -304,6 +308,8 @@ class MarketSystemTest {
         marketSystem.start(ps1,ss2,"admin","admin");
         marketSystem.register(userName[0],userPass[0] );
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
+        double basePrice = 50;
+        when(discountPolicy.calcPricePerProduct(1, basePrice, 1)).thenReturn(basePrice);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
         ExecutorService pool = Executors.newFixedThreadPool(nitayName.length);
         for(int i =0;i<4;i++){

@@ -232,8 +232,10 @@ public class Shop {
             }catch (ProductNotFoundException prodNotFound){
                 return new ResponseT<>(String.format("this product does not exist in shop %d",shopID));
             }
+            /*
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
                 return new ResponseT<>(String.format("checkout process violates purchase policy in shop %d",shopID));
+             */
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {

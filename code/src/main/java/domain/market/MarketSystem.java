@@ -449,7 +449,6 @@ public class MarketSystem {
     }
 
     public Response AddProductToCart(String userID, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException {
-
         return userController.addProductToCart(userID, shopID, productId, amount);
     }
 
