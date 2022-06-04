@@ -68,4 +68,16 @@ public class NotificationManager {
         }
         return 0;
     }
+
+    public Map<String, List<UserObserver>> getObservers() {
+        return observers;
+    }
+
+    public Map<User, List<AdminObserver>> getAdminObservers() {
+        return adminObservers;
+    }
+
+    public Map<User, List<Message>> getUserMessages() {
+        return userMessages;
+    }
 }
