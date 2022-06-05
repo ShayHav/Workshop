@@ -158,32 +158,6 @@ public class Main {
             ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult, "minPrice", minPrice, "maxPrice", maxPrice, "category", category, "searchBy", searchBy, "query", query));
         });
 
-        app.post("/search", ctx -> {
-            String query = ctx.formParam("query");
-            String searchBy = ctx.formParam("searchBy");
-            PresentationUser user = userController.getUser(ctx);
-            SearchProductFilter filter = shopController.getProductFilterAsForm(ctx);
-
-            ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
-                case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, filter);
-                case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, filter);
-                case "keyword" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, filter);
-                default -> new ResponseMap<>("please choose a suitable query method");
-            } : new ResponseMap<>("not suppose to happen");
-            if (response.isErrorOccurred()) {
-                ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
-                return;
-            }
-            List<PresentationProduct> searchResult = new ArrayList<>();
-            response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
-
-            Double minPrice = filter.getMinPrice();
-            Double maxPrice = filter.getMaxPrice();
-            String category = filter.getCategory() == null? "" : filter.getCategory();
-
-            ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult, "minPrice", minPrice, "maxPrice", maxPrice, "category", category, "searchBy", searchBy, "query", query));
-        });
-
         app.exception(AuthenticationException.class, ((e, ctx) ->
                 ctx.status(400).render("errorPage.jte", Map.of("errorMessage", e.getExplanation(), "status", 400))));
     }

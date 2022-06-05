@@ -313,12 +313,4 @@ public class ShopController {
         return new SearchProductFilter(minPrice, maxPrice,null, null, category);
     }
 
-    public SearchProductFilter getProductFilterAsForm(Context ctx){
-        Double minPrice = ctx.formParamAsClass("minPrice", Double.class).getOrDefault(null);
-        Double maxPrice = ctx.formParamAsClass("maxPrice", Double.class).getOrDefault(null);
-        String category = ctx.formParam("category");
-        category = category == null || category.isEmpty()? null : category;
-
-        return new SearchProductFilter(minPrice, maxPrice,null, null, category);
-    }
 }
