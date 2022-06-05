@@ -4,6 +4,7 @@ import domain.shop.Shop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PresentationShop {
 
@@ -11,6 +12,9 @@ public class PresentationShop {
     public String name;
     public String description;
     public List<PresentationProduct> products;
+    public PresentationUser founder;
+    public boolean isOpen;
+    public List<PresentationUser> managers;
 
     public PresentationShop(String id, String name, String description, List<PresentationProduct> products){
         this.id = id;
@@ -24,6 +28,24 @@ public class PresentationShop {
         name = shop.getName();
         products = new ArrayList<>();
         description = shop.getDescription();
-        // TODO: decide what to do with the product of shop
+        founder = new PresentationUser(shop.getShopFounder());
+        isOpen = shop.isOpen();
+        managers = shop.getShopsManagers().stream().map(PresentationUser::new).collect(Collectors.toList());
+    }
+
+    public boolean isFounder(PresentationUser user){
+        return user.getUsername().equals(founder.getUsername());
+    }
+
+    public boolean isOpen(){
+        return isOpen;
+    }
+
+    public boolean isManager(PresentationUser user){
+        return managers.stream().anyMatch(manager -> manager.getUsername().equals(user.getUsername()));
+    }
+
+    public int getID(){
+        return Integer.parseInt(id);
     }
 }

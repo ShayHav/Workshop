@@ -1,6 +1,6 @@
-package Presentation.Model;
+package Presentation.Model.Messages;
 
-public class CheckoutForm {
+public class CheckoutFormMessage {
     private String fullName;
     private String address;
     private String phoneNumber;
@@ -8,7 +8,7 @@ public class CheckoutForm {
     private String month;
     private String year;
 
-    public CheckoutForm(){
+    public CheckoutFormMessage(){
 
     }
 

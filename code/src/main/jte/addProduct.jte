@@ -21,9 +21,7 @@
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <textarea id="description" name="description" class="form-control" rows="3" required
-                      placeholder="Product Description">
-                </textarea>
+            <textarea id="description" name="description" class="form-control" rows="3" required placeholder="Product Description"></textarea>
         </div>
         <div class="mb-3">
             <label for="category" class="form-label">Category</label>

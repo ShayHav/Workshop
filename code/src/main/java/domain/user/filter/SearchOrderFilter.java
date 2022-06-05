@@ -11,10 +11,10 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class SearchOrderFilter implements Filter<Order> {
-    Double minPrice;
-    Double maxPrice;
-    LocalDate minDate;
-    LocalDate maxDate;
+    private Double minPrice;
+    private Double maxPrice;
+    private LocalDate minDate;
+    private LocalDate maxDate;
 
     public SearchOrderFilter() {
         minPrice = 0d;
@@ -25,18 +25,19 @@ public class SearchOrderFilter implements Filter<Order> {
 
     public SearchOrderFilter(Double minPrice, Double maxPrice, LocalDate minDate, LocalDate maxDate) {
         this.minPrice = Objects.requireNonNullElse(minPrice, 0d);
-        this.maxPrice = Objects.requireNonNullElse(maxPrice, Double.MAX_VALUE);
+        this.maxPrice = Objects.requireNonNullElse(maxPrice, 1000d);
         this.minDate = minDate;
         this.maxDate = maxDate;
     }
 
     public List<Order> applyFilter(List<Order> orders) {
-        EventLoggerSingleton.getInstance().logMsg(Level.INFO, "Operate filer for Orders");
+        EventLoggerSingleton.getInstance().logMsg(Level.INFO, "Operate filter for Orders");
         List<Order> result = new ArrayList<>();
 
         if (minPrice < -1 || maxPrice > Double.MAX_VALUE || minPrice > maxPrice
-                || minDate.isAfter(LocalDate.now()) || maxDate.isAfter(LocalDate.now())
-                || maxDate.isBefore(minDate)) {
+                || (minDate != null && minDate.isAfter(LocalDate.now()))
+                || (maxDate!= null && maxDate.isAfter(LocalDate.now()))
+                || (minDate!= null && maxDate!= null && maxDate.isBefore(minDate))) {
             return result;
         }
 
@@ -51,4 +52,19 @@ public class SearchOrderFilter implements Filter<Order> {
         return result;
     }
 
+    public Double getMaxPrice() {
+        return maxPrice;
+    }
+
+    public Double getMinPrice() {
+        return minPrice;
+    }
+
+    public LocalDate getMaxDate() {
+        return maxDate;
+    }
+
+    public LocalDate getMinDate() {
+        return minDate;
+    }
 }

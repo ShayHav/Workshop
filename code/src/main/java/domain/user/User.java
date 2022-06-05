@@ -39,6 +39,10 @@ public class User {
         us = UserState2.disconnected;
         userCart = new Cart();
         isSystemManager = false;
+        managerAppointeeList = new ArrayList<>();
+        ownerAppointmentList = new ArrayList<>();
+        orderHistory = new ArrayList<>();
+        roleList = new HashMap<>();
     }
 
     public boolean isEnteredMarket() {
@@ -137,7 +141,8 @@ public class User {
      * leave market - user has no state
      */
     public void leaveMarket() {
-        us = null; enteredMarket=false;
+        us = null;
+        enteredMarket=false;
     }
 
     /*
@@ -238,11 +243,12 @@ public class User {
     }
 
     public boolean appointManager(int shopName) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        List<Role> useRolelist = roleList.get(shopName);
-        if(useRolelist==null)
+        List<Role> userolelist = roleList.get(shopName);
+        if(userolelist==null)
             throw new InvalidSequenceOperationsExc();
-        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
+        if ((userolelist.contains(Role.ShopFounder) || userolelist.contains(Role.ShopOwner)) && us == UserState2.member) {
             return true;
+        }
         else {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
             throw new InvalidSequenceOperationsExc();
@@ -252,8 +258,9 @@ public class User {
         List<Role> useRolelist = roleList.get(shopName);
         if(useRolelist==null)
             throw new InvalidSequenceOperationsExc();
-        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
+        if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member) {
             return true;
+        }
         else {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
             throw new InvalidSequenceOperationsExc();
@@ -314,21 +321,12 @@ public class User {
      * login to the system
      */
     public void login() {
-        //todo: checks if is actual user????
         if(isSystemManager) {
-            us = UserState2.member;
+            us = UserState2.systemManager;
         }
         else {
             us = UserState2.member;
         }
-        if(roleList == null)
-            roleList = new HashMap<>();
-        if (ownerAppointmentList == null)
-            ownerAppointmentList = new ArrayList<>();
-        if (managerAppointeeList == null)
-            managerAppointeeList = new ArrayList<>();
-        if (orderHistory == null)
-            orderHistory = new ArrayList<>();
         loggedIn = true;
     }
 
@@ -366,9 +364,15 @@ public class User {
 
     public void addRole(int shop,Role role) {
         List<Role> useRoleList = roleList.get(shop);
-        if(useRoleList!=null)
-            if(useRoleList.contains(role))
+        if(useRoleList!=null) {
+            if (!useRoleList.contains(role))
                 useRoleList.add(role);
+        }
+        else{
+            List<Role> newRoleList = new ArrayList<>();
+            newRoleList.add(role);
+            roleList.put(shop, newRoleList);
+        }
     }
 
     public List<OwnerAppointment> getOwnerAppointmentList() {
@@ -412,35 +416,34 @@ public class User {
         return new UserSearchInfo(userName);
     }
 
-    public List<Order> getOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws InvalidAuthorizationException, ShopNotFoundException {
-        if(isSystemManager && us == UserState2.member)
-            return systemManagerGetOrderHistoryForShops(f,shopID);
+    public Map<Shop, List<Order>> getOrderHistoryForShops(Filter<Order> f) throws InvalidAuthorizationException, ShopNotFoundException {
+        if(isSystemManager && us == UserState2.systemManager)
+            return systemManagerGetOrderHistoryForShops(f);
         else {
-            errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+            errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
             throw new InvalidAuthorizationException("SystemManager", us.toString());
         }
     }
 
-    public List<Order> getOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
-        if(isSystemManager && us == UserState2.member)
-            return systemManagerGetOrderHistoryForUser(f,userID);
+    public Map<User, List<Order>> getOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
+        if(isSystemManager && us == UserState2.systemManager)
+            return systemManagerGetOrderHistoryForUsers(f);
         else {
-            errorLogger.logMsg(Level.WARNING,"guest is not allowed to perform this action");
+            errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
             throw new InvalidAuthorizationException("SystemManager", us.toString());
         }
     }
 
 
-    private List<Order> systemManagerGetOrderHistoryForShops(Filter<Order> f, List<Integer> shopID) throws ShopNotFoundException {
+    private Map<Shop, List<Order>> systemManagerGetOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
         ControllersBridge cb = ControllersBridge.getInstance();
-        List<Order> result = cb.getOrderHistoryForShops(shopID);
-        return f.applyFilter(result);
+        return cb.getOrderHistoryForShops(f);
     }
 
-    private List<Order> systemManagerGetOrderHistoryForUser(Filter<Order> f, List<String>  userID) throws InvalidAuthorizationException {
+    private Map<User, List<Order>> systemManagerGetOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
         UserController uc = UserController.getInstance();
-        List<Order> result = uc.getOrderHistoryForUser(userID);
-        return f.applyFilter(result);
+        return uc.getOrderHistoryForUsers(f);
+
     }
 
 
@@ -494,7 +497,7 @@ public class User {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
@@ -512,7 +515,7 @@ public class User {
      * @throws InvalidSequenceOperationsExc
      * @throws ShopNotFoundException
      */
-    public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+    public boolean DismissalOwner(String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
         if(loggedIn){
             if(isAppointedMeOwner(this,targetUser)) {
                 ControllersBridge.getInstance().DismissalOwner(userName, targetUser, shop);
@@ -524,6 +527,13 @@ public class User {
         throw new InvalidSequenceOperationsExc(String.format("attempt to dismiss user by not system manager: %s",targetUser));
     }
 
+    public void dismissManager(String targetUser, int shop){
+
+    }
+
+    public UserState2 getUs() {
+        return us;
+    }
 }
 
 

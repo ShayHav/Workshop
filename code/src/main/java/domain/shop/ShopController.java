@@ -1,6 +1,5 @@
 package domain.shop;
 
-import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
@@ -36,10 +35,10 @@ public class ShopController {
         return shopCounter;
     }
 
-    public synchronized Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
+    public synchronized Shop createShop(String description, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
         Shop newShop;
         shopCounter++;
-        newShop = new Shop(name,description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+        newShop = new Shop(name, description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
         shopList.put(shopCounter, newShop);
         eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
         return newShop;
@@ -50,7 +49,7 @@ public class ShopController {
         List<Shop> allShops = new ArrayList<>();
         synchronized (this) {
             for (Shop s : shopList.values()) {
-                if(s.isOpen())
+                if (s.isOpen())
                     allShops.add(s);
             }
         }
@@ -69,39 +68,39 @@ public class ShopController {
         return f.applyFilter(info);
     }
 
-    public Map<Integer,List<Product>> searchProductByName(String name, Filter<Product> f) {
+    public Map<Integer, List<Product>> searchProductByName(String name, Filter<Product> f) {
         String lowerName = name.toLowerCase();
-        Map<Integer,List<Product>> products = new HashMap<>();
+        Map<Integer, List<Product>> products = new HashMap<>();
         synchronized (shopList) {
             for (Shop s : shopList.values()) {
                 List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getName().toLowerCase().equals(lowerName)).collect(Collectors.toList());
-                products.put(s.getShopID(),f.applyFilter(shopProducts));
+                products.put(s.getShopID(), f.applyFilter(shopProducts));
             }
         }
         eventLogger.logMsg(Level.INFO, "searchProductByName succeeded");
         return products;
     }
 
-    public Map<Integer,List<Product>> searchProductByKeyword(String keyword, Filter<Product> f) {
+    public Map<Integer, List<Product>> searchProductByKeyword(String keyword, Filter<Product> f) {
         String lowerKeyword = keyword.toLowerCase();
-        Map<Integer,List<Product>> products = new HashMap<>();
+        Map<Integer, List<Product>> products = new HashMap<>();
         synchronized (shopList) {
             for (Shop s : shopList.values()) {
                 List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getName().toLowerCase().contains(lowerKeyword)).collect(Collectors.toList());
-                products.put(s.getShopID(),f.applyFilter(shopProducts));
+                products.put(s.getShopID(), f.applyFilter(shopProducts));
             }
         }
         eventLogger.logMsg(Level.INFO, "searchProductByKeyword succeeded");
         return products;
     }
 
-    public Map<Integer,List<Product>> searchProductByCategory(String category, Filter<Product> f) {
+    public Map<Integer, List<Product>> searchProductByCategory(String category, Filter<Product> f) {
         String category_lower = category.toLowerCase();
-        Map<Integer,List<Product>> products = new HashMap<>();
+        Map<Integer, List<Product>> products = new HashMap<>();
         synchronized (shopList) {
             for (Shop s : shopList.values()) {
                 List<Product> shopProducts = s.getProductInfoOfShop().stream().filter(p -> p.getCategory().toLowerCase().equals(category_lower)).collect(Collectors.toList());
-                products.put(s.getShopID(),f.applyFilter(shopProducts));
+                products.put(s.getShopID(), f.applyFilter(shopProducts));
             }
         }
         eventLogger.logMsg(Level.INFO, "searchProductByKeyword succeeded");
@@ -117,7 +116,7 @@ public class ShopController {
         return shopList.get(shopID);
     }
 
-    public String closeShop(int key, String user) throws InvalidSequenceOperationsExc {
+    public String closeShop(int key, String user) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         Shop s;
         try {
             s = getShop(key);
@@ -130,7 +129,7 @@ public class ShopController {
         return s.getName();
     }
 
-    public String openShop(int key, String user) throws InvalidSequenceOperationsExc {
+    public String openShop(int key, String user) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         Shop s;
         try {
             s = getShop(key);
@@ -191,86 +190,75 @@ public class ShopController {
             return null;
     }
 
-    public String AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public void AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException {
         Shop s;
         try {
             s = getShop(key);
         } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
+            throw snfe;
         }
-        eventLogger.logMsg(Level.INFO, "AppointNewShopManager succeeded");
-        return s.AppointNewShopManager(targetUser, userId);
-    }
-    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        Shop s;
-        try {
-            s = getShop(key);
-        }catch (ShopNotFoundException snfe){
-            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
-        }
-        return s.AppointNewShopOwner(targetUser, userId);
+        s.AppointNewShopManager(targetUser, userId);
     }
 
-   /* public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
+    public void AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException {
         Shop s;
         try {
             s = getShop(key);
         } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
+            throw snfe;
         }
-        synchronized (this) {
-            if (s.removePermissions(shopManagersPermissionsList, tragetUser.getUserName(), id)) {
-                eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
-                return "ShopManagerPermissionsRemove";
-            } else return null;
-        }
+        s.AppointNewShopOwner(targetUser, userId);
     }
 
-    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
-        Shop s;
-        try {
-            s = getShop(key);
-        } catch (ShopNotFoundException snfe) {
-            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
-        }
-        eventLogger.logMsg(Level.INFO, "AppointNewShopOwner succeeded");
-        return s.AppointNewShopOwner(targetUser, userId);
-    }
+    /* public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, User tragetUser, String id) {
+         Shop s;
+         try {
+             s = getShop(key);
+         } catch (ShopNotFoundException snfe) {
+             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+             return null;
+         }
+         synchronized (this) {
+             if (s.removePermissions(shopManagersPermissionsList, tragetUser.getUserName(), id)) {
+                 eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
+                 return "ShopManagerPermissionsRemove";
+             } else return null;
+         }
+     }
 
-    /**
-     *
-     * @param shopId
-     * @return
-     */
-    public List<Order> getOrderHistoryForShops(List<Integer> shopId) throws ShopNotFoundException {
-        List<Order> orders = new ArrayList<>();
-        if (shopId == null) {
-            for (Shop s : shopList.values()) {
-                orders.addAll(s.getOrders());
-            }
-        } else {
-            for (Integer id : shopId) {
-                Shop s = shopList.get(id);
-                if (s == null) {
-                    errorLogger.logMsg(Level.WARNING,String.format("Shop not exist: %d",id));
-                    throw new ShopNotFoundException();
-                }
-                orders.addAll(s.getOrders());
-            }
+     public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
+         Shop s;
+         try {
+             s = getShop(key);
+         } catch (ShopNotFoundException snfe) {
+             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+             return null;
+         }
+         eventLogger.logMsg(Level.INFO, "AppointNewShopOwner succeeded");
+         return s.AppointNewShopOwner(targetUser, userId);
+     }
+
+     /**
+      *
+      * @param shopId
+      * @return
+      */
+    public Map<Shop,List<Order>> getOrderHistoryForShops(Filter<Order> filter) throws ShopNotFoundException {
+        Map<Shop,List<Order>> orders = new HashMap<>();
+        for (Shop s : shopList.values()) {
+            List<Order> shopOrders = s.getOrders();
+            if(shopOrders.size()> 0)
+                orders.put(s, filter.applyFilter(shopOrders));
         }
-        eventLogger.logMsg(Level.INFO, "getOrderHistoryForShops succeeded");
         return orders;
-
-
     }
 
-    public List<ShopManagersPermissions> checkPermissionsForManager(String managerUsername, int shopID) throws ShopNotFoundException, IllegalArgumentException {
+    public List<ShopManagersPermissions> checkPermissionsForManager(String managerUsername, int shopID) throws
+            ShopNotFoundException, IllegalArgumentException {
         Shop shop = shopList.get(shopID);
-        if(shop == null)
+        if (shop == null)
             throw new ShopNotFoundException(String.format("Shop id %d doesn't exist", shopID));
 
         return shop.requestInfoOnManagerPermissions(managerUsername);
@@ -279,6 +267,7 @@ public class ShopController {
 
     /**
      * check for each shop if the user is Founder | Owner Or manager
+     *
      * @param targetUser - wanted Delete user identifier
      * @return
      */
@@ -290,7 +279,18 @@ public class ShopController {
         return true;
     }
 
-    public boolean DismissalOwner(String userName, String targetUser, int shop) throws ShopNotFoundException, InvalidSequenceOperationsExc {
-        return getShop(shop).DismissalOwner(userName,targetUser);
+    public boolean DismissalOwner(String userName, String targetUser, int shop) throws
+            ShopNotFoundException, InvalidSequenceOperationsExc {
+        return getShop(shop).DismissalOwner(userName, targetUser);
+    }
+
+    public List<Shop> getAllUserShops(String username, Filter<Shop> filter) throws IncorrectIdentification {
+        List<Shop> shops = new ArrayList<>();
+        for(Shop shop: shopList.values()){
+            User user = UserController.getInstance().getUser(username);
+            if(shop.getShopFounder().getUserName().equals(username) || shop.getShopsManagers().contains(user) || shop.getShopOwners().contains(user))
+                shops.add(shop);
+        }
+        return filter.applyFilter(shops);
     }
 }

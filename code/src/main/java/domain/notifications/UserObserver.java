@@ -1,7 +1,7 @@
 package domain.notifications;
 
 public interface UserObserver {
-    void notify(String msg);
+    void notify(Message msg);
 }
 
 

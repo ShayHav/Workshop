@@ -2,6 +2,7 @@ package domain.shop;
 
 public class ProductHistory implements Product{
 
+    private final int serialNumber;
     private final String name;
     private final String description;
     private final double price;
@@ -14,6 +15,7 @@ public class ProductHistory implements Product{
         this.category = p.getCategory();
         this.price = price;
         this.numSold = amount;
+        this.serialNumber = p.getId();
     }
 
     @Override
@@ -24,11 +26,6 @@ public class ProductHistory implements Product{
     @Override
     public String getDescription() {
         return description;
-    }
-
-    @Override
-    public int getId() {
-        return 0;
     }
 
     @Override
@@ -59,6 +56,10 @@ public class ProductHistory implements Product{
     @Override
     public int getAmount() {
         return numSold;
+    }
+
+    public int getId() {
+        return serialNumber;
     }
 
     public int getNumSold() {

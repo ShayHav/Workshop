@@ -1,5 +1,9 @@
 package Presentation.Controllers;
 
+import Presentation.Model.Messages.AppointMangerMessage;
+import Presentation.Model.Messages.AppointOwnerMessage;
+import Presentation.Model.Messages.EditShopMessage;
+import Presentation.Model.PresentationOrder;
 import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
@@ -7,15 +11,15 @@ import Service.Services;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseT;
-import domain.shop.Product;
-import domain.shop.ServiceProduct;
-import domain.shop.Shop;
-import domain.shop.ShopManagersPermissions;
+import domain.shop.*;
+import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
+import io.javalin.websocket.WsConfig;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,7 +61,17 @@ public class ShopController {
             return;
         }
         PresentationShop shop = new PresentationShop(response.getValue());
-        ResponseList<Product> products= services.GetProductInfoInShop(user.getUsername(), shopID,new SearchProductFilter());
+
+        if(!shop.isOpen() && !shop.isFounder(user)){
+            ctx.status(403);
+            String errorMessage = "You have no privilege to access this page";
+            ctx.render("errorPage.jte", Map.of("errorMessage", errorMessage, "status", 403));
+            return;
+        }
+
+
+        SearchProductFilter filter = getProductFilter(ctx);
+        ResponseList<Product> products= services.GetProductInfoInShop(user.getUsername(), shopID,filter);
         if(products.isErrorOccurred()) {
             ctx.status(400);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
@@ -72,7 +86,12 @@ public class ShopController {
         }
         else {
             user.setPermission(shopID, permission.getValue());
-            ctx.render("shop.jte", Map.of("user", user, "shop", shop));
+
+            Double minPrice = filter.getMinPrice();
+            Double maxPrice = filter.getMaxPrice();
+            String category = filter.getCategory() == null? "" : filter.getCategory();
+
+            ctx.render("shop.jte", Map.of("user", user, "shop", shop, "minPrice", minPrice, "maxPrice", maxPrice, "category", category));
         }
     }
 
@@ -106,7 +125,11 @@ public class ShopController {
             return;
         }
         PresentationProduct product = new PresentationProduct(response.getValue(),shopID);
-        ctx.render("editProduct.jte",Map.of("user", user, "shopID", shopID, "product", product));
+        if(user.hasInventoryPermission(shopID)) {
+            ctx.render("editProduct.jte", Map.of("user", user, "shopID", shopID, "product", product));
+            return;
+        }
+        ctx.status(400).render("errorPage.jte", Map.of("errorMessage", "you don't have permission to view this page", "status", 400));
     }
 
     public void editProduct(Context ctx) {
@@ -177,4 +200,117 @@ public class ShopController {
             context.redirect(path);
         }
     }
+
+    public void closeShop(Context context) {
+        int shopId = context.pathParamAsClass("shopID", Integer.class).get();
+        String username = context.cookieStore("uid");
+        Response response = services.closeShop(shopId, username);
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+        }
+        else{
+            context.redirect("/shops/"+shopId);
+        }
+    }
+
+    public void reopenShop(Context context){
+        int shopId = context.pathParamAsClass("shopID", Integer.class).get();
+        String username = context.cookieStore("uid");
+        Response response = services.reopenShop(shopId, username);
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+        }
+        else{
+            context.redirect("/shops/"+shopId);
+        }
+    }
+
+    public void renderEditShop(Context context){
+        int shopId = context.pathParamAsClass("shopID", Integer.class).get();
+        PresentationUser user = userController.getUser(context);
+        ResponseT<Shop> response = services.GetShop(shopId);
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+            return;
+        }
+        PresentationShop shop = new PresentationShop(response.getValue());
+        if(user.hasRoleInShop(shopId)) {
+            context.render("editShop.jte", Map.of("user", user, "shop", shop));
+            return;
+        }
+        context.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", "you don't have permission to view this page"));
+    }
+
+    public void editShop(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx -> {});
+        wsConfig.onMessage(ctx->{
+            EditShopMessage message = ctx.messageAsClass(EditShopMessage.class);
+            int shopID = ctx.pathParamAsClass("shopID", Integer.class).get();
+            switch (message.type) {
+                case "removeManager" -> {
+                    Response r = services.removeManager(shopID, message.requestingUser, message.subject);
+                    ctx.send(r);
+                }
+                case "addManager" -> {
+                    Response response = services.AppointNewShopManager(shopID, message.subject, message.getRequestingUser());
+                    AppointMangerMessage returnMessage = new AppointMangerMessage(response.errorMessage, message.subject);
+                    ctx.send(returnMessage);
+                }
+                case "addOwner" -> {
+                    Response response = services.AppointNewShopOwner(shopID, message.subject, message.getRequestingUser());
+                    AppointOwnerMessage returnMessage = new AppointOwnerMessage(response.errorMessage, message.subject);
+                    ctx.send(returnMessage);
+                }
+                case "removeOwner" -> {
+                    Response response = services.DismissalOwnerByOwner(message.requestingUser, message.subject, shopID);
+                    ctx.send(response);
+                }
+            }
+        });
+    }
+
+    public void renderOrderHistory(Context ctx) {
+        PresentationUser user= userController.getUser(ctx);
+        int shopID = ctx.pathParamAsClass("shopID",Integer.class).get();
+        SearchOrderFilter filter = userController.getOrderFilter(ctx);
+
+        ResponseList<Order> response = services.RequestInformationOfShopsSalesHistory(shopID,filter, user.getUsername());
+        if(response.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+            return;
+        }
+        List<PresentationOrder> orders = response.getValue().stream().map(PresentationOrder::new).collect(Collectors.toList());
+
+        Double minPrice = filter.getMinPrice();
+        Double maxPrice = filter.getMaxPrice();
+        String minDate = filter.getMinDate() == null? "" : filter.getMinDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String maxDate = filter.getMaxDate() == null? "" : filter.getMaxDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+        ctx.render("shopOrderHistory.jte", Map.of("user", user, "orders",orders, "shopID", shopID, "minPrice", minPrice, "maxPrice", maxPrice, "minDate", minDate, "maxDate", maxDate));
+    }
+
+    public void renderHomepage(Context ctx){
+        String username = ctx.cookieStore("uid");
+        SearchShopFilter filter = userController.getShopFilter(ctx);
+        String name = filter.getName() == null? "": filter.getName();
+
+        ResponseList<Shop> response = Services.getInstance().GetShopsInfo(username, filter);
+        if (response.isErrorOccurred()) {
+            ctx.status(503);
+            ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 503));
+        }
+        List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
+        PresentationUser user = userController.getUser(ctx);
+        ctx.render("index.jte", Map.of("shops", shops, "user", user, "filteredName", name));
+    }
+
+    public SearchProductFilter getProductFilter(Context ctx){
+        Double minPrice = ctx.queryParamAsClass("minPrice", Double.class).getOrDefault(null);
+        Double maxPrice = ctx.queryParamAsClass("maxPrice", Double.class).getOrDefault(null);
+        String category = ctx.queryParam("category");
+        category = category == null || category.isEmpty()? null : category;
+
+        return new SearchProductFilter(minPrice, maxPrice,null, null, category);
+    }
+
 }

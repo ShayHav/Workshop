@@ -1,4 +1,4 @@
-package Presentation.Model;
+package Presentation.Model.Messages;
 
 public class AddToCartMessage {
     private String username;

@@ -1,12 +1,6 @@
 package Testing_System;
 
-import Presentation.Model.PresentationShop;
-import Presentation.Model.PresentationUser;
 import Service.Services;
-import domain.Exceptions.BlankDataExc;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Exceptions.ShopNotFoundException;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseMap;
@@ -197,12 +191,12 @@ public class RealBridge implements Bridge{
 
     @Override
     public Response CloseShop(int shopID, String username) {
-        return sv.CloseShop(shopID, username);
+        return sv.closeShop(shopID, username);
     }
 
     @Override
     public Response OpenShop(int shopId, String userName) {
-        return sv.OpenShop(shopId,userName);
+        return sv.reopenShop(shopId,userName);
     }
 
     @Override

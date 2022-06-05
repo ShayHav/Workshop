@@ -41,13 +41,19 @@
         </ul>
         <div class="container card-body">
             <form class="form mb-2" method="post" name="amountForm">
-                <div class="mb-2">
-                    <label for="amount" class="form-label fw-bold">Quantity:</label>
-                    <input type="number" min="0" step="1" id="amount" name="amount" required>
-                </div>
-                <div>
-                    <button type="button" id="addProduct" class="btn btn-success">AddToCart</button>
-                </div>
+                @if(product.amount>0)
+                    <div class="mb-2">
+                        <label for="amount" class="form-label fw-bold">Quantity:</label>
+                        <input type="number" min="0" max="${product.amount}" step="1" id="amount" name="amount" required>
+                    </div>
+                    <div>
+                        <button type="button" id="addProduct" class="btn btn-success">AddToCart</button>
+                    </div>
+                @else
+                    <div>
+                       <p class="card-text fs-5 text-danger">out of stock</p>
+                    </div>
+                @endif
             </form>
             @if(user.hasInventoryPermission(shopId))
                 <div class="mb-2">
@@ -61,7 +67,7 @@
             @endif
         </div>
     </div>
-    <div id="responsePlace" class="container mt-5 col-4 visually-hidden">
+    <div id="responsePlace" class="container mt-2 col-4 visually-hidden">
         <p class="fs-5"></p>
     </div>
 </main>
