@@ -43,7 +43,7 @@
         document.querySelector('#messagesPlace').prepend(newBtn);
         newBtn.addEventListener('click', (event) => viewMessage(message, newBtn));
     }
-
+    
     const viewMessage = (message, btn) => {
         document.querySelector("#sender").textContent = message.sender;
         document.querySelector('#messageContent').textContent = message.content;

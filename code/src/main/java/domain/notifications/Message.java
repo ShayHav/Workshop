@@ -7,11 +7,11 @@ import java.util.Objects;
 
 public class Message {
 
-    private final String sender;
-    private final User addressee;
-    private final String content;
+    private String sender;
+    private User addressee;
+    private String content;
     private boolean read;
-    private final LocalDateTime sentDate;
+    private LocalDateTime sentDate;
 
     public Message(User sender, User addressee, String content){
         this.sender = sender.getUserName();
@@ -20,6 +20,8 @@ public class Message {
         read = false;
         sentDate = LocalDateTime.now();
     }
+
+    public Message(){}
 
     public Message(String sender, User addressee, String content){
         this.sender = sender;
@@ -64,5 +66,13 @@ public class Message {
     @Override
     public int hashCode() {
         return Objects.hash(sender, addressee, content, sentDate);
+    }
+
+    public void copy(Message from){
+        this.sender = from.getSender();
+        this.addressee = from.getAddressee();
+        this.content = from.getContent();
+        this.sentDate = from.getSentDate();
+        this.read = from.isRead();
     }
 }
