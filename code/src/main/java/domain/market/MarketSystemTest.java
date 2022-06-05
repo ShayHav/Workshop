@@ -35,44 +35,6 @@ class MarketSystemTest {
     private PaymentService ps1 = mock(PaymentService.class);
     private SupplyService ss2 = mock(SupplyService.class);
 
-//    @BeforeAll
-//    void start() throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification {
-//        PaymentService ps1 = mock(PaymentService.class);
-//        when(ps1.connect()).thenReturn(true);
-//        SupplyService ss2 = mock(SupplyService.class);
-//        when(ss2.connect()).thenReturn(true);
-//        marketSystem.start(ps1,ss2,"admin","admin");
-//        marketSystem.register(userName[0],userPass[0] );
-//        DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
-//        PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
-//    }
-
-
-
-    @Test
-    void getInfoOfShops() {
-    }
-
-    @Test
-    void getInfoOfProductInShop() {
-    }
-
-    @Test
-    void searchProductByName() {
-    }
-
-    @Test
-    void searchProductByKeyword() {
-    }
-
-    @Test
-    void getUser() {
-    }
-
-    @Test
-    void createShop() {
-    }
-
     @Test
     void registerLogInCreateAppointOwner() throws ShopNotFoundException, InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification {
         PaymentService ps1 = mock(PaymentService.class);
@@ -303,7 +265,9 @@ class MarketSystemTest {
         shopManagersPermissionsList.add(ShopManagersPermissions.CloseShop);
         PaymentService ps1 = mock(PaymentService.class);
         when(ps1.connect()).thenReturn(true);
+        when(ps1.processPayment(anyString(),anyString(),anyString(),anyString(),anyDouble())).thenReturn(true);
         SupplyService ss2 = mock(SupplyService.class);
+        when(ss2.supply(anyVararg(),anyVararg(),anyVararg())).thenReturn(true);
         when(ss2.connect()).thenReturn(true);
         marketSystem.start(ps1,ss2,"admin","admin");
         marketSystem.register(userName[0],userPass[0] );
@@ -318,6 +282,7 @@ class MarketSystemTest {
                 @Override
                 public void run() {
                     try {
+                        when(purchasePolicy.checkIfProductRulesAreMet(userName[finalI], 001, 50.0, 1)).thenReturn(true);
                         marketSystem.register(nitayName[finalI], nitayPass[finalI]);
                         marketSystem.register(userName[finalI], userPass[finalI]);
                         marketSystem.logIn(nitayName[finalI], nitayPass[finalI],null);
@@ -363,39 +328,4 @@ class MarketSystemTest {
         }
     }
 
-    @Test
-    void removeProductFromShopInventory() {
-    }
-
-    @Test
-    void closeShop() {
-    }
-
-    @Test
-    void openShop() {
-    }
-
-    @Test
-    void removeShopManagerPermissions() {
-    }
-
-    @Test
-    void addShopMangerPermissions() {
-    }
-
-    @Test
-    void appointNewShopManager() {
-    }
-
-    @Test
-    void appointNewShopOwner() {
-    }
-
-    @Test
-    void checkout() {
-    }
-
-    @Test
-    void addProductToCart() {
-    }
 }

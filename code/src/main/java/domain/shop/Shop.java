@@ -34,7 +34,7 @@ public class Shop {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final OrderHistory orders;
     private boolean isOpen;
-    private MarketSystem marketSystem;
+    private MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
@@ -232,10 +232,9 @@ public class Shop {
             }catch (ProductNotFoundException prodNotFound){
                 return new ResponseT<>(String.format("this product does not exist in shop %d",shopID));
             }
-            /*
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
                 return new ResponseT<>(String.format("checkout process violates purchase policy in shop %d",shopID));
-             */
+
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
@@ -257,7 +256,6 @@ public class Shop {
             product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
             product_PricePer.put(set.getKey(), product_price_single);
         }
-
         if(!marketSystem.pay(transaction)){
             synchronized (inventory) {
                 try {
@@ -269,6 +267,7 @@ public class Shop {
             }
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please contact the company representative", shopID));
         }
+
         if(!marketSystem.supply(transaction, products)){
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
         }
