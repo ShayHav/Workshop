@@ -22,7 +22,7 @@ public class Shop {
     private String name;
     private final int shopID;
     private int rank;
-    private final User ShopFounder;
+    private User ShopFounder;
     private String description;
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
@@ -34,7 +34,7 @@ public class Shop {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final OrderHistory orders;
     private boolean isOpen;
-    private MarketSystem marketSystem = MarketSystem.getInstance();
+    private MarketSystem marketSystem;
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
@@ -193,8 +193,6 @@ public class Shop {
     }
 
     public boolean purchasePolicyLegal(String userID, int prodID, double price,int amount){
-        if(purchasePolicy == null)
-            return true;
         return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
     }
 
@@ -266,7 +264,6 @@ public class Shop {
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(products, transaction, product_PricePer);
-        sendCheckoutMessage(o);
         return new ResponseT<>(o);
     }
 
@@ -277,7 +274,7 @@ public class Shop {
             double price = product_PricePer.get(Product);
             boughtProducts.add(new ProductHistory(p,price , products.get(Product)));
         }
-        Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID(), shopID, name);
+        Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID());
         orders.addOrder(o);
         return o;
     }
@@ -290,71 +287,61 @@ public class Shop {
         return ShopOwners.containsKey(id);
     }
 
-    public void AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if (shopManagersPermissionsController.canAppointNewShopOwner(userId)| ShopOwners.containsKey(userId)) {
+    public String AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        if ( ShopFounder.getUserName().equals(userId) || ShopOwners.containsKey(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointOwner(shopID)){
-                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        managerUser.AppointedMeOwner(this,usertarget);
+                        ShopOwners.putIfAbsent(usertarget, newManager);
                         newManager.addRole(shopID,Role.ShopOwner);
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
-                        return;
+                        return String.format("Appoint New ShopManager User: %s", usertarget);
                     }
                 }
             }
         }
         errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
-        throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+        return String.format("attempt to appoint New ShopManager User: %s filed", usertarget);
     }
 
     public int getShopID() {
         return shopID;
     }
 
-    public void AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if (shopManagersPermissionsController.canAppointNewShopManager(userId)| ShopOwners.containsKey(userId)) {
+    public String AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        if (ShopFounder.getUserName().equals(userId) || ShopOwners.containsKey(userId) ||shopManagersPermissionsController.canAppointNewShopOwner(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
+                        managerUser.AppointedMeManager(this,usertarget);
                         ShopManagers.putIfAbsent(usertarget, newManager);
                         newManager.addRole(shopID,Role.ShopManager);
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
-                        return;
+                        return String.format("Appoint New ShopManager User: %s", usertarget);
                     }
                 }
             }
         }
-        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s failed", usertarget));
-        throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s failed", usertarget));
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+        return String.format("attempt to appoint New ShopManager User: %s filed", usertarget);
     }
 
-    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc {
         if(shopManagersPermissionsController.canCloseShop(userID)) {
-            if (isOpen) {
+            if (isOpen)
                 isOpen = false;
-                User user = ControllersBridge.getInstance().getUser(userID);
-                getShopOwners().forEach(owner -> {
-                    marketSystem.sendMessage(owner, user, String.format("store %s was closed by %s", name, user.getUserName()));
-                });
-            }
             else throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s",userID));
         }
     }
-    public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc {
         if(shopManagersPermissionsController.canOpenShop(userID)) {
-            if (!isOpen) {
+            if (!isOpen)
                 isOpen = true;
-                User opener = ControllersBridge.getInstance().getUser(userID);
-                getShopOwners().forEach(owner -> {
-                    String message = String.format("User %s reopened shop %s", opener.getUserName(),name);
-                    marketSystem.sendMessage(owner, opener, message);
-                });
-
-            }
             else throw new InvalidSequenceOperationsExc(String.format("attempt to Open Opened Shop userID: %s",userID));
         }
     }
@@ -455,10 +442,13 @@ public class Shop {
         return isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser);
     }
 
-    public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc {
-        if(ShopOwners.containsKey(userName) & ShopOwners.containsKey(targetUser)){
-            if (shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) //TODO: need to check if OK.
+    public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+        if(( ShopFounder.getUserName().equals(userName) ||ShopOwners.containsKey(userName)) & ShopOwners.containsKey(targetUser)){
+            if (ShopFounder.getUserName().equals(userName)|| ShopOwners.containsKey(userName) ||shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) {
+                ShopOwners.remove(targetUser);
+                ControllersBridge.getInstance().getUser(targetUser).removeRole(Role.ShopOwner,shopID);
                 return true;
+            }
         }
         throw new InvalidSequenceOperationsExc();
     }
@@ -470,29 +460,4 @@ public class Shop {
         return output;
     }
 
-    public List<User> getShopsManagers(){
-        return new ArrayList<>(this.ShopManagers.values());
-    }
-
-    public User getShopFounder() {
-        return ShopFounder;
-    }
-
-    public String getShopName() {
-        return this.name;
-    }
-
-    private void sendCheckoutMessage(Order order){
-        MarketSystem  market = MarketSystem.getInstance();
-        String message = order.checkoutMessage();
-        User buyer = null;
-        try {
-            buyer = market.getUser(order.getUserID());
-        }catch (Exception e){}
-        User finalBuyer = buyer;
-        ShopOwners.values().forEach(owner -> {
-              market.sendMessage(owner, finalBuyer,message );
-        });
-        market.sendMessage(ShopFounder, finalBuyer, message);
-    }
 }

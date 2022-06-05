@@ -9,10 +9,8 @@ import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
 import domain.user.User;
 import domain.user.UserController;
-import domain.user.filter.Filter;
 
 import java.util.List;
-import java.util.Map;
 
 public class ControllersBridge {
     private static ControllersBridge instance = null;
@@ -55,10 +53,11 @@ public class ControllersBridge {
 
     /**
      * a OrderHistory query is sent to shopController
+     * @param shopId - identifier
      * @return
      */
-    public Map<Shop, List<Order>> getOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
-        return ShopController.getInstance().getOrderHistoryForShops(f);
+    public List<Order> getOrderHistoryForShops(List<Integer> shopId) throws ShopNotFoundException {
+        return ShopController.getInstance().getOrderHistoryForShops(shopId);
     }
 
     /**
@@ -66,8 +65,8 @@ public class ControllersBridge {
      * @param targetUser
      * @throws InvalidSequenceOperationsExc
      */
-    public void DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
-        if(ShopController.getInstance().canBeDismiss(targetUser))
+    public void DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        if(UserController.getInstance().canBeDismiss(targetUser))
             UserController.getInstance().deleteUserName(targetUser);
         throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s",targetUser));
     }
@@ -81,8 +80,11 @@ public class ControllersBridge {
      * @throws ShopNotFoundException
      */
     public void DismissalOwner(String userName, String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
-        if(ShopController.getInstance().DismissalOwner(userName,targetUser,shop))
+        if(ShopController.getInstance().DismissalOwner(userName,targetUser,shop)) {
             UserController.getInstance().deleteUserName(targetUser);
-        throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s",targetUser));
+        }
+        else {
+            throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s", targetUser));
+        }
     }
 }
