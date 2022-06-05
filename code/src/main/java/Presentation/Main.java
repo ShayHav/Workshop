@@ -54,22 +54,11 @@ public class Main {
         }
         app = Javalin.create(JavalinConfig::enableWebjars).start(port);
 
-        app.before(userController::validateUser);
-
-        app.get("/", ctx -> {
-            String username = ctx.cookieStore("uid");
-            ResponseList<Shop> response = Services.getInstance().GetShopsInfo(username, new SearchShopFilter());
-            if (response.isErrorOccurred()) {
-                ctx.status(503);
-                ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 503));
-            }
-            List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
-            PresentationUser user = userController.getUser(ctx);
-            ctx.render("index.jte", Map.of("shops", shops, "user", user));
-        });
+//        app.get("/", shopController::renderHomepage);
 
         app.routes(() -> {
-
+            before(userController::validateUser);
+            get(shopController::renderHomepage);
             //admin interface
             path("admin",() -> {
                 path("{id}", ()->{
@@ -147,19 +136,52 @@ public class Main {
             String query = ctx.queryParam("query");
             String searchBy = ctx.queryParam("searchBy");
             PresentationUser user = userController.getUser(ctx);
+            SearchProductFilter filter = shopController.getProductFilter(ctx);
+
             ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
-                case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, new SearchProductFilter());
-                case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, new SearchProductFilter());
-                case "keyword" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, new SearchProductFilter());
-                default -> new ResponseMap<Integer, List<Product>>("please choose a suitable query method");
-            } : new ResponseMap<Integer, List<Product>>("not suppose to happen");
+                case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, filter);
+                case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, filter);
+                case "keyword" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, filter);
+                default -> new ResponseMap<>("please choose a suitable query method");
+            } : new ResponseMap<>("not suppose to happen");
             if (response.isErrorOccurred()) {
                 ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
                 return;
             }
             List<PresentationProduct> searchResult = new ArrayList<>();
             response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
-            ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult));
+
+            Double minPrice = filter.getMinPrice();
+            Double maxPrice = filter.getMaxPrice();
+            String category = filter.getCategory() == null? "" : filter.getCategory();
+
+            ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult, "minPrice", minPrice, "maxPrice", maxPrice, "category", category, "searchBy", searchBy, "query", query));
+        });
+
+        app.post("/search", ctx -> {
+            String query = ctx.formParam("query");
+            String searchBy = ctx.formParam("searchBy");
+            PresentationUser user = userController.getUser(ctx);
+            SearchProductFilter filter = shopController.getProductFilterAsForm(ctx);
+
+            ResponseMap<Integer, List<Product>> response = searchBy != null ? switch (searchBy) {
+                case "products" -> Services.getInstance().SearchProductByName(user.getUsername(), query, filter);
+                case "category" -> Services.getInstance().SearchProductByCategory(user.getUsername(), query, filter);
+                case "keyword" -> Services.getInstance().SearchProductByKeyword(user.getUsername(), query, filter);
+                default -> new ResponseMap<>("please choose a suitable query method");
+            } : new ResponseMap<>("not suppose to happen");
+            if (response.isErrorOccurred()) {
+                ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
+                return;
+            }
+            List<PresentationProduct> searchResult = new ArrayList<>();
+            response.getValue().forEach((shopId, productList) -> searchResult.addAll(PresentationProduct.convertProduct(productList, shopId)));
+
+            Double minPrice = filter.getMinPrice();
+            Double maxPrice = filter.getMaxPrice();
+            String category = filter.getCategory() == null? "" : filter.getCategory();
+
+            ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult, "minPrice", minPrice, "maxPrice", maxPrice, "category", category, "searchBy", searchBy, "query", query));
         });
 
         app.exception(AuthenticationException.class, ((e, ctx) ->

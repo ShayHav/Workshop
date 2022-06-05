@@ -60,9 +60,9 @@ public class Services {
      * @param username username of the user who requesting his shops
      * @return response with a list of the user's shop if succeed or error message if not
      */
-    public ResponseList<Shop> GetAllUserShops(String username){
+    public ResponseList<Shop> GetAllUserShops(String username, Filter<Shop> filter){
         try{
-            List<Shop> shops = marketSystem.GetAllUserShops(username);
+            List<Shop> shops = marketSystem.GetAllUserShops(username, filter);
             return new ResponseList<>(shops);
         }catch (BlankDataExc | IncorrectIdentification | InvalidAuthorizationException e){
             return new ResponseList<>(e.getMessage());
@@ -688,9 +688,9 @@ public class Services {
      * @param username user requesting
      * @return
      */
-    public ResponseList<Order> getOrderHistoryOfUser(String username){
+    public ResponseList<Order> getOrderHistoryOfUser(String username, Filter<Order> filter){
         try {
-            List<Order> result = marketSystem.getOrderHistoryOfUser(username);
+            List<Order> result = marketSystem.getOrderHistoryOfUser(username, filter);
             return new ResponseList<>(result);
         } catch (InvalidAuthorizationException | IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc e) {
             return new ResponseList<>(e.getMessage());

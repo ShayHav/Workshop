@@ -4,10 +4,15 @@
 @import java.util.List
 @param PresentationUser user
 @param List<PresentationOrder> orders
+@param Double minPrice
+@param Double maxPrice
+@param String minDate
+@param String maxDate
 
 @template.navBar(user = user, title = "My orders")
 <main class="mx-4">
     <h3 class="mt-3">My Orders</h3>
+    @template.orderFilter(minDate = minDate,  maxDate = maxDate, minPrice = minPrice, maxPrice = maxPrice,action = "/users/" + user.getUsername() + "/orders")
     <div class="mt-3 mb-2 row">
         <div class="col-2">
             <h5>Shop name</h5>

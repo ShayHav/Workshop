@@ -2,9 +2,12 @@
 @import java.util.List
 @param PresentationUser user
 @param PresentationShop shop
+@param Double minPrice
+@param Double maxPrice
+@param String category
 
 @template.navBar(user = user, title = shop.name)
-<main class="container mt-">
+<main class="container">
     <div class="container mt-3">
         <h1 class="fs-3">Thanks for visiting in ${shop.name}</h1>
         <h2 class="fs-4">Little bit about us</h2>
@@ -46,8 +49,9 @@
         @endif
 
     </div>
-    <div class="container row mx-auto mb-3">
-        <h3 class="fs-5 mt-3">The things we sell</h3>
+    <div class="row mx-auto mb-3">
+        <h2 class="fs-4 mt-5">The things we sell</h2>
+        @template.productFilter(action = "/shops/" + shop.id, minPrice = minPrice, maxPrice =  maxPrice, category = category)
         @for(Presentation.Model.PresentationProduct product: shop.products)
             <div class="card mt-1 mb-1 me-3" style="width: 18rem">
                     <img src="https://images.unsplash.com/photo-1562186971-736d2e3ae153?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80"

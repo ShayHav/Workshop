@@ -126,7 +126,7 @@
 
 @if (user.isLoggedIn())
 <div class="collapse container border border-1 mt-3 col-6 rounded" id="createShop">
-    <form class="m-3" method="post" action="/shops">
+    <form class="mt-3" method="post" action="/shops">
         <h3 class="fs-5">create new shop in market:</h3>
         <div class=" mb-2">
             <input type="text" name="shopName" class="form-control" id="shopName" placeholder="shopName">

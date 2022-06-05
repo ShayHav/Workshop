@@ -28,7 +28,7 @@ public class SearchProductFilter implements Filter<Product> {
 
     public SearchProductFilter(Double minPrice, Double maxPrice, Integer productRank, Integer shopRank, String category) {
         this.minPrice = Objects.requireNonNullElse(minPrice, 0d);
-        this.maxPrice = Objects.requireNonNullElse(maxPrice, Double.MAX_VALUE);
+        this.maxPrice = Objects.requireNonNullElse(maxPrice, 1000d);
         this.productRank = productRank;
         this.shopRank = shopRank;
         this.category = category;
@@ -58,5 +58,23 @@ public class SearchProductFilter implements Filter<Product> {
         return result;
     }
 
+    public Double getMinPrice() {
+        return minPrice;
+    }
 
+    public Double getMaxPrice() {
+        return maxPrice;
+    }
+
+    public Integer getProductRank() {
+        return productRank;
+    }
+
+    public Integer getShopRank() {
+        return shopRank;
+    }
+
+    public String getCategory() {
+        return category;
+    }
 }

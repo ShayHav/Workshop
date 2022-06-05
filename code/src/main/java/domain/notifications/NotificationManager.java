@@ -56,8 +56,7 @@ public class NotificationManager {
     public synchronized void notifyAdmin(){
         for (User admin: adminObservers.keySet()) {
             if(admin.isLoggedIn()){
-                if(adminObservers.containsKey(admin))
-                    adminObservers.get(admin).forEach(AdminObserver::notifyAdmin);
+                adminObservers.get(admin).forEach(AdminObserver::notifyAdmin);
             }
         }
     }

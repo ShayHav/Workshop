@@ -17,11 +17,13 @@ import domain.shop.Shop;
 import domain.user.Cart;
 import domain.user.User;
 import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
-import org.eclipse.jetty.util.ajax.JSON;
 
 import javax.naming.AuthenticationException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -207,25 +209,37 @@ public class UserController {
 
     public void renderUserOrderHistory(Context ctx) {
         PresentationUser user = getUser(ctx);
-        ResponseList<Order> response = services.getOrderHistoryOfUser(user.getUsername());
+
+        SearchOrderFilter filter = getOrderFilter(ctx);
+        ResponseList<Order> response = services.getOrderHistoryOfUser(user.getUsername(), filter);
 
         if (response.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
         }
 
+        Double minPrice = filter.getMinPrice();
+        Double maxPrice = filter.getMaxPrice();
+        String minDate = filter.getMinDate() == null? "" : filter.getMinDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String maxDate = filter.getMaxDate() == null? "" : filter.getMaxDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
         List<PresentationOrder> orders = response.getValue().stream().map(PresentationOrder::new).collect(Collectors.toList());
-        ctx.render("UserOrderHistory.jte", Map.of("user", user, "orders", orders));
+        ctx.render("userOrderHistory.jte", Map.of("user", user, "orders", orders, "minPrice", minPrice, "maxPrice", maxPrice, "minDate", minDate, "maxDate", maxDate));
+
     }
 
     public void renderUserShops(Context ctx) {
         PresentationUser user = getUser(ctx);
-        ResponseList<Shop> response = services.GetAllUserShops(user.getUsername());
+
+        SearchShopFilter filter = getShopFilter(ctx);
+        String name = filter.getName() == null? "": filter.getName();
+
+        ResponseList<Shop> response = services.GetAllUserShops(user.getUsername(), filter);
         if (response.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
         }
 
         List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
-        ctx.render("userShops.jte", Map.of("user", user, "shops", shops));
+        ctx.render("userShops.jte", Map.of("user", user, "shops", shops, "filteredName", name));
     }
 
     public void checkUser(Context context) throws AuthenticationException {
@@ -249,24 +263,18 @@ public class UserController {
 
         if (users.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", users.errorMessage, "status", 400));
-        }
-        else if (activeUsers.isErrorOccurred()) {
+        } else if (activeUsers.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", activeUsers.errorMessage, "status", 400));
-        }
-        else if (activeMembers.isErrorOccurred()) {
+        } else if (activeMembers.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", activeMembers.errorMessage, "status", 400));
-        }
-        else if (activeGuests.isErrorOccurred()) {
+        } else if (activeGuests.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", activeGuests.errorMessage, "status", 400));
-        }
-        else if (totalRegistered.isErrorOccurred()) {
+        } else if (totalRegistered.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", totalRegistered.errorMessage, "status", 400));
-        }
-        else if (!user.isAdmin()) {
+        } else if (!user.isAdmin()) {
             String errorMessage = "you don't have privilege to view this page";
             ctx.status(403).render("errorPage.jte", Map.of("errorMessage", errorMessage, "status", 403));
-        }
-        else {
+        } else {
             Map<Integer, PresentationUser> presentationUsers = new HashMap<>();
             for (Integer i : users.getValue().keySet()
             ) {
@@ -277,7 +285,7 @@ public class UserController {
     }
 
     public void messagesHandler(WsConfig wsConfig) {
-        Map<NotificationMessage,Message> sentMessages = new HashMap<>();
+        Map<NotificationMessage, Message> sentMessages = new HashMap<>();
         wsConfig.onConnect(ctx -> {
             PresentationUser currentUser = getUser(ctx.pathParam("id"));
             Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
@@ -294,7 +302,7 @@ public class UserController {
 
         wsConfig.onMessage(ctx -> {
             NotificationMessage message = ctx.messageAsClass(NotificationMessage.class);
-            if(sentMessages.containsKey(message)){
+            if (sentMessages.containsKey(message)) {
                 Message m = sentMessages.get(message);
                 m.markAsRead();
             }
@@ -319,7 +327,7 @@ public class UserController {
             PresentationUser currentUser = getUser(ctx.pathParam("id"));
             Response response = services.registerForMessages(currentUser.getUsername(), (message) -> {
                 ResponseT<Long> numberOfUnreadMessages = services.getNumberOfUnreadMessages(currentUser.getUsername());
-                if(!numberOfUnreadMessages.isErrorOccurred()){
+                if (!numberOfUnreadMessages.isErrorOccurred()) {
                     ctx.send(numberOfUnreadMessages.getValue());
                 }
             });
@@ -354,11 +362,10 @@ public class UserController {
     public void deleteUserPermanently(Context ctx) {
         String admin = ctx.pathParam("id");
         String username = ctx.formParam("username");
-        Response response = services.DeleteUser(admin,username);
-        if(response.isErrorOccurred()){
+        Response response = services.DeleteUser(admin, username);
+        if (response.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
-        }
-        else{
+        } else {
             String path = "/admin/" + admin + "/systemMonitor";
             ctx.redirect(path);
         }
@@ -367,34 +374,51 @@ public class UserController {
     public void renderAllHistorySales(Context ctx) {
         PresentationUser user = getUser(ctx);
         String username = user.getUsername();
-        ResponseMap<User,List<Order>> usersResponse = services.getOrderHistoryForUsers(username, new SearchOrderFilter(), null);
-        ResponseMap<Shop,List<Order>> shopsResponse = services.getOrderHistoryForShops(username,new SearchOrderFilter(), null);
+        ResponseMap<User, List<Order>> usersResponse = services.getOrderHistoryForUsers(username, new SearchOrderFilter(), null);
+        ResponseMap<Shop, List<Order>> shopsResponse = services.getOrderHistoryForShops(username, new SearchOrderFilter(), null);
 
-        if(usersResponse.isErrorOccurred()){
+        if (usersResponse.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", usersResponse.errorMessage, "status", 400));
-        }
-        else if(shopsResponse.isErrorOccurred()){
+        } else if (shopsResponse.isErrorOccurred()) {
             ctx.status(400).render("errorPage.jte", Map.of("errorMessage", usersResponse.errorMessage, "status", 400));
-        }
-        else if (!user.isAdmin()) {
+        } else if (!user.isAdmin()) {
             String errorMessage = "you don't have privilege to view this page";
             ctx.status(403).render("errorPage.jte", Map.of("errorMessage", errorMessage, "status", 403));
         }
 
-        Map<PresentationUser,List<PresentationOrder>> usersHistory = new HashMap<>();
-        for(User u: usersResponse.getValue().keySet()){
+        Map<PresentationUser, List<PresentationOrder>> usersHistory = new HashMap<>();
+        for (User u : usersResponse.getValue().keySet()) {
             List<PresentationOrder> orders = usersResponse.getValue().get(u).stream().map(PresentationOrder::new).collect(Collectors.toList());
-            usersHistory.put(new PresentationUser(u),orders);
+            usersHistory.put(new PresentationUser(u), orders);
         }
 
-        Map<PresentationShop,List<PresentationOrder>> shopHistory = new HashMap<>();
-        for(Shop s: shopsResponse.getValue().keySet()){
+        Map<PresentationShop, List<PresentationOrder>> shopHistory = new HashMap<>();
+        for (Shop s : shopsResponse.getValue().keySet()) {
             List<PresentationOrder> orders = shopsResponse.getValue().get(s).stream().map(PresentationOrder::new).collect(Collectors.toList());
-            shopHistory.put(new PresentationShop(s),orders);
+            shopHistory.put(new PresentationShop(s), orders);
         }
 
         ctx.render("allSalesHistory.jte", Map.of("user", user, "userOrders", usersHistory, "shopOrders", shopHistory));
     }
 
+    protected SearchOrderFilter getOrderFilter(Context ctx) {
+        Double minPrice = ctx.queryParamAsClass("minPrice", Double.class).getOrDefault(null);
+        Double maxPrice = ctx.queryParamAsClass("maxPrice", Double.class).getOrDefault(null);
+        String min_date = ctx.queryParam("minDate");
+        String max_date = ctx.queryParam("maxDate");
+
+
+        LocalDate minDate = min_date == null || min_date.isEmpty() ? null: LocalDate.parse(min_date);
+        LocalDate maxDate = max_date == null || max_date.isEmpty() ? null: LocalDate.parse(max_date);
+
+
+        return new SearchOrderFilter(minPrice, maxPrice, minDate, maxDate);
+    }
+
+    protected SearchShopFilter getShopFilter(Context ctx){
+        String shopName = ctx.queryParam("shopName");
+        shopName = shopName == null || shopName.isEmpty()? null : shopName;
+        return new SearchShopFilter(shopName,null);
+    }
 
 }

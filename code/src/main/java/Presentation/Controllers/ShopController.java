@@ -18,6 +18,8 @@ import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,7 +69,9 @@ public class ShopController {
             return;
         }
 
-        ResponseList<Product> products= services.GetProductInfoInShop(user.getUsername(), shopID,new SearchProductFilter());
+
+        SearchProductFilter filter = getProductFilter(ctx);
+        ResponseList<Product> products= services.GetProductInfoInShop(user.getUsername(), shopID,filter);
         if(products.isErrorOccurred()) {
             ctx.status(400);
             ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
@@ -82,7 +86,12 @@ public class ShopController {
         }
         else {
             user.setPermission(shopID, permission.getValue());
-            ctx.render("shop.jte", Map.of("user", user, "shop", shop));
+
+            Double minPrice = filter.getMinPrice();
+            Double maxPrice = filter.getMaxPrice();
+            String category = filter.getCategory() == null? "" : filter.getCategory();
+
+            ctx.render("shop.jte", Map.of("user", user, "shop", shop, "minPrice", minPrice, "maxPrice", maxPrice, "category", category));
         }
     }
 
@@ -263,14 +272,53 @@ public class ShopController {
     public void renderOrderHistory(Context ctx) {
         PresentationUser user= userController.getUser(ctx);
         int shopID = ctx.pathParamAsClass("shopID",Integer.class).get();
+        SearchOrderFilter filter = userController.getOrderFilter(ctx);
 
-        ResponseList<Order> response = services.RequestInformationOfShopsSalesHistory(shopID,new SearchOrderFilter(), user.getUsername());
+        ResponseList<Order> response = services.RequestInformationOfShopsSalesHistory(shopID,filter, user.getUsername());
         if(response.isErrorOccurred()){
             ctx.status(400).render("errorPage.jte", Map.of("status", 400, "errorMessage", response.errorMessage));
             return;
         }
         List<PresentationOrder> orders = response.getValue().stream().map(PresentationOrder::new).collect(Collectors.toList());
 
-        ctx.render("ShopOrderHistory.jte", Map.of("user", user, "orders",orders));
+        Double minPrice = filter.getMinPrice();
+        Double maxPrice = filter.getMaxPrice();
+        String minDate = filter.getMinDate() == null? "" : filter.getMinDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String maxDate = filter.getMaxDate() == null? "" : filter.getMaxDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+        ctx.render("shopOrderHistory.jte", Map.of("user", user, "orders",orders, "shopID", shopID, "minPrice", minPrice, "maxPrice", maxPrice, "minDate", minDate, "maxDate", maxDate));
+    }
+
+    public void renderHomepage(Context ctx){
+        String username = ctx.cookieStore("uid");
+        SearchShopFilter filter = userController.getShopFilter(ctx);
+        String name = filter.getName() == null? "": filter.getName();
+
+        ResponseList<Shop> response = Services.getInstance().GetShopsInfo(username, filter);
+        if (response.isErrorOccurred()) {
+            ctx.status(503);
+            ctx.render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 503));
+        }
+        List<PresentationShop> shops = response.getValue().stream().map(PresentationShop::new).collect(Collectors.toList());
+        PresentationUser user = userController.getUser(ctx);
+        ctx.render("index.jte", Map.of("shops", shops, "user", user, "filteredName", name));
+    }
+
+    public SearchProductFilter getProductFilter(Context ctx){
+        Double minPrice = ctx.queryParamAsClass("minPrice", Double.class).getOrDefault(null);
+        Double maxPrice = ctx.queryParamAsClass("maxPrice", Double.class).getOrDefault(null);
+        String category = ctx.queryParam("category");
+        category = category == null || category.isEmpty()? null : category;
+
+        return new SearchProductFilter(minPrice, maxPrice,null, null, category);
+    }
+
+    public SearchProductFilter getProductFilterAsForm(Context ctx){
+        Double minPrice = ctx.formParamAsClass("minPrice", Double.class).getOrDefault(null);
+        Double maxPrice = ctx.formParamAsClass("maxPrice", Double.class).getOrDefault(null);
+        String category = ctx.formParam("category");
+        category = category == null || category.isEmpty()? null : category;
+
+        return new SearchProductFilter(minPrice, maxPrice,null, null, category);
     }
 }

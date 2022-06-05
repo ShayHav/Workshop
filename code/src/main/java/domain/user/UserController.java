@@ -337,12 +337,12 @@ public class UserController {
         return getUser(userName).isLoggedIn();
     }
 
-    public List<Order> getOrderHistoryOfUser(String username) throws InvalidSequenceOperationsExc {
+    public List<Order> getOrderHistoryOfUser(String username, Filter<Order> filter) throws InvalidSequenceOperationsExc {
         User user = memberList.get(username);
         if(user == null){
             throw new InvalidSequenceOperationsExc(String.format("guest user: %s has no access to past orders since he is not registered",username));
         }
-        return user.getHistoryOfOrders();
+        return filter.applyFilter(user.getHistoryOfOrders());
     }
 
     public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws

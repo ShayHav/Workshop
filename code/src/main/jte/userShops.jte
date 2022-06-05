@@ -1,10 +1,12 @@
 @import Presentation.Model.PresentationUser
 @param  PresentationUser user
 @param java.util.List<Presentation.Model.PresentationShop> shops
+@param String filteredName
 
 @template.navBar(user = user, title = "My shops")
 <main class="container">
     <h3 class="mt-3">My shops</h3>
+    @template.shopFilter(action = "/users/" + user.getUsername() + "/shops", filteredName = filteredName )
     <div class="container row mt-3 mx-auto">
         @for(Presentation.Model.PresentationShop shop: shops)
             <div class="card mt-1" style="width: 18rem">

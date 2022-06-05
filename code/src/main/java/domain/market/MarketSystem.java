@@ -457,11 +457,11 @@ public class MarketSystem {
         else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
-    public List<Order> getOrderHistoryOfUser(String username) throws InvalidAuthorizationException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+    public List<Order> getOrderHistoryOfUser(String username, Filter<Order> filter) throws InvalidAuthorizationException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");
         if (userController.isLogin(username))
-            return userController.getOrderHistoryOfUser(username);
+            return userController.getOrderHistoryOfUser(username, filter);
         else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
@@ -538,11 +538,11 @@ public class MarketSystem {
         //TODO remove the manager
     }
 
-    public List<Shop> GetAllUserShops(String username) throws BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+    public List<Shop> GetAllUserShops(String username, Filter<Shop> filter) throws BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");
         if (userController.isLogin(username)) {
-            return ShopController.getInstance().getAllUserShops(username);
+            return ShopController.getInstance().getAllUserShops(username, filter);
         } else throw new InvalidAuthorizationException(String.format("user %s is not logged in", username));
     }
 
