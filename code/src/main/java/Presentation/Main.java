@@ -172,7 +172,7 @@ public class Main {
         String shahar_guest = r.getValue().getUserName();
         services.Register(shahar_guest,"shahar", "123");
 
-        services.Login(shay_guest,"shay","123",null);
+        services.Login(shay_guest,"shay","123");
         services.CreateShop("testing shop","shay","shop");
         services.AddProductToShopInventory(1, "Product1", "testing product", "test",1.90,15, "shay", 1);
         services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", 1);
