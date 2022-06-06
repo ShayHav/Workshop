@@ -1,12 +1,9 @@
 package domain.shop;
 
-import domain.Exceptions.InvalidAuthorizationException;
-import domain.Exceptions.InvalidProductInfoException;
+import domain.Exceptions.*;
 import domain.market.ExternalConnector;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
-import domain.Exceptions.BlankDataExc;
-import domain.Exceptions.IncorrectIdentification;
 import domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +42,7 @@ public class ShopTest {
 
     private void setDavidosShop(){
         User davidos = setDavidos();
-        shop = new Shop("David's", discountPolicy, purchasePolicy, davidos, 1);
+        shop = new Shop("David's","food shop", discountPolicy, purchasePolicy, davidos,1);
         discountPolicy = mock(DiscountPolicy.class);
         purchasePolicy = mock(PurchasePolicy.class);
         Product p1 = mock(ProductImp.class);
@@ -59,10 +56,11 @@ public class ShopTest {
     }
 
     @Test
-    void addAndGetProduct() {
+    void addAndGetProduct() throws ProductNotFoundException {
         Product apple;
         try {
-            apple = shop.addListing("apple", "red apple", "fruits", 5.0, 5, "Davidos");
+            //int serialNumber, String productName, String productDesc, String productCategory, double price, int quantity,String userId
+            apple = shop.addListing(001, "red apple", "fruits", "food", 50.0, 5,"Davidos");
         }catch (InvalidAuthorizationException InvAuthExc){
             fail("founder can add product");
             return;
@@ -70,7 +68,7 @@ public class ShopTest {
             fail("product info is legal");
             return;
         }
-        assertTrue(shop.isProductIsAvailable(apple.getId()));
+        assertTrue(shop.isProductIsAvailable(apple.getId(),0));
         assertEquals(shop.getProduct(apple.getId()).getId(), apple.getId());
     }
 
@@ -78,7 +76,7 @@ public class ShopTest {
 
 
     @Test
-    void getProduct(){
+    void getProduct() throws ProductNotFoundException {
         assertEquals(shop.getProduct(1), p1, "product p1 should have been returned");
         assertEquals(shop.getProduct(2), p2, "product p1 should have been returned");
         assertThrows(NullPointerException.class, ()->shop.getProduct(3), "item should not exist");

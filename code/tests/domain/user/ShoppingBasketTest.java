@@ -39,8 +39,9 @@ class ShoppingBasketTest {
     @Test
     void addProductToBasket() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, ShopNotFoundException {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
-        marketSystem.register("nitay","Password");
-        marketSystem.logIn("nitay","Password",null);
+        marketSystem.EnterMarket();
+        marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));
@@ -68,8 +69,9 @@ class ShoppingBasketTest {
     @Test
     void calculateTotalAmount() throws InvalidSequenceOperationsExc, IncorrectIdentification, ShopNotFoundException, BlankDataExc, InvalidAuthorizationException {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
-        marketSystem.register("nitay","Password");
-        marketSystem.logIn("nitay","Password",null);
+        marketSystem.EnterMarket();
+        marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));
@@ -82,8 +84,9 @@ class ShoppingBasketTest {
     @Test
     void updateAmount() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
-        marketSystem.register("nitay","Password");
-        marketSystem.logIn("nitay","Password",null);
+        marketSystem.EnterMarket();
+        marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));
@@ -104,8 +107,9 @@ class ShoppingBasketTest {
     @Test
     void removeProduct() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
-        marketSystem.register("nitay","Password");
-        marketSystem.logIn("nitay","Password",null);
+        marketSystem.EnterMarket();
+        marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));
@@ -118,8 +122,9 @@ class ShoppingBasketTest {
     @Test
     void showBasket() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
-        marketSystem.register("nitay","Password");
-        marketSystem.logIn("nitay","Password",null);
+        marketSystem.EnterMarket();
+        marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));

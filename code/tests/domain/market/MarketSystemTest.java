@@ -36,13 +36,14 @@ class MarketSystemTest {
     private SupplyService ss2 = mock(SupplyService.class);
 
     @Test
-    void registerLogInCreateAppointOwner() throws ShopNotFoundException, InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification {
+    void registerLogInCreateAppointOwner() throws ShopNotFoundException, InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
         PaymentService ps1 = mock(PaymentService.class);
         when(ps1.connect()).thenReturn(true);
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.connect()).thenReturn(true);
         marketSystem.start(ps1,ss2,"admin","admin");
-        marketSystem.register(userName[0],userPass[0] );
+        marketSystem.EnterMarket();
+        marketSystem.register("-Guest0",userName[0],userPass[0]);
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
         when(purchasePolicy.checkIfProductRulesAreMet(anyString(), anyInt(), anyDouble(), anyInt())).thenReturn(true);
@@ -53,8 +54,10 @@ class MarketSystemTest {
                 @Override
                 public void run() {
                     try {
-                        marketSystem.register(nitayName[finalI], nitayName[finalI]);
-                        marketSystem.logIn(nitayName[finalI], nitayName[finalI],null);
+                        marketSystem.EnterMarket();
+                        String guestName = String.format("-Guest%d",finalI+1);
+                        marketSystem.register(guestName,nitayName[finalI], nitayName[finalI]);
+                        marketSystem.login(guestName,nitayName[finalI], nitayName[finalI],null);
                         Shop s = marketSystem.createShop("sports",nitayName[finalI] + "'s", discountPolicy, purchasePolicy, nitayName[finalI]);
                         marketSystem.AppointNewShopOwner(s.getShopID(),userName[0],nitayName[finalI]);
                     } catch (InvalidSequenceOperationsExc e) {
@@ -65,6 +68,8 @@ class MarketSystemTest {
                         e.printStackTrace();
                     } catch (BlankDataExc blankDataExc) {
                         blankDataExc.printStackTrace();
+                    } catch (ShopNotFoundException shopNotFoundException) {
+                        shopNotFoundException.printStackTrace();
                     }
                 }
             };
@@ -88,13 +93,15 @@ class MarketSystemTest {
     }
 
     @Test
-    void registerLogInCreateAppointManager() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    void registerLogInCreateAppointManager() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, InvalidAuthorizationException {
         PaymentService ps1 = mock(PaymentService.class);
         when(ps1.connect()).thenReturn(true);
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.connect()).thenReturn(true);
         marketSystem.start(ps1,ss2,"admin","admin");
-        marketSystem.register(userName[0],userPass[0] );
+        marketSystem.EnterMarket();
+        marketSystem.register("-Guest0",userName[0],userPass[0]);
+        marketSystem.LeaveMarket("-Guest0");
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
         ExecutorService pool = Executors.newFixedThreadPool(nitayName.length);
@@ -104,10 +111,14 @@ class MarketSystemTest {
                 @Override
                 public void run() {
                     try {
-                        marketSystem.register(nitayName[finalI], nitayName[finalI]);
-                        marketSystem.logIn(nitayName[finalI], nitayName[finalI],null);
+                        marketSystem.EnterMarket();
+                        String guestName = String.format("-Guest%d",finalI+1);
+                        marketSystem.register(guestName,nitayName[finalI], nitayName[finalI]);
+                        marketSystem.login(guestName,nitayName[finalI], nitayName[finalI],null);
                         Shop s = marketSystem.createShop("sports",nitayName[finalI] + "'s", discountPolicy, purchasePolicy, nitayName[finalI]);
                         marketSystem.AppointNewShopManager(s.getShopID(),userName[0],nitayName[finalI]);
+                        marketSystem.logout(nitayName[finalI]);
+                        marketSystem.LeaveMarket(nitayName[finalI]);
                     } catch (InvalidSequenceOperationsExc e) {
                         e.printStackTrace();
                     } catch (IncorrectIdentification incorrectIdentification) {
@@ -116,6 +127,8 @@ class MarketSystemTest {
                         e.printStackTrace();
                     } catch (BlankDataExc blankDataExc) {
                         blankDataExc.printStackTrace();
+                    } catch (ShopNotFoundException shopNotFoundException) {
+                        shopNotFoundException.printStackTrace();
                     }
                 }
             };
@@ -139,7 +152,7 @@ class MarketSystemTest {
     }
 
     @Test
-    void registerLogInCreateAppointManagerAddPermissionCloseShop() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc{
+    void registerLogInCreateAppointManagerAddPermissionCloseShop() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, InvalidAuthorizationException {
         List<ShopManagersPermissions> shopManagersPermissionsList = new LinkedList<>();
         shopManagersPermissionsList.add(ShopManagersPermissions.OpenShop);
         shopManagersPermissionsList.add(ShopManagersPermissions.CloseShop);
@@ -148,24 +161,31 @@ class MarketSystemTest {
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.connect()).thenReturn(true);
         marketSystem.start(ps1,ss2,"admin","admin");
-        marketSystem.register(userName[0],userPass[0] );
+        marketSystem.register("-Guest0",userName[0],userPass[0] );
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
         ExecutorService pool = Executors.newFixedThreadPool(nitayName.length);
+        final int[] count = {-1};
         for(int i =0;i<4;i++){
             int finalI = i;
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        marketSystem.register(nitayName[finalI], nitayPass[finalI]);
-                        marketSystem.register(userName[finalI], userPass[finalI]);
-                        marketSystem.logIn(nitayName[finalI], nitayPass[finalI],null);
+                        marketSystem.EnterMarket();
+                        count[0]++;
+                        String guestName1 = String.format("-Guest%d",count[0]);
+                        marketSystem.register(guestName1,nitayName[finalI], nitayPass[finalI]);
+                        marketSystem.EnterMarket();
+                        count[0]++;
+                        String guestName2 = String.format("-Guest%d",count[0]);
+                        marketSystem.register(guestName2,userName[finalI], userPass[finalI]);
+                        marketSystem.login(guestName1,nitayName[finalI], nitayPass[finalI],null);
                         Shop s = marketSystem.createShop("sports",nitayName[finalI] + "'s", discountPolicy, purchasePolicy, nitayName[finalI]);
                         marketSystem.AppointNewShopManager(s.getShopID(),userName[finalI],nitayName[finalI]);
                         marketSystem.AddShopMangerPermissions(s.getShopID(),shopManagersPermissionsList,userName[finalI],nitayName[finalI]);
                         marketSystem.logout(nitayName[finalI]);
-                        marketSystem.logIn(userName[finalI], userPass[finalI],null);
+                        marketSystem.login(guestName2,userName[finalI], userPass[finalI],null);
                         marketSystem.CloseShop(s.getShopID(),userName[finalI]);
                     } catch (InvalidSequenceOperationsExc e) {
                         e.printStackTrace();
@@ -175,6 +195,8 @@ class MarketSystemTest {
                         e.printStackTrace();
                     } catch (BlankDataExc blankDataExc) {
                         blankDataExc.printStackTrace();
+                    } catch (ShopNotFoundException shopNotFoundException) {
+                        shopNotFoundException.printStackTrace();
                     }
                 }
             };
@@ -198,7 +220,7 @@ class MarketSystemTest {
     }
 
     @Test
-    void registerLogInCreateAppointManagerAddPermissionCloseShopOpenAddProduct() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    void registerLogInCreateAppointManagerAddPermissionCloseShopOpenAddProduct() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, InvalidAuthorizationException {
         List<ShopManagersPermissions> shopManagersPermissionsList = new LinkedList<>();
         shopManagersPermissionsList.add(ShopManagersPermissions.OpenShop);
         shopManagersPermissionsList.add(ShopManagersPermissions.CloseShop);
@@ -207,24 +229,31 @@ class MarketSystemTest {
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.connect()).thenReturn(true);
         marketSystem.start(ps1,ss2,"admin","admin");
-        marketSystem.register(userName[0],userPass[0] );
+        marketSystem.register("-Guest0",userName[0],userPass[0] );
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
         ExecutorService pool = Executors.newFixedThreadPool(nitayName.length);
+        final int[] count = {-1};
         for(int i =0;i<4;i++){
             int finalI = i;
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        marketSystem.register(nitayName[finalI], nitayPass[finalI]);
-                        marketSystem.register(userName[finalI], userPass[finalI]);
-                        marketSystem.logIn(nitayName[finalI], nitayPass[finalI],null);
+                        marketSystem.EnterMarket();
+                        count[0]++;
+                        String guestName1 = String.format("-Guest%d", count[0]);
+                        marketSystem.register(guestName1,nitayName[finalI], nitayPass[finalI]);
+                        marketSystem.EnterMarket();
+                        count[0]++;
+                        String guestName2 = String.format("-Guest%d",count[0]);
+                        marketSystem.register(guestName2,userName[finalI], userPass[finalI]);
+                        marketSystem.login(guestName1,nitayName[finalI], nitayPass[finalI],null);
                         Shop s = marketSystem.createShop("sports",nitayName[finalI] + "'s", discountPolicy, purchasePolicy, nitayName[finalI]);
                         marketSystem.AppointNewShopManager(s.getShopID(),userName[finalI],nitayName[finalI]);
                         marketSystem.AddShopMangerPermissions(s.getShopID(),shopManagersPermissionsList,userName[finalI],nitayName[finalI]);
                         marketSystem.logout(nitayName[finalI]);
-                        marketSystem.logIn(userName[finalI], userPass[finalI],null);
+                        marketSystem.login(guestName2,userName[finalI], userPass[finalI],null);
                         marketSystem.CloseShop(s.getShopID(),userName[finalI]);
                         marketSystem.OpenShop(s.getShopID(),userName[finalI]);
                         marketSystem.AddProductToShopInventory(001,"basketball","sports","sports",50.0,50,userName[finalI],s.getShopID());
@@ -236,6 +265,8 @@ class MarketSystemTest {
                         e.printStackTrace();
                     } catch (BlankDataExc blankDataExc) {
                         blankDataExc.printStackTrace();
+                    } catch (ShopNotFoundException shopNotFoundException) {
+                        shopNotFoundException.printStackTrace();
                     }
                 }
             };
@@ -259,7 +290,7 @@ class MarketSystemTest {
     }
 
     @Test
-    void checkOut() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    void checkOut() throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, InvalidAuthorizationException {
         List<ShopManagersPermissions> shopManagersPermissionsList = new LinkedList<>();
         shopManagersPermissionsList.add(ShopManagersPermissions.OpenShop);
         shopManagersPermissionsList.add(ShopManagersPermissions.CloseShop);
@@ -270,12 +301,14 @@ class MarketSystemTest {
         when(ss2.supply(anyVararg(),anyVararg(),anyVararg())).thenReturn(true);
         when(ss2.connect()).thenReturn(true);
         marketSystem.start(ps1,ss2,"admin","admin");
-        marketSystem.register(userName[0],userPass[0] );
+        marketSystem.EnterMarket();
+        marketSystem.register("-Guest0",userName[0],userPass[0] );
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
         double basePrice = 50;
         when(discountPolicy.calcPricePerProduct(1, basePrice, 1)).thenReturn(basePrice);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
         ExecutorService pool = Executors.newFixedThreadPool(nitayName.length);
+        final int[] count = {-1};
         for(int i =0;i<4;i++){
             int finalI = i;
             Runnable r = new Runnable() {
@@ -283,9 +316,15 @@ class MarketSystemTest {
                 public void run() {
                     try {
                         when(purchasePolicy.checkIfProductRulesAreMet(userName[finalI], 001, 50.0, 1)).thenReturn(true);
-                        marketSystem.register(nitayName[finalI], nitayPass[finalI]);
-                        marketSystem.register(userName[finalI], userPass[finalI]);
-                        marketSystem.logIn(nitayName[finalI], nitayPass[finalI],null);
+                        marketSystem.EnterMarket();
+                        count[0]++;
+                        String guestName1 = String.format("-Guest%d", count[0]);
+                        marketSystem.register(guestName1,nitayName[finalI], nitayPass[finalI]);
+                        marketSystem.EnterMarket();
+                        count[0]++;
+                        String guestName2 = String.format("-Guest%d", count[0]);
+                        marketSystem.register(guestName2,userName[finalI], userPass[finalI]);
+                        marketSystem.login(guestName1,nitayName[finalI], nitayPass[finalI],null);
                         Shop s = marketSystem.createShop("sports",nitayName[finalI] + "'s", discountPolicy, purchasePolicy, nitayName[finalI]);
                         marketSystem.AppointNewShopManager(s.getShopID(),userName[finalI],nitayName[finalI]);
                         marketSystem.AddShopMangerPermissions(s.getShopID(),shopManagersPermissionsList,userName[finalI],nitayName[finalI]);
@@ -293,7 +332,7 @@ class MarketSystemTest {
                         marketSystem.OpenShop(s.getShopID(),userName[finalI]);
                         marketSystem.AddProductToShopInventory(001,"basketball","sports","sports",50.0,50,nitayName[finalI],s.getShopID());
                         marketSystem.logout(nitayName[finalI]);
-                        marketSystem.logIn(userName[finalI], userPass[finalI],null);
+                        marketSystem.login(guestName2,userName[finalI], userPass[finalI],null);
                         marketSystem.AddProductToCart(userName[finalI],s.getShopID(),001,1);
                         marketSystem.Checkout(userName[finalI],userName[finalI],"Beer shava","+972528403121","0123456789","07/26");
                     } catch (InvalidSequenceOperationsExc e) {
