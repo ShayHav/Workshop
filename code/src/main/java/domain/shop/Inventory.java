@@ -101,18 +101,13 @@ public class Inventory {
      * @param amount the number of the items to reduce from the inventory
      * @return true if successfully reduce the quantity in the inventory false otherwise
      */
-    public boolean reduceAmount(int product, int amount){
+    public void reduceAmount(int product, int amount) throws ProductNotFoundException {
         if(!keyToProduct.containsKey(product))
-            return false;
+            throw new ProductNotFoundException("product not found");
         ProductImp p = keyToProduct.get(product);
-        int currentAmount =keyToProduct.get(product).getAmount();
-        if(currentAmount < amount)
-            return false;
-        synchronized (keyToProduct) {
-            currentAmount -= amount;
-            keyToProduct.get(product).setQuantity(currentAmount);
-        }
-        return true;
+        int currentAmount = keyToProduct.get(product).getAmount();
+        currentAmount -= amount;
+        keyToProduct.get(product).setQuantity(currentAmount);
     }
 
     public void removeProduct(int product) {
@@ -154,16 +149,26 @@ public class Inventory {
      * @param items map of product id to the quantity
      * @return true iff the items were in stock and were reserved them
      */
-    protected boolean reserveItems(Map<Integer, Integer> items){
-        for(Integer item: items.keySet()){
-            if(!isInStock(item)){
+    protected boolean reserveItems(Map<Integer, Integer> items) {
+        for (Integer item : items.keySet()) {
+            if (!isInStock(item)) {
                 eventLogger.logMsg(Level.INFO, String.format("failed to reserve the items due to lack of stock of product with id: %d", item));
                 return false;
             }
         }
         //all the item is in stock ,and we want to reserve them until payment
-        for(Integer item: items.keySet()){
-            reduceAmount(item ,items.get(item));
+        synchronized (keyToProduct) {
+            for (Integer item : items.keySet()) {
+                int currentAmount = keyToProduct.get(item).getAmount();
+                if (currentAmount < items.get(item))
+                    return false;
+            }
+            try {
+                for (Integer item : items.keySet())
+                    reduceAmount(item, items.get(item));
+            }catch (ProductNotFoundException productNotFoundException){
+                return false;
+            }
         }
         eventLogger.logMsg(Level.INFO, "items were reserved");
         return true;

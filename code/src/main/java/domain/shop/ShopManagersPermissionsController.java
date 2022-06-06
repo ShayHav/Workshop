@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class ShopManagersPermissionsController {
+    private List<ShopManagersPermissions> managerinit = List.of(new ShopManagersPermissions[]{ShopManagersPermissions.AddProductToInventory, ShopManagersPermissions.RemoveProductFromInventory});
     private Map<String, List<ShopManagersPermissions>> shopManagersPermissionsMap;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
 
@@ -106,6 +107,19 @@ public class ShopManagersPermissionsController {
             return PermissionExist(shopManagersPermissionsList, targetUser);
         } else return false;
     }
+    public boolean addPermissions(ShopManagersPermissions shopManagersPermissionsList, String targetUser) {
+        List<ShopManagersPermissions> shopManagersPermissions = new LinkedList<>();
+        if (shopManagersPermissionsList != null) {
+            List<ShopManagersPermissions> userShopManagersPermissionsList = shopManagersPermissionsMap.get(targetUser);
+            if (userShopManagersPermissionsList != null) {
+                        userShopManagersPermissionsList.add(shopManagersPermissionsList);
+            } else synchronized (shopManagersPermissionsMap){
+                shopManagersPermissions.add(shopManagersPermissionsList);
+                shopManagersPermissionsMap.put(targetUser, shopManagersPermissions);
+            }
+            return PermissionExist(shopManagersPermissions, targetUser);
+        } else return false;
+    }
 
     private boolean PermissionExist(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser) {
         boolean output = true;
@@ -130,5 +144,12 @@ public class ShopManagersPermissionsController {
 
     public List<ShopManagersPermissions> getPermissions(String managerUsername) {
         return shopManagersPermissionsMap.get(managerUsername);
+    }
+
+    public void initManager(String userName) {
+        List<ShopManagersPermissions> init = new LinkedList<>();
+        for(ShopManagersPermissions shopManagersPermissions : managerinit)
+            init.add(shopManagersPermissions);
+        shopManagersPermissionsMap.put(userName,init);
     }
 }

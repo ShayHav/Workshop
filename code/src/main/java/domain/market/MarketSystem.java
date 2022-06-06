@@ -27,7 +27,7 @@ public class MarketSystem {
     private ExternalConnector externalConnector;
     private NotificationManager notificationManager = NotificationManager.getInstance();
     private final UserController userController = UserController.getInstance();
-    //private final ShopController shopController = ShopController.getInstance();
+    private final ShopController shopController = ShopController.getInstance();
 
     private MarketSystem() {
         eventLogger.logMsg(Level.INFO, "System start");
@@ -36,6 +36,63 @@ public class MarketSystem {
 
     public List<ShopManagersPermissions> checkPermissionsForManager(String managerUsername, int shopID) throws ShopNotFoundException, IllegalArgumentException {
         return ShopController.getInstance().checkPermissionsForManager(managerUsername, shopID);
+    }
+
+    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
+        //ShopController controller = ShopController.getInstance();
+        Shop shop;
+        try {
+            shop = shopController.getShop(shopID);
+        } catch (ShopNotFoundException snfe) {
+            return new ResponseT<>(null, snfe.getLocalizedMessage());
+        }
+        Product p;
+        try {
+            p = shop.addListing(serialNumber, pName, pDis, pCat, price, amount, username);
+        } catch (InvalidAuthorizationException iae) {
+            return new ResponseT<>(null, iae.getLocalizedMessage());
+        } catch (InvalidProductInfoException ipie) {
+            //todo prints????
+            return new ResponseT<>(null, ipie.getLocalizedMessage());
+        }
+        if (p == null) {
+            return null;
+        }
+        return new ResponseT<>(p);
+    }
+
+    public ResponseT<Product> ChangeProduct(String username, Product p, int shopID) {
+        Shop shop;
+        try {
+            shop = shopController.getShop(shopID);
+        } catch (ShopNotFoundException snfe) {
+            return new ResponseT<>(null, snfe.getLocalizedMessage());
+        }
+        int newAmount = ((ServiceProduct) p).getAmount();
+        double newPrice = ((ServiceProduct) p).getPrice();
+        Product changed;
+        try {
+            changed = shop.changeProductDetail(p.getId(), p.getName(), p.getDescription(), p.getCategory(), username, newAmount, newPrice);
+        } catch (ProductNotFoundException pnfe) {
+            return new ResponseT<>(null, pnfe.getLocalizedMessage());
+        } catch (InvalidProductInfoException ipie) {
+            return new ResponseT<>(null, ipie.getLocalizedMessage());
+        }
+        return new ResponseT<>(changed);
+    }
+
+    public ResponseT<Boolean> CheckIfProductAvailable(Product p, int shopID) {
+        Shop shop;
+        try {
+            shop = shopController.getShop(shopID);
+            return new ResponseT<>(shop.getProduct(p.getId()) != null);
+        } catch (ShopNotFoundException snfe) {
+            return new ResponseT<>(null, snfe.getLocalizedMessage());
+        } catch (ProductNotFoundException e) {
+            return new ResponseT<>(e.getMessage());
+        }
+
+
     }
 
 

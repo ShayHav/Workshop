@@ -81,11 +81,8 @@ public class ControllersBridge {
      * @throws ShopNotFoundException
      */
     public void DismissalOwner(String userName, String targetUser, int shop) throws InvalidSequenceOperationsExc, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
-        if(ShopController.getInstance().DismissalOwner(userName,targetUser,shop)) {
-            UserController.getInstance().deleteUserName(targetUser);
-        }
-        else {
+        if(!ShopController.getInstance().DismissalOwner(userName,targetUser,shop))
             throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s", targetUser));
-        }
+
     }
 }

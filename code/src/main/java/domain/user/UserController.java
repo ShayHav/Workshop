@@ -67,6 +67,10 @@ public class UserController {
         return false;
     }
 
+    public boolean userExist(String userName) {
+        return memberList.containsKey(userName) | guestUser.containsKey(userName);
+    }
+
 
 
     private static class UserControllerHolder {
@@ -138,8 +142,14 @@ public class UserController {
             if (activeUser.containsKey(userName)) {
                 synchronized (activeUser) {
                     User u = getUser(userName);
-                    u.logout();
-                    activeUser.remove(userName);
+                    if(u!=null) {
+                        u.logout();
+                        activeUser.remove(userName);
+                    }
+                    else {
+                        errorLogger.logMsg(Level.WARNING, "attempt of logOut for user who is not Registered.");
+                        throw new InvalidSequenceOperationsExc("attempt of logOut for user who is not Registered.");
+                    }
                 }
                 eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", userName));
             }
@@ -261,11 +271,14 @@ public class UserController {
      * @throws InvalidSequenceOperationsExc
      */
     public boolean createSystemManager(String id, String pass) throws InvalidSequenceOperationsExc {
-        register(id, pass);
+        System.out.println("createSystemManager: "+id);
+        register(id,pass);
+        System.out.println("register: "+id);
         User u = memberList.get(id);
         synchronized (adminUser) {
             adminUser.add(u);
         }
+        System.out.println("makeSystemManager: "+id);
         u.makeSystemManager();
         return true;
     }
@@ -278,9 +291,18 @@ public class UserController {
                 if(userOrders.size() > 0)
                     orders.put(user,f.applyFilter(userOrders));
             }
-
-            return orders;
         }
+        else{
+            for(String id: userName){
+                User user = memberList.get(id);
+                if(user == null){
+                  errorLogger.logMsg(Level.WARNING,String.format("user not exist: %s",id));
+                  return null;
+                }
+                orders.addAll(user.getHistoryOfOrders());
+            }
+        }
+        return orders;
     }
 
     public synchronized boolean HasUserEnteredMarket(String userName) {
@@ -299,7 +321,6 @@ public class UserController {
 
     /**
      * Checking operation validity and performing
-     *
      * @param userName
      * @param shopID
      * @param productId
@@ -319,7 +340,6 @@ public class UserController {
 
     /**
      * Checking operation validity and performing
-     *
      * @param userName
      * @param shopNumber
      * @param productId
@@ -336,9 +356,9 @@ public class UserController {
 
     /**
      * Checking operation validity and performing
-     *
      * @param userName
      * @param f
+     * @param shopNumber
      * @return
      * @throws InvalidAuthorizationException
      */
@@ -349,12 +369,11 @@ public class UserController {
             throw new InvalidAuthorizationException();
         }
         User u = activeUser.get(userName);
-        return u.getOrderHistoryForShops(f);
+            return u.getOrderHistoryForShops(f, shopNumber);
     }
 
     /**
      * Checking operation validity and performing
-     *
      * @param userName
      * @param f
      * @return

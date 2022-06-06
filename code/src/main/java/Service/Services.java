@@ -420,17 +420,8 @@ public class Services {
      * @return Response object
      */
     public ResponseT<Boolean> CheckIfProductAvailable(Product p, int shopID) {
-        ShopController controller = ShopController.getInstance();
-        Shop shop;
-        try {
-            shop = controller.getShop(shopID);
-            return new ResponseT<>(shop.getProduct(p.getId()) != null);
-        } catch (ShopNotFoundException snfe) {
-            return new ResponseT<>(null, snfe.getLocalizedMessage());
-        } catch (ProductNotFoundException e) {
-            return new ResponseT<>(e.getMessage());
-        }
-
+        return marketSystem.CheckIfProductAvailable(p,shopID);
+        //ShopController controller = ShopController.getInstance();
 
     }
 
@@ -446,23 +437,7 @@ public class Services {
      * @return Response object
      */
     public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
-        ShopController controller = ShopController.getInstance();
-        Shop shop;
-        try {
-            shop = controller.getShop(shopID);
-        } catch (ShopNotFoundException snfe) {
-            return new ResponseT<>(null, snfe.getLocalizedMessage());
-        }
-        Product p;
-        try {
-            p = shop.addListing(serialNumber, pName, pDis, pCat, price, amount, username);
-        } catch (InvalidAuthorizationException | InvalidProductInfoException iae) {
-            return new ResponseT<>(null, iae.getLocalizedMessage());
-        }
-        if (p == null) {
-            return null;
-        }
-        return new ResponseT<>(p);
+        return marketSystem.AddProductToShopInventory(serialNumber,pName,pDis,pCat,price,amount,username,shopID);
     }
 
     /**
@@ -473,22 +448,7 @@ public class Services {
      * @return Response object
      */
     public ResponseT<Product> ChangeProduct(String username, Product p, int shopID) {
-        ShopController controller = ShopController.getInstance();
-        Shop shop;
-        try {
-            shop = controller.getShop(shopID);
-        } catch (ShopNotFoundException snfe) {
-            return new ResponseT<>(null, snfe.getLocalizedMessage());
-        }
-        int newAmount = ((ServiceProduct) p).getAmount();
-        double newPrice = ((ServiceProduct) p).getPrice();
-        Product changed;
-        try {
-            changed = shop.changeProductDetail(p.getId(), p.getName(), p.getDescription(), p.getCategory(), username, newAmount, newPrice);
-        } catch (ProductNotFoundException | InvalidProductInfoException e) {
-            return new ResponseT<>(e.getMessage());
-        }
-        return new ResponseT<>(changed);
+        return marketSystem.ChangeProduct(username,p,shopID);
     }
 
     /**

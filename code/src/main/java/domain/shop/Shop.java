@@ -69,6 +69,14 @@ public class Shop {
             return false;
         }
     }
+    public synchronized boolean addPermissions(ShopManagersPermissions shopManagersPermissionsList, String targetUser, String id) {
+        if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id))
+            return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
+        else {
+            errorLogger.logMsg(Level.WARNING, String.format("user: %s cannot change permissions", id) );
+            return false;
+        }
+    }
 
     public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
         if (shopManagersPermissionsController.canChangeShopManagersPermissions(id)| ShopOwners.containsKey(id)) {
@@ -228,6 +236,7 @@ public class Shop {
             }
             if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
                 return new ResponseT<>(String.format("checkout process violates purchase policy in shop %d",shopID));
+
         }
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
@@ -249,7 +258,6 @@ public class Shop {
             product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
             product_PricePer.put(set.getKey(), product_price_single);
         }
-
         if(!marketSystem.pay(transaction)){
             synchronized (inventory) {
                 try {
@@ -261,6 +269,7 @@ public class Shop {
             }
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please contact the company representative", shopID));
         }
+
         if(!marketSystem.supply(transaction, products)){
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
         }
@@ -326,6 +335,7 @@ public class Shop {
                         managerUser.AppointedMeManager(this,usertarget);
                         ShopManagers.putIfAbsent(usertarget, newManager);
                         newManager.addRole(shopID,Role.ShopManager);
+                        shopManagersPermissionsController.initManager(newManager.getUserName());
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                         return;
                     }
@@ -336,9 +346,9 @@ public class Shop {
         throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s failed", usertarget));
     }
 
-    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
-        if(shopManagersPermissionsController.canCloseShop(userID)) {
-            if (isOpen) {
+    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc {
+        if(ShopFounder.getUserName().equals(userID) || shopManagersPermissionsController.canCloseShop(userID)) {
+            if (isOpen)
                 isOpen = false;
                 User user = ControllersBridge.getInstance().getUser(userID);
                 getShopOwners().forEach(owner -> {
@@ -501,5 +511,12 @@ public class Shop {
               market.sendMessage(owner, finalBuyer,message );
         });
         market.sendMessage(ShopFounder, finalBuyer, message);
+    }
+    public boolean isProductAvailable(int prodID){
+        return inventory.isInStock(prodID);
+    }
+
+    public boolean isManager(String userName) {
+        return ShopManagers.containsKey(userName);
     }
 }
