@@ -29,6 +29,8 @@ public class UserGenerator extends Tester {
     private final String adminID = "MAdminM";
     private final String adminPW = "!@PP348m";
     private final String[] sadInputs = {"DROP TABLE", ""};
+    private final String [] nitayNames = {"Fashionista","StyleQueen","GlamourGal","DesignerDiva","SassySuitcase","HauteHippie","ModelMoment","CoutureCutie","FashionForward"};
+    private final String [] nitayPassword = {"123456","123456789","12345","qwerty","password","12345678","111111","123123","1234567890"};
 
     public UserGenerator () {}
 
@@ -48,6 +50,14 @@ public class UserGenerator extends Tester {
     public void DeleteAdmin(){
         String[] arr = {adminID};
         DeleteUserTest(arr);
+    }
+
+    public String[] getNitayNames() {
+        return nitayNames;
+    }
+
+    public String[] getNitayPassword() {
+        return nitayPassword;
     }
 
     public String getAdmin()

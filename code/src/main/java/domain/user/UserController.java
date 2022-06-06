@@ -67,6 +67,10 @@ public class UserController {
         return false;
     }
 
+    public boolean userExist(String userName) {
+        return memberList.containsKey(userName) | guestUser.containsKey(userName);
+    }
+
 
 
     private static class UserControllerHolder {
@@ -138,8 +142,14 @@ public class UserController {
             if (activeUser.containsKey(userName)) {
                 synchronized (activeUser) {
                     User u = getUser(userName);
-                    u.logout();
-                    activeUser.remove(userName);
+                    if(u!=null) {
+                        u.logout();
+                        activeUser.remove(userName);
+                    }
+                    else {
+                        errorLogger.logMsg(Level.WARNING, "attempt of logOut for user who is not Registered.");
+                        throw new InvalidSequenceOperationsExc("attempt of logOut for user who is not Registered.");
+                    }
                 }
                 eventLogger.logMsg(Level.INFO, String.format("logOut for user: %s.", userName));
             }
@@ -261,11 +271,14 @@ public class UserController {
      * @throws InvalidSequenceOperationsExc
      */
     public boolean createSystemManager(String id, String pass) throws InvalidSequenceOperationsExc {
-        register(id, pass);
+        System.out.println("createSystemManager: "+id);
+        register(id,pass);
+        System.out.println("register: "+id);
         User u = memberList.get(id);
         synchronized (adminUser) {
             adminUser.add(u);
         }
+        System.out.println("makeSystemManager: "+id);
         u.makeSystemManager();
         return true;
     }
@@ -274,13 +287,12 @@ public class UserController {
         Map<User, List<Order>> orders = new HashMap<>();
         synchronized (memberList) {
             for (User user : memberList.values()) {
-                List<Order> userOrders = user.getHistoryOfOrders();
+                List<Order> userOrders = user.getOrderHistory();
                 if(userOrders.size() > 0)
                     orders.put(user,f.applyFilter(userOrders));
             }
-
-            return orders;
         }
+        return orders;
     }
 
     public synchronized boolean HasUserEnteredMarket(String userName) {
@@ -299,7 +311,6 @@ public class UserController {
 
     /**
      * Checking operation validity and performing
-     *
      * @param userName
      * @param shopID
      * @param productId
@@ -319,7 +330,6 @@ public class UserController {
 
     /**
      * Checking operation validity and performing
-     *
      * @param userName
      * @param shopNumber
      * @param productId
@@ -336,7 +346,6 @@ public class UserController {
 
     /**
      * Checking operation validity and performing
-     *
      * @param userName
      * @param f
      * @return
@@ -349,12 +358,11 @@ public class UserController {
             throw new InvalidAuthorizationException();
         }
         User u = activeUser.get(userName);
-        return u.getOrderHistoryForShops(f);
+            return u.getOrderHistoryForShops(f);
     }
 
     /**
      * Checking operation validity and performing
-     *
      * @param userName
      * @param f
      * @return
@@ -378,7 +386,7 @@ public class UserController {
         if(user == null){
             throw new InvalidSequenceOperationsExc(String.format("guest user: %s has no access to past orders since he is not registered",username));
         }
-        return filter.applyFilter(user.getHistoryOfOrders());
+        return filter.applyFilter(user.getOrderHistory());
     }
 
     public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws

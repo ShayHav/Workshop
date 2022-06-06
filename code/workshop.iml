@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <setting name="provider-name" value="Hibernate" />
+        <datasource-mapping />
+        <naming-strategy-map />
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_14">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -8,8 +19,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/${project.build.directory}/classes" />
       <excludeFolder url="file://$MODULE_DIR$/${project.build.directory}/test-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/java/Testing_System" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/java/DB" />
+      <excludeFolder url="file://$MODULE_DIR$/tests" />
     </content>
-    <content url="file://$MODULE_DIR$/tests/domain/user" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" scope="TEST" name="mockito.all" level="project" />
@@ -47,7 +61,8 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="mockito.all" level="project" />
-    <orderEntry type="library" name="Maven: io.javalin:javalin:4.5.0" level="project" />
+    <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="Maven: io.javalin:javalin:4.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.36" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.4.46.v20220331" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
@@ -77,8 +92,8 @@
     <orderEntry type="library" name="Maven: org.webjars:bootstrap:5.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.webjars:popper.js:2.9.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.36" level="project" />
-    <orderEntry type="library" name="Maven: gg.jte:jte:2.0.2" level="project" />
-    <orderEntry type="library" name="Maven: gg.jte:jte-runtime:2.0.2" level="project" />
+    <orderEntry type="library" name="Maven: gg.jte:jte:2.0.3" level="project" />
+    <orderEntry type="library" name="Maven: gg.jte:jte-runtime:2.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.owasp.encoder:encoder:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apiguardian:apiguardian-api:1.1.0" level="project" />
