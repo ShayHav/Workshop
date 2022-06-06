@@ -16,6 +16,7 @@ import domain.shop.Shop;
 import domain.user.User;
 import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
@@ -38,7 +39,7 @@ public class Main {
     public static InetAddress ip;
 
     public static void main(String[] args) {
-        Services.getInstance().StartMarket(new PaymentServiceImp(), new SupplyServiceImp(), "Admin", "Admin");
+        Services.getInstance().StartMarket(new PaymentServiceImp(), new SupplyServiceImp());
         UserController userController = new UserController();
         ShopController shopController = new ShopController(userController);
         Javalin app;
@@ -53,8 +54,6 @@ public class Main {
             return;
         }
         app = Javalin.create(JavalinConfig::enableWebjars).start(port);
-
-//        app.get("/", shopController::renderHomepage);
 
         app.routes(() -> {
             before(userController::validateUser);
@@ -173,11 +172,11 @@ public class Main {
         services.Register(shahar_guest,"shahar", "123");
 
         services.Login(shay_guest,"shay","123");
-        services.CreateShop("testing shop","shay","shop");
-        services.AddProductToShopInventory(1, "Product1", "testing product", "test",1.90,15, "shay", 1);
-        services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", 1);
-        services.AddProductToShopInventory(3, "Product3", "testing product", "test",20,0, "shay", 1);
-        services.AddToShoppingCart("shay",1,1,5);
+        Shop shop = services.CreateShop("testing shop","shay","shop").getValue();
+        services.AddProductToShopInventory(1, "Product1", "testing product", "test",1.90,15, "shay", shop.getShopID());
+        services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", shop.getShopID());
+        services.AddProductToShopInventory(3, "Product3", "testing product", "test",20,0, "shay", shop.getShopID());
+        services.AddToShoppingCart("shay",shop.getShopID(),1,5);
         services.Checkout("shay","shay havivyan","patish", "0506874838", "12345", "02/24");
         r = services.Logout("shay");
         shay_guest = r.getValue().getUserName();

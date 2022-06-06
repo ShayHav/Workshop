@@ -199,8 +199,8 @@ public class Tester {
     }
 
     //done
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
-        return br.StartMarket(payment, supply, userID, password);
+    public Response StartMarket(PaymentService payment, SupplyService supply) {
+        return br.StartMarket(payment, supply);
     }
 
     public Result<Boolean, String> AddSupplyService(String path) {

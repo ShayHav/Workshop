@@ -38,7 +38,7 @@ class ShoppingBasketTest {
 
     @Test
     void addProductToBasket() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, ShopNotFoundException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.register("nitay","Password");
         marketSystem.logIn("nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
@@ -67,7 +67,7 @@ class ShoppingBasketTest {
 
     @Test
     void calculateTotalAmount() throws InvalidSequenceOperationsExc, IncorrectIdentification, ShopNotFoundException, BlankDataExc, InvalidAuthorizationException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.register("nitay","Password");
         marketSystem.logIn("nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
@@ -81,7 +81,7 @@ class ShoppingBasketTest {
 
     @Test
     void updateAmount() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.register("nitay","Password");
         marketSystem.logIn("nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
@@ -103,7 +103,7 @@ class ShoppingBasketTest {
 
     @Test
     void removeProduct() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.register("nitay","Password");
         marketSystem.logIn("nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
@@ -117,7 +117,7 @@ class ShoppingBasketTest {
 
     @Test
     void showBasket() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.register("nitay","Password");
         marketSystem.logIn("nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
