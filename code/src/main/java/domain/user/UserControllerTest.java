@@ -4,9 +4,13 @@ import Testing_System.UserGenerator;
 import domain.Exceptions.*;
 import domain.shop.Shop;
 import domain.shop.ShopController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +24,8 @@ public class UserControllerTest {
     private String adminPass = userGenerator.GetAdminPW();
     private String[] userPass = userGenerator.GetPW();
     private String[] badPass = userGenerator.GetBadPW();
+    private String[] nitayName = userGenerator.getNitayNames();
+    private String[] nitayPass = userGenerator.getNitayPassword();
 
 
     @BeforeEach
@@ -33,12 +39,32 @@ public class UserControllerTest {
             }
         }
     }
+    @AfterEach
+    void init(){
+        for(int i=0;i<userName.length;i++) {
+            try {
+                userController.logOut(userName[i]);
+            }
+            catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc){
+                System.out.println(invalidSequenceOperationsExc.getMessage());
+            }
+        }
+    }
 
     @Test
-    void logIn() throws IncorrectIdentification, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+    void logIn() {
         for(int i = 1; i < userName.length; i++){
-            assertTrue(userController.logIn(userName[i], userPass[i])!=null);
-            userController.logOut(userName[i]);
+            try {
+                userController.logOut(userName[i]);
+                assertTrue(userController.logIn(userName[i], userPass[i]) != null);
+            }
+             catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+                invalidSequenceOperationsExc.printStackTrace();
+            } catch (IncorrectIdentification incorrectIdentification) {
+                incorrectIdentification.printStackTrace();
+            } catch (InvalidAuthorizationException e) {
+                e.printStackTrace();
+            }
         }
         for(int i = 0; i < userName.length; i++){
             int finalI = i;
@@ -48,6 +74,10 @@ public class UserControllerTest {
             }
             catch (InvalidAuthorizationException invalidAuthorizationException){
                 assertTrue(true);
+            } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+                invalidSequenceOperationsExc.printStackTrace();
+            } catch (IncorrectIdentification incorrectIdentification) {
+                incorrectIdentification.printStackTrace();
             }
         }
     }
@@ -96,6 +126,8 @@ public class UserControllerTest {
             fail();
         }
     }
+
+    //TODO: Bar scenario
     @Test
     void DismissalOwner() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, ShopNotFoundException {
         userController.logIn(userName[0],userPass[0]);
@@ -112,8 +144,11 @@ public class UserControllerTest {
         assertFalse(u1.getRoleList().get(s.getShopID()).contains(Role.ShopOwner));
         assertFalse(u2.getRoleList().get(s.getShopID()).contains(Role.ShopOwner));
     }
-   /* @Test
+
+    @Test
     void ThreadLogIn() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, InterruptedException {
+        userController.logOut(userName[0]);
+        userController.logOut(userName[1]);
         Thread t0 = new Thread(new Runnable() {
             @Override
             public void run(){
@@ -145,11 +180,145 @@ public class UserControllerTest {
         t0.start();
         t1.start();
 
+        t0.join();
         t1.join();
 
         assertTrue(userController.isLogin(userName[0]));
         assertTrue(userController.isLogin(userName[1]));
     }
 
-     */
+
+    @Test
+    void ThreadRegistered() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, InterruptedException {
+        Thread t0= new Thread(new Runnable() {
+            @Override
+            public void run(){
+                try {
+                    userController.register("useruser","userpass");
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run(){
+                try {
+                    userController.register("useruser1","userpass1");
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t0.start();
+        t1.start();
+
+        t1.join();
+
+        assertTrue(userController.getUser("useruser").getUserName().equals("useruser"));
+        assertTrue(userController.getUser("useruser1").getUserName().equals("useruser1"));
+    }
+
+    @Test
+    void createSystemManagerThread() throws InterruptedException, IncorrectIdentification {
+        Thread t0= new Thread(new Runnable() {
+            @Override
+            public void run(){
+                try {
+                    userController.createSystemManager(admin, adminPass);
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run(){
+                try {
+                    userController.createSystemManager(admin+"1", adminPass+"1");
+                } catch (InvalidSequenceOperationsExc e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t0.start();
+        t1.start();
+
+        t1.join();
+
+        assertTrue(userController.getUser(admin).isSystemManager());
+        assertTrue(userController.getUser(admin+"1").isSystemManager());
+    }
+
+
+    @Test
+    void createSystemManagerThreads() throws IncorrectIdentification {
+        ExecutorService pool = Executors.newFixedThreadPool(nitayName.length);
+        for(int i =0;i<nitayName.length;i++){
+            int finalI = i;
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        userController.createSystemManager(nitayName[finalI], nitayPass[finalI]);
+                    } catch (InvalidSequenceOperationsExc e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            pool.execute(r);
+        }
+
+
+        pool.shutdown();
+        try {
+            if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+                pool.shutdownNow();
+            }
+        } catch (InterruptedException ex) {
+            pool.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+        for(int i =0;i<nitayName.length;i++){
+            //System.out.println(String.format("User: %s  is exist? %s",nitayName[i],userController.userExist(nitayName[i])));
+            assertTrue(userController.getUser(nitayName[i]).isSystemManager());
+        }
+    }
+    @Test
+    void logInThreads() throws IncorrectIdentification {
+        ExecutorService pool = Executors.newFixedThreadPool(nitayName.length);
+        for(int i =0;i<nitayName.length;i++){
+            int finalI = i;
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        userController.register(nitayName[finalI], nitayPass[finalI]);
+                        userController.logIn(nitayName[finalI], nitayPass[finalI]);
+                    } catch (InvalidSequenceOperationsExc e) {
+                        e.printStackTrace();
+                    } catch (IncorrectIdentification incorrectIdentification) {
+                        incorrectIdentification.printStackTrace();
+                    } catch (InvalidAuthorizationException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            pool.execute(r);
+        }
+
+
+        pool.shutdown();
+        try {
+            if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+                pool.shutdownNow();
+            }
+        } catch (InterruptedException ex) {
+            pool.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+        for(int i =0;i<nitayName.length;i++){
+            assertTrue(userController.getUser(nitayName[i]).isLoggedIn());
+        }
+    }
 }

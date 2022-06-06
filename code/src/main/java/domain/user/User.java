@@ -251,7 +251,7 @@ public class User {
         if ((useRolelist.contains(Role.ShopFounder) || useRolelist.contains(Role.ShopOwner)) && us == UserState2.member)
             return true;
         else {
-            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointOwner withOut appropriate role by user: %s", userName));
+            errorLogger.logMsg(Level.WARNING, String.format("attempt to appointManager withOut appropriate role by user: %s", userName));
             throw new InvalidSequenceOperationsExc();
         }
     }
@@ -525,10 +525,8 @@ public class User {
     /**
      * Checks whether the perpetrator may perform it and operate
      * @param targetUser
-     * @param shop
      * @return
      * @throws InvalidSequenceOperationsExc
-     * @throws ShopNotFoundException
      */
     public boolean CanDismissalOwner(String targetUser) throws InvalidSequenceOperationsExc {
         if(loggedIn){

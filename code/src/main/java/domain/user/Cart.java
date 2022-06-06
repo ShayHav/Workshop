@@ -33,7 +33,7 @@ public class Cart {
                 ShoppingBasket newBasket = new ShoppingBasket(shop);
                 newBasket.addProductToBasket(productID, amount);
                 baskets.put(shopID, newBasket);
-                getTotalAmount();
+                totalAmount = getTotalAmount();
                 eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
                 return new Response();
             } catch (IllegalArgumentException | ProductNotFoundException e) {
@@ -43,7 +43,7 @@ public class Cart {
         } else {
             try {
                 baskets.get(shopID).addProductToBasket(productID, amount);
-                getTotalAmount();
+                totalAmount = getTotalAmount();
                 return new Response();
             } catch (IllegalArgumentException | ProductNotFoundException e) {
                 errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
