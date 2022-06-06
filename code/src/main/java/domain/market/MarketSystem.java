@@ -1,13 +1,10 @@
 package domain.market;
 
-import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
+import domain.*;
 import domain.Exceptions.*;
-import domain.ResponseMap;
 import domain.notifications.AdminObserver;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
-import domain.Response;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;

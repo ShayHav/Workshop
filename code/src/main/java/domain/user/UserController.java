@@ -292,16 +292,6 @@ public class UserController {
                     orders.put(user,f.applyFilter(userOrders));
             }
         }
-        else{
-            for(String id: userName){
-                User user = memberList.get(id);
-                if(user == null){
-                  errorLogger.logMsg(Level.WARNING,String.format("user not exist: %s",id));
-                  return null;
-                }
-                orders.addAll(user.getHistoryOfOrders());
-            }
-        }
         return orders;
     }
 
@@ -358,7 +348,6 @@ public class UserController {
      * Checking operation validity and performing
      * @param userName
      * @param f
-     * @param shopNumber
      * @return
      * @throws InvalidAuthorizationException
      */
@@ -369,7 +358,7 @@ public class UserController {
             throw new InvalidAuthorizationException();
         }
         User u = activeUser.get(userName);
-            return u.getOrderHistoryForShops(f, shopNumber);
+            return u.getOrderHistoryForShops(f);
     }
 
     /**
