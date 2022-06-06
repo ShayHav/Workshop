@@ -1,5 +1,6 @@
 package domain.shop;
 
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;

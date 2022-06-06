@@ -9,12 +9,15 @@ import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.user.filter.*;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.*;
 import java.util.logging.Level;
 
-
+@Entity
 public class User {
+    @Id
     private String userName;
     private UserState2 us;
     private Map<Integer,List<Role>> roleList;
@@ -198,10 +201,14 @@ public class User {
         return ControllersBridge.getInstance().getShop(shop); //TODO: new class
     }
 
+
     public List<Order> getOrderHistory(){
         return orderHistory;
     }
 
+    public void setOrderHistory(List<Order> orderHistory) {
+        this.orderHistory = orderHistory;
+    }
 
     /***
      * login to the system
