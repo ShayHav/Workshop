@@ -21,6 +21,7 @@ public class LoginCaseTest extends Tester {
     @BeforeAll
     public void SetUp()
     {
+        ug.InitTest();
         for(int i = 0; i< ug.getNumOfUser(); i++)
             Register(validUsernames[i], passwords[i]);
     }
@@ -29,6 +30,7 @@ public class LoginCaseTest extends Tester {
     public void CleanUp()
     {
         DeleteUserTest(validUsernames);
+        ug.DeleteAdmin();
     }
 
 

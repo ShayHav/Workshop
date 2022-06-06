@@ -2,13 +2,10 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.TestInstance;
 
 /* https://github.com/ShayHav/Workshop/wiki/Use-Cases */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -27,6 +24,7 @@ public class RegisterCaseTest extends Tester {
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
         sadUserNames = ug.GetSadUsers();
+        ug.InitTest();
         PWs = ug.GetPW();
         badPWs = ug.GetBadPW();
     }
@@ -37,6 +35,11 @@ public class RegisterCaseTest extends Tester {
         DeleteUserTest(validUserNames);
     }
 
+    @AfterAll
+    public void CleanAll()
+    {
+        ug.DeleteAdmin();
+    }
     @Test
     public void GoodRegisterTest()
     {

@@ -35,11 +35,12 @@ public class ShopController {
         return shopCounter;
     }
 
-    public synchronized Shop createShop(String description, String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) {
+    public synchronized Shop createShop(String description,String name, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder) throws InvalidSequenceOperationsExc {
         Shop newShop;
         shopCounter++;
         newShop = new Shop(name, description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
         shopList.put(shopCounter, newShop);
+        shopFounder.addRole(shopCounter,Role.ShopFounder);
         eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
         return newShop;
 
@@ -228,17 +229,17 @@ public class ShopController {
          }
      }
 
-     public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
-         Shop s;
-         try {
-             s = getShop(key);
-         } catch (ShopNotFoundException snfe) {
-             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-             return null;
-         }
-         eventLogger.logMsg(Level.INFO, "AppointNewShopOwner succeeded");
-         return s.AppointNewShopOwner(targetUser, userId);
-     }
+    public String AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc {
+        Shop s;
+        try {
+            s = getShop(key);
+        } catch (ShopNotFoundException snfe) {
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            return null;
+        }
+        eventLogger.logMsg(Level.INFO, "AppointNewShopOwner succeeded");
+        return s.AppointNewShopOwner(targetUser, userId);
+    }
 
      /**
       *
@@ -279,9 +280,8 @@ public class ShopController {
         return true;
     }
 
-    public boolean DismissalOwner(String userName, String targetUser, int shop) throws
-            ShopNotFoundException, InvalidSequenceOperationsExc {
-        return getShop(shop).DismissalOwner(userName, targetUser);
+    public boolean DismissalOwner(String userName, String targetUser, int shop) throws ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+        return getShop(shop).DismissalOwner(userName,targetUser);
     }
 
     public List<Shop> getAllUserShops(String username, Filter<Shop> filter) throws IncorrectIdentification {

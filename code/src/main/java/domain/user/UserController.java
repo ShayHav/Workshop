@@ -10,6 +10,7 @@ import domain.shop.ShopController;
 import domain.user.filter.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 public class UserController {
@@ -30,6 +31,41 @@ public class UserController {
         guestUser = new HashMap<>();
     }
 
+    public boolean canBeDismiss(String targetUser) throws IncorrectIdentification {
+        AtomicBoolean output = new AtomicBoolean(true);
+        User u =getUser(targetUser);
+        if(u.isSystemManager())
+            return false;
+        u.getRoleList().values().forEach((r) -> {
+            if(r.contains(Role.ShopFounder) | r.contains(Role.ShopOwner) | r.contains(Role.ShopManager))
+                output.set(false);
+        });
+        return output.get();
+    }
+
+    public boolean DismissalOwner(String usernames, String targetUser, int shop) throws IncorrectIdentification, InvalidSequenceOperationsExc, ShopNotFoundException, BlankDataExc {
+        User u1 = getUser(usernames);
+        User u2 = getUser(targetUser);
+        if(u1.CanDismissalOwner(targetUser)){
+            List<OwnerAppointment> run = u2.getOwnerAppointmentList();
+            if(run !=null) {
+                run.forEach((o) -> {
+                    try {
+                        DismissalOwner(targetUser, o.getAppointed().getUserName(), o.getShop().getShopID());
+                    } catch (IncorrectIdentification e) {
+                        e.printStackTrace();
+                    } catch (InvalidSequenceOperationsExc e) {
+                        e.printStackTrace();
+                    } catch (ShopNotFoundException | BlankDataExc e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            u1.DismissalOwner(targetUser,shop);
+            return true;
+        }
+        return false;
+    }
 
 
 
