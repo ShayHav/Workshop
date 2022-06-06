@@ -268,7 +268,7 @@ public class MarketSystem {
 
 
     //TODO: Services start here :)
-    public User login(String guestUsername, String username, String pw, UserObserver o) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+    public User login(String guestUsername, String username, String pw) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
         User output;
         if (guestUsername == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: guestUsername");

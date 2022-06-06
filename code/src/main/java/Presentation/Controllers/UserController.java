@@ -45,7 +45,7 @@ public class UserController {
         String guest = ctx.cookieStore("uid");
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
-        ResponseT<User> response = services.Login(guest, username, password, null);
+        ResponseT<User> response = services.Login(guest, username, password);
         if (response.isErrorOccurred()) {
             int errorCode = 401;
             ctx.status(errorCode);

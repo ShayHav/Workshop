@@ -11,6 +11,7 @@ import domain.user.filter.*;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.util.*;
 import java.util.logging.Level;
