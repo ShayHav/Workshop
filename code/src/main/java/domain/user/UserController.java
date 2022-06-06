@@ -274,7 +274,7 @@ public class UserController {
         Map<User, List<Order>> orders = new HashMap<>();
         synchronized (memberList) {
             for (User user : memberList.values()) {
-                List<Order> userOrders = user.getHistoryOfOrders();
+                List<Order> userOrders = user.getOrderHistory();
                 if(userOrders.size() > 0)
                     orders.put(user,f.applyFilter(userOrders));
             }
@@ -378,7 +378,7 @@ public class UserController {
         if(user == null){
             throw new InvalidSequenceOperationsExc(String.format("guest user: %s has no access to past orders since he is not registered",username));
         }
-        return filter.applyFilter(user.getHistoryOfOrders());
+        return filter.applyFilter(user.getOrderHistory());
     }
 
     public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws
