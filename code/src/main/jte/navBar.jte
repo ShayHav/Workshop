@@ -19,7 +19,7 @@
             console.log(event.data);
             let count = event.data;
             let counter = document.querySelector('#messageCount');
-            counter.textContent = count === 0 ? '' : count;
+            counter.textContent = count === 0 || count === '0' ? '' : count;
         }
     </script>
 </head>

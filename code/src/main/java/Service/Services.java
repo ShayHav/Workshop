@@ -94,10 +94,10 @@ public class Services {
      * @param pw - given password
      * @return - Response object
      */
-    public ResponseT<User> Login(String guestUsername, String username, String pw, UserObserver o) {
+    public ResponseT<User> Login(String guestUsername, String username, String pw) {
         ResponseT<User> output;
         try {
-            User b = marketSystem.login(guestUsername,username, pw, null);
+            User b = marketSystem.login(guestUsername,username, pw);
             output = new ResponseT<>(b);
             return output;
         } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification blankDataExc) {

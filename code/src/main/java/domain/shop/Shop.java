@@ -346,18 +346,19 @@ public class Shop {
         throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s failed", usertarget));
     }
 
-    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc {
-        if(ShopFounder.getUserName().equals(userID) || shopManagersPermissionsController.canCloseShop(userID)) {
-            if (isOpen)
+    public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+        if (ShopFounder.getUserName().equals(userID) || shopManagersPermissionsController.canCloseShop(userID)) {
+            if (isOpen) {
                 isOpen = false;
                 User user = ControllersBridge.getInstance().getUser(userID);
                 getShopOwners().forEach(owner -> {
                     marketSystem.sendMessage(owner, user, String.format("store %s was closed by %s", name, user.getUserName()));
                 });
-            }
-            else throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s",userID));
+            } else
+                throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s", userID));
         }
     }
+
     public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if(shopManagersPermissionsController.canOpenShop(userID)) {
             if (!isOpen) {
