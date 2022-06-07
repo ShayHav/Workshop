@@ -1,9 +1,15 @@
 package domain.shop.PurchasePolicys;
 
+
+import domain.shop.ProductImp;
+import domain.shop.discount.Basket;
+
 public interface PurchaseRule {
 
-    boolean purchaseAllowed(String userID, int amount);
+    boolean purchaseAllowed(Basket productToAmounts);
 
     int getID();
+
+    boolean relevant(ProductImp product);
 
 }
