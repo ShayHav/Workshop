@@ -9,14 +9,17 @@ public class ToBuildDiscountPredicate {
     private int amount;
     private double price;
     private DiscountPredType predType;
+    private String productName;
 
-    public ToBuildDiscountPredicate(int productID, int amount) throws InvalidParamException {
+
+    public ToBuildDiscountPredicate(int productID, String productName,int amount) throws InvalidParamException {
         if(productID < 0)
             throw new InvalidParamException("invalid product ID");
         if(amount < 0)
             throw new InvalidParamException("invalid amount");
         this.productID = productID;
         this.amount = amount;
+        this.productName = productName;
         predType = DiscountPredType.product;
     }
 
@@ -31,6 +34,12 @@ public class ToBuildDiscountPredicate {
         if(predType.equals(DiscountPredType.price))
             throw new AccessDeniedException("this is a price predicate, should never access product ID");
         return productID;
+    }
+
+    public String getProductName() throws AccessDeniedException {
+        if(predType.equals(DiscountPredType.product))
+            throw new AccessDeniedException("this is a price predicate, should never access product Name");
+        return productName;
     }
 
     public int getAmount() throws AccessDeniedException {

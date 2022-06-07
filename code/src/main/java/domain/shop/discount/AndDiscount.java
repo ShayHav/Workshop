@@ -49,4 +49,7 @@ public class AndDiscount implements Discount {
         return discount1.relevant(product) || discount2.relevant(product);
     }
 
+    public String toString(){
+        return String.format("(%s and %s)", discount1.toString(), discount2.toString());
+    }
 }

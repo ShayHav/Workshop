@@ -29,4 +29,8 @@ public class OrPR implements PurchaseRule{
     public boolean relevant(ProductImp product){
         return pr1.relevant(product) || pr2.relevant(product);
     }
+
+    public String toString(){
+        return String.format("(%s and\\or %s)", pr1.toString(), pr2.toString());
+    }
 }

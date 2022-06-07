@@ -30,4 +30,9 @@ public class AndPR implements PurchaseRule {
         return pr1.relevant(product) || pr2.relevant(product);
     }
 
+
+    public String toString(){
+        return String.format("(%s or %s)", pr1.toString(), pr2.toString());
+    }
+
 }

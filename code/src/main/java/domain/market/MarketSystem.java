@@ -52,7 +52,6 @@ public class MarketSystem {
         } catch (InvalidAuthorizationException iae) {
             return new ResponseT<>(null, iae.getLocalizedMessage());
         } catch (InvalidProductInfoException ipie) {
-            //todo prints????
             return new ResponseT<>(null, ipie.getLocalizedMessage());
         }
         if (p == null) {
@@ -684,7 +683,7 @@ public class MarketSystem {
     }
 
 
-    public int addProductDiscount(int shopID, int prodID, double percentage) throws InvalidParamException, ShopNotFoundException {
+    public int addProductDiscount(int shopID, int prodID, double percentage) throws InvalidParamException, ShopNotFoundException, ProductNotFoundException {
         return shopController.addSimpleProductDiscount(shopID, prodID, percentage);
     }
 
@@ -696,19 +695,19 @@ public class MarketSystem {
         return shopController.addSimpleShopAllProductsDiscount(shopID, percentage);
     }
 
-    public int addConditionalProductDiscount(int shopID, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws Exception {
+    public int addConditionalProductDiscount(int shopID, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws InvalidParamException, AccessDeniedException, CriticalInvariantException, ShopNotFoundException, ProductNotFoundException {
         return shopController.addConditionalProductDiscount(shopID, prodID, percentage, toBuildPredicatesFrom);
     }
 
-    public int addConditionalCategoryDiscount(int shopID, String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws Exception {
+    public int addConditionalCategoryDiscount(int shopID, String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws InvalidParamException, AccessDeniedException, CriticalInvariantException, ShopNotFoundException {
         return shopController.addConditionalCategoryDiscount(shopID, category, percentage, toBuildPredicatesFrom);
     }
 
-    public int addConditionalShopAllProductsDiscount(int shopID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws Exception {
+    public int addConditionalShopAllProductsDiscount(int shopID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws InvalidParamException, AccessDeniedException, CriticalInvariantException, ShopNotFoundException {
         return shopController.addConditionalShopAllProductsDiscount(shopID, percentage, toBuildPredicatesFrom);
     }
 
-    public int addProductPurchasePolicy(int shopID, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
+    public int addProductPurchasePolicy(int shopID, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException, ProductNotFoundException {
         return shopController.addProductPurchasePolicy(shopID, prodID, toBuildPredicatesFrom);
     }
 
