@@ -101,9 +101,11 @@
                     </div>
                 </li>
             @endfor
+                @if(shop.getAllRules().size() > 1)
                 <li class="list-group-item">
                     <button type="submit" class="btn btn-warning">Combine Rules</button>
                 </li>
+                @endif
             </form>
             <li class="list-group-item">
 
