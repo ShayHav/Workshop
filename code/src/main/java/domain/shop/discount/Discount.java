@@ -1,5 +1,7 @@
 package domain.shop.discount;
 
+import domain.shop.ProductImp;
+
 public interface Discount {
 
     int getID();

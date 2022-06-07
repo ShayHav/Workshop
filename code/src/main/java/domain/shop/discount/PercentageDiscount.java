@@ -1,5 +1,7 @@
 package domain.shop.discount;
 
+import domain.Exceptions.InvalidParamException;
+
 public class PercentageDiscount implements DiscountCalculatorType {
     double percentage;
 

@@ -1,4 +1,6 @@
-package domain.shop.discount;import main.java.domain.shop.ProductImp;
+package domain.shop.discount;
+
+import domain.shop.ProductImp;
 
 import java.util.Map;
 import java.util.function.Predicate;

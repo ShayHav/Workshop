@@ -1,6 +1,6 @@
 package domain.shop.discount;
-import main.java.domain.ErrorLoggerSingleton;
-import main.java.domain.EventLoggerSingleton;
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
 
 import java.util.logging.Level;
 

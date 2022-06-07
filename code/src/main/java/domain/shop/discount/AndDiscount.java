@@ -1,7 +1,6 @@
 package domain.shop.discount;
 
-import main.java.domain.shop.ProductImp;
-
+import domain.shop.ProductImp;
 import java.util.Map;
 
 public class AndDiscount implements Discount {

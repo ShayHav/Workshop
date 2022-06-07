@@ -1,6 +1,7 @@
 package domain.shop.discount;
-import main.java.domain.Exceptions.ProductNotFoundException;
-import main.java.domain.shop.ProductImp;
+import domain.Exceptions.ProductNotFoundException;
+import domain.shop.ProductImp;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;

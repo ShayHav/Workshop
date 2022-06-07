@@ -1,10 +1,11 @@
 package domain.shop.discount;
-import main.java.domain.ErrorLoggerSingleton;
-import main.java.domain.EventLoggerSingleton;
-import main.java.domain.Exceptions.CriticalInvariantException;
-import main.java.domain.Exceptions.DiscountNotFoundException;
-import main.java.domain.Exceptions.InvalidParamException;
-import main.java.domain.shop.ProductImp;
+
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
+import domain.Exceptions.CriticalInvariantException;
+import domain.Exceptions.DiscountNotFoundException;
+import domain.Exceptions.InvalidParamException;
+import domain.shop.ProductImp;
 
 import java.util.*;
 import java.util.function.Predicate;
