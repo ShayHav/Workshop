@@ -31,4 +31,8 @@ public class ConditioningPR implements PurchaseRule{
     public boolean relevant(ProductImp product){
         return ifPR.relevant(product) || thenPR.relevant(product);
     }
+
+    public String toString(){
+        return String.format("(if %s then if %s)",ifPR.toString(), thenPR.toString());
+    }
 }
