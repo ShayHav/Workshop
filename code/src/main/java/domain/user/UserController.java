@@ -296,7 +296,7 @@ public class UserController {
     }
 
     public synchronized boolean HasUserEnteredMarket(String userName) {
-        return activeUser.containsKey(userName);
+        return activeUser.containsKey(userName) | memberList.containsKey(userName);
     }
 
     public Response addProductToCart(String userName, int shopNumber, int productId, int amount) throws

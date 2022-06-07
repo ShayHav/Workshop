@@ -1,7 +1,7 @@
 package domain.user;
 
-import Testing_System.UserGenerator;
 import domain.Exceptions.*;
+import domain.UserGeneratorTemp;
 import domain.market.ExternalConnector;
 import domain.shop.Product;
 import domain.shop.ProductImp;
@@ -22,12 +22,12 @@ import static org.mockito.Mockito.when;
 class UserTest {
     private UserController userController;
     private ShopController shopController;
-    private UserGenerator userGenerator = new UserGenerator();
+    private UserGeneratorTemp userGenerator = new UserGeneratorTemp();
     private String[] userName = userGenerator.GetValidUsers();
     private String admin = userGenerator.GetAdminID();
     private String adminPass = userGenerator.GetAdminPW();
-    private String[] userPass = userGenerator.GetPW();
-    private String[] badPass = userGenerator.GetBadPW();
+    private String[] userPass = userGenerator.getPw();
+    private String[] badPass = userGenerator.getBadPW();
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
     private Shop shop;

@@ -1,7 +1,8 @@
 package domain.user;
 
-import Testing_System.UserGenerator;
+
 import domain.Exceptions.*;
+import domain.UserGeneratorTemp;
 import domain.shop.Shop;
 import domain.shop.ShopController;
 import org.junit.jupiter.api.AfterEach;
@@ -18,12 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserControllerTest {
     private UserController userController = UserController.getInstance();;
     private ShopController shopController = ShopController.getInstance();
-    private UserGenerator userGenerator = new UserGenerator();
+    private UserGeneratorTemp userGenerator = new UserGeneratorTemp();
     private String[] userName = userGenerator.GetValidUsers();
     private String admin = userGenerator.GetAdminID();
     private String adminPass = userGenerator.GetAdminPW();
-    private String[] userPass = userGenerator.GetPW();
-    private String[] badPass = userGenerator.GetBadPW();
+    private String[] userPass = userGenerator.getPw();
+    private String[] badPass = userGenerator.getBadPW();
     private String[] nitayName = userGenerator.getNitayNames();
     private String[] nitayPass = userGenerator.getNitayPassword();
 

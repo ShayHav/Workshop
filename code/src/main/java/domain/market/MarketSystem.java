@@ -208,7 +208,7 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: foundId");
         User shopFounder = getUser(foundId);
         Shop s = ShopController.getInstance().createShop(description, name, discountPolicy, purchasePolicy, shopFounder);
-        shopFounder.addRole(s.getShopID(), Role.ShopFounder);
+        //shopFounder.addRole(s.getShopID(), Role.ShopFounder);
         //notificationManager.systeManagerMessage(String.format("ShopId: %d  was Create. ShopFounder: %s",s.getShopID(),shopFounder.getUserName()));
         return s;
     }

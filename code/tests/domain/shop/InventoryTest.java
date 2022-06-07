@@ -33,16 +33,20 @@ class InventoryTest {
 
     @Test
     void setPrice() throws InvalidProductInfoException, ProductNotFoundException {
-        assertFalse(inv.setPrice(-1,1));
-        assertFalse(inv.setPrice(1, -1));
-        assertTrue(inv.setPrice(1,3399.90));
+        inv.setPrice(-1,1);
+        assertFalse(inv.getPrice(-1)!=0);
+        inv.setPrice(1, -1);
+        assertFalse(inv.getPrice(1)==-1);
+        inv.setPrice(1,3399.90);
+        assertTrue(inv.getPrice(1)==3399.90);
     }
 
     @Test
     void setAmount() throws InvalidProductInfoException, ProductNotFoundException {
-        assertFalse(inv.setAmount(-1,1));
-        assertFalse(inv.setAmount(1, -1));
-        assertTrue(inv.setAmount(1,500));
+        inv.setAmount(-1,1);
+        assertFalse(inv.getQuantity(-1)==1);
+        inv.setAmount(1,500);
+        assertTrue(inv.getQuantity(1)==500);
     }
 
     @Test
@@ -62,14 +66,14 @@ class InventoryTest {
     }
 
     @Test
-    void reduceAmount(){
+    void reduceAmount() throws ProductNotFoundException {
         int currQuan = inv.getQuantity(1);
         inv.reduceAmount(1,5);
         assertEquals(inv.getQuantity(1) - 5, currQuan - 5);
     }
 
     @Test
-    void reservedItem(){
+    void reservedItem() throws ProductNotFoundException {
         Map<Integer, Integer> map = new HashMap<>();
         int p1Quan = inv.getQuantity(1), p2Quan = inv.getQuantity(2);
         map.put(2,3);
@@ -83,7 +87,7 @@ class InventoryTest {
     }
 
     @Test
-    void restoreStock(){
+    void restoreStock() throws ProductNotFoundException {
         Map<Integer, Integer> map = new HashMap<>();
         int p1Quan = inv.getQuantity(1), p2Quan = inv.getQuantity(2);
         map.put(1,3);

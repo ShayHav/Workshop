@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderHistoryTest {
 
     OrderHistory myHistory;
-    ProductImp p = new ProductImp(1, "TestProduct", "", "Testing",100);
+    ProductImp p = new ProductImp(1, "TestProduct", "", "Testing",50.0,100);
 
 
     List<Product> getProducts(){
@@ -25,7 +25,7 @@ class OrderHistoryTest {
     @BeforeEach
     void setUp() {
         myHistory = new OrderHistory();
-        Order o = new Order(getProducts(),3.0, "1");
+        Order o = new Order(getProducts(),3.0, null,1,"nitay's");
     }
 
     @Test
@@ -47,7 +47,7 @@ class OrderHistoryTest {
 
     @Test
     void getOrder() {
-        Order toAdd = new Order(getProducts(),5, "2");
+        Order toAdd = new Order(getProducts(),3.0, null,1,"nitay's");
         Order o = myHistory.getOrder(5);
         assertNull(o);
         o = myHistory.getOrder(1);

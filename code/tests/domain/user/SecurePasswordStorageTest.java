@@ -1,17 +1,17 @@
 package domain.user;
 
-import Testing_System.UserGenerator;
 import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.UserGeneratorTemp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SecurePasswordStorageTest {
-    private UserGenerator userGenerator = new UserGenerator();
+    private UserGeneratorTemp userGenerator = new UserGeneratorTemp();
     private String[] userName = userGenerator.GetValidUsers();
-    private String[] userPass = userGenerator.GetPW();
-    private String[] badPass = userGenerator.GetBadPW();
+    private String[] userPass = userGenerator.getPw();
+    private String[] badPass = userGenerator.getBadPW();
     private SecurePasswordStorage securePasswordStorage;
 
     @BeforeEach

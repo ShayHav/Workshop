@@ -1,6 +1,7 @@
 package domain.shop;
 
-import Testing_System.UserGenerator;
+
+import domain.UserGeneratorTemp;
 import domain.user.UserController;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ShopManagersPermissionsControllerTest {
     private ShopManagersPermissionsController shopManagersPermissionsController;
-    private UserGenerator userGenerator = new UserGenerator();
+    private UserGeneratorTemp userGenerator = new UserGeneratorTemp();
     private String[] userName = userGenerator.GetValidUsers();
     private String systemManager = "SystemManager";
     private List<ShopManagersPermissions> shopManagersPermissionsList;
