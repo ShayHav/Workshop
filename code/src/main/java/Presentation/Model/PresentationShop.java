@@ -3,6 +3,7 @@ package Presentation.Model;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.Shop;
+import domain.shop.discount.DiscountPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class PresentationShop {
     public boolean isOpen;
     public List<PresentationUser> managers;
     public PurchasePolicy purchasePolicy;
+    public DiscountPolicy discountPolicy;
 
     public PresentationShop(String id, String name, String description, List<PresentationProduct> products, PurchasePolicy policy){
         this.id = id;
@@ -36,6 +38,8 @@ public class PresentationShop {
         isOpen = shop.isOpen();
         managers = shop.getShopsManagers().stream().map(PresentationUser::new).collect(Collectors.toList());
         purchasePolicy = shop.getPurchasePolicy();
+        discountPolicy = shop.getDiscountPolicy();
+
     }
 
     public boolean isFounder(PresentationUser user){

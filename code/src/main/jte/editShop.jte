@@ -2,6 +2,7 @@
 @import Presentation.Model.PresentationShop
 @import Presentation.Model.PresentationUser
 @import domain.shop.PurchasePolicys.PurchaseRule
+@import domain.shop.discount.Discount
 @param PresentationShop shop
 @param PresentationUser user
 
@@ -87,20 +88,21 @@
             </ul>
         </div>
     </div>
-    <div>
+    <div class="mb-3 mt-5">
         <h3 class="mb-2">Purchase Rules management</h3>
         <ul class="list-group mb-2">
             <form class="form mb-2" method="post" action="/shops/${shop.id}/combineRules" id="rulesForm">
-            @for(PurchaseRule rule : shop.getAllRules())
-                <li class="list-group-item">
-                    <div class="form-check">
-                        <input class="form-check-input" name="rule" type="checkbox" value="${rule.getID()}" id="rule${rule.getID()}">
-                        <label class="form-check-label" for="rule${rule.getID()}">
-                            ${rule.toString()}
-                        </label>
-                    </div>
-                </li>
-            @endfor
+                @for(PurchaseRule rule : shop.getAllRules())
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" name="rule" type="checkbox" value="${rule.getID()}"
+                                   id="rule${rule.getID()}">
+                            <label class="form-check-label" for="rule${rule.getID()}">
+                                ${rule.toString()}
+                            </label>
+                        </div>
+                    </li>
+                @endfor
                 <li class="list-group-item">
                     <button type="submit" class="btn btn-warning">Combine Rules</button>
                 </li>
@@ -117,7 +119,7 @@
                         <option value="maximusQuantity">Maximum Quantity</option>
                     </select>
                     </span>
-                    <span class="col-4">
+                        <span class="col-4">
                     <select id="ruleBase" class="form-select" name="ruleBase" aria-label="Select Rule Type">
                         <option selected>Select Rule Type</option>
                         <option value="allProduct">All products in Shop</option>
@@ -125,19 +127,78 @@
                         <option value="product">Single product</option>
                     </select>
                     </span>
-                </div>
-                    <div class="row my-3">
-                    <div id="rulesParams" class="visually-hidden col-6"></div>
-                    <div class="visually-hidden col-6">
-                        <label id='productOrCategoryLabel' for="productOrCategory" class="form-label"></label>
-                        <input type="text" class="form-control" name="productOrCategory" id="productOrCategory">
                     </div>
+                    <div class="row my-3">
+                        <div id="rulesParams" class="visually-hidden col-6"></div>
+                        <div class="visually-hidden col-6">
+                            <label id='productOrCategoryLabel' for="productOrCategory" class="form-label"></label>
+                            <input type="text" class="form-control" name="productOrCategory" id="productOrCategory">
+                        </div>
                     </div>
                     <button class="btn btn-success" type="submit">Add Rule</button>
                 </form>
             </li>
         </ul>
-
+    </div>
+    <div class="mt-5 mb-4">
+        <h3>Discount Policies management</h3>
+        <ul class="list-group mb-2 nt-2">
+            <form class="form mb-2" method="post" action="/shops/${shop.id}/composeDiscounts" id="rulesForm">
+                @for(Discount d: shop.discountPolicy.getAllDistinctDiscounts())
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" name="rule" type="checkbox" value="${d.getID()}"
+                                   id="rule${d.getID()}">
+                            <label class="form-check-label" for="rule${d.getID()}">
+                                ${d.toString()}
+                            </label>
+                        </div>
+                    </li>
+                @endfor
+                <li class="list-group-item col-4">
+                    <select id="discountCompose" class="form-select" name="discountCompose" aria-label="Select Discount composition operator">
+                        <option selected>Select Discount composition operator</option>
+                        <option value="and">And</option>
+                        <option value="or">Or</option>
+                        <option value="xor">Xor</option>
+                    </select>
+                </li>
+                <li class="list-group-item">
+                    <button type="submit" class="btn btn-warning">Compose Discounts</button>
+                </li>
+            </form>
+            <li class="list-group-item">
+                <form class="form" id="addDiscountForm" action="/shops/${shop.id}/addDiscount" method="post">
+                    <div class="row">
+                    <span class="col-4">
+                    <select id="discountType" class="form-select" name="discountType" aria-label="Select Discount Type">
+                        <option selected>Select Discount Type</option>
+                        <option value="regularDiscount">Regular Discount</option>
+                        <option value="bundleDiscount">Bundle Discount</option>
+                        <option value="conditionalDiscount">Conditional Discount</option>
+                    </select>
+                    </span>
+                        <span class="col-4">
+                    <select id="discountBase" class="form-select" name="discountBase" aria-label="Select Discount Type">
+                        <option selected>Select Discount Type</option>
+                        <option value="allProduct">All products in Shop</option>
+                        <option value="category">All products in Category</option>
+                        <option value="product">Single product</option>
+                    </select>
+                    </span>
+                    </div>
+                    <div class="row my-3">
+                        <div id="discountParams" class="col-6">
+                        </div>
+                        <div class="visually-hidden col-6">
+                            <label id='productOrCategoryDiscountLabel' for="productOrCategoryDiscount" class="form-label"></label>
+                            <input type="text" class="form-control" name="productOrCategoryDiscount" id="productOrCategoryDiscount">
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit">Add Discount</button>
+                </form>
+            </li>
+        </ul>
     </div>
 </main>
 
@@ -265,9 +326,9 @@
     //
     // checkBoxLimit()
 
-    function addProhibitedRule(){
+    function addProhibitedRule() {
         const div = document.createElement('div');
-        div.classList.add('row' , 'mt-3')
+        div.classList.add('row', 'mt-3')
         const fromTimeSelector = document.createElement('select');
         const fromTimeSpan = document.createElement('span');
         fromTimeSpan.classList.add('col-4');
@@ -277,7 +338,7 @@
         let defaultOption = document.createElement('option');
         defaultOption.textContent = 'Starting Hour';
         fromTimeSelector.append(defaultOption);
-        for(let i = 0; i < 24; i ++){
+        for (let i = 0; i < 24; i++) {
             const option = document.createElement('option');
             option.value = i.toString();
             option.textContent = i.toString();
@@ -294,7 +355,7 @@
         defaultOption = document.createElement('option');
         defaultOption.textContent = 'Ending Hour';
         toTimeSelector.append(defaultOption);
-        for(let i = 0; i < 24; i ++){
+        for (let i = 0; i < 24; i++) {
             const option = document.createElement('option');
             option.value = i.toString();
             option.textContent = i.toString();
@@ -308,7 +369,7 @@
         upperDiv.classList.remove('visually-hidden');
     }
 
-    function addMinimumRule(){
+    function addMinimumRule() {
         let minimum_div = document.querySelector('#rulesParams');
 
         const upperDiv = document.createElement("div");
@@ -357,7 +418,7 @@
         minimum_div.classList.remove("visually-hidden")
     }
 
-    function addMaximumRule(){
+    function addMaximumRule() {
         let maximum_div = document.querySelector('#rulesParams');
         const upperDiv = document.createElement("div");
         upperDiv.classList.add("row");
@@ -404,21 +465,29 @@
         maximum_div.classList.remove("visually-hidden")
     }
 
-    function clearRuleParam(){
+    function clearRuleParam() {
         const div = document.querySelector('#rulesParams');
         div.classList.add('visually-hidden');
-        while(div.lastChild){
+        while (div.lastChild) {
             div.removeChild(div.lastChild);
         }
     }
 
-    function clearProductOrCategory(){
+    function clearDiscountParam() {
+        const div = document.querySelector('#discountParams');
+        div.classList.add('visually-hidden');
+        while (div.lastChild) {
+            div.removeChild(div.lastChild);
+        }
+    }
+
+    function clearProductOrCategory() {
         let input = document.querySelector('#productOrCategory');
         input.value = '';
         input.parentElement.classList.add('visually-hidden');
     }
 
-    function unclearProduct(){
+    function unclearProduct() {
         let input = document.querySelector('#productOrCategory');
         let label = document.querySelector('#productOrCategoryLabel');
         input.type = 'text'
@@ -428,7 +497,7 @@
         input.parentElement.classList.remove('visually-hidden');
     }
 
-    function unclearCategory(){
+    function unclearCategory() {
         let input = document.querySelector('#productOrCategory');
         let label = document.querySelector('#productOrCategoryLabel');
         label.textContent = "Category";
@@ -437,23 +506,128 @@
         input.parentElement.classList.remove('visually-hidden');
     }
 
-    document.querySelector('#ruleType').addEventListener('change', (event) =>{
+    document.querySelector('#ruleType').addEventListener('change', (event) => {
         const value = event.target.value;
         clearRuleParam()
         value === 'ProhibitPurchaseHour' ? addProhibitedRule() :
             value === 'minimumQuantity' ? addMinimumRule() :
-                value === 'maximusQuantity' ? addMaximumRule() : clearRuleParam()
+                value === 'maximumQuantity' ? addMaximumRule() : clearRuleParam()
     })
 
-    document.querySelector('#ruleBase').onchange = function (event){
+    document.querySelector('#ruleBase').onchange = function (event) {
         const value = event.target.value;
 
-        value === 'allProduct' ? clearProductOrCategory():
-        value === 'category' ? unclearCategory() :
-        value === 'product' ? unclearProduct() :
-        clearProductOrCategory();
+        value === 'allProduct' ? clearProductOrCategory() :
+            value === 'category' ? unclearCategory() :
+                value === 'product' ? unclearProduct() :
+                    clearProductOrCategory();
     }
 
-</script>
+    function addRegularDiscount(){
+        let div = document.querySelector('#discountParams')
 
+        let regular_input = document.createElement('input');
+        regular_input.type = "number";
+        regular_input.min = '0';
+        regular_input.max = '100';
+        regular_input.step = '0.5';
+        regular_input.id = 'percentage';
+        regular_input.name = "percentage";
+        regular_input.required = true;
+        regular_input.classList.add('form-control');
+
+        let regular_label = document.createElement('label');
+        regular_label.for = 'percentage';
+        regular_label.classList.add('form-label');
+        regular_label.innerText = "Percentage";
+
+        div.append(regular_label);
+        div.append(regular_input);
+    }
+
+    function addBundleDiscount(){
+        let div = document.querySelector('#discountParams')
+
+        let toBuy = document.createElement('input');
+        toBuy.type = "number";
+        toBuy.min = '0';
+        toBuy.max = '5000';
+        toBuy.step = '1';
+        toBuy.id = 'amountToBuy';
+        toBuy.name = "amountToBuy";
+        toBuy.required = true;
+        toBuy.classList.add('form-control');
+
+        let toBuy_label = document.createElement('label');
+        toBuy_label.for = 'amountToBuy';
+        toBuy_label.classList.add('form-label');
+        toBuy_label.innerText = "Amount to buy";
+
+        let toGetFree = document.createElement('input');
+        toGetFree.type = "number";
+        toGetFree.min = '0';
+        toGetFree.max = '1000';
+        toGetFree.step = '1';
+        toGetFree.id = 'amountToGetFree';
+        toGetFree.name = "amountToGetFree";
+        toGetFree.required = true;
+        toGetFree.classList.add('form-control');
+
+        let toGetFree_label = document.createElement('label');
+        toGetFree_label.for = 'amountToGetFree';
+        toGetFree_label.classList.add('form-label');
+        toGetFree_label.innerText = "Amount to get free";
+
+        div.append(toBuy_label);
+        div.append(toBuy);
+        div.append(toGetFree_label);
+        div.append(toGetFree);
+    }
+    
+    function addConditionalDiscount(){}
+
+    function clearProductOrCategoryDiscount() {
+        let input = document.querySelector('#productOrCategoryDiscount');
+        input.value = '';
+        input.parentElement.classList.add('visually-hidden');
+    }
+
+    function unclearDiscountProduct() {
+        let input = document.querySelector('#productOrCategoryDiscount');
+        let label = document.querySelector('#productOrCategoryDiscountLabel');
+        input.type = 'text'
+        input.inputMode = 'numeric'
+        label.textContent = "Product's serial number";
+        input.value = '';
+        input.parentElement.classList.remove('visually-hidden');
+    }
+
+    function unclearDiscountCategory() {
+        let input = document.querySelector('#productOrCategoryDiscount');
+        let label = document.querySelector('#productOrCategoryDiscountLabel');
+        label.textContent = "Category";
+        input.type = 'text'
+        input.value = '';
+        input.parentElement.classList.remove('visually-hidden');
+    }
+
+
+    document.querySelector('#discountBase').onchange = function (event) {
+        const value = event.target.value;
+
+        value === 'allProduct' ? clearProductOrCategoryDiscount() :
+            value === 'category' ? unclearDiscountCategory() :
+                value === 'product' ? unclearDiscountProduct() :
+                    clearProductOrCategoryDiscount();
+    }
+
+    document.querySelector('#discountType').addEventListener('change', (event) => {
+        const value = event.target.value;
+        clearRuleParam()
+        value === 'regularDiscount' ? addRegularDiscount() : 
+            value === 'bundleDiscount' ? addBundleDiscount() :
+                value === 'conditionalDiscount' ? addConditionalDiscount() : clearDiscountParam()
+    })
+
+</script>
 </html>

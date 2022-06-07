@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="started impl of policies in gui" />
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -124,12 +131,7 @@
       <workItem from="1653906343354" duration="9092000" />
       <workItem from="1654000947394" duration="308000" />
       <workItem from="1654343462330" duration="49005000" />
-    </task>
-    <task id="LOCAL‎00006" summary="fixed some methods in ShoppingBasketTest due to changes is ShoppingBasket">
-      <created>1652541655223</created>
-      <option name="number" value="LOCAL‎00006" />
-      <option name="presentableId" value="LOCAL‎00006" />
-      <updated>1652541655223</updated>
+      <workItem from="1654628125317" duration="4086000" />
     </task>
     <task id="LOCAL‎00007" summary="fixed an issue in shop">
       <created>1652541711757</created>
@@ -419,7 +421,13 @@
       <option name="presentableId" value="LOCAL‎00054" />
       <updated>1654608261237</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL‎00055" summary="started impl of policies in gui">
+      <created>1654628182784</created>
+      <option name="number" value="LOCAL‎00055" />
+      <option name="presentableId" value="LOCAL‎00055" />
+      <updated>1654628182784</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -476,12 +484,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>135</line>
+          <line>139</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>151</line>
+          <line>155</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>

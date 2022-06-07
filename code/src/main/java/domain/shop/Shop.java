@@ -732,4 +732,8 @@ public class Shop {
     public PurchasePolicy getPurchasePolicy() {
         return purchasePolicy;
     }
+
+    public DiscountPolicy getDiscountPolicy() {
+        return discountPolicy;
+    }
 }
