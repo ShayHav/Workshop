@@ -44,9 +44,6 @@ public class UserGenerator extends Tester {
     public String[] GetBadPW() { return this.badPW; }
     public String GetAdminID() { return this.adminID;}
     public String GetAdminPW() { return this.adminPW;}
-    public void InitTest() {
-        StartMarket(new PaymentServiceImp(),new SupplyServiceImp(),adminID,adminPW);
-    }
     public void DeleteAdmin(){
         String[] arr = {adminID};
         DeleteUserTest(arr);

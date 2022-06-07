@@ -52,8 +52,10 @@ public class PresentationOrder {
     private void updateFinalPriceOfProducts(List<PresentationProduct> products) {
         ResponseT<Shop> r = Services.getInstance().GetShop(shopID);
         Shop s = r.getValue();
+        Map<Integer, Integer> serialToAmount = new HashMap<>();
+        products.forEach(product -> serialToAmount.put(product.serialNumber, product.amount));
         for (PresentationProduct p : products) {
-            p.setFinalPrice(s.productPriceAfterDiscounts(p.serialNumber, p.amount));
+            p.setFinalPrice(s.productPriceAfterDiscounts(p.serialNumber, serialToAmount));
         }
     }
 

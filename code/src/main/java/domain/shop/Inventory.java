@@ -130,8 +130,11 @@ public class Inventory {
         return products;
     }
 
-    public Product findProduct(int productID){
-        return keyToProduct.get(productID);
+    public ProductImp findProduct(int productID) throws ProductNotFoundException {
+        ProductImp product = keyToProduct.get(productID);
+        if(product == null)
+            throw new ProductNotFoundException(String.format("product:%d was not found in inventory", productID));
+        return product;
     }
 
     public boolean setDescription(int productID, String newDesc){
