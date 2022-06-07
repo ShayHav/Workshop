@@ -1,5 +1,6 @@
 package Presentation.Controllers;
 
+import Presentation.Model.Messages.AddRuleMessage;
 import Presentation.Model.Messages.AppointMangerMessage;
 import Presentation.Model.Messages.AppointOwnerMessage;
 import Presentation.Model.Messages.EditShopMessage;
@@ -8,10 +9,13 @@ import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
+import domain.Exceptions.BlankDataExc;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseT;
 import domain.shop.*;
+import domain.shop.predicate.PRPredType;
+import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchProductFilter;
 import domain.user.filter.SearchShopFilter;
@@ -313,4 +317,119 @@ public class ShopController {
         return new SearchProductFilter(minPrice, maxPrice,null, null, category);
     }
 
+    public void addPurchaseRule(Context context) {
+        String ruleType = context.formParam("ruleType");
+        if (ruleType == null){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", "ruleType is null", "status", 400));
+            return;
+        }
+        Response response;
+        switch (ruleType){
+            case "ProhibitPurchaseHour" -> response = addProhibitedTimeRule(context);
+            case "minimumQuantity" -> response = addMinimumRule(context);
+            case "maximusQuantity" -> response = addMaximumRule(context);
+            default -> response = new Response("unsupported option in rule type");
+        }
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+        }
+        int shopID = context.pathParamAsClass("shopID", Integer.class).get();
+        context.redirect("/shops/"+ shopID+ "/edit");
+
+
+    }
+
+    private Response addProhibitedTimeRule(Context context){
+        String ruleBase = context.formParam("ruleBase");
+        if(ruleBase == null){
+            return new Response("the basis of the rule is null");
+        }
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        double fromHour = context.formParamAsClass("fromHour", int.class).get();
+        double endHour = context.formParamAsClass("toHour", int.class).get();
+        ToBuildPRPredicateFrom builder = new ToBuildPRPredicateFrom(fromHour, endHour, PRPredType.TimeConstraint);
+        switch (ruleBase){
+            case "category" -> {
+                String category = context.formParam("productOrCategory");
+                return services.addCategoryPurchasePolicy(shopID, category, builder);
+            }
+            case "AllProduct" -> {
+                return services.addShopAllProductsPurchasePolicy(shopID,builder);
+            }
+            case "product" -> {
+                int serialNumber = context.formParamAsClass("productOrCategory", int.class).get();
+                return services.addProductPurchasePolicy(shopID, serialNumber, builder);
+            }
+            default -> {
+                return new Response("not a legal ruleBase");
+            }
+        }
+    }
+
+    private Response addMaximumRule(Context context){
+        String ruleBase = context.formParam("ruleBase");
+        if(ruleBase == null){
+            return new Response("the basis of the rule is null");
+        }
+        String username = context.cookieStore("uid");
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int maximumNumber = context.formParamAsClass("maximum", int.class).get();
+        int targetProduct = context.formParamAsClass("targetProduct", int.class).get();
+        ResponseT<Product> response = services.getProduct(username, shopID, targetProduct);
+        if(response.isErrorOccurred()){
+            return response;
+        }
+        ToBuildPRPredicateFrom builder = new ToBuildPRPredicateFrom(maximumNumber,  targetProduct, response.getValue().getName() , PRPredType.MaximumAmount);;
+        switch (ruleBase){
+            case "category" -> {
+                String category = context.formParam("productOrCategory");
+                return services.addCategoryPurchasePolicy(shopID, category, builder);
+            }
+            case "AllProduct" -> {
+                return services.addShopAllProductsPurchasePolicy(shopID,builder);
+            }
+            case "product" -> {
+                int serialNumber = context.formParamAsClass("productOrCategory", int.class).get();;
+                return services.addProductPurchasePolicy(shopID, serialNumber, builder);
+            }
+            default -> {
+                return new Response("not a legal ruleBase");
+            }
+        }
+    }
+
+    private Response addMinimumRule(Context context){
+        String ruleBase = context.formParam("ruleBase");
+        if(ruleBase == null){
+            return new Response("the basis of the rule is null");
+        }
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int minimumNumber = context.formParamAsClass("minimum", int.class).get();
+        int targetProduct = context.formParamAsClass("targetProduct", int.class).get();
+
+        String username = context.cookieStore("uid");
+        ResponseT<Product> response = services.getProduct(username, shopID, targetProduct);
+        if(response.isErrorOccurred()){
+            return response;
+        }
+
+        ToBuildPRPredicateFrom builder = new ToBuildPRPredicateFrom(minimumNumber, targetProduct, "", PRPredType.MinimumAmount);
+
+        switch (ruleBase){
+            case "category" -> {
+                String category = context.formParam("productOrCategoryLabel");
+                return services.addCategoryPurchasePolicy(shopID, category, builder);
+            }
+            case "AllProduct" -> {
+                return services.addShopAllProductsPurchasePolicy(shopID,builder);
+            }
+            case "product" -> {
+                int serialNumber = context.formParamAsClass("productOrCategoryLabel", int.class).get();
+                return services.addProductPurchasePolicy(shopID, serialNumber, builder);
+            }
+            default -> {
+                return new Response("not a legal ruleBase");
+            }
+        }
+    }
 }

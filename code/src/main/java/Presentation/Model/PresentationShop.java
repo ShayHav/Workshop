@@ -1,6 +1,7 @@
 package Presentation.Model;
 
 import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.PurchasePolicys.PurchaseRule;
 import domain.shop.Shop;
 
 import java.util.ArrayList;
@@ -51,5 +52,11 @@ public class PresentationShop {
 
     public int getID(){
         return Integer.parseInt(id);
+    }
+
+    public List<PurchaseRule> getAllRules(){
+        List<PurchaseRule> purchaseRules = new ArrayList<>();
+
+        return purchaseRules;
     }
 }

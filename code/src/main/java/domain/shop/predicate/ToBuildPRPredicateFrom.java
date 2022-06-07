@@ -20,7 +20,7 @@ public class ToBuildPRPredicateFrom {
         predType = type;
     }
 
-    public ToBuildPRPredicateFrom(int amount, int prodID, PRPredType type){
+    public ToBuildPRPredicateFrom(int amount, int prodID, String name, PRPredType type){
         this.amount = amount;
         this.prodID = prodID;
         predType = type;

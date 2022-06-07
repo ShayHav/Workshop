@@ -190,7 +190,6 @@ public class Services {
     public ResponseT<Shop> CreateShop(String description ,String username, String shopName) {
         try {
             Shop output = marketSystem.createShop(description, shopName, null, null, username);
-            ;
             return new ResponseT<>(output);
         } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc e) {
             return new ResponseT<>(e.getLocalizedMessage());

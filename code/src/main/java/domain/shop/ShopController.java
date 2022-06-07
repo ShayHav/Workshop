@@ -41,7 +41,7 @@ public class ShopController {
         Shop newShop;
         synchronized(this) {
             shopCounter++;
-            newShop = new Shop(name, description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+            newShop = new Shop(name, description, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
         }
         shopFounder.addRole(shopCounter,Role.ShopFounder);
