@@ -9,6 +9,8 @@ import domain.market.*;
 import domain.notifications.AdminObserver;
 import domain.notifications.UserObserver;
 import domain.shop.*;
+import domain.shop.predicate.ToBuildDiscountPredicate;
+import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
 import domain.user.filter.*;
 
@@ -853,5 +855,220 @@ public class Services {
         } catch (IncorrectIdentification | BlankDataExc error) {
             return new ResponseT<>(error.getMessage());
         }
+    }
+
+
+
+    public ResponseT<Integer> addProductDiscount(int shopID, int prodID, double percentage){
+        int discountID;
+        try {
+            discountID = marketSystem.addProductDiscount(shopID, prodID, percentage);
+        }catch (InvalidParamException invalidParamException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(discountID);
+    }
+
+    public ResponseT<Integer> addCategoryDiscount(int shopID, String category, double percentage) {
+        int discountID;
+        try {
+            discountID = marketSystem.addCategoryDiscount(shopID, category, percentage);
+        }catch (InvalidParamException invalidParamException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(discountID);
+    }
+
+    private ResponseT<Integer> addShopAllProductsDiscount(int shopID, double percentage){
+        int discountID;
+        try {
+            discountID = marketSystem.addShopAllProductsDiscount(shopID, percentage);
+        }catch (InvalidParamException invalidParamException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(discountID);
+    }
+
+
+    public ResponseT<Integer> addConditionalProductDiscount(int shopID, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom){
+        int discountID;
+        try {
+            discountID = marketSystem.addConditionalProductDiscount(shopID, prodID, percentage, toBuildPredicatesFrom);
+        }catch (InvalidParamException invalidParamException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (Exception e){
+            return new ResponseT<>("unknown error occured.");
+        }
+        return new ResponseT<>(discountID);
+    }
+
+    public ResponseT<Integer> addConditionalCategoryDiscount(int shopID, String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom){
+        int discountID;
+        try {
+            discountID = marketSystem.addConditionalCategoryDiscount(shopID, category, percentage, toBuildPredicatesFrom);
+        }catch (InvalidParamException invalidParamException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (Exception e){
+            return new ResponseT<>("unknown error occured.");
+        }
+        return new ResponseT<>(discountID);
+    }
+
+    public ResponseT<Integer> addConditionalShopAllProductsDiscount(int shopID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom){
+        int discountID;
+        try {
+            discountID = marketSystem.addConditionalShopAllProductsDiscount(shopID, percentage, toBuildPredicatesFrom);
+        }catch (InvalidParamException invalidParamException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (Exception e){
+            return new ResponseT<>("unknown error occured.");
+        }
+        return new ResponseT<>(discountID);
+    }
+
+    public ResponseT<Integer> addProductPurchasePolicy(int shopID, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) {
+        int purchaseRuleID;
+        try {
+            purchaseRuleID = marketSystem.addProductPurchasePolicy(shopID, prodID, toBuildPredicatesFrom);
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("purchase rule not created: %s", criticalInvariantException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (AccessDeniedException accessDeniedException){
+            return new ResponseT<>(String.format("purchase rule not created, system error, bad attempt to building the predict %s" , accessDeniedException.getMessage()));
+        }
+        return new ResponseT<>(purchaseRuleID);
+    }
+
+    public ResponseT<Integer> addCategoryPurchasePolicy(int shopID, String category, ToBuildPRPredicateFrom toBuildPredicatesFrom) {
+        int purchaseRuleID;
+        try {
+            purchaseRuleID = marketSystem.addCategoryPurchasePolicy(shopID, category, toBuildPredicatesFrom);
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("purchase rule not created: %s", criticalInvariantException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (AccessDeniedException accessDeniedException){
+            return new ResponseT<>(String.format("purchase rule not created, system error, bad attempt to building the predict: %s" , accessDeniedException.getMessage()));
+        }
+        return new ResponseT<>(purchaseRuleID);
+    }
+
+    public ResponseT<Integer> addShopAllProductsPurchasePolicy(int shopID, ToBuildPRPredicateFrom toBuildPredicatesFrom) {
+        int purchaseRuleID;
+        try {
+            purchaseRuleID = marketSystem.addShopAllProductsPurchasePolicy(shopID, toBuildPredicatesFrom);
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("purchase rule not created: %s", criticalInvariantException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (AccessDeniedException accessDeniedException){
+            return new ResponseT<>(String.format("purchase rule not created, system error, bad attempt to building the predict: %s" , accessDeniedException.getMessage()));
+        }
+        return new ResponseT<>(purchaseRuleID);
+    }
+
+    public ResponseT<Integer> addOrDiscount(int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        int discountID;
+        try {
+            discountID = marketSystem.addOrDiscount(dis1ID, dis2ID, shopID);
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (DiscountNotFoundException discountNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", discountNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(discountID);
+
+    }
+
+    public ResponseT<Integer> addAndDiscount(int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        int discountID;
+        try {
+            discountID = marketSystem.addAndDiscount(dis1ID, dis2ID, shopID);
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (DiscountNotFoundException discountNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", discountNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(discountID);
+    }
+
+
+    public ResponseT<Integer> addXorDiscount(int dis1ID, int dis2ID, int shopID){
+        int discountID;
+        try {
+            discountID = marketSystem.addXorDiscount(dis1ID, dis2ID, shopID);
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (DiscountNotFoundException discountNotFoundException){
+            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", discountNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(discountID);
+    }
+
+    public ResponseT<Integer> addOrPurchaseRule(int pr1ID, int pr2ID, int shopID) {
+        int purchaseRuleID;
+        try {
+            purchaseRuleID = marketSystem.addOrPurchaseRule(pr1ID, pr2ID, shopID);
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("purchase rule not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (PurchaseRuleNotFoundException purchaseRuleNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", purchaseRuleNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(purchaseRuleID);
+    }
+
+    public ResponseT<Integer> addAndPurchaseRule(int pr1ID, int pr2ID, int shopID)  {
+        int purchaseRuleID;
+        try {
+            purchaseRuleID = marketSystem.addAndPurchaseRule(pr1ID, pr2ID, shopID);
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("purchase rule not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (PurchaseRuleNotFoundException purchaseRuleNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", purchaseRuleNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(purchaseRuleID);
+    }
+
+    public ResponseT<Boolean> removeDiscount(int discountID, int shopID){
+        boolean removed;
+        try {
+            removed = marketSystem.removeDiscount(discountID, shopID);
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not removed, shop was not found. error: %s", shopNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(removed);
+    }
+
+    public ResponseT<Boolean> removePR(int purchaseRuleID, int shopID){
+        boolean removed;
+        try {
+            removed = marketSystem.removePurchaseRule(purchaseRuleID, shopID);
+        }catch (ShopNotFoundException shopNotFoundException){
+            return new ResponseT<>(String.format("discount not removed, shop was not found. error: %s", shopNotFoundException.getMessage()));
+        }
+        return new ResponseT<>(removed);
     }
 }

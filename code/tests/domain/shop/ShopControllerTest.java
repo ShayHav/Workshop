@@ -1,6 +1,5 @@
 package domain.shop;
 
-import Testing_System.UserGenerator;
 import domain.Exceptions.*;
 import domain.user.Role;
 import domain.user.User;
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShopControllerTest {
-    private UserController userController = UserController.getInstance();;
+    /*private UserController userController = UserController.getInstance();;
     private ShopController shopController = ShopController.getInstance();
     private UserGenerator userGenerator = new UserGenerator();
     private String[] userName = userGenerator.GetValidUsers();
@@ -123,5 +122,5 @@ class ShopControllerTest {
 
     @Test
     void openShop() {
-    }
+    }*/
 }

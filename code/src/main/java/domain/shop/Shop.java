@@ -7,8 +7,10 @@ import domain.Exceptions.*;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.discount.Basket;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
+import domain.shop.predicate.*;
 import domain.user.*;
 import domain.user.filter.*;
 
@@ -248,32 +250,13 @@ public class Shop {
 
     }
 
-    public synchronized int addPercentageDiscount(int prodID, double percentage){
-        return discountPolicy.addPercentageDiscount(prodID, percentage);
-    }
 
-    public synchronized int addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
-        return discountPolicy.addBundleDiscount(prodID, amountNeededToBuy, amountGetFree);
-    }
-
-    public boolean purchasePolicyLegal(String userID, int prodID, double price,int amount){
+    public boolean purchasePolicyLegal(Basket basket){
         if(purchasePolicy == null)
             return true;
-        return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
+        return purchasePolicy.checkCart_RulesAreMet(basket);
     }
 
-    public double calculateTotalAmountOfOrder(Map<Integer, Integer> productAmountList){
-        double totalPaymentDue = 0;
-        double Product_price_single;
-        double Product_total;
-        for(Map.Entry<Integer, Integer> set : productAmountList.entrySet()){
-            //check purchase policy regarding the Product
-            Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
-            Product_total = Product_price_single * set.getValue();
-            totalPaymentDue += Product_total;
-        }
-        return totalPaymentDue;
-    }
 
     /**
      * check out from the store the given items to a client
@@ -283,17 +266,12 @@ public class Shop {
      */
     public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction) throws BlankDataExc {
         double productBasePrice;
-        for(Map.Entry<Integer, Integer> set : products.entrySet()){
-            //check purchase policy regarding the Product
-            try {
-                productBasePrice = inventory.getPrice(set.getKey());
-            }catch (ProductNotFoundException prodNotFound){
-                return new ResponseT<>(String.format("this product does not exist in shop %d",shopID));
-            }
-            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
-                return new ResponseT<>(String.format("checkout process violates purchase policy in shop %d",shopID));
+        Basket basket = IDsToProducts(products);
 
+        if (!purchasePolicyLegal(basket)) {
+            return new ResponseT("violates purchase policy");
         }
+
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
                 try{
@@ -306,14 +284,15 @@ public class Shop {
             }
         }
 
+        Map<Integer, Double> product_PricePer = new HashMap<>();
+        basket = discountPolicy.calcPricePerProductForCartTotal(basket);
+
+        for(ProductImp productImp : basket.keySet()){
+            product_PricePer.put(productImp.getId(), productImp.getBasePrice());
+        }
 
         //calculate price
-        Map<Integer, Double> product_PricePer = new HashMap<>();
-        double product_price_single;
-        for(Map.Entry<Integer, Integer> set : products.entrySet()){
-            product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
-            product_PricePer.put(set.getKey(), product_price_single);
-        }
+
         if(!marketSystem.pay(transaction)){
             synchronized (inventory) {
                 try {
@@ -330,17 +309,16 @@ public class Shop {
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
         }
         // creating Order object to store in the Order History with unmutable copy of product
-        Order o = createOrder(products, transaction, product_PricePer);
+        Order o = createOrder(basket, transaction);
         sendCheckoutMessage(o);
         return new ResponseT<>(o);
     }
 
-    private Order createOrder(Map<Integer, Integer> products, TransactionInfo transaction, Map<Integer, Double> product_PricePer) {
+    private Order createOrder(Basket products, TransactionInfo transaction) {
         List<Product> boughtProducts = new ArrayList<>();
-        for(Integer Product: products.keySet()){
-            Product p = inventory.findProduct(Product);
-            double price = product_PricePer.get(Product);
-            boughtProducts.add(new ProductHistory(p,price , products.get(Product)));
+        for(Map.Entry<ProductImp, Integer> product_amounts: products.entrySet()){
+            ProductImp p = product_amounts.getKey();
+            boughtProducts.add(new ProductHistory(p, p.getBasePrice(), product_amounts.getValue()));
         }
         Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID(), shopID, name);
         orders.addOrder(o);

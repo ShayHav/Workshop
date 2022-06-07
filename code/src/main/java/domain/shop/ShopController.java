@@ -5,6 +5,8 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
+import domain.shop.predicate.ToBuildDiscountPredicate;
+import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
 import domain.user.filter.*;
 

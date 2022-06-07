@@ -8,6 +8,8 @@ import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
+import domain.shop.predicate.ToBuildDiscountPredicate;
+import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
 import domain.user.TransactionInfo;
 import domain.user.filter.*;
