@@ -183,7 +183,6 @@
                     <select id="discountType" class="form-select" name="discountType" aria-label="Select Discount Type">
                         <option selected>Select Discount Type</option>
                         <option value="regularDiscount">Regular Discount</option>
-                        <option value="bundleDiscount">Bundle Discount</option>
                         <option value="conditionalDiscount">Conditional Discount</option>
                     </select>
                     </span>
@@ -316,7 +315,7 @@
     }
 
     // function checkBoxLimit() {
-    //     var checkBoxGroup = document.forms['rulesForm']['rule'];
+    //     let checkBoxGroup = document.forms['rulesForm']['rule'];
     //     var limit = 2;
     //     for (var i = 0; i < checkBoxGroup.length; i++) {
     //         checkBoxGroup[i].onclick = function() {

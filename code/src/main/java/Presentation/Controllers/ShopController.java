@@ -479,38 +479,6 @@ public class ShopController {
         return new Response("unsupported Operation yet");
     }
 
-    private Response addBundleDiscount(Context context) {
-        String discountBase = context.formParam("discountBase");
-        if(discountBase == null){
-            return new Response("the basis of the rule is null");
-        }
-        String username = context.cookieStore("uid");
-        int shopID = context.pathParamAsClass("shopID", int.class).get();
-        int amountToBuy = context.formParamAsClass("amountToBuy", int.class).get();
-        int amountToGetFree = context.formParamAsClass("amountToGetFree", int.class).get();
-        int targetProduct = context.formParamAsClass("targetProduct", int.class).get();
-        ResponseT<Product> response = services.getProduct(username, shopID, targetProduct);
-        if(response.isErrorOccurred()){
-            return response;
-        }
-        switch (discountBase){
-            case "category" -> {
-                String category = context.formParam("productOrCategoryDiscount");
-                return services.addCategoryDiscount(shopID, category, percentage);
-            }
-            case "allProduct" -> {
-                return services.addShopAllProductsDiscount(shopID,percentage);
-            }
-            case "product" -> {
-                int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();;
-                return services.addProductDiscount(shopID, serialNumber, percentage);
-            }
-            default -> {
-                return new Response("not a legal ruleBase");
-            }
-        }
-    }
-
     private Response addRegularDiscount(Context context) {
         String discountBase = context.formParam("discountBase");
         if(discountBase == null){
@@ -540,5 +508,9 @@ public class ShopController {
                 return new Response("not a legal ruleBase");
             }
         }
+    }
+
+    private Response addBundleDiscount(Context context) {
+        return new Response("unsupported operation yet");
     }
 }
