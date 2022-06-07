@@ -103,7 +103,15 @@
             @endfor
                 @if(shop.getAllRules().size() > 1)
                 <li class="list-group-item">
-                    <button type="submit" class="btn btn-warning">Combine Rules</button>
+                    <input id="combineRuleType" type="hidden" name="combineRuleType">
+                    <div class="row">
+                        <div class="col-3">
+                            <button id="combineRuleOr" type="submit" class="btn btn-warning">Combine Rules: Or</button>
+                        </div>
+                        <div class="col-3">
+                            <button id="combineRuleAnd" type="submit" class="btn btn-info">Combine Rules: And</button>
+                        </div>
+                    </div>
                 </li>
                 @endif
             </form>
@@ -455,6 +463,18 @@
         value === 'product' ? unclearProduct() :
         clearProductOrCategory();
     }
+
+    document.querySelector('#combineRuleOr').onclick = (event)=> {
+        console.log("or btn")
+        document.querySelector('#combineRuleType').value = 'or';
+        document.forms['rulesForm'].submit();
+    };
+
+    document.querySelector('#combineRuleAnd').onclick = (event)=> {
+        console.log("and btn")
+        document.querySelector('#combineRuleType').value = 'and';
+        document.forms['rulesForm'].submit();
+    };
 
 </script>
 

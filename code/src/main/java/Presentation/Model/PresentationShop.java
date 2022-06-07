@@ -55,8 +55,6 @@ public class PresentationShop {
     }
 
     public List<PurchaseRule> getAllRules(){
-        List<PurchaseRule> purchaseRules = new ArrayList<>();
-
-        return purchaseRules;
+        return purchasePolicy.getAllDistinctPurchaseRules();
     }
 }

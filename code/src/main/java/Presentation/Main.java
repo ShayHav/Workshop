@@ -111,6 +111,7 @@ public class Main {
                     post("/reopenShop", shopController::reopenShop);
                     get("/orders", shopController::renderOrderHistory);
                     post("/addRule", shopController::addPurchaseRule);
+                    post("/combineRules", shopController::combineRules);
 
 
                     path("{serialNumber}", () -> {
