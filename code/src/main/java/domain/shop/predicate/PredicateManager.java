@@ -62,7 +62,9 @@ public class PredicateManager {
         return new Predicate<Basket>() {
             @Override
             public boolean test(Basket basket) {
-                double currentTime = LocalDateTime.now().getHour() + (LocalDateTime.now().getMinute()/60);
+                double partial = ((LocalDateTime.now().getMinute()));
+                partial = partial / 60;
+                double currentTime = ((double) LocalDateTime.now().getHour()) + partial;
                 if(to >= from)
                     return !(currentTime >= from && currentTime <= to);
                 return !(currentTime >= from || currentTime <= to);

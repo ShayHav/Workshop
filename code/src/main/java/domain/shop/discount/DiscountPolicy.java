@@ -407,5 +407,5 @@ public class DiscountPolicy {
         return prodPR.stream().distinct().collect(Collectors.toList());
     }
 
-    
+
 }

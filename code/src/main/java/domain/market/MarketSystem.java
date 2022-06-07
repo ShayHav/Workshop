@@ -52,7 +52,6 @@ public class MarketSystem {
         } catch (InvalidAuthorizationException iae) {
             return new ResponseT<>(null, iae.getLocalizedMessage());
         } catch (InvalidProductInfoException ipie) {
-            //todo prints????
             return new ResponseT<>(null, ipie.getLocalizedMessage());
         }
         if (p == null) {

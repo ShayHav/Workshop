@@ -15,13 +15,17 @@ public class ToBuildPRPredicateFrom {
     private String productName;
 
     public ToBuildPRPredicateFrom(double hoursFrom, double hoursTo, PRPredType type){
-        this.hoursFrom = hoursFrom % 24;
-        this.hoursTo = hoursTo % 24;
+        int intPartFrom = (int)hoursFrom;
+        int intPartTo = (int)hoursTo;
+        double floatPartFrom = hoursFrom - intPartFrom;
+        double floatPartTo = hoursTo - intPartTo;
 
+        this.hoursFrom =  (intPartFrom % 24) + floatPartFrom;
+        this.hoursTo = (intPartTo % 24) + floatPartTo;
         predType = type;
     }
 
-    public ToBuildPRPredicateFrom(int amount, int prodID, String productName,PRPredType type){
+    public ToBuildPRPredicateFrom(int amount, int prodID, String productName, PRPredType type){
         this.amount = amount;
         this.prodID = prodID;
         predType = type;
