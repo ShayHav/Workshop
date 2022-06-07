@@ -1,6 +1,7 @@
 @import Presentation.Main
 @import Presentation.Model.PresentationShop
 @import Presentation.Model.PresentationUser
+@import domain.shop.PurchasePolicys.PurchaseRule
 @param PresentationShop shop
 @param PresentationUser user
 
@@ -88,15 +89,31 @@
     </div>
     <div>
         <h3 class="mb-2">Purchase Rules management</h3>
-        <ul class="list-group">
-            @for()
+        <ul class="list-group mb-2">
+            <form class="form mb-2" method="post" action="/shops/${shop.id}/combineRules" id="rulesForm">
+            @for(PurchaseRule rule : shop.getAllRules())
                 <li class="list-group-item">
-
+                    <div class="form-check">
+                        <input class="form-check-input" name="rule" type="checkbox" value="${rule.getID()}" id="rule${rule.getID()}">
+                        <label class="form-check-label" for="rule${rule.getID()}">
+                            ${rule.toString()}
+                        </label>
+                    </div>
                 </li>
             @endfor
+                <li>
+                    <button type="submit" class="btn btn-warning">Combine Rules</button>
+                </li>
+            </form>
             <li>
-                <form>
-
+                <form class="form" id="addRuleForm" action="/shops/${shop.id}/addRule" method="post">
+                    <select class="form-select" aria-label="Select Rule Type">
+                        <option selected>Select Rule Type</option>
+                        <option value="blackList">Black List</option>
+                        <option value="minimumQuantity">Minimum Quantity</option>
+                        <option value="purchasePolicy">Purchase</option>
+                    </select>
+                    <button class="btn btn-success" type="submit">Add Rule</button>
                 </form>
             </li>
         </ul>
@@ -105,6 +122,7 @@
 </main>
 
 </body>
+
 <script>
     const socket = new WebSocket('ws://localhost:${Main.port}/shops/${shop.id}');
     socket.onopen = () => console.log("trying to connect to sever using websocket")
@@ -165,7 +183,7 @@
         button.onclick = removeManager;
         node.append(headline, removeform);
         removeform.append(input, button);
-        document.getElementById('managersList').appendChild(node);
+        document.getElementById('managersList').prepend(node);
     }
 
     function addOwnerNode(message) {
@@ -190,7 +208,7 @@
         button.onclick = removeOwner;
         node.append(headline, removeform);
         removeform.append(input, button);
-        document.getElementById('ownerList').appendChild(node);
+        document.getElementById('ownerList').prepend(node);
     }
 
 
@@ -205,7 +223,28 @@
                         message.type === 'addOwner' ? addOwnerNode(message) : undefined
         else
             document.getElementById(message.removedUser).classList.add('border', 'border-red');
-
     }
+
+    function checkBoxLimit() {
+        var checkBoxGroup = document.forms['rulesForm']['rule'];
+        var limit = 2;
+        for (var i = 0; i < checkBoxGroup.length; i++) {
+            checkBoxGroup[i].onclick = function() {
+                var checkedcount = 0;
+                for (var i = 0; i < checkBoxGroup.length; i++) {
+                    checkedcount += (checkBoxGroup[i].checked) ? 1 : 0;
+                }
+                if (checkedcount > limit) {
+                    console.log("You can select maximum of " + limit + " checkboxes.");
+                    alert("You can select maximum of " + limit + " checkboxes.");
+                    this.checked = false;
+                }
+            }
+        }
+    }
+
+    checkBoxLimit()
+
 </script>
+
 </html>
