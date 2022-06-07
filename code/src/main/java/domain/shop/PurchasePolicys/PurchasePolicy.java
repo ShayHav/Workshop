@@ -82,7 +82,7 @@ public class PurchasePolicy {
 
 
 
-    public int addProductPurchaseRule(int prodID, Predicate<Basket> eligible) {
+    public int addProductPurchaseRule(int prodID, Predicate<Basket> eligible, String productName) {
         List<PurchaseRule> prod_pr;
         if(product_purchaseRules.containsKey(prodID))
             prod_pr = getAllPurchaseRulesForProd(prodID);
@@ -93,7 +93,8 @@ public class PurchasePolicy {
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == prodID;
         eventLogger.logMsg(Level.INFO, String.format("added percentage pr to product: %d ", prodID));
-        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++);
+        String purchaseRuleStringed = String.format("product %s can only be purchased if %s", productName, eligible.toString());
+        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++, purchaseRuleStringed);
         prod_pr.add(newPurchaseRule);
 
         return newPurchaseRule.getID();
@@ -113,7 +114,8 @@ public class PurchasePolicy {
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
         eventLogger.logMsg(Level.INFO, String.format("added percentage pr to product: %s ", category));
-        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++);
+        String purchaseRuleStringed = String.format("product from category %s can only be purchased if %s", category, eligible.toString());
+        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++, purchaseRuleStringed);
         category_pr.add(newPurchaseRule);
 
         return newPurchaseRule.getID();
@@ -121,9 +123,9 @@ public class PurchasePolicy {
 
     public int addGeneralShopPurchaseRule(Predicate<Basket> eligible) {
         Predicate<ProductImp> relevantTo = (productImp)-> true;
-        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++);
+        String purchaseRuleStringed = String.format("Any of the shop's products can only be purchased if %s", eligible.toString());
+        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++, purchaseRuleStringed);
         general_PurchaseRules.add(newPurchaseRule);
-
         return newPurchaseRule.getID();
     }
 
@@ -232,6 +234,19 @@ public class PurchasePolicy {
         }
         eventLogger.logMsg(Level.INFO, String.format("no such discount in the shop: %d", purchaseRuleID));
         return false;
+    }
+
+    public List<PurchaseRule> getAllDistinctPurchaseRules(){
+        List<PurchaseRule> prodPR = new ArrayList<>();
+        for(List<PurchaseRule> valueSet : product_purchaseRules.values())
+            prodPR.addAll(valueSet);
+
+
+        for(List<PurchaseRule> valueSet : category_purchaseRules.values())
+            prodPR.addAll(valueSet);
+        prodPR.addAll(general_PurchaseRules);
+
+        return prodPR.stream().distinct().collect(Collectors.toList());
     }
 
 }

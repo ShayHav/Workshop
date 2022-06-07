@@ -50,5 +50,8 @@ public class XorDiscount implements Discount {
         return discount1.relevant(product) || discount2.relevant(product);
     }
 
+    public String toString(){
+        return String.format("(either %s or %s)", discount1.toString(), discount2.toString());
+    }
 
 }

@@ -113,6 +113,7 @@ class InventoryTest {
         }
         assertEquals(3399.90, priceProduct1);
     }
+
     @Test
     void setPriceThreads() {
         //TODO:
