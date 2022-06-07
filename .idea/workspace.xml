@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,19 +129,7 @@
       <workItem from="1653906343354" duration="9092000" />
       <workItem from="1654000947394" duration="308000" />
       <workItem from="1654343462330" duration="49005000" />
-      <workItem from="1654628125317" duration="4086000" />
-    </task>
-    <task id="LOCAL‎00007" summary="fixed an issue in shop">
-      <created>1652541711757</created>
-      <option name="number" value="LOCAL‎00007" />
-      <option name="presentableId" value="LOCAL‎00007" />
-      <updated>1652541711757</updated>
-    </task>
-    <task id="LOCAL‎00008" summary="re-added the empty ctr for ResponseT">
-      <created>1652541792615</created>
-      <option name="number" value="LOCAL‎00008" />
-      <option name="presentableId" value="LOCAL‎00008" />
-      <updated>1652541792615</updated>
+      <workItem from="1654628125317" duration="5256000" />
     </task>
     <task id="LOCAL‎00009" summary="check permissions for manager added">
       <created>1652542750210</created>
@@ -427,7 +413,19 @@
       <option name="presentableId" value="LOCAL‎00055" />
       <updated>1654628182784</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL‎00056" summary="design of discount add + compose">
+      <created>1654632320262</created>
+      <option name="number" value="LOCAL‎00056" />
+      <option name="presentableId" value="LOCAL‎00056" />
+      <updated>1654632320262</updated>
+    </task>
+    <task id="LOCAL‎00057" summary="design of discount add + compose">
+      <created>1654632355734</created>
+      <option name="number" value="LOCAL‎00057" />
+      <option name="presentableId" value="LOCAL‎00057" />
+      <updated>1654632355734</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -452,7 +450,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="merged the contents in shop.jte" />
     <MESSAGE value="relocated 2 classes" />
     <MESSAGE value="added new user-personal dropdown in nav-bar" />
     <MESSAGE value="collapse animation works&#10;changed product page - if product out of stock we notify in shop page + in product shop there is no option of adding it to cart." />
@@ -477,19 +474,20 @@
     <MESSAGE value="login signature fixed" />
     <MESSAGE value="minor fix - added price per product in gui cart" />
     <MESSAGE value="started impl of policies in gui" />
-    <option name="LAST_COMMIT_MESSAGE" value="started impl of policies in gui" />
+    <MESSAGE value="design of discount add + compose" />
+    <option name="LAST_COMMIT_MESSAGE" value="design of discount add + compose" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>139</line>
+          <line>137</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>155</line>
+          <line>153</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>

@@ -885,7 +885,7 @@ public class Services {
         return new ResponseT<>(discountID);
     }
 
-    private ResponseT<Integer> addShopAllProductsDiscount(int shopID, double percentage){
+    public ResponseT<Integer> addShopAllProductsDiscount(int shopID, double percentage){
         int discountID;
         try {
             discountID = marketSystem.addShopAllProductsDiscount(shopID, percentage);

@@ -130,7 +130,7 @@
                     </span>
                         <span class="col-4">
                     <select id="ruleBase" class="form-select" name="ruleBase" aria-label="Select Rule Type">
-                        <option selected>Select Rule Type</option>
+                        <option selected>Select Rule Base</option>
                         <option value="allProduct">All products in Shop</option>
                         <option value="category">All products in Category</option>
                         <option value="product">Single product</option>
@@ -189,7 +189,7 @@
                     </span>
                         <span class="col-4">
                     <select id="discountBase" class="form-select" name="discountBase" aria-label="Select Discount Type">
-                        <option selected>Select Discount Type</option>
+                        <option selected>Select Discount Base</option>
                         <option value="allProduct">All products in Shop</option>
                         <option value="category">All products in Category</option>
                         <option value="product">Single product</option>

@@ -13,6 +13,7 @@ import domain.ResponseList;
 import domain.ResponseT;
 import domain.shop.*;
 import domain.shop.predicate.PRPredType;
+import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchProductFilter;
@@ -453,5 +454,91 @@ public class ShopController {
     }
 
     public void addDiscount(Context context) {
+        String ruleType = context.formParam("discountType");
+        if (ruleType == null){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", "discount type is null", "status", 400));
+            return;
+        }
+        Response response;
+        switch (ruleType){
+            case "regularDiscount" -> response = addRegularDiscount(context);
+            case "bundleDiscount" -> response = addBundleDiscount(context);
+            case "conditionalDiscount" -> response = addConditionalDiscount(context);
+            default -> response = new Response("unsupported option in discount type");
+        }
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        int shopID = context.pathParamAsClass("shopID", Integer.class).get();
+        context.redirect("/shops/"+ shopID+ "/edit");
+
+    }
+
+    private Response addConditionalDiscount(Context context) {
+        return new Response("unsupported Operation yet");
+    }
+
+    private Response addBundleDiscount(Context context) {
+        String discountBase = context.formParam("discountBase");
+        if(discountBase == null){
+            return new Response("the basis of the rule is null");
+        }
+        String username = context.cookieStore("uid");
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int amountToBuy = context.formParamAsClass("amountToBuy", int.class).get();
+        int amountToGetFree = context.formParamAsClass("amountToGetFree", int.class).get();
+        int targetProduct = context.formParamAsClass("targetProduct", int.class).get();
+        ResponseT<Product> response = services.getProduct(username, shopID, targetProduct);
+        if(response.isErrorOccurred()){
+            return response;
+        }
+        switch (discountBase){
+            case "category" -> {
+                String category = context.formParam("productOrCategoryDiscount");
+                return services.addCategoryDiscount(shopID, category, percentage);
+            }
+            case "allProduct" -> {
+                return services.addShopAllProductsDiscount(shopID,percentage);
+            }
+            case "product" -> {
+                int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();;
+                return services.addProductDiscount(shopID, serialNumber, percentage);
+            }
+            default -> {
+                return new Response("not a legal ruleBase");
+            }
+        }
+    }
+
+    private Response addRegularDiscount(Context context) {
+        String discountBase = context.formParam("discountBase");
+        if(discountBase == null){
+            return new Response("the basis of the rule is null");
+        }
+        String username = context.cookieStore("uid");
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        double percentage = context.formParamAsClass("percentage", int.class).get();
+        int targetProduct = context.formParamAsClass("targetProduct", int.class).get();
+        ResponseT<Product> response = services.getProduct(username, shopID, targetProduct);
+        if(response.isErrorOccurred()){
+            return response;
+        }
+        switch (discountBase){
+            case "category" -> {
+                String category = context.formParam("productOrCategoryDiscount");
+                return services.addCategoryDiscount(shopID, category, percentage);
+            }
+            case "allProduct" -> {
+                return services.addShopAllProductsDiscount(shopID,percentage);
+            }
+            case "product" -> {
+                int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();;
+                return services.addProductDiscount(shopID, serialNumber, percentage);
+            }
+            default -> {
+                return new Response("not a legal ruleBase");
+            }
+        }
     }
 }
