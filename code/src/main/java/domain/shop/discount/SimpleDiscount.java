@@ -9,11 +9,13 @@ public class SimpleDiscount implements Discount{
     private DiscountCalculatorType discountCalc;
     private int discountID;
     private Predicate<ProductImp> relevantTo;
+    private String stringed;
 
-    public SimpleDiscount(DiscountCalculatorType discountCalc, int discountID, Predicate<ProductImp> relevantTo){
+    public SimpleDiscount(DiscountCalculatorType discountCalc, int discountID, Predicate<ProductImp> relevantTo, String stringed){
         this.discountCalc = discountCalc;
         this.discountID = discountID;
         this.relevantTo = relevantTo;
+        this.stringed = stringed;
     }
 
     @Override
@@ -44,5 +46,7 @@ public class SimpleDiscount implements Discount{
         return relevantTo.test(product);
     }
 
-
+    public String toString(){
+        return stringed;
+    }
 }

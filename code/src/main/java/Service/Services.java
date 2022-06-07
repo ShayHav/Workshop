@@ -867,6 +867,8 @@ public class Services {
             return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
         }catch (ShopNotFoundException shopNotFoundException){
             return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (ProductNotFoundException productNotFoundException){
+            return new ResponseT<>(String.format("discount not created, product not found. error: %s", productNotFoundException.getMessage()));
         }
         return new ResponseT<>(discountID);
     }
@@ -904,8 +906,12 @@ public class Services {
             return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
         }catch (ShopNotFoundException shopNotFoundException){
             return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
-        }catch (Exception e){
-            return new ResponseT<>("unknown error occured.");
+        }catch (ProductNotFoundException productNotFoundException){
+            return new ResponseT<>(String.format("discount not created, product not found. error: %s", productNotFoundException.getMessage()));
+        }catch (AccessDeniedException accessDeniedException){
+            return new ResponseT<>(String.format("discount not created, issue with predicate build data. error: %s", accessDeniedException.getMessage()));
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("discount not created, issue with complex predicate build. error: %s", criticalInvariantException.getMessage()));
         }
         return new ResponseT<>(discountID);
     }
@@ -948,6 +954,8 @@ public class Services {
             return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", shopNotFoundException.getMessage()));
         }catch (AccessDeniedException accessDeniedException){
             return new ResponseT<>(String.format("purchase rule not created, system error, bad attempt to building the predict %s" , accessDeniedException.getMessage()));
+        }catch (ProductNotFoundException productNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, product not found. error: %s", productNotFoundException.getMessage()));
         }
         return new ResponseT<>(purchaseRuleID);
     }

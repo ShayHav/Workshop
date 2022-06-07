@@ -1,6 +1,5 @@
 package Presentation.Controllers;
 
-import Presentation.Model.Messages.AddRuleMessage;
 import Presentation.Model.Messages.AppointMangerMessage;
 import Presentation.Model.Messages.AppointOwnerMessage;
 import Presentation.Model.Messages.EditShopMessage;
@@ -9,7 +8,6 @@ import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
-import domain.Exceptions.BlankDataExc;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseT;
@@ -22,7 +20,6 @@ import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -332,10 +329,10 @@ public class ShopController {
         }
         if(response.isErrorOccurred()){
             context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
         }
         int shopID = context.pathParamAsClass("shopID", Integer.class).get();
         context.redirect("/shops/"+ shopID+ "/edit");
-
 
     }
 
@@ -353,7 +350,7 @@ public class ShopController {
                 String category = context.formParam("productOrCategory");
                 return services.addCategoryPurchasePolicy(shopID, category, builder);
             }
-            case "AllProduct" -> {
+            case "allProduct" -> {
                 return services.addShopAllProductsPurchasePolicy(shopID,builder);
             }
             case "product" -> {
@@ -385,7 +382,7 @@ public class ShopController {
                 String category = context.formParam("productOrCategory");
                 return services.addCategoryPurchasePolicy(shopID, category, builder);
             }
-            case "AllProduct" -> {
+            case "allProduct" -> {
                 return services.addShopAllProductsPurchasePolicy(shopID,builder);
             }
             case "product" -> {
@@ -413,14 +410,14 @@ public class ShopController {
             return response;
         }
 
-        ToBuildPRPredicateFrom builder = new ToBuildPRPredicateFrom(minimumNumber, targetProduct, "", PRPredType.MinimumAmount);
+        ToBuildPRPredicateFrom builder = new ToBuildPRPredicateFrom(minimumNumber, targetProduct, response.getValue().getName(), PRPredType.MinimumAmount);
 
         switch (ruleBase){
             case "category" -> {
                 String category = context.formParam("productOrCategoryLabel");
                 return services.addCategoryPurchasePolicy(shopID, category, builder);
             }
-            case "AllProduct" -> {
+            case "allProduct" -> {
                 return services.addShopAllProductsPurchasePolicy(shopID,builder);
             }
             case "product" -> {
@@ -431,6 +428,28 @@ public class ShopController {
                 return new Response("not a legal ruleBase");
             }
         }
+    }
+
+    public void combineRules(Context context) {
+        String username = context.cookieStore("uid");
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        List<Integer> rules = context.formParams("rule").stream().map(Integer::parseInt).collect(Collectors.toList());
+        String type = context.formParam("combineRuleType");
+        if(type == null){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", "message type cannot be null", "status", 400));
+            return;
+        }
+        Response response;
+        switch (type){
+            case "and" -> response = services.addAndPurchaseRule(rules.get(0), rules.get(1), shopID);
+            case "or" -> response = services.addOrPurchaseRule(rules.get(0), rules.get(1), shopID);
+            default -> response = new Response("Not supported operation");
+        }
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/"+ shopID+"/edit");
     }
 
     public void addDiscount(Context context) {

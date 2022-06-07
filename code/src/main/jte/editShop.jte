@@ -92,20 +92,29 @@
         <h3 class="mb-2">Purchase Rules management</h3>
         <ul class="list-group mb-2">
             <form class="form mb-2" method="post" action="/shops/${shop.id}/combineRules" id="rulesForm">
-                @for(PurchaseRule rule : shop.getAllRules())
-                    <li class="list-group-item">
-                        <div class="form-check">
-                            <input class="form-check-input" name="rule" type="checkbox" value="${rule.getID()}"
-                                   id="rule${rule.getID()}">
-                            <label class="form-check-label" for="rule${rule.getID()}">
-                                ${rule.toString()}
-                            </label>
-                        </div>
-                    </li>
-                @endfor
+            @for(PurchaseRule rule : shop.getAllRules())
                 <li class="list-group-item">
-                    <button type="submit" class="btn btn-warning">Combine Rules</button>
+                    <div class="form-check">
+                        <input class="form-check-input" name="rule" type="checkbox" value="${rule.getID()}" id="rule${rule.getID()}">
+                        <label class="form-check-label" for="rule${rule.getID()}">
+                            ${rule.toString()}
+                        </label>
+                    </div>
                 </li>
+            @endfor
+                @if(shop.getAllRules().size() > 1)
+                <li class="list-group-item">
+                    <input id="combineRuleType" type="hidden" name="combineRuleType">
+                    <div class="row">
+                        <div class="col-3">
+                            <button id="combineRuleOr" type="submit" class="btn btn-warning">Combine Rules: Or</button>
+                        </div>
+                        <div class="col-3">
+                            <button id="combineRuleAnd" type="submit" class="btn btn-info">Combine Rules: And</button>
+                        </div>
+                    </div>
+                </li>
+                @endif
             </form>
             <li class="list-group-item">
 
@@ -523,6 +532,18 @@
                     clearProductOrCategory();
     }
 
+    document.querySelector('#combineRuleOr').onclick = (event)=> {
+        console.log("or btn")
+        document.querySelector('#combineRuleType').value = 'or';
+        document.forms['rulesForm'].submit();
+    };
+
+    document.querySelector('#combineRuleAnd').onclick = (event)=> {
+        console.log("and btn")
+        document.querySelector('#combineRuleType').value = 'and';
+        document.forms['rulesForm'].submit();
+    };
+
     function addRegularDiscount(){
         let div = document.querySelector('#discountParams')
 
@@ -583,7 +604,7 @@
         div.append(toGetFree_label);
         div.append(toGetFree);
     }
-    
+
     function addConditionalDiscount(){}
 
     function clearProductOrCategoryDiscount() {
@@ -624,7 +645,7 @@
     document.querySelector('#discountType').addEventListener('change', (event) => {
         const value = event.target.value;
         clearRuleParam()
-        value === 'regularDiscount' ? addRegularDiscount() : 
+        value === 'regularDiscount' ? addRegularDiscount() :
             value === 'bundleDiscount' ? addBundleDiscount() :
                 value === 'conditionalDiscount' ? addConditionalDiscount() : clearDiscountParam()
     })

@@ -12,18 +12,24 @@ public class ToBuildPRPredicateFrom {
     private LocalDateTime fromDate;
     private LocalDateTime ToDate;
     private PRPredType predType;
+    private String productName;
 
     public ToBuildPRPredicateFrom(double hoursFrom, double hoursTo, PRPredType type){
-        this.hoursFrom = hoursFrom % 24;
-        this.hoursTo = hoursTo % 24;
+        int intPartFrom = (int)hoursFrom;
+        int intPartTo = (int)hoursTo;
+        double floatPartFrom = hoursFrom - intPartFrom;
+        double floatPartTo = hoursTo - intPartTo;
 
+        this.hoursFrom =  (intPartFrom % 24) + floatPartFrom;
+        this.hoursTo = (intPartTo % 24) + floatPartTo;
         predType = type;
     }
 
-    public ToBuildPRPredicateFrom(int amount, int prodID, String name, PRPredType type){
+    public ToBuildPRPredicateFrom(int amount, int prodID, String productName, PRPredType type){
         this.amount = amount;
         this.prodID = prodID;
         predType = type;
+        this.productName = productName;
     }
 
 
@@ -47,8 +53,16 @@ public class ToBuildPRPredicateFrom {
 
     public int getProdID() throws AccessDeniedException {
         if(predType.equals(PRPredType.MaximumAmount) || predType.equals(PRPredType.MinimumAmount))
-            throw new AccessDeniedException("this is not an amount predicate, should never access product ID");
-        return prodID;
+            return prodID;
+        throw new AccessDeniedException("this is not an amount predicate, should never access product ID");
+
+    }
+
+
+    public String getProductName() throws AccessDeniedException {
+        if(predType.equals(PRPredType.MaximumAmount) || predType.equals(PRPredType.MinimumAmount))
+            return productName;
+        throw new AccessDeniedException("this is not an amount predicate, should never access product Name");
     }
 
 
