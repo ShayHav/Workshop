@@ -1,8 +1,9 @@
 package domain.shop;
 
-import main.java.domain.Exceptions.InvalidParamException;
-import main.java.domain.shop.discount.DiscountCalculatorType;
-import main.java.domain.shop.discount.PercentageDiscount;
+import domain.Exceptions.InvalidParamException;
+import domain.shop.discount.DiscountCalculatorType;
+
+import domain.shop.discount.PercentageDiscount;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,7 +1,7 @@
 package domain.shop;
 
-import main.java.domain.shop.discount.Basket;
-import main.java.domain.shop.predicate.PredicateManager;
+import domain.shop.discount.Basket;
+import domain.shop.predicate.PredicateManager;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;

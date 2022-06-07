@@ -1,4 +1,4 @@
-package domain.shop;
+package purchasePolicy;
 
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.PurchasePolicys.PurchaseRule;

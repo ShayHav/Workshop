@@ -1,5 +1,6 @@
 package domain.shop;
 
+
 import domain.shop.discount.DiscountPolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
