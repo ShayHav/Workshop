@@ -201,8 +201,12 @@ public class UserController {
             ResponseT<Shop> r = services.GetShop(shopID);
             Shop s = r.getValue();
             Map<PresentationProduct, Integer> productAmount = cart.baskets.get(shopID).productWithAmount;
+            // creating a new map to store only the products' serial number and the amount from the basket of the shop
+            Map<Integer, Integer> serialsAndAmounts = new HashMap<>(productAmount.size());
+            productAmount.forEach((product, amount) -> serialsAndAmounts.put(product.serialNumber, amount));
+            //calculate every product the final price after checking the rules and discount in the domain layer
             for (PresentationProduct p : productAmount.keySet()) {
-                p.setFinalPrice(s.productPriceAfterDiscounts(p.serialNumber, productAmount.get(p)));
+                p.setFinalPrice(s.productPriceAfterDiscounts(p.serialNumber, serialsAndAmounts));
             }
         }
     }
