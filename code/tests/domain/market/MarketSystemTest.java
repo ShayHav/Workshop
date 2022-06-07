@@ -41,7 +41,7 @@ class MarketSystemTest {
         when(ps1.connect()).thenReturn(true);
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.connect()).thenReturn(true);
-        marketSystem.start(ps1,ss2,"admin","admin");
+        marketSystem.start(ps1,ss2);
         marketSystem.EnterMarket();
         marketSystem.register("-Guest0",userName[0],userPass[0]);
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
@@ -98,7 +98,7 @@ class MarketSystemTest {
         when(ps1.connect()).thenReturn(true);
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.connect()).thenReturn(true);
-        marketSystem.start(ps1,ss2,"admin","admin");
+        marketSystem.start(ps1,ss2);
         marketSystem.EnterMarket();
         marketSystem.register("-Guest0",userName[0],userPass[0]);
         marketSystem.LeaveMarket("-Guest0");
@@ -160,7 +160,7 @@ class MarketSystemTest {
         when(ps1.connect()).thenReturn(true);
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.connect()).thenReturn(true);
-        marketSystem.start(ps1,ss2,"admin","admin");
+        marketSystem.start(ps1,ss2);
         marketSystem.register("-Guest0",userName[0],userPass[0] );
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
@@ -228,7 +228,7 @@ class MarketSystemTest {
         when(ps1.connect()).thenReturn(true);
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.connect()).thenReturn(true);
-        marketSystem.start(ps1,ss2,"admin","admin");
+        marketSystem.start(ps1,ss2);
         marketSystem.register("-Guest0",userName[0],userPass[0] );
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);
         PurchasePolicy purchasePolicy = mock(PurchasePolicy.class);
@@ -300,7 +300,7 @@ class MarketSystemTest {
         SupplyService ss2 = mock(SupplyService.class);
         when(ss2.supply(anyVararg(),anyVararg(),anyVararg())).thenReturn(true);
         when(ss2.connect()).thenReturn(true);
-        marketSystem.start(ps1,ss2,"admin","admin");
+        marketSystem.start(ps1,ss2);
         marketSystem.EnterMarket();
         marketSystem.register("-Guest0",userName[0],userPass[0] );
         DiscountPolicy discountPolicy = mock(DiscountPolicy.class);

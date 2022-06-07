@@ -1,64 +1,237 @@
 package domain.shop.PurchasePolicys;
 
-import domain.shop.discount.BundleDiscount;
-import domain.shop.discount.Discount;
-import domain.shop.discount.PercentageDiscount;
+
+import domain.ErrorLoggerSingleton;
+import domain.EventLoggerSingleton;
+import domain.Exceptions.CriticalInvariantException;
+import domain.Exceptions.InvalidParamException;
+import domain.Exceptions.PurchaseRuleNotFoundException;
+import domain.shop.ProductImp;
+import domain.shop.discount.Basket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class PurchasePolicy {
 
-    private Map<Integer, List<PurchaseRule>> product_purchasePolicies;
-    private Map<Integer, Discount> productGroup_discounts; ///check if needed
+    private final Map<Integer, List<PurchaseRule>> product_purchaseRules;
+    private final Map<String, List<PurchaseRule>> category_purchaseRules;
+    private final List<PurchaseRule> general_PurchaseRules;
     private int purchaseRuleIDCounter;
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
 
     public PurchasePolicy(){
-        product_purchasePolicies = new HashMap<>();
+        product_purchaseRules = new HashMap<>();
+        category_purchaseRules = new HashMap<>();
+        general_PurchaseRules = new ArrayList<>();
     }
 
 
-    public Map<Integer, List<PurchaseRule>> getProductGroup_discounts() {
-        return product_purchasePolicies;
+    public Map<Integer, List<PurchaseRule>> getProductGroup_prs() {
+        return product_purchaseRules;
     }
 
     public List<PurchaseRule> getAllPurchaseRulesForProd(int prodID){
-        for(Map.Entry<Integer, List<PurchaseRule>> set : product_purchasePolicies.entrySet()){
-            if(set.getKey() == prodID){
-                return set.getValue();
-            }
-        }
+        List<PurchaseRule> product_PR =  product_purchaseRules.get(prodID);
+        if(product_PR != null)
+            return product_PR;
         return new ArrayList<>();
     }
 
-    public boolean checkIfProductRulesAreMet(String userID ,int prodID, Double basePrice, int amount){
-        List<PurchaseRule> purchaseRuleList = getAllPurchaseRulesForProd(prodID);
-        boolean allowed = true;
-        for (PurchaseRule pr: purchaseRuleList){
-            allowed  = pr.purchaseAllowed(userID, amount);
+    public List<PurchaseRule> getAllPurchaseRulesForCategory(String category){
+        List<PurchaseRule> product_PR =  category_purchaseRules.get(category);
+        if(product_PR != null)
+            return product_PR;
+        return new ArrayList<>();
+    }
+
+    public List<PurchaseRule> getAllGeneralPurchaseRules(){
+        return general_PurchaseRules;
+    }
+
+
+    public boolean checkCart_RulesAreMet(Map<ProductImp, Integer> productsToAmounts){
+        Basket basket = new Basket(productsToAmounts);
+
+        List<PurchaseRule> prodPR = new ArrayList<>();
+        for(Map.Entry<ProductImp, Integer> set : productsToAmounts.entrySet())
+            prodPR.addAll(getAllPurchaseRulesForProd(set.getKey().getId()));
+
+        for(String category: basket.findAllDistinctCategories())
+            prodPR.addAll(getAllPurchaseRulesForCategory(category));
+
+        prodPR.addAll(general_PurchaseRules);
+
+        prodPR = prodPR.stream().distinct().collect(Collectors.toList());
+
+        boolean allowed;
+        for(PurchaseRule pr: prodPR){
+            allowed  = pr.purchaseAllowed(basket);
             if(!allowed)
                 return false;
         }
-        return allowed;
+        return true;
     }
 
-    public int addQuantityRule(int prodID, int minQuantity){
+
+
+    public int addProductPurchaseRule(int prodID, Predicate<Basket> eligible) {
+        List<PurchaseRule> prod_pr;
+        if(product_purchaseRules.containsKey(prodID))
+            prod_pr = getAllPurchaseRulesForProd(prodID);
+        else {
+            prod_pr = new ArrayList<>();
+            product_purchaseRules.put(prodID, prod_pr);
+        }
+
+        Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == prodID;
+        eventLogger.logMsg(Level.INFO, String.format("added percentage pr to product: %d ", prodID));
+        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++);
+        prod_pr.add(newPurchaseRule);
+
+        return newPurchaseRule.getID();
+    }
+
+
+
+
+    public int addCategoryPurchaseRule(String category, Predicate<Basket> eligible) {
+        List<PurchaseRule> category_pr;
+        if(category_purchaseRules.containsKey(category))
+            category_pr = getAllPurchaseRulesForCategory(category);
+        else {
+            category_pr = new ArrayList<>();
+            category_purchaseRules.put(category, category_pr);
+        }
+
+        Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
+        eventLogger.logMsg(Level.INFO, String.format("added percentage pr to product: %s ", category));
+        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++);
+        category_pr.add(newPurchaseRule);
+
+        return newPurchaseRule.getID();
+    }
+
+    public int addGeneralShopPurchaseRule(Predicate<Basket> eligible) {
+        Predicate<ProductImp> relevantTo = (productImp)-> true;
+        PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++);
+        general_PurchaseRules.add(newPurchaseRule);
+
+        return newPurchaseRule.getID();
+    }
+
+
+    public int addAndPR(int prID1, int prID2) throws CriticalInvariantException, PurchaseRuleNotFoundException {
+        int prID;
         try {
-            PurchaseRule pr = new MinimumQuantityPolicy(minQuantity, purchaseRuleIDCounter++);
-            List<PurchaseRule> prod_pr;
-            if(product_purchasePolicies.containsKey(prodID))
-                return -1;
-            else
-                prod_pr = new ArrayList<>();
-            prod_pr.add(pr);
-            return pr.getID();
+            prID = addComplexPR(prID1, prID2, "And");
+        }catch (InvalidParamException invalidParamException){
+            throw new CriticalInvariantException("fundamental error, the complex type sent here is Invalid");
         }
-        catch (IllegalArgumentException iae){
-            return -1;
+        return prID;
+    }
+
+    public int addOrPR(int prID1, int prID2) throws CriticalInvariantException, PurchaseRuleNotFoundException {
+        int prID;
+        try {
+            prID = addComplexPR(prID1, prID2, "Or");
+        }catch (InvalidParamException invalidParamException){
+            throw new CriticalInvariantException("fundamental error, the complex type sent here is Invalid");
         }
+        return prID;
+    }
+
+
+
+
+    public int addComplexPR(int prID1, int prID2, String complexType) throws InvalidParamException, PurchaseRuleNotFoundException {
+        PurchaseRule pr1 = null;
+        PurchaseRule pr2 = null;
+        List<PurchaseRule> listOfPurchaseRule1 = new ArrayList<>();
+        List<PurchaseRule> listOfPurchaseRule2 = new ArrayList<>();
+
+        for (List<PurchaseRule> purchaseRules : product_purchaseRules.values()) {
+            for (PurchaseRule purchaseRule : purchaseRules) {
+                if (purchaseRule.getID() == prID1) {
+                    pr1 = purchaseRule;
+                    listOfPurchaseRule1 = purchaseRules;
+                }
+                if (purchaseRule.getID() == prID2) {
+                    pr2 = purchaseRule;
+                    listOfPurchaseRule2 = purchaseRules;
+                }
+            }
+        }
+
+        if (pr1 == null || pr2 == null) {
+            for (List<PurchaseRule> purchaseRules : category_purchaseRules.values()) {
+                for (PurchaseRule purchaseRule : purchaseRules) {
+                    if (purchaseRule.getID() == prID1) {
+                        pr1 = purchaseRule;
+                        listOfPurchaseRule1 = purchaseRules;
+                    }
+                    if (purchaseRule.getID() == prID2) {
+                        pr2 = purchaseRule;
+                        listOfPurchaseRule2 = purchaseRules;
+                    }
+                }
+            }
+        }
+
+        if (pr1 == null || pr2 == null) {
+            for (PurchaseRule purchaseRule: general_PurchaseRules){
+                if (purchaseRule.getID() == prID1) {
+                    pr1 = purchaseRule;
+                    listOfPurchaseRule1 = general_PurchaseRules;
+                }
+                if (purchaseRule.getID() == prID2) {
+                    pr2 = purchaseRule;
+                    listOfPurchaseRule2 = general_PurchaseRules;
+                }
+            }
+        }
+
+        if(pr1 == null || pr2 == null){
+            throw new PurchaseRuleNotFoundException("one of the purchase rules given was not found.");
+        }
+
+        PurchaseRule newPurchaseRule = switch (complexType) {
+            case "And" -> new AndPR(pr1, pr2, purchaseRuleIDCounter++);
+            case "Or" -> new OrPR(pr1, pr2, purchaseRuleIDCounter++);
+            default -> throw new InvalidParamException("Complex type given is illegal.");
+        };
+
+
+        listOfPurchaseRule1.remove(pr1);
+        listOfPurchaseRule2.remove(pr2);
+        listOfPurchaseRule1.add(newPurchaseRule);
+        if(listOfPurchaseRule1 != listOfPurchaseRule2)
+            listOfPurchaseRule2.add(newPurchaseRule);
+
+        return newPurchaseRule.getID();
+    }
+
+
+    public boolean removePurchaseRule(int purchaseRuleID){
+        for(Map.Entry<Integer, List<PurchaseRule>> set : product_purchaseRules.entrySet()){
+            List<PurchaseRule> prod_pr = set.getValue();
+            for(PurchaseRule pr: prod_pr) {
+                if (pr.getID() == purchaseRuleID) {
+                    prod_pr.remove(pr);
+                    eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
+                    return true;
+                }
+            }
+        }
+        eventLogger.logMsg(Level.INFO, String.format("no such discount in the shop: %d", purchaseRuleID));
+        return false;
     }
 
 }

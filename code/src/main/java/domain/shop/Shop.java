@@ -7,13 +7,16 @@ import domain.Exceptions.*;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.discount.Basket;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
+import domain.shop.predicate.*;
 import domain.user.*;
 import domain.user.filter.*;
 
 import java.util.*;
 
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -152,8 +155,9 @@ public class Shop {
         return discountPolicy.getAllDiscountsForProd(prodID);
     }
 
-    public double productPriceAfterDiscounts(int prodID, int amount){
+    public double productPriceAfterDiscounts(int prodID, Map<Integer, Integer> productAmountList){
         double productBasePrice;
+        double newPrice;
         try {
             productBasePrice = inventory.getPrice(prodID);
         }catch (ProductNotFoundException prodNotFound){
@@ -161,11 +165,65 @@ public class Shop {
         }
         if(productBasePrice < 0)
             return 0;
-        if(discountPolicy == null)
-            return productBasePrice;
 
-        return discountPolicy.calcPricePerProduct(prodID, productBasePrice, amount);
+        try {
+            newPrice = cartItemsPricesAfterDiscounts(productAmountList).findProduct(prodID).getBasePrice();
+        }catch (ProductNotFoundException productNotFoundException){
+            return 0;
+        }
+
+        return newPrice;
     }
+
+
+    public Basket IDsToProducts(Map<Integer, Integer> productAmountList){
+        ProductImp product;
+        Basket basket = new Basket();
+        for(Map.Entry<Integer, Integer> set : productAmountList.entrySet()){
+            //check purchase policy regarding the Product
+            //Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            try {
+                product = inventory.findProduct(set.getKey());
+            }catch (ProductNotFoundException productNotFoundException){
+                continue;
+            }
+            basket.put(new ProductImp(product), set.getValue());
+        }
+        return basket;
+    }
+
+    public Double calculateTotalAmountOfOrder(Map<Integer, Integer> productAmountList){
+        return cartItemsPricesAfterDiscounts(productAmountList).calculateTotal();
+    }
+
+    public Basket cartItemsPricesAfterDiscounts(Map<Integer, Integer> productAmountList){
+        Basket basket = IDsToProducts(productAmountList);
+        return discountPolicy.calcPricePerProductForCartTotal(basket);
+    }
+
+
+    public double getCartTotalWithNoDiscounts(Map<Integer, Integer> productAmountList){
+        double totalBasePrice = 0;
+        double productBasePrice;
+        int amount;
+        for(Map.Entry<Integer, Integer> set : productAmountList.entrySet()){
+            try {
+                productBasePrice = inventory.getPrice(set.getKey());
+                amount = productAmountList.get(set.getKey());
+            }catch (ProductNotFoundException prodNotFound){
+                continue;
+            }
+            if(productBasePrice < 0)
+                continue;
+            totalBasePrice += productBasePrice * amount;
+        }
+
+        return totalBasePrice;
+    }
+
+
+
+
 
     public boolean isProductIsAvailable(int prodID, int quantity) throws ProductNotFoundException {
         return inventory.getQuantity(prodID) >= quantity;
@@ -192,32 +250,13 @@ public class Shop {
 
     }
 
-    public synchronized int addPercentageDiscount(int prodID, double percentage){
-        return discountPolicy.addPercentageDiscount(prodID, percentage);
-    }
 
-    public synchronized int addBundleDiscount(int prodID, int amountNeededToBuy, int amountGetFree){
-        return discountPolicy.addBundleDiscount(prodID, amountNeededToBuy, amountGetFree);
-    }
-
-    public boolean purchasePolicyLegal(String userID, int prodID, double price,int amount){
+    public boolean purchasePolicyLegal(Basket basket){
         if(purchasePolicy == null)
             return true;
-        return purchasePolicy.checkIfProductRulesAreMet(userID, prodID, price, amount);
+        return purchasePolicy.checkCart_RulesAreMet(basket);
     }
 
-    public double calculateTotalAmountOfOrder(Map<Integer, Integer> productAmountList){
-        double totalPaymentDue = 0;
-        double Product_price_single;
-        double Product_total;
-        for(Map.Entry<Integer, Integer> set : productAmountList.entrySet()){
-            //check purchase policy regarding the Product
-            Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
-            Product_total = Product_price_single * set.getValue();
-            totalPaymentDue += Product_total;
-        }
-        return totalPaymentDue;
-    }
 
     /**
      * check out from the store the given items to a client
@@ -227,17 +266,12 @@ public class Shop {
      */
     public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction) throws BlankDataExc {
         double productBasePrice;
-        for(Map.Entry<Integer, Integer> set : products.entrySet()){
-            //check purchase policy regarding the Product
-            try {
-                productBasePrice = inventory.getPrice(set.getKey());
-            }catch (ProductNotFoundException prodNotFound){
-                return new ResponseT<>(String.format("this product does not exist in shop %d",shopID));
-            }
-            if (!purchasePolicyLegal(transaction.getUserID(), set.getKey(), productBasePrice, set.getValue()))
-                return new ResponseT<>(String.format("checkout process violates purchase policy in shop %d",shopID));
+        Basket basket = IDsToProducts(products);
 
+        if (!purchasePolicyLegal(basket)) {
+            return new ResponseT("violates purchase policy");
         }
+
         synchronized (inventory) {
             if (!inventory.reserveItems(products)) {
                 try{
@@ -250,14 +284,15 @@ public class Shop {
             }
         }
 
+        Map<Integer, Double> product_PricePer = new HashMap<>();
+        basket = discountPolicy.calcPricePerProductForCartTotal(basket);
+
+        for(ProductImp productImp : basket.keySet()){
+            product_PricePer.put(productImp.getId(), productImp.getBasePrice());
+        }
 
         //calculate price
-        Map<Integer, Double> product_PricePer = new HashMap<>();
-        double product_price_single;
-        for(Map.Entry<Integer, Integer> set : products.entrySet()){
-            product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
-            product_PricePer.put(set.getKey(), product_price_single);
-        }
+
         if(!marketSystem.pay(transaction)){
             synchronized (inventory) {
                 try {
@@ -274,17 +309,16 @@ public class Shop {
             return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
         }
         // creating Order object to store in the Order History with unmutable copy of product
-        Order o = createOrder(products, transaction, product_PricePer);
+        Order o = createOrder(basket, transaction);
         sendCheckoutMessage(o);
         return new ResponseT<>(o);
     }
 
-    private Order createOrder(Map<Integer, Integer> products, TransactionInfo transaction, Map<Integer, Double> product_PricePer) {
+    private Order createOrder(Basket products, TransactionInfo transaction) {
         List<Product> boughtProducts = new ArrayList<>();
-        for(Integer Product: products.keySet()){
-            Product p = inventory.findProduct(Product);
-            double price = product_PricePer.get(Product);
-            boughtProducts.add(new ProductHistory(p,price , products.get(Product)));
+        for(Map.Entry<ProductImp, Integer> product_amounts: products.entrySet()){
+            ProductImp p = product_amounts.getKey();
+            boughtProducts.add(new ProductHistory(p, p.getBasePrice(), product_amounts.getValue()));
         }
         Order o = new Order(boughtProducts, transaction.getTotalAmount(), transaction.getUserID(), shopID, name);
         orders.addOrder(o);
@@ -521,7 +555,160 @@ public class Shop {
         return ShopManagers.containsKey(userName);
     }
 
-    public PurchasePolicy getPurchasePolicy() {
-        return purchasePolicy;
+
+
+    public int addSimpleProductDiscount(int prodID, double percentage) throws InvalidParamException {
+        return discountPolicy.addSimpleProductDiscount(prodID, percentage);
     }
+
+    public int addSimpleCategoryDiscount(String category, double percentage) throws InvalidParamException {
+        return discountPolicy.addSimpleCategoryDiscount(category, percentage);
+    }
+
+    public int addSimpleShopAllProductsDiscount(double percentage) throws InvalidParamException {
+        return discountPolicy.addSimpleShopAllProductsDiscount(percentage);
+    }
+
+    public Predicate<Basket> makePredDiscount(ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
+
+        if(toBuildPredicatesFrom.getPredType().equals(DiscountPredType.price))
+            return makePriceEligiblePred(toBuildPredicatesFrom.getPrice());
+        else if(toBuildPredicatesFrom.getPredType().equals(DiscountPredType.product))
+            return makeProductEligiblePred(toBuildPredicatesFrom.getProductID(), toBuildPredicatesFrom.getAmount());
+        else
+            throw new CriticalInvariantException("should never happen.");
+    }
+
+
+    public Predicate<Basket> makePredPurchaseRule(ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
+
+        if(toBuildPredicatesFrom.getPredType().equals(PRPredType.TimeConstraint))
+            return makeTimePred(toBuildPredicatesFrom.getHoursFrom(), toBuildPredicatesFrom.getHoursTo());
+        else if(toBuildPredicatesFrom.getPredType().equals(PRPredType.MaximumAmount))
+            return makeMaximumPred(toBuildPredicatesFrom.getProdID(), toBuildPredicatesFrom.getAmount());
+        else if(toBuildPredicatesFrom.getPredType().equals(PRPredType.MinimumAmount))
+            return makeMinimumPred(toBuildPredicatesFrom.getProdID(), toBuildPredicatesFrom.getAmount());
+        else
+            throw new CriticalInvariantException("should never happen.");
+    }
+
+
+    public Predicate<Basket> makeTimePred(double from, double to) {
+        return PredicateManager.createTimePredicate(from, to);
+    }
+
+    public Predicate<Basket> makeMinimumPred(int productID, int amount){
+        return PredicateManager.createMinimumProductsPredicate(productID, amount);
+    }
+
+
+    public Predicate<Basket> makeMaximumPred(int productID, int amount){
+        return PredicateManager.createMaximumProductsPredicate(productID, amount);
+    }
+
+
+
+    public int addConditionalProductDiscount(int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
+        Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
+        return discountPolicy.addConditionalProductDiscount(prodID, percentage, pred);
+    }
+
+    public int addConditionalCategoryDiscount(String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
+        Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
+        return discountPolicy.addConditionalCategoryDiscount(category, percentage, pred);
+    }
+
+
+    public int addConditionalShopAllProductsDiscount(double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
+        Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
+        return discountPolicy.addConditionalShopAllProductsDiscount(percentage, pred);
+    }
+
+    public int addProductPurchasePolicy(int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
+        Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
+        return purchasePolicy.addProductPurchaseRule(prodID, pred);
+    }
+
+    public int addCategoryPurchasePolicy(String category, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
+        Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
+        return purchasePolicy.addCategoryPurchaseRule(category, pred);
+    }
+
+
+    public int addShopAllProductsPurchasePolicy(ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
+        Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
+        return purchasePolicy.addGeneralShopPurchaseRule(pred);
+    }
+
+    /*public Predicate<Tuple<Map<Integer, Integer>, Double>> makePred(List<Integer> logicalGatesList, List<Integer> predTypeOpCode, List<Tuple<Tuple<Integer, Integer>, Double>> toBuildPredicatesFrom) throws Exception {
+        checkPredMakerParameters(logicalGatesList, predTypeOpCode, toBuildPredicatesFrom);
+        List<Predicate<Tuple<Map<Integer, Integer>, Double>>> predicateList = new ArrayList<>();
+        Iterator<Tuple<Tuple<Integer, Integer>, Double>> toBuildFromIter = toBuildPredicatesFrom.iterator();
+        Iterator<Integer> predTypesIter = predTypeOpCode.iterator();
+        Iterator<Integer> logicalGatesIter = logicalGatesList.iterator();
+
+        while(predTypesIter.hasNext()){
+            int predType = predTypesIter.next();
+            switch (predType) {
+                case 1 -> predicateList.add(PredicateManager.createPricePredicate(toBuildFromIter.next().y));
+                case 2 -> {
+                    Tuple<Integer, Integer> toBuildFrom = toBuildFromIter.next().x;
+                    predicateList.add(PredicateManager.createProductsPredicate(toBuildFrom.x, toBuildFrom.y));
+                }
+            }
+        }
+
+        Iterator<Predicate<Tuple<Map<Integer, Integer>, Double>>> processedPredicateList = predicateList.iterator();
+        int gate;
+        Predicate<Tuple<Map<Integer, Integer>, Double>> predToReturn = processedPredicateList.next();
+        Predicate<Tuple<Map<Integer, Integer>, Double>> currPredicate;
+        while(logicalGatesIter.hasNext()){
+            if(!processedPredicateList.hasNext()){
+                throw new Exception("should never happen.");
+            }
+            gate = logicalGatesIter.next();
+            currPredicate = processedPredicateList.next();
+            switch (gate) {
+                case 1 -> predToReturn = PredicateManager.orPredicate(predToReturn, currPredicate);
+                case 2 -> predToReturn = PredicateManager.andPredicate(predToReturn, currPredicate);
+                case 3 -> predToReturn = PredicateManager.xorPredicate(predToReturn, currPredicate);
+            }
+        }
+
+        return predToReturn;
+
+    }*/
+
+    public Predicate<Basket> makePriceEligiblePred(double percentage) {
+        return PredicateManager.createPricePredicate(percentage);
+    }
+
+    public Predicate<Basket> makeProductEligiblePred(int productID, int amount){
+        return PredicateManager.createMinimumProductsPredicate(productID, amount);
+    }
+
+    public int addOrDiscount(int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
+        return discountPolicy.addOrDiscount(dis1ID, dis2ID);
+    }
+
+    public int addAndDiscount(int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
+        return discountPolicy.addAndDiscount(dis1ID, dis2ID);
+    }
+
+    public int addXorDiscount(int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
+        return discountPolicy.addXorDiscount(dis1ID, dis2ID);
+    }
+
+    public int addOrPurchaseRule(int pr1ID, int pr2ID) throws PurchaseRuleNotFoundException, CriticalInvariantException {
+        return purchasePolicy.addOrPR(pr1ID, pr2ID);
+    }
+
+    public int addAndPurchaseRule(int pr1ID, int pr2ID) throws PurchaseRuleNotFoundException, CriticalInvariantException {
+        return purchasePolicy.addAndPR(pr1ID, pr2ID);
+    }
+
+    public boolean removeDiscount(int discountID){
+        return discountPolicy.removeDiscount(discountID);
+    }
+    public boolean removePurchaseRule(int purchaseRuleID){ return purchasePolicy.removePurchaseRule(purchaseRuleID); }
 }

@@ -1,25 +1,27 @@
 package domain.shop.discount;
 
-public class PercentageDiscount implements Discount {
+import domain.Exceptions.InvalidParamException;
+
+public class PercentageDiscount implements DiscountCalculatorType {
     double percentage;
-    private int discountID;
 
 
-    public PercentageDiscount(double percentageDiscount, int discountID) throws IllegalArgumentException {
+
+    public PercentageDiscount(double percentageDiscount) throws InvalidParamException {
         if(percentageDiscount > 0 && percentageDiscount < 100){
             percentage =percentageDiscount;
         }
         else {
-            throw new IllegalArgumentException("percentage inviable");
+            throw new InvalidParamException("percentage inviable");
         }
-        this.discountID = discountID;
     }
 
-    public double applyDiscount(double price, int amount) {
-        return (percentage * price) / 100 ;
+    public double applyDiscount(double price) {
+        return ((100 - percentage) * price) / 100 ;
     }
 
-    public int getID(){
-        return discountID;
+
+    public double getPercentage(){
+        return percentage;
     }
 }

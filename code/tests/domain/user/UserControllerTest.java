@@ -16,7 +16,7 @@ import java.util.function.BooleanSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
-    private UserController userController = UserController.getInstance();;
+    /*private UserController userController = UserController.getInstance();;
     private ShopController shopController = ShopController.getInstance();
     private UserGenerator userGenerator = new UserGenerator();
     private String[] userName = userGenerator.GetValidUsers();
@@ -326,5 +326,5 @@ public class UserControllerTest {
         for(int i =0;i<nitayName.length;i++){
             assertTrue(userController.getUser(nitayName[i]).isLoggedIn());
         }
-    }
+    }*/
 }
