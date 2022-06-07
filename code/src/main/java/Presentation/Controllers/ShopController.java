@@ -432,4 +432,7 @@ public class ShopController {
             }
         }
     }
+
+    public void addDiscount(Context context) {
+    }
 }
