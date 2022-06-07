@@ -67,7 +67,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
+    public Response StartMarket(PaymentService payment, SupplyService supply) {
         return null;
     }
 

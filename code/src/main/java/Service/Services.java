@@ -1,5 +1,6 @@
 package Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.Exceptions.*;
 import domain.Response;
 import domain.ResponseList;
@@ -14,6 +15,13 @@ import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
 import domain.user.filter.*;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +31,7 @@ public class Services {
 
     private Services() {
         marketSystem = MarketSystem.getInstance();
+        startFromInit();
     }
 
     private static class ServicesHolder {
@@ -188,13 +197,7 @@ public class Services {
         }
     }
 
-    //TODO: impl on later version
-    //System
-    public Response RealTimeNotification(List<String> users, String msg) {
-        return null;
-    }
-
-    //shay  //TODO: only for test?
+    //shay  //TODO: only for test? answer: yes
     public ResponseT<Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
         try {
             MarketSystem m = MarketSystem.getInstance();
@@ -205,7 +208,7 @@ public class Services {
         }
     }
 
-    //shay  //TODO: only for test?
+    //shay  //TODO: only for test? answer: yes
     public ResponseT<Boolean> Payment(TransactionInfo ti) {
         //MarketSystem m = MarketSystem.getInstance();
         boolean ans = marketSystem.pay(ti);
@@ -216,13 +219,11 @@ public class Services {
      * Boot of a user who started the system
      * @param payment - External device for payment
      * @param supply - External device for supply
-     * @param userName - user identifier
-     * @param password - user's given password
      * @return Response object
      */
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userName, String password) {
+    public Response StartMarket(PaymentService payment, SupplyService supply) {
         try {
-            marketSystem.start(payment, supply, userName, password);
+            marketSystem.start(payment, supply);
             return new Response();
         } catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc) {
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
@@ -1070,5 +1071,33 @@ public class Services {
             return new ResponseT<>(String.format("discount not removed, shop was not found. error: %s", shopNotFoundException.getMessage()));
         }
         return new ResponseT<>(removed);
+    }
+  
+    public void startFromInit() {
+        Path p = Paths.get("");
+        String s = p.toAbsolutePath().toString() + "/src/main/resources/state_init.json";
+        ObjectMapper objectMapper = new ObjectMapper();
+        Method[] methods = this.getClass().getDeclaredMethods();
+        try(FileReader file = new FileReader(s)){
+            Functions functions = objectMapper.readValue(file,Functions.class);
+            for(Function function : functions.getFunctions()){
+                for(Method m : methods){
+                    if(m.getName().equals(function.getFunction())){
+                        Response response = (Response) m.invoke(this, function.args);
+                        // check if the result of the invocation was failure
+                        if(response.isErrorOccurred()){
+                            throw new RuntimeException(String.format("couldn't invoke the method %s with param %s", m.getName(), Arrays.toString(function.args)));
+                        }
+                        // in case we succeed with the invocation we can move on to the next function in the file
+                        break;
+                    }
+                }
+            }
+        }catch(IOException  e) {
+            throw new RuntimeException("couldn't open the state init file");
+        }catch (InvocationTargetException | IllegalAccessException e){
+            throw new RuntimeException("cannot invoke this methods due to mismatch in name or arguments");
+        }
+
     }
 }
