@@ -1,11 +1,10 @@
 package domain.shop.discount;
-
-import domain.ErrorLoggerSingleton;
-import domain.EventLoggerSingleton;
+import main.java.domain.ErrorLoggerSingleton;
+import main.java.domain.EventLoggerSingleton;
 
 import java.util.logging.Level;
 
-public class BundleDiscount implements Discount {
+public class BundleDiscount implements DiscountCalculatorType {
     private int discountID;
     private int amountToBuyNeeded;
     private int amountToGetFree;
@@ -36,7 +35,15 @@ public class BundleDiscount implements Discount {
         return toPayPerProduct;
     }
 
+    public double applyDiscount(double price) {
+        return 1;
+    }
+
     public int getID(){
         return discountID;
+    }
+
+    public double getPercentage(){
+        return 0;
     }
 }

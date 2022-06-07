@@ -4,7 +4,12 @@ public interface Discount {
 
     int getID();
 
-    double applyDiscount(double price, int amount);
+    boolean eligible(Basket productAmountList);
+
+    Basket applyDiscountCalculator(Basket productToAmounts);
+
+    boolean relevant(ProductImp product);
+
 
 }
 
