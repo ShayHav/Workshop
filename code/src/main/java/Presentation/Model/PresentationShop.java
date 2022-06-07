@@ -1,5 +1,6 @@
 package Presentation.Model;
 
+import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.Shop;
 
 import java.util.ArrayList;
@@ -15,12 +16,14 @@ public class PresentationShop {
     public PresentationUser founder;
     public boolean isOpen;
     public List<PresentationUser> managers;
+    public PurchasePolicy purchasePolicy;
 
-    public PresentationShop(String id, String name, String description, List<PresentationProduct> products){
+    public PresentationShop(String id, String name, String description, List<PresentationProduct> products, PurchasePolicy policy){
         this.id = id;
         this.name = name;
         this.description = description;
         this.products = products;
+        purchasePolicy = policy;
     }
 
     public PresentationShop(Shop shop){
@@ -31,6 +34,7 @@ public class PresentationShop {
         founder = new PresentationUser(shop.getShopFounder());
         isOpen = shop.isOpen();
         managers = shop.getShopsManagers().stream().map(PresentationUser::new).collect(Collectors.toList());
+        purchasePolicy = shop.getPurchasePolicy();
     }
 
     public boolean isFounder(PresentationUser user){

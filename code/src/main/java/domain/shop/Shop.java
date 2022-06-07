@@ -520,4 +520,8 @@ public class Shop {
     public boolean isManager(String userName) {
         return ShopManagers.containsKey(userName);
     }
+
+    public PurchasePolicy getPurchasePolicy() {
+        return purchasePolicy;
+    }
 }
