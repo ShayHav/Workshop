@@ -25,7 +25,7 @@ public class PurchaseRuleTest {
     private Predicate<ProductImp> relevantTo;
 
 
-    public PurchaseRuleIMPL(Predicate<Basket> eligibility, Predicate<ProductImp> relevantTo, int purchaseRuleID) throws IllegalArgumentException{
+    /*public PurchaseRuleIMPL(Predicate<Basket> eligibility, Predicate<ProductImp> relevantTo, int purchaseRuleID) throws IllegalArgumentException{
         this.eligibility = eligibility;
         this.relevantTo = relevantTo;
         this.purchaseRuleID = purchaseRuleID;
@@ -34,7 +34,7 @@ public class PurchaseRuleTest {
     @Override
     public boolean purchaseAllowed(Basket productToAmounts) {
         return eligibility.test(productToAmounts);
-    }
+    }*/
 
 
     @Test
@@ -49,7 +49,7 @@ public class PurchaseRuleTest {
         }
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == 1;
-        PurchaseRule pr1 = new PurchaseRuleIMPL(elig1, relevantTo, 1);
+        PurchaseRule pr1 = new PurchaseRuleIMPL(elig1, relevantTo, 1, "hihihihi");
         Product mockProd1 = mock(ProductImp.class);
         when(mockProd1.getId()).thenReturn(1);
 

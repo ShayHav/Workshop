@@ -644,9 +644,10 @@ public class Shop {
         return discountPolicy.addConditionalShopAllProductsDiscount(percentage, pred);
     }
 
-    public int addProductPurchasePolicy(int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
+    public int addProductPurchasePolicy(int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException, ProductNotFoundException {
         Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
-        return purchasePolicy.addProductPurchaseRule(prodID, pred);
+        String productName = inventory.getName(prodID);
+        return purchasePolicy.addProductPurchaseRule(prodID, pred, productName);
     }
 
     public int addCategoryPurchasePolicy(String category, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {

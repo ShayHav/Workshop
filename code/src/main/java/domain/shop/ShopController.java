@@ -362,7 +362,7 @@ public class ShopController {
         return shop.addConditionalShopAllProductsDiscount(percentage, toBuildPredicatesFrom);
     }
 
-    public int addProductPurchasePolicy(int shopID, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
+    public int addProductPurchasePolicy(int shopID, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException, ProductNotFoundException {
         Shop shop = getShop(shopID);
         return shop.addProductPurchasePolicy(prodID, toBuildPredicatesFrom);
     }

@@ -34,7 +34,7 @@ public class PredicateManagerTest {
 
     @Test
     void createProductsPredicate() {
-        Predicate<Basket> pred1 = PredicateManager.createMinimumProductsPredicate(1, 5);
+        Predicate<Basket> pred1 = PredicateManager.createMinimumProductsPredicate(1, "koko", 5);
 
         Basket testSubject1 = mock(Basket.class);
         when(testSubject1.findAmount(1)).thenReturn(4);
@@ -42,7 +42,7 @@ public class PredicateManagerTest {
         when(testSubject1.findAmount(1)).thenReturn(5);
         assertTrue(pred1.test(testSubject1), "enough products of predicate bought");
 
-        Predicate<Basket> pred2 = PredicateManager.createMinimumProductsPredicate(2, 3);
+        Predicate<Basket> pred2 = PredicateManager.createMinimumProductsPredicate(2, "choko",3);
         when(testSubject1.findAmount(2)).thenReturn(0);
         assertFalse(pred2.test(testSubject1), "not enough products of predicate bought");
         when(testSubject1.findAmount(2)).thenReturn(5);
@@ -56,12 +56,12 @@ public class PredicateManagerTest {
     @Test
     void orPredicate() {
 
-        Predicate<Basket> pred1 = PredicateManager.createMinimumProductsPredicate(1, 5);
+        Predicate<Basket> pred1 = PredicateManager.createMinimumProductsPredicate(1, "koko", 5);
         Basket testSubject1 = mock(Basket.class);
         when(testSubject1.findAmount(1)).thenReturn(4);
         when(testSubject1.calculateTotal()).thenReturn(10.0);
 
-        Predicate<Basket> pred2 = PredicateManager.createMinimumProductsPredicate(2, 3);
+        Predicate<Basket> pred2 = PredicateManager.createMinimumProductsPredicate(2, "choko",3);
         Predicate<Basket> predOr1 = PredicateManager.orPredicate(pred1, pred2);
         Predicate<Basket> pred3 = PredicateManager.createPricePredicate(8);
 
@@ -81,12 +81,12 @@ public class PredicateManagerTest {
     @Test
     void andPredicate() {
 
-        Predicate<Basket> pred1 = PredicateManager.createMinimumProductsPredicate(1, 5);
+        Predicate<Basket> pred1 = PredicateManager.createMinimumProductsPredicate(1, "koko",5);
 
         Basket testSubject1 = mock(Basket.class);
         when(testSubject1.findAmount(1)).thenReturn(6);
         when(testSubject1.calculateTotal()).thenReturn(7.0);
-        Predicate<Basket> pred2 = PredicateManager.createMinimumProductsPredicate(2, 3);
+        Predicate<Basket> pred2 = PredicateManager.createMinimumProductsPredicate(2, "choko",3);
 
         Predicate<Basket> predAnd1 = PredicateManager.andPredicate(pred1, pred2);
         Predicate<Basket> pred3 = PredicateManager.createPricePredicate(8);
@@ -107,11 +107,11 @@ public class PredicateManagerTest {
     @Test
     void xorPredicate() {
 
-        Predicate<Basket> pred1 = PredicateManager.createMinimumProductsPredicate(1, 5);
+        Predicate<Basket> pred1 = PredicateManager.createMinimumProductsPredicate(1, "koko", 5);
         Basket testSubject1 = mock(Basket.class);
         when(testSubject1.findAmount(1)).thenReturn(4);
         when(testSubject1.calculateTotal()).thenReturn(10.0);
-        Predicate<Basket> pred2 = PredicateManager.createMinimumProductsPredicate(2, 3);
+        Predicate<Basket> pred2 = PredicateManager.createMinimumProductsPredicate(2, "choko",3);
         Predicate<Basket> predXor1 = PredicateManager.xorPredicate(pred1, pred2);
         Predicate<Basket> pred3 = PredicateManager.createPricePredicate(8);
 

@@ -7,6 +7,7 @@ import domain.Exceptions.DiscountNotFoundException;
 import domain.Exceptions.InvalidParamException;
 import domain.shop.Inventory;
 import domain.shop.ProductImp;
+import domain.shop.PurchasePolicys.PurchaseRule;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -392,4 +393,19 @@ public class DiscountPolicy {
 
         return newDiscount.getID();
     }
+
+    public List<Discount> getAllDistinctPurchaseRules(){
+        List<Discount> prodPR = new ArrayList<>();
+        for(List<Discount> valueSet : product_discounts.values())
+            prodPR.addAll(valueSet);
+
+
+        for(List<Discount> valueSet : category_discounts.values())
+            prodPR.addAll(valueSet);
+        prodPR.addAll(shopAllProducts_discounts);
+
+        return prodPR.stream().distinct().collect(Collectors.toList());
+    }
+
+    
 }
