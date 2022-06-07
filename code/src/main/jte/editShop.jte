@@ -101,18 +101,38 @@
                     </div>
                 </li>
             @endfor
-                <li>
+                <li class="list-group-item">
                     <button type="submit" class="btn btn-warning">Combine Rules</button>
                 </li>
             </form>
-            <li>
+            <li class="list-group-item">
+
                 <form class="form" id="addRuleForm" action="/shops/${shop.id}/addRule" method="post">
-                    <select class="form-select" aria-label="Select Rule Type">
+                    <div class="row">
+                    <span class="col-4">
+                    <select id="ruleType" class="form-select" name="ruleType" aria-label="Select Rule Type">
                         <option selected>Select Rule Type</option>
-                        <option value="blackList">Black List</option>
+                        <option value="ProhibitPurchaseHour">Prohibit purchase hour</option>
                         <option value="minimumQuantity">Minimum Quantity</option>
-                        <option value="purchasePolicy">Purchase</option>
+                        <option value="maximusQuantity">Maximum Quantity</option>
                     </select>
+                    </span>
+                    <span class="col-4">
+                    <select id="ruleBase" class="form-select" name="ruleBase" aria-label="Select Rule Type">
+                        <option selected>Select Rule Type</option>
+                        <option value="allProduct">All products in Shop</option>
+                        <option value="category">All products in Category</option>
+                        <option value="product">Single product</option>
+                    </select>
+                    </span>
+                </div>
+                    <div class="row my-3">
+                    <div id="rulesParams" class="visually-hidden col-6"></div>
+                    <div class="visually-hidden col-6">
+                        <label id='productOrCategoryLabel' for="productOrCategory" class="form-label"></label>
+                        <input type="text" class="form-control" name="productOrCategory" id="productOrCategory">
+                    </div>
+                    </div>
                     <button class="btn btn-success" type="submit">Add Rule</button>
                 </form>
             </li>
@@ -225,25 +245,214 @@
             document.getElementById(message.removedUser).classList.add('border', 'border-red');
     }
 
-    function checkBoxLimit() {
-        var checkBoxGroup = document.forms['rulesForm']['rule'];
-        var limit = 2;
-        for (var i = 0; i < checkBoxGroup.length; i++) {
-            checkBoxGroup[i].onclick = function() {
-                var checkedcount = 0;
-                for (var i = 0; i < checkBoxGroup.length; i++) {
-                    checkedcount += (checkBoxGroup[i].checked) ? 1 : 0;
-                }
-                if (checkedcount > limit) {
-                    console.log("You can select maximum of " + limit + " checkboxes.");
-                    alert("You can select maximum of " + limit + " checkboxes.");
-                    this.checked = false;
-                }
-            }
+    // function checkBoxLimit() {
+    //     var checkBoxGroup = document.forms['rulesForm']['rule'];
+    //     var limit = 2;
+    //     for (var i = 0; i < checkBoxGroup.length; i++) {
+    //         checkBoxGroup[i].onclick = function() {
+    //             var checkedcount = 0;
+    //             for (var i = 0; i < checkBoxGroup.length; i++) {
+    //                 checkedcount += (checkBoxGroup[i].checked) ? 1 : 0;
+    //             }
+    //             if (checkedcount > limit) {
+    //                 console.log("You can select maximum of " + limit + " checkboxes.");
+    //                 alert("You can select maximum of " + limit + " checkboxes.");
+    //                 this.checked = false;
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    // checkBoxLimit()
+
+    function addProhibitedRule(){
+        const div = document.createElement('div');
+        div.classList.add('row' , 'mt-3')
+        const fromTimeSelector = document.createElement('select');
+        const fromTimeSpan = document.createElement('span');
+        fromTimeSpan.classList.add('col-4');
+        fromTimeSelector.name = 'fromHour'
+        fromTimeSelector.classList.add('form-select')
+        fromTimeSpan.append(fromTimeSelector)
+        let defaultOption = document.createElement('option');
+        defaultOption.textContent = 'Starting Hour';
+        fromTimeSelector.append(defaultOption);
+        for(let i = 0; i < 24; i ++){
+            const option = document.createElement('option');
+            option.value = i.toString();
+            option.textContent = i.toString();
+            fromTimeSelector.append(option);
+        }
+
+        const toTimeSelector = document.createElement('select');
+        toTimeSelector.name = 'toHour'
+        toTimeSelector.classList.add('form-select')
+        const toTimeSpan = document.createElement('span');
+        toTimeSpan.classList.add('col-4');
+        toTimeSpan.append(toTimeSelector)
+
+        defaultOption = document.createElement('option');
+        defaultOption.textContent = 'Ending Hour';
+        toTimeSelector.append(defaultOption);
+        for(let i = 0; i < 24; i ++){
+            const option = document.createElement('option');
+            option.value = i.toString();
+            option.textContent = i.toString();
+            toTimeSelector.append(option);
+        }
+
+        div.append(fromTimeSpan);
+        div.append(toTimeSpan);
+        let upperDiv = document.querySelector('#rulesParams');
+        upperDiv.append(div)
+        upperDiv.classList.remove('visually-hidden');
+    }
+
+    function addMinimumRule(){
+        let minimum_div = document.querySelector('#rulesParams');
+
+        const upperDiv = document.createElement("div");
+        upperDiv.classList.add("row");
+        minimum_div.append(upperDiv);
+
+        let div = document.createElement("div");
+        div.classList.add("col")
+
+        let minimum_input = document.createElement('input');
+        minimum_input.type = "number";
+        minimum_input.min = '0';
+        minimum_input.max = '5000';
+        minimum_input.step = '1';
+        minimum_input.id = 'minimum';
+        minimum_input.name = "minimum";
+        minimum_input.required = true;
+        minimum_input.classList.add('form-control');
+
+        let minimum_label = document.createElement('label');
+        minimum_label.for = 'minimum';
+        minimum_label.classList.add('form-label');
+        minimum_label.innerText = "Minimum Quantity";
+
+        div.prepend(minimum_input);
+        div.prepend(minimum_label);
+        upperDiv.append(div);
+
+        div = document.createElement("div");
+        div.classList.add("col")
+        const targetProduct = document.createElement("input");
+        targetProduct.name = "targetProduct";
+        targetProduct.type = 'text';
+        targetProduct.id = "targetProduct";
+        targetProduct.inputMode = "numeric";
+        targetProduct.classList.add("form-control");
+
+        const targetLabel = document.createElement("label");
+        targetLabel.for = 'targetProduct';
+        targetLabel.classList.add("form-label");
+        targetLabel.textContent = 'Target Product';
+        div.append(targetLabel);
+        div.append(targetProduct);
+
+        upperDiv.append(div);
+        minimum_div.classList.remove("visually-hidden")
+    }
+
+    function addMaximumRule(){
+        let maximum_div = document.querySelector('#rulesParams');
+        const upperDiv = document.createElement("div");
+        upperDiv.classList.add("row");
+        maximum_div.append(upperDiv);
+
+        let div = document.createElement("div");
+        div.classList.add("col")
+        let maximum_input = document.createElement('input');
+        maximum_input.type = "number";
+        maximum_input.min = '0';
+        maximum_input.max = '5000';
+        maximum_input.step = '1';
+        maximum_input.id = 'maximum';
+        maximum_input.name = "maximum";
+        maximum_input.required = true;
+        maximum_input.classList.add('form-control');
+
+        let maximum_label = document.createElement('label');
+        maximum_label.for = 'maximum';
+        maximum_label.classList.add('form-label');
+        maximum_label.innerText = "Maximum Quantity";
+
+        div.prepend(maximum_input);
+        div.prepend(maximum_label);
+        upperDiv.append(div);
+
+        div = document.createElement("div");
+        div.classList.add("col")
+        const targetProduct = document.createElement("input");
+        targetProduct.name = "targetProduct";
+        targetProduct.type = 'text';
+        targetProduct.id = "targetProduct";
+        targetProduct.inputMode = "numeric";
+        targetProduct.classList.add("form-control");
+
+        const targetLabel = document.createElement("label");
+        targetLabel.for = 'targetProduct';
+        targetLabel.classList.add("form-label");
+        targetLabel.textContent = 'Target Product';
+        div.append(targetLabel);
+        div.append(targetProduct);
+
+        upperDiv.append(div);
+        maximum_div.classList.remove("visually-hidden")
+    }
+
+    function clearRuleParam(){
+        const div = document.querySelector('#rulesParams');
+        div.classList.add('visually-hidden');
+        while(div.lastChild){
+            div.removeChild(div.lastChild);
         }
     }
 
-    checkBoxLimit()
+    function clearProductOrCategory(){
+        let input = document.querySelector('#productOrCategory');
+        input.value = '';
+        input.parentElement.classList.add('visually-hidden');
+    }
+
+    function unclearProduct(){
+        let input = document.querySelector('#productOrCategory');
+        let label = document.querySelector('#productOrCategoryLabel');
+        input.type = 'text'
+        input.inputMode = 'numeric'
+        label.textContent = "Product's serial number";
+        input.value = '';
+        input.parentElement.classList.remove('visually-hidden');
+    }
+
+    function unclearCategory(){
+        let input = document.querySelector('#productOrCategory');
+        let label = document.querySelector('#productOrCategoryLabel');
+        label.textContent = "Category";
+        input.type = 'text'
+        input.value = '';
+        input.parentElement.classList.remove('visually-hidden');
+    }
+
+    document.querySelector('#ruleType').addEventListener('change', (event) =>{
+        const value = event.target.value;
+        clearRuleParam()
+        value === 'ProhibitPurchaseHour' ? addProhibitedRule() :
+            value === 'minimumQuantity' ? addMinimumRule() :
+                value === 'maximusQuantity' ? addMaximumRule() : clearRuleParam()
+    })
+
+    document.querySelector('#ruleBase').onchange = function (event){
+        const value = event.target.value;
+
+        value === 'allProduct' ? clearProductOrCategory():
+        value === 'category' ? unclearCategory() :
+        value === 'product' ? unclearProduct() :
+        clearProductOrCategory();
+    }
 
 </script>
 

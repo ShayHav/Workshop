@@ -5,6 +5,8 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
+import domain.shop.predicate.ToBuildDiscountPredicate;
+import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
 import domain.user.filter.*;
 
@@ -39,7 +41,7 @@ public class ShopController {
         Shop newShop;
         synchronized(this) {
             shopCounter++;
-            newShop = new Shop(name, description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+            newShop = new Shop(name, description, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
         }
         shopFounder.addRole(shopCounter,Role.ShopFounder);
@@ -323,5 +325,92 @@ public class ShopController {
 
     public boolean isShopClose(int i) {
         return !shopList.get(i).isOpen();
+    }
+
+
+
+    public int addSimpleProductDiscount(int shopID, int prodID, double percentage) throws InvalidParamException, ShopNotFoundException {
+        Shop shop;
+        shop = getShop(shopID);
+        return shop.addSimpleProductDiscount(prodID, percentage);
+    }
+
+    public int addSimpleCategoryDiscount(int shopID, String category, double percentage) throws InvalidParamException, ShopNotFoundException {
+        Shop shop;
+        shop = getShop(shopID);
+        return shop.addSimpleCategoryDiscount(category, percentage);
+    }
+
+    public int addSimpleShopAllProductsDiscount(int shopID, double percentage) throws InvalidParamException, ShopNotFoundException {
+        Shop shop;
+        shop = getShop(shopID);
+        return shop.addSimpleShopAllProductsDiscount(percentage);
+    }
+
+    public int addConditionalProductDiscount(int shopID, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException {
+        Shop shop = getShop(shopID);
+        return shop.addConditionalProductDiscount(prodID, percentage, toBuildPredicatesFrom);
+    }
+
+    public int addConditionalCategoryDiscount(int shopID, String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException {
+        Shop shop = getShop(shopID);
+        return shop.addConditionalCategoryDiscount(category, percentage, toBuildPredicatesFrom);
+    }
+
+    public int addConditionalShopAllProductsDiscount(int shopID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException {
+        Shop shop = getShop(shopID);
+        return shop.addConditionalShopAllProductsDiscount(percentage, toBuildPredicatesFrom);
+    }
+
+    public int addProductPurchasePolicy(int shopID, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
+        Shop shop = getShop(shopID);
+        return shop.addProductPurchasePolicy(prodID, toBuildPredicatesFrom);
+    }
+
+    public int addCategoryPurchasePolicy(int shopID, String category, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
+        Shop shop = getShop(shopID);
+        return shop.addCategoryPurchasePolicy(category, toBuildPredicatesFrom);
+    }
+
+
+    public int addShopAllProductsPurchasePolicy(int shopID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
+        Shop shop = getShop(shopID);
+        return shop.addShopAllProductsPurchasePolicy(toBuildPredicatesFrom);
+    }
+
+
+    public int addOrDiscount(int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        Shop shop = getShop(shopID);
+        return shop.addOrDiscount(dis1ID, dis2ID);
+    }
+
+    public int addAndDiscount(int dis1ID, int dis2ID, int shopID) throws ShopNotFoundException, DiscountNotFoundException, CriticalInvariantException {
+        Shop shop = getShop(shopID);
+        return shop.addAndDiscount(dis1ID, dis2ID);
+    }
+
+    public int addXorDiscount(int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        Shop shop = getShop(shopID);
+        return shop.addXorDiscount(dis1ID, dis2ID);
+    }
+
+    public int addOrPurchaseRule(int pr1ID, int pr2ID, int shopID) throws PurchaseRuleNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        Shop shop = getShop(shopID);
+        return shop.addOrPurchaseRule(pr1ID, pr2ID);
+    }
+
+    public int addAndPurchaseRule(int pr1ID, int pr2ID, int shopID) throws PurchaseRuleNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        Shop shop = getShop(shopID);
+        return shop.addAndPurchaseRule(pr1ID, pr2ID);
+    }
+
+    public boolean removeDiscount(int discountID, int shopID) throws ShopNotFoundException {
+        Shop shop = getShop(shopID);
+        return shop.removeDiscount(discountID);
+    }
+
+    public boolean removePurchaseRule(int purchaseRuleID, int shopID) throws ShopNotFoundException {
+        Shop shop = getShop(shopID);
+        return shop.removePurchaseRule(purchaseRuleID);
     }
 }
