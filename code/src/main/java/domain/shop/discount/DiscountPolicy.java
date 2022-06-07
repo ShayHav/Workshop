@@ -394,7 +394,7 @@ public class DiscountPolicy {
         return newDiscount.getID();
     }
 
-    public List<Discount> getAllDistinctPurchaseRules(){
+    public List<Discount> getAllDistinctDiscounts(){
         List<Discount> prodPR = new ArrayList<>();
         for(List<Discount> valueSet : product_discounts.values())
             prodPR.addAll(valueSet);
