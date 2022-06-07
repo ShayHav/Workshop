@@ -48,7 +48,7 @@ public interface Bridge {
 
     ResponseT<Boolean> Payment(TransactionInfo ti);
 
-    Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password); //done
+    Response StartMarket(PaymentService payment, SupplyService supply); //done
 
     Result<Boolean, String> AddSupplyService(String path);
 

@@ -38,7 +38,7 @@ class ShoppingBasketTest {
 
     @Test
     void addProductToBasket() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, ShopNotFoundException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
         marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
@@ -68,7 +68,7 @@ class ShoppingBasketTest {
 
     @Test
     void calculateTotalAmount() throws InvalidSequenceOperationsExc, IncorrectIdentification, ShopNotFoundException, BlankDataExc, InvalidAuthorizationException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
         marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
@@ -83,7 +83,7 @@ class ShoppingBasketTest {
 
     @Test
     void updateAmount() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
         marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
@@ -106,7 +106,7 @@ class ShoppingBasketTest {
 
     @Test
     void removeProduct() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
         marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
@@ -121,7 +121,7 @@ class ShoppingBasketTest {
 
     @Test
     void showBasket() throws ProductNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc, ShopNotFoundException {
-        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp(),"admin","admin");
+        marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
         marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);

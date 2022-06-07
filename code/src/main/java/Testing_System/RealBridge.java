@@ -73,8 +73,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
-        return sv.StartMarket(payment, supply, userID, password);
+    public Response StartMarket(PaymentService payment, SupplyService supply) {
+        return sv.StartMarket(payment, supply);
     }
 
     @Override
