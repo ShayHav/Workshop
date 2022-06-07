@@ -52,4 +52,8 @@ public class OrDiscount implements Discount {
         return discount1.relevant(product) || discount2.relevant(product);
     }
 
+    public String toString(){
+        return String.format("(%s and\\or %s)", discount1.toString(), discount2.toString());
+    }
+
 }

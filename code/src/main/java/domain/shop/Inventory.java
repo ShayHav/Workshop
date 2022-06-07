@@ -41,6 +41,22 @@ public class Inventory {
         throw new ProductNotFoundException(String.format("product: %d does not exist", prodID));
     }
 
+    public String getName(int productId) throws ProductNotFoundException {
+        if(!keyToProduct.containsKey(productId)){
+            errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d",productId));
+            throw new ProductNotFoundException("this product does not exist");
+        }
+        return keyToProduct.get(productId).getName();
+    }
+
+    public String getCategory(int productId) throws ProductNotFoundException {
+        if(!keyToProduct.containsKey(productId)){
+            errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d",productId));
+            throw new ProductNotFoundException("this product does not exist");
+        }
+        return keyToProduct.get(productId).getCategory();
+    }
+
     public int getQuantity(int product)  throws ProductNotFoundException{
         if(!keyToProduct.containsKey(product)) {
             errorLogger.logMsg(Level.WARNING, String.format("No product with the id %d in the store", product));

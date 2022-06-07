@@ -5,6 +5,7 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.CriticalInvariantException;
 import domain.Exceptions.DiscountNotFoundException;
 import domain.Exceptions.InvalidParamException;
+import domain.shop.Inventory;
 import domain.shop.ProductImp;
 
 import java.util.*;
@@ -123,12 +124,11 @@ public class DiscountPolicy {
         }
 
         return basket;
-
     }
 
 
 
-    public int addSimpleProductDiscount(int prodID, double percentage) throws InvalidParamException {
+    public int addSimpleProductDiscount(int prodID, String productName, double percentage) throws InvalidParamException {
         DiscountCalculatorType discountCalc = new PercentageDiscount(percentage);
         List<Discount> prod_disc;
         if(product_discounts.containsKey(prodID))
@@ -139,7 +139,8 @@ public class DiscountPolicy {
         }
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %d ", prodID));
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == prodID;
-        Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo);
+        String discountStringed = String.format("discount of %d% on product %s can be applied.", percentage, productName);
+        Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         prod_disc.add(newDiscount);
 
         return newDiscount.getID();
@@ -158,7 +159,8 @@ public class DiscountPolicy {
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
 
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %s ", category));
-        Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo);
+        String discountStringed = String.format("discount of %d% on Category %s can be applied.", percentage, category);
+        Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         category_discount.add(newDiscount);
 
         return newDiscount.getID();
@@ -168,13 +170,14 @@ public class DiscountPolicy {
         DiscountCalculatorType discountCalc = new PercentageDiscount(percentage);
         eventLogger.logMsg(Level.INFO, "added the discount to shop.");
         Predicate<ProductImp> relevantTo = (productImp)-> true;
-        Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo);
+        String discountStringed = String.format("discount of %d% on all of shop's products can be applied", percentage);
+        Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         shopAllProducts_discounts.add(newDiscount);
         return newDiscount.getID();
     }
 
 
-    public int addConditionalProductDiscount(int prodID, double percentage, Predicate<Basket> pred) throws InvalidParamException {
+    public int addConditionalProductDiscount(int prodID, double percentage, Predicate<Basket> pred, String productName) throws InvalidParamException {
         DiscountCalculatorType discountCalc = new PercentageDiscount(percentage);
         List<Discount> prod_disc;
         if(product_discounts.containsKey(prodID))
@@ -184,9 +187,12 @@ public class DiscountPolicy {
             product_discounts.put(prodID, prod_disc);
         }
 
+
+
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == prodID;
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %d ", prodID));
-        Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo);
+        String discountStringed = String.format("discount of %d% on product %s can be applied %s", percentage, productName, pred.toString());
+        Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         prod_disc.add(newDiscount);
 
         return newDiscount.getID();
@@ -208,7 +214,8 @@ public class DiscountPolicy {
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %s ", category));
-        Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo);
+        String discountStringed = String.format("discount of %d% on category %s can be applied %s", percentage, category, pred.toString());
+        Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         category_discount.add(newDiscount);
 
         return newDiscount.getID();
@@ -218,7 +225,8 @@ public class DiscountPolicy {
         DiscountCalculatorType discountCalc = new PercentageDiscount(percentage);
         eventLogger.logMsg(Level.INFO, "added the discount to shop.");
         Predicate<ProductImp> relevantTo = (productImp)-> true;
-        Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo);
+        String discountStringed = String.format("discount of %d% on any of the stores products can be applied %s", percentage, pred.toString());
+        Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         shopAllProducts_discounts.add(newDiscount);
 
         return newDiscount.getID();

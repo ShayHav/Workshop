@@ -41,7 +41,7 @@ public class ShopController {
         Shop newShop;
         synchronized(this) {
             shopCounter++;
-            newShop = new Shop(name, description, discountPolicy, purchasePolicy, shopFounder, shopCounter);
+            newShop = new Shop(name, description, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
         }
         shopFounder.addRole(shopCounter,Role.ShopFounder);
@@ -329,7 +329,7 @@ public class ShopController {
 
 
 
-    public int addSimpleProductDiscount(int shopID, int prodID, double percentage) throws InvalidParamException, ShopNotFoundException {
+    public int addSimpleProductDiscount(int shopID, int prodID, double percentage) throws InvalidParamException, ShopNotFoundException, ProductNotFoundException {
         Shop shop;
         shop = getShop(shopID);
         return shop.addSimpleProductDiscount(prodID, percentage);
@@ -347,7 +347,7 @@ public class ShopController {
         return shop.addSimpleShopAllProductsDiscount(percentage);
     }
 
-    public int addConditionalProductDiscount(int shopID, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException {
+    public int addConditionalProductDiscount(int shopID, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException, ProductNotFoundException {
         Shop shop = getShop(shopID);
         return shop.addConditionalProductDiscount(prodID, percentage, toBuildPredicatesFrom);
     }

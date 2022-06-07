@@ -56,6 +56,24 @@ public class Shop {
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
     }
 
+
+    public Shop(String name,String description, User shopFounder, int shopID) {
+        this.discountPolicy = new DiscountPolicy();
+        this.purchasePolicy = new PurchasePolicy();
+        inventory = new Inventory();
+        orders = new OrderHistory();
+        ShopOwners = new HashMap<>();
+        ShopManagers = new HashMap<>();
+        rank = -1;
+        this.name = name;
+        isOpen = true;
+        this.description = description;
+        this.ShopFounder = shopFounder;
+        this.shopID = shopID;
+        shopManagersPermissionsController = new ShopManagersPermissionsController();
+        shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -557,8 +575,9 @@ public class Shop {
 
 
 
-    public int addSimpleProductDiscount(int prodID, double percentage) throws InvalidParamException {
-        return discountPolicy.addSimpleProductDiscount(prodID, percentage);
+    public int addSimpleProductDiscount(int prodID, double percentage) throws InvalidParamException, ProductNotFoundException {
+        String productName = inventory.getName(prodID);
+        return discountPolicy.addSimpleProductDiscount(prodID, productName, percentage);
     }
 
     public int addSimpleCategoryDiscount(String category, double percentage) throws InvalidParamException {
@@ -574,7 +593,7 @@ public class Shop {
         if(toBuildPredicatesFrom.getPredType().equals(DiscountPredType.price))
             return makePriceEligiblePred(toBuildPredicatesFrom.getPrice());
         else if(toBuildPredicatesFrom.getPredType().equals(DiscountPredType.product))
-            return makeProductEligiblePred(toBuildPredicatesFrom.getProductID(), toBuildPredicatesFrom.getAmount());
+            return makeProductEligiblePred(toBuildPredicatesFrom.getProductID(), toBuildPredicatesFrom.getProductName(), toBuildPredicatesFrom.getAmount());
         else
             throw new CriticalInvariantException("should never happen.");
     }
@@ -585,9 +604,9 @@ public class Shop {
         if(toBuildPredicatesFrom.getPredType().equals(PRPredType.TimeConstraint))
             return makeTimePred(toBuildPredicatesFrom.getHoursFrom(), toBuildPredicatesFrom.getHoursTo());
         else if(toBuildPredicatesFrom.getPredType().equals(PRPredType.MaximumAmount))
-            return makeMaximumPred(toBuildPredicatesFrom.getProdID(), toBuildPredicatesFrom.getAmount());
+            return makeMaximumPred(toBuildPredicatesFrom.getProdID(), toBuildPredicatesFrom.getProductName(),toBuildPredicatesFrom.getAmount());
         else if(toBuildPredicatesFrom.getPredType().equals(PRPredType.MinimumAmount))
-            return makeMinimumPred(toBuildPredicatesFrom.getProdID(), toBuildPredicatesFrom.getAmount());
+            return makeMinimumPred(toBuildPredicatesFrom.getProdID(), toBuildPredicatesFrom.getProductName(), toBuildPredicatesFrom.getAmount());
         else
             throw new CriticalInvariantException("should never happen.");
     }
@@ -597,20 +616,21 @@ public class Shop {
         return PredicateManager.createTimePredicate(from, to);
     }
 
-    public Predicate<Basket> makeMinimumPred(int productID, int amount){
-        return PredicateManager.createMinimumProductsPredicate(productID, amount);
+    public Predicate<Basket> makeMinimumPred(int productID, String productName,int amount){
+        return PredicateManager.createMinimumProductsPredicate(productID, productName,amount);
     }
 
 
-    public Predicate<Basket> makeMaximumPred(int productID, int amount){
-        return PredicateManager.createMaximumProductsPredicate(productID, amount);
+    public Predicate<Basket> makeMaximumPred(int productID, String productName, int amount){
+        return PredicateManager.createMaximumProductsPredicate(productID, productName, amount);
     }
 
 
 
-    public int addConditionalProductDiscount(int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
+    public int addConditionalProductDiscount(int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException, ProductNotFoundException {
         Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
-        return discountPolicy.addConditionalProductDiscount(prodID, percentage, pred);
+        String productName = inventory.getName(prodID);
+        return discountPolicy.addConditionalProductDiscount(prodID, percentage, pred, productName);
     }
 
     public int addConditionalCategoryDiscount(String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
@@ -683,8 +703,8 @@ public class Shop {
         return PredicateManager.createPricePredicate(percentage);
     }
 
-    public Predicate<Basket> makeProductEligiblePred(int productID, int amount){
-        return PredicateManager.createMinimumProductsPredicate(productID, amount);
+    public Predicate<Basket> makeProductEligiblePred(int productID, String productName,int amount){
+        return PredicateManager.createMinimumProductsPredicate(productID, productName, amount);
     }
 
     public int addOrDiscount(int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
