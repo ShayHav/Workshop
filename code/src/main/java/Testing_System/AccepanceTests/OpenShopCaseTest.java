@@ -138,7 +138,7 @@ public class OpenShopCaseTest extends Tester {
     @Test
     public void BadInputsTest()
     {
-        assertFalse(!OpenShop(shopID_1-1,user_1).isErrorOccurred());
+        assertFalse(!OpenShop(5,user_1).isErrorOccurred());
         assertFalse(!OpenShop(-1,user_1).isErrorOccurred());
         assertFalse(!OpenShop(shopID_1,null).isErrorOccurred());
 

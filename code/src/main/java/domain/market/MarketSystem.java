@@ -353,6 +353,8 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
+        if(!userController.userExist(username))
+           throw new InvalidSequenceOperationsExc("user not registered in");
         if (userController.isLogin(username)) {
             ShopController.getInstance().openShop(shopId, username);
         } else {
@@ -393,6 +395,8 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
+        if(!userController.userExist(username))
+            throw new InvalidSequenceOperationsExc("user not registered in");
         if (userController.isLogin(username))
             return ShopController.getInstance().AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, username);
         else {

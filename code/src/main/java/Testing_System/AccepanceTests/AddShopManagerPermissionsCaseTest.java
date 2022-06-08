@@ -199,7 +199,6 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         assertFalse(!AddShopMangerPermissions(shopID_1,null, validUsers[2],user_1).isErrorOccurred());
         assertFalse(!AddShopMangerPermissions(shopID_1,ls, null,user_1).isErrorOccurred());
         assertFalse(!AddShopMangerPermissions(shopID_1,ls_2, validUsers[2],null).isErrorOccurred());
-
     }
 
 

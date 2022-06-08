@@ -14,6 +14,7 @@ import domain.shop.predicate.*;
 import domain.user.*;
 import domain.user.filter.*;
 
+import java.security.Provider;
 import java.util.*;
 
 import java.util.function.Predicate;
@@ -394,7 +395,7 @@ public class Shop {
     }
 
     public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
-        if(shopManagersPermissionsController.canOpenShop(userID)) {
+        if(ShopFounder.getUserName().equals(userID) || ShopOwners.containsKey(userID) || shopManagersPermissionsController.canOpenShop(userID)) {
             if (!isOpen) {
                 isOpen = true;
                 User opener = ControllersBridge.getInstance().getUser(userID);
