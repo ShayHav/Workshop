@@ -14,6 +14,9 @@ import domain.shop.predicate.*;
 import domain.user.*;
 import domain.user.filter.*;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.security.Provider;
 import java.util.*;
 
@@ -22,8 +25,10 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Entity
 public class Shop {
     private String name;
+    @Id
     private final int shopID;
     private int rank;
     private final User ShopFounder;
@@ -31,6 +36,7 @@ public class Shop {
     private Map<String,User> ShopOwners;
     private Map<String,User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
+    @Embedded
     private final Inventory inventory;
     private DiscountPolicy discountPolicy;
     private PurchasePolicy purchasePolicy;
