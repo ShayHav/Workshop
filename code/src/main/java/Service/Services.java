@@ -190,7 +190,6 @@ public class Services {
     public ResponseT<Shop> CreateShop(String description ,String username, String shopName) {
         try {
             Shop output = marketSystem.createShop(description, shopName, null, null, username);
-            ;
             return new ResponseT<>(output);
         } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc e) {
             return new ResponseT<>(e.getLocalizedMessage());
@@ -886,7 +885,7 @@ public class Services {
         return new ResponseT<>(discountID);
     }
 
-    private ResponseT<Integer> addShopAllProductsDiscount(int shopID, double percentage){
+    public ResponseT<Integer> addShopAllProductsDiscount(int shopID, double percentage){
         int discountID;
         try {
             discountID = marketSystem.addShopAllProductsDiscount(shopID, percentage);

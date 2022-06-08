@@ -732,4 +732,12 @@ public class Shop {
         return discountPolicy.removeDiscount(discountID);
     }
     public boolean removePurchaseRule(int purchaseRuleID){ return purchasePolicy.removePurchaseRule(purchaseRuleID); }
+
+    public PurchasePolicy getPurchasePolicy() {
+        return purchasePolicy;
+    }
+
+    public DiscountPolicy getDiscountPolicy() {
+        return discountPolicy;
+    }
 }

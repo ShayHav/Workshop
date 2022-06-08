@@ -117,7 +117,7 @@ public class MarketSystem {
             return false;
         }
         if(mod.equals("production")) {
-            return externalConnector.connectToSupplyService(supply) && externalConnector.connectToPaymentService(payment);
+            return externalConnector.connectToSupplyService(new SupplyServiceImp()) && externalConnector.connectToPaymentService(new PaymentServiceImp());
         }
         //TODO figure out what to do if we are at release
         return true;
