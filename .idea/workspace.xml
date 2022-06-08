@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/discount/DiscountPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/discount/DiscountPolicy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/jte/index.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/index.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/notifications/NotificationManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/notifications/NotificationManagerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +61,7 @@
       <recent name="domain" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.NotificationManagerTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
       <module name="workshop" />
@@ -76,6 +72,53 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationManagerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.notifications.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.notifications" />
+      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationManagerTest.notifyAdmin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.notifications.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.notifications" />
+      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
+      <option name="METHOD_NAME" value="notifyAdmin" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationManagerTest.removeFromObserversList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.notifications.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.notifications" />
+      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
+      <option name="METHOD_NAME" value="removeFromObserversList" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -98,14 +141,17 @@
     <list>
       <item itemvalue="Application.Main" />
       <item itemvalue="JUnit.ShoppingBasketTest" />
+      <item itemvalue="JUnit.NotificationManagerTest" />
+      <item itemvalue="JUnit.NotificationManagerTest.notifyAdmin" />
+      <item itemvalue="JUnit.NotificationManagerTest.removeFromObserversList" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.NotificationManagerTest" />
+        <item itemvalue="JUnit.NotificationManagerTest.removeFromObserversList" />
+        <item itemvalue="JUnit.NotificationManagerTest.notifyAdmin" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.ShoppingBasketTest" />
-        <item itemvalue="Application.Main" />
-        <item itemvalue="JUnit.ShoppingBasketTest" />
-        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -132,6 +178,7 @@
       <workItem from="1654000947394" duration="308000" />
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
+      <workItem from="1654694608746" duration="1662000" />
     </task>
     <task id="LOCAL‎00011" summary="changed product to hold it's amount in ceratin store">
       <created>1652709279725</created>
@@ -491,11 +538,6 @@
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
           <line>153</line>
           <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>423</line>
-          <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
