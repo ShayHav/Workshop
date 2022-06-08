@@ -500,7 +500,7 @@ public class Services {
             String s = marketSystem.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
             if (s != null)
                 return new Response(s);
-            return null;
+            return new Response(new Exception("null").getLocalizedMessage());
         } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
             return new Response(e.getMessage());
         }
@@ -520,7 +520,7 @@ public class Services {
             if (s != null)
                 return new Response(s);
             return null;
-        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException incorrectIdentification) {
+        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException | InvalidSequenceOperationsExc incorrectIdentification) {
             return new Response(incorrectIdentification.getLocalizedMessage());
         }
     }

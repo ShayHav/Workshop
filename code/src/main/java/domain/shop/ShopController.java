@@ -191,19 +191,19 @@ public class ShopController {
             return null;
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userName) {
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userName) throws InvalidSequenceOperationsExc {
         Shop s;
         try {
             s = getShop(key);
         } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
+            throw new InvalidSequenceOperationsExc("this shop does not exist, thus cannot be closed");
         }
         if (s.addPermissions(shopManagersPermissionsList, tragetUser, userName)) {
             eventLogger.logMsg(Level.INFO, "AddShopMangerPermissions succeeded");
             return "ShopManagerPermissionsAdd";
         } else
-            return null;
+            return "";
     }
     public String AddShopMangerPermissions(int key, ShopManagersPermissions shopManagersPermissionsList, String tragetUser, String userName) {
         Shop s;

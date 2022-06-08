@@ -218,6 +218,11 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: name");
         if (foundId == null)
             throw new BlankDataExc("parameter is null: foundId");
+        if(!userController.userExist(foundId))
+            throw new InvalidSequenceOperationsExc("user not registered in");
+        if (!userController.isLogin(foundId)) {
+            throw new InvalidSequenceOperationsExc("user not logged in");
+        }
         User shopFounder = getUser(foundId);
         Shop s = ShopController.getInstance().createShop(description, name, discountPolicy, purchasePolicy, shopFounder);
         //shopFounder.addRole(s.getShopID(), Role.ShopFounder);
@@ -362,7 +367,7 @@ public class MarketSystem {
         }
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidAuthorizationException {
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidAuthorizationException,InvalidSequenceOperationsExc {
         if (shopManagersPermissionsList == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: shopManagersPermissionsList");
             throw new BlankDataExc("parameter is null: shopManagersPermissionsList");
@@ -375,6 +380,8 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
+        if(!userController.userExist(username))
+            throw new InvalidSequenceOperationsExc("user not registered in");
         if (userController.isLogin(username))
             return ShopController.getInstance().RemoveShopManagerPermissions(key, shopManagersPermissionsList, targetUser, username);
         else {
@@ -590,6 +597,8 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: pw");
         if (systemManager == null)
             throw new BlankDataExc("parameter is null: systemManager");
+        if(userController.userExist(username))
+            throw new InvalidSequenceOperationsExc("user not registered in");
         if (UserController.getInstance().getUser(systemManager).isSystemManager()) {
             if (UserController.getInstance().createSystemManager(username, pw)) {
                 User u = UserController.getInstance().getUser(username);
