@@ -41,7 +41,7 @@ public class ShopController {
         Shop newShop;
         synchronized(this) {
             shopCounter++;
-            newShop = new Shop(name, description, shopFounder, shopCounter);
+            newShop = new Shop(name, description,discountPolicy,purchasePolicy, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
         }
         shopFounder.addRole(shopCounter,Role.ShopFounder);
@@ -168,7 +168,7 @@ public class ShopController {
         try {
             s = getShop(shopID);
         } catch (ShopNotFoundException snfe) {
-            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist");
             return -1;
         }
         s.removeListing(productId, username);
@@ -191,19 +191,19 @@ public class ShopController {
             return null;
     }
 
-    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userName) {
+    public String AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String userName) throws InvalidSequenceOperationsExc {
         Shop s;
         try {
             s = getShop(key);
         } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
+            throw new InvalidSequenceOperationsExc("this shop does not exist, thus cannot be closed");
         }
         if (s.addPermissions(shopManagersPermissionsList, tragetUser, userName)) {
             eventLogger.logMsg(Level.INFO, "AddShopMangerPermissions succeeded");
             return "ShopManagerPermissionsAdd";
         } else
-            return null;
+            return "";
     }
     public String AddShopMangerPermissions(int key, ShopManagersPermissions shopManagersPermissionsList, String tragetUser, String userName) {
         Shop s;
@@ -412,5 +412,29 @@ public class ShopController {
     public boolean removePurchaseRule(int purchaseRuleID, int shopID) throws ShopNotFoundException {
         Shop shop = getShop(shopID);
         return shop.removePurchaseRule(purchaseRuleID);
+    }
+
+    public void deleteShopTest(Integer key) {
+        shopList.remove(key);
+    }
+
+    public void RemoveShopOwnerTest(Integer key, String useID) {
+        try {
+            Shop shop = getShop(key);
+            shop.RemoveShopOwnerTest(useID);
+        }
+        catch (ShopNotFoundException shopNotFoundException){
+
+        }
+    }
+
+    public void RemoveShopManagerTest(Integer key, String useID) {
+        try {
+            Shop shop = getShop(key);
+            shop.RemoveShopManagerTest(useID);
+        }
+        catch (ShopNotFoundException shopNotFoundException){
+
+        }
     }
 }

@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.market.*;
 import domain.shop.*;
@@ -62,7 +64,7 @@ public class PaymentCaseTest extends Tester {
 
 
     @BeforeAll
-    public void SetUp() {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUserNames = ug.GetValidUsers();
         pws = ug.GetPW();
@@ -96,8 +98,9 @@ public class PaymentCaseTest extends Tester {
         ug.InitTest();
         for(int i =0; i< ug.getNumOfUser(); i++)
         {
-            Register(validUserNames[i],pws[i]);
-            Login(validUserNames[i],pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUserNames[i],pws[i]);
+            Login(g,validUserNames[i],pws[i]);
         }
         guest_id = EnterMarket().getValue().getUserName();
         shopID = CreateShop("Test",validUserNames[0],shopname).getValue().getShopID();

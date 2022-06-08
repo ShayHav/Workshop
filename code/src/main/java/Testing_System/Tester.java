@@ -40,13 +40,13 @@ public class Tester {
 
     //Guest-Visitor General
     //done
-    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
-        return br.Login(username, pw,uo);
+    public ResponseT<User> Login(String guest, String username, String pw) {
+        return br.Login(guest, username, pw);
     }
 
     //done
-    public Response Register(String username, String pw) {
-        return br.Register(username, pw);
+    public Response Register(String guest, String username, String pw) {
+        return br.Register(guest, username, pw);
     }
 
     //done - not needed
@@ -143,7 +143,7 @@ public class Tester {
         return br.AppointNewShopManager(key, targetUser, userId);
     }
 
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
     {
         return br.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
@@ -219,7 +219,7 @@ public class Tester {
         return br.RemovePaymentService(path);
     }
 
-    public Result<Boolean, String> DeleteUserTest(String[] usernames)
+    public Response DeleteUserTest(String[] usernames)
     {
         return br.DeleteUserTest(usernames);
     }

@@ -22,12 +22,12 @@ import java.util.Map;
 public class ProxyBridge implements  Bridge {
 
     @Override
-    public ResponseT<User> Login(String username, String pw, UserObserver uo) {
+    public ResponseT<User> Login(String guest, String username, String pw) {
         return null;
     }
 
     @Override
-    public Response Register(String username, String pw) {
+    public Response Register(String guest, String username, String pw) {
         return null;
     }
 
@@ -172,7 +172,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
         return null;
     }
 
@@ -202,7 +202,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
+    public Response DeleteUserTest(String[] usernames) {
         return null;
     }
 

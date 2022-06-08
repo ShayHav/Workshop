@@ -2,13 +2,12 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.user.filter.SearchUserFilter;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,10 +25,10 @@ public class DismissalOwnerByOwnerCaseTest extends Tester {
     private String user_1;
     private String pw_1;
     private int shopID_1;
+    private String guest;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         shopID_1 = -1;
         ug = new UserGenerator();
         validUserNames = ug.GetValidUsers();
@@ -37,20 +36,22 @@ public class DismissalOwnerByOwnerCaseTest extends Tester {
         ug.InitTest();
         user_1 = validUserNames[0];
         pw_1 = pws[0];
-        Register(user_1, pw_1);
-        Login(user_1, pw_1,null);
+        guest = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guest,user_1, pw_1);
+        Login(guest, user_1, pw_1);
         ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
 
         for (int i = 1; i < ug.getNumOfUser(); i++) {
-            Register(validUserNames[i], pws[i]);
-            Login(validUserNames[i], pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUserNames[i], pws[i]);
+            Login(g,validUserNames[i], pws[i]);
             assertTrue(!AppointNewShopOwner(shopID_1, validUserNames[i], user_1).isErrorOccurred());
         }
     }
 
-    @AfterEach
+    @AfterAll
     public void CleanUp()
     {
         DeleteUserTest(validUserNames);
