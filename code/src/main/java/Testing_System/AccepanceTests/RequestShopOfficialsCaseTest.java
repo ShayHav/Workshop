@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.user.Role;
@@ -27,31 +29,37 @@ public class RequestShopOfficialsCaseTest extends Tester {
     private String user_1;
     private String pw_1;
     private int shopID_1;
+    private String guest;
+    private String[] guestArr;
 
 
     @BeforeAll
-    public void SetUp() {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
-        ug.InitTest();
         validUsers = ug.GetValidUsers();
         pws = ug.GetPW();
         ug.InitTest();
         user_1 = validUsers[0];
         pw_1 = pws[0];
-        Register(user_1, pw_1);
-        Login(user_1, pw_1,null);
+        guest = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guest, user_1, pw_1);
+        Login(guest,user_1, pw_1);
         ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
-        for(int i =10; i<ug.getNumOfUser(); i++) {
-            Register(validUsers[i], pws[i]);
+        guestArr = new String[ug.getNumOfUser()];
+        guestArr[0] = guest;
+        for(int i =1; i<ug.getNumOfUser(); i++) {
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            guestArr[i] = g;
+            Register(g,validUsers[i], pws[i]);
         }
         AppointNewShopOwner(shopID_1, validUsers[1], user_1);
         AppointNewShopManager(shopID_1, validUsers[2], user_1);
         AppointNewShopManager(shopID_1, validUsers[3], user_1);
-        Login(validUsers[1],pws[1],null);
-        Login(validUsers[2],pws[2],null);
-        Login(validUsers[3],pws[3],null);
+        Login(guestArr[1],validUsers[1],pws[1]);
+        Login(guestArr[2],validUsers[2],pws[2]);
+        Login(guestArr[3],validUsers[3],pws[3]);
     }
 
     @AfterAll

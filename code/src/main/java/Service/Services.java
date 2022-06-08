@@ -450,7 +450,12 @@ public class Services {
      * @return Response object
      */
     public ResponseT<Product> ChangeProduct(String username, Product p, int shopID) {
-        return marketSystem.ChangeProduct(username,p,shopID);
+        try {
+            return marketSystem.ChangeProduct(username, p, shopID);
+        }
+        catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc){
+            return new ResponseT<>(invalidSequenceOperationsExc.getMessage());
+        }
     }
 
     /**
@@ -500,7 +505,7 @@ public class Services {
             String s = marketSystem.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
             if (s != null)
                 return new Response(s);
-            return null;
+            return new Response(new Exception("null").getLocalizedMessage());
         } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
             return new Response(e.getMessage());
         }
@@ -520,7 +525,7 @@ public class Services {
             if (s != null)
                 return new Response(s);
             return null;
-        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException incorrectIdentification) {
+        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException | InvalidSequenceOperationsExc incorrectIdentification) {
             return new Response(incorrectIdentification.getLocalizedMessage());
         }
     }
@@ -592,7 +597,7 @@ public class Services {
         try {
             marketSystem.deleteUserTest(usernames);
             return new Response();
-        } catch (InvalidSequenceOperationsExc | BlankDataExc | IncorrectIdentification e) {
+        } catch (InvalidSequenceOperationsExc | BlankDataExc | IncorrectIdentification | ShopNotFoundException e) {
             return new Response(e.getMessage());
         }
 
@@ -620,12 +625,12 @@ public class Services {
         int removedProductID;
         try {
             removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopName);
-        }catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc iae){
+        }catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc iae){
             return new Response(iae.getLocalizedMessage());
         }
         if(removedProductID != -1)
             return new Response();
-        return null;
+        return new Response(new InvalidSequenceOperationsExc(String.format("Product not exist: %d",productId)).getLocalizedMessage());
     }
 
     /**

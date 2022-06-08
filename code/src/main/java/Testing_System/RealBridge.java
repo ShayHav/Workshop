@@ -28,13 +28,13 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
-        return sv.Login(username, pw,uo);
+    public ResponseT<User> Login(String guest, String username, String pw) {
+        return sv.Login(guest, username, pw);
     }
 
     @Override
-    public Response Register(String username, String pw) {
-        return sv.Register(username, pw);
+    public Response Register(String guest, String username, String pw) {
+        return sv.Register(guest,username, pw);
     }
 
     @Override
@@ -180,8 +180,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
-        return AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
+        return sv.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
 
     @Override
@@ -210,8 +210,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
-        return null;
+    public Response DeleteUserTest(String[] usernames) {
+        return sv.DeleteUserTest(usernames);
     }
 
     @Override

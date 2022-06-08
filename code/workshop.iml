@@ -22,10 +22,11 @@
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/${project.build.directory}/classes" />
       <excludeFolder url="file://$MODULE_DIR$/${project.build.directory}/test-classes" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/java/DB" />
       <excludeFolder url="file://$MODULE_DIR$/tests/domain/user" />
       <excludeFolder url="file://$MODULE_DIR$/tests/domain/market" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/java/domain/DAL" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/java/DB" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
