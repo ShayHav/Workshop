@@ -11,13 +11,15 @@ public class ConditionalDiscount implements Discount {
     private DiscountCalculatorType discountCalc;
     private int discountID;
     private Predicate<ProductImp> relevantTo;
+    private String stringed;
 
 
-    public ConditionalDiscount(Predicate<Basket> predicate, DiscountCalculatorType discountCalc, int discountID, Predicate<ProductImp> relevantTo){
+    public ConditionalDiscount(Predicate<Basket> predicate, DiscountCalculatorType discountCalc, int discountID, Predicate<ProductImp> relevantTo, String stringed){
         this.predicate = predicate;
         this.discountCalc = discountCalc;
         this.discountID = discountID;
         this.relevantTo = relevantTo;
+        this.stringed = stringed;
     }
 
 
@@ -50,4 +52,7 @@ public class ConditionalDiscount implements Discount {
     }
 
 
+    public String toString(){
+        return stringed;
+    }
 }

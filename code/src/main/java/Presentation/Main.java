@@ -3,20 +3,14 @@ package Presentation;
 import Presentation.Controllers.ShopController;
 import Presentation.Controllers.UserController;
 import Presentation.Model.PresentationProduct;
-import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
-import domain.ResponseList;
 import domain.ResponseMap;
 import domain.ResponseT;
-import domain.market.PaymentServiceImp;
-import domain.market.SupplyServiceImp;
 import domain.shop.Product;
 import domain.shop.Shop;
 import domain.user.User;
 import domain.user.filter.SearchProductFilter;
-import domain.user.filter.SearchShopFilter;
-import io.github.cdimascio.dotenv.Dotenv;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
@@ -28,10 +22,8 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Main {
 
@@ -39,7 +31,7 @@ public class Main {
     public static InetAddress ip;
 
     public static void main(String[] args) {
-        Services.getInstance().StartMarket(new PaymentServiceImp(), new SupplyServiceImp());
+        //Services.getInstance().StartMarket(new PaymentServiceImp(), new SupplyServiceImp());
         UserController userController = new UserController();
         ShopController shopController = new ShopController(userController);
         Javalin app;
@@ -118,6 +110,11 @@ public class Main {
                     post("/closeShop", shopController::closeShop);
                     post("/reopenShop", shopController::reopenShop);
                     get("/orders", shopController::renderOrderHistory);
+                    post("/addRule", shopController::addPurchaseRule);
+                    post("/combineRules", shopController::combineRules);
+                    post("/deleteRule", shopController::deleteRule);
+                    post("/addDiscount", shopController::addDiscount);
+
 
                     path("{serialNumber}", () -> {
                         get(shopController::renderProductPage);

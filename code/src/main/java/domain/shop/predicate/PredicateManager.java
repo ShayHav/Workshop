@@ -9,35 +9,71 @@ import java.util.function.Predicate;
 public class PredicateManager {
 
     public static Predicate<Basket> createPricePredicate(double price){
-        return (i)-> i.calculateTotal() >= price;
-    }
+        return new Predicate<Basket>() {
+            @Override
+            public boolean test(Basket basket) {
+                return basket.calculateTotal() >= price;
+            }
 
-    public static Predicate<Basket> createMinimumProductsPredicate(int prodID, int amount){
-        return (i)-> {
-            Integer amountOfProductInPurchase;
-            amountOfProductInPurchase = i.findAmount(prodID);
-            if(amountOfProductInPurchase < amount)
-                return false;
-            return true;
+            @Override
+            public String toString() {
+                return String.format("if basket total before discounts exceeds %f", price);
+            }
         };
     }
 
-    public static Predicate<Basket> createMaximumProductsPredicate(int prodID, int amount){
-        return (i)-> {
-            Integer amountOfProductInPurchase;
-            amountOfProductInPurchase = i.findAmount(prodID);
-            if(amountOfProductInPurchase > amount)
-                return false;
-            return true;
+    public static Predicate<Basket> createMinimumProductsPredicate(int prodID, String productName,int amount){
+        return new Predicate<Basket>() {
+            @Override
+            public boolean test(Basket basket) {
+                Integer amountOfProductInPurchase;
+                amountOfProductInPurchase = basket.findAmount(prodID);
+                if(amountOfProductInPurchase < amount)
+                    return false;
+                return true;
+            }
+
+            @Override
+            public String toString() {
+                return String.format("if basket contains atleast %d product %s", amount, productName);
+            }
+        };
+    }
+
+    public static Predicate<Basket> createMaximumProductsPredicate(int prodID, String productName,int amount){
+        return new Predicate<Basket>() {
+            @Override
+            public boolean test(Basket basket) {
+                Integer amountOfProductInPurchase;
+                amountOfProductInPurchase = basket.findAmount(prodID);
+                if(amountOfProductInPurchase > amount)
+                    return false;
+                return true;
+            }
+
+            @Override
+            public String toString() {
+                return String.format("if basket contains atleast %d product %s", amount, productName);
+            }
         };
     }
 
     public static Predicate<Basket> createTimePredicate(double from, double to){
-        return (i)-> {
-            double currentTime = LocalDateTime.now().getHour() + (LocalDateTime.now().getMinute()/60);
-            if(to >= from)
-                return !(currentTime >= from && currentTime <= to);
-            return !(currentTime >= from || currentTime <= to);
+        return new Predicate<Basket>() {
+            @Override
+            public boolean test(Basket basket) {
+                double partial = ((LocalDateTime.now().getMinute()));
+                partial = partial / 60;
+                double currentTime = ((double) LocalDateTime.now().getHour()) + partial;
+                if(to >= from)
+                    return !(currentTime >= from && currentTime <= to);
+                return !(currentTime >= from || currentTime <= to);
+            }
+
+            @Override
+            public String toString() {
+                return String.format("cannot be purchased between %f, %f", from, to);
+            }
         };
     }
 
@@ -65,5 +101,4 @@ public class PredicateManager {
             return pred1.test(i) && pred2.test(i);
         };
     }
-
 }

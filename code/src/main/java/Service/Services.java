@@ -190,7 +190,6 @@ public class Services {
     public ResponseT<Shop> CreateShop(String description ,String username, String shopName) {
         try {
             Shop output = marketSystem.createShop(description, shopName, null, null, username);
-            ;
             return new ResponseT<>(output);
         } catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc e) {
             return new ResponseT<>(e.getLocalizedMessage());
@@ -868,6 +867,8 @@ public class Services {
             return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
         }catch (ShopNotFoundException shopNotFoundException){
             return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
+        }catch (ProductNotFoundException productNotFoundException){
+            return new ResponseT<>(String.format("discount not created, product not found. error: %s", productNotFoundException.getMessage()));
         }
         return new ResponseT<>(discountID);
     }
@@ -884,7 +885,7 @@ public class Services {
         return new ResponseT<>(discountID);
     }
 
-    private ResponseT<Integer> addShopAllProductsDiscount(int shopID, double percentage){
+    public ResponseT<Integer> addShopAllProductsDiscount(int shopID, double percentage){
         int discountID;
         try {
             discountID = marketSystem.addShopAllProductsDiscount(shopID, percentage);
@@ -905,8 +906,12 @@ public class Services {
             return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", invalidParamException.getMessage()));
         }catch (ShopNotFoundException shopNotFoundException){
             return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
-        }catch (Exception e){
-            return new ResponseT<>("unknown error occured.");
+        }catch (ProductNotFoundException productNotFoundException){
+            return new ResponseT<>(String.format("discount not created, product not found. error: %s", productNotFoundException.getMessage()));
+        }catch (AccessDeniedException accessDeniedException){
+            return new ResponseT<>(String.format("discount not created, issue with predicate build data. error: %s", accessDeniedException.getMessage()));
+        }catch (CriticalInvariantException criticalInvariantException){
+            return new ResponseT<>(String.format("discount not created, issue with complex predicate build. error: %s", criticalInvariantException.getMessage()));
         }
         return new ResponseT<>(discountID);
     }
@@ -949,6 +954,8 @@ public class Services {
             return new ResponseT<>(String.format("purchase rule not created, shop not found. error: %s", shopNotFoundException.getMessage()));
         }catch (AccessDeniedException accessDeniedException){
             return new ResponseT<>(String.format("purchase rule not created, system error, bad attempt to building the predict %s" , accessDeniedException.getMessage()));
+        }catch (ProductNotFoundException productNotFoundException){
+            return new ResponseT<>(String.format("purchase rule not created, product not found. error: %s", productNotFoundException.getMessage()));
         }
         return new ResponseT<>(purchaseRuleID);
     }

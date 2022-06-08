@@ -10,12 +10,13 @@ public class PurchaseRuleIMPL implements PurchaseRule {
     private int purchaseRuleID;
     private Predicate<Basket> eligibility;
     private Predicate<ProductImp> relevantTo;
+    private String stringed;
 
-
-    public PurchaseRuleIMPL(Predicate<Basket> eligibility, Predicate<ProductImp> relevantTo, int purchaseRuleID) throws IllegalArgumentException{
+    public PurchaseRuleIMPL(Predicate<Basket> eligibility, Predicate<ProductImp> relevantTo, int purchaseRuleID, String stringed) throws IllegalArgumentException{
         this.eligibility = eligibility;
         this.relevantTo = relevantTo;
         this.purchaseRuleID = purchaseRuleID;
+        this.stringed = stringed;
     }
 
     @Override
@@ -29,5 +30,9 @@ public class PurchaseRuleIMPL implements PurchaseRule {
 
     public boolean relevant(ProductImp product){
         return relevantTo.test(product);
+    }
+
+    public String toString(){
+        return stringed;
     }
 }

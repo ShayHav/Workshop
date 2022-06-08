@@ -13,7 +13,7 @@
     @template.shopFilter(filteredName = filteredName,action = "/")
     <div class="container row mx-auto">
         @for(Presentation.Model.PresentationShop shop: shops)
-            <div class="card mt-1" style="width: 18rem">
+            <div class="card mt-1 me-3" style="width: 18rem">
                 <img src="https://cdn.pixabay.com/photo/2017/08/07/19/46/shop-2607121_960_720.jpg"
                      class="card-img-top" alt="shop front image">
                 <div class="card-body">
