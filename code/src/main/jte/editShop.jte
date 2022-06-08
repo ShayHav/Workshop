@@ -99,7 +99,11 @@
                         <label class="form-check-label" for="rule${rule.getID()}">
                             ${rule.toString()}
                         </label>
+                        <button id="deleteRule${rule.getID()}" type="button" class="btn btn-danger deleteRuleBtn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                            </svg></button>
                     </div>
+
                 </li>
             @endfor
                 @if(shop.getAllRules().size() > 1)
@@ -116,8 +120,17 @@
                 </li>
                 @endif
             </form>
+            <form id="deleteRuleForm" method="post" action="/shops/${shop.id}/deleteRule">
+                <input type="hidden" id="deleteRuleId" name="deleteRuleId">
+            </form>
+            <script>
+                document.querySelectorAll('.deleteRuleBtn').forEach(btn => btn.addEventListener("click", ()=> {
+                    const deleteForm = document.querySelector('#deleteRuleForm');
+                    document.querySelector('#deleteRuleId').value = btn.id.replace('deleteRule', '') ;
+                    deleteForm.submit();
+                }));
+            </script>
             <li class="list-group-item">
-
                 <form class="form" id="addRuleForm" action="/shops/${shop.id}/addRule" method="post">
                     <div class="row">
                     <span class="col-4">
@@ -532,13 +545,11 @@
     }
 
     document.querySelector('#combineRuleOr').onclick = (event)=> {
-        console.log("or btn")
         document.querySelector('#combineRuleType').value = 'or';
         document.forms['rulesForm'].submit();
     };
 
     document.querySelector('#combineRuleAnd').onclick = (event)=> {
-        console.log("and btn")
         document.querySelector('#combineRuleType').value = 'and';
         document.forms['rulesForm'].submit();
     };

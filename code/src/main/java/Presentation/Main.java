@@ -112,6 +112,7 @@ public class Main {
                     get("/orders", shopController::renderOrderHistory);
                     post("/addRule", shopController::addPurchaseRule);
                     post("/combineRules", shopController::combineRules);
+                    post("/deleteRule", shopController::deleteRule);
                     post("/addDiscount", shopController::addDiscount);
 
 

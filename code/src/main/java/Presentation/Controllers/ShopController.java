@@ -513,4 +513,15 @@ public class ShopController {
     private Response addBundleDiscount(Context context) {
         return new Response("unsupported operation yet");
     }
+
+    public void deleteRule(Context context) {
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int ruleId = context.formParamAsClass("deleteRuleId", int.class).get();
+        Response response = services.removePR(ruleId, shopID);
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/"+ shopID+ "/edit");
+    }
 }
