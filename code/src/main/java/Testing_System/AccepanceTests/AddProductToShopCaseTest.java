@@ -42,8 +42,8 @@ public class AddProductToShopCaseTest extends Tester {
     private double price_2;
     private int amountToAdd_2;
     private String Guest_Id;
-    private String GuestId_2;
-    private String GuestId_3;
+//    private String GuestId_2;
+//    private String GuestId_3;
 
 
     @BeforeAll
@@ -57,8 +57,8 @@ public class AddProductToShopCaseTest extends Tester {
         pw_1 = pws[0];
         pw_2 = pws[1];
         Guest_Id = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
-        GuestId_2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
-        GuestId_3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+//        GuestId_2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+//        GuestId_3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
         pCat_1 = "Sex";
@@ -74,6 +74,9 @@ public class AddProductToShopCaseTest extends Tester {
     @BeforeEach
     public void SetShops()
     {
+        String GuestId_2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        String GuestId_3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+
         Register(GuestId_2 ,user_1, pw_1);
         Login(GuestId_2,user_1,pw_1);
         Register(GuestId_3, user_2, pw_2);

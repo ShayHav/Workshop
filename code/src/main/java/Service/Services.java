@@ -593,7 +593,7 @@ public class Services {
         try {
             marketSystem.deleteUserTest(usernames);
             return new Response();
-        } catch (InvalidSequenceOperationsExc | BlankDataExc | IncorrectIdentification e) {
+        } catch (InvalidSequenceOperationsExc | BlankDataExc | IncorrectIdentification | ShopNotFoundException e) {
             return new Response(e.getMessage());
         }
 

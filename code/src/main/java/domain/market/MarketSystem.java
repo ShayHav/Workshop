@@ -236,7 +236,7 @@ public class MarketSystem {
         return false;
     }
 
-    public boolean deleteUserTest(String[] username) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification {
+    public boolean deleteUserTest(String[] username) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, ShopNotFoundException {
 
         for (String user : username) {
             if (user == null)

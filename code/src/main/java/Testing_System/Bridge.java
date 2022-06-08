@@ -117,7 +117,7 @@ public interface Bridge {
 
     ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName);
 
-    Result<Boolean, String> DeleteUserTest(String[] usernames);
+    Response DeleteUserTest(String[] usernames);
 
     ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName);
 

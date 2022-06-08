@@ -53,7 +53,7 @@ public class UserGenerator extends Tester {
     }
 
     public void InitTest() throws InvalidSequenceOperationsExc, IncorrectIdentification {
-        MarketSystem.getInstance().start(new PaymentServiceImp(),new SupplyServiceImp());
+//        MarketSystem.getInstance().start(new PaymentServiceImp(),new SupplyServiceImp());
     }
 
     public String[] getNitayNames() {

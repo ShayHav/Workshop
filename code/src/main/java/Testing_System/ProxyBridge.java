@@ -202,7 +202,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
+    public Response DeleteUserTest(String[] usernames) {
         return null;
     }
 

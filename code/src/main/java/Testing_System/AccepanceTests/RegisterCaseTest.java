@@ -60,26 +60,26 @@ public class RegisterCaseTest extends Tester {
             assertFalse(!Register(guest, validUserNames[i],PWs[i]).isErrorOccurred());
     }
 
-    @Test
-    public void BadUserNameTest()
-    {
-        for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(guest, badUserName[i],PWs[i]).isErrorOccurred());
-    }
+//    @Test
+//    public void BadUserNameTest()
+//    {
+//        for(int i =0; i<ug.getNumOfUser(); i++)
+//            assertFalse(!Register(guest, badUserName[i],PWs[i]).isErrorOccurred());
+//    }
 
-    @Test
-    public void BadPWTest()
-    {
-        for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(guest, validUserNames[i],badPWs[i]).isErrorOccurred());
-    }
+//    @Test
+//    public void BadPWTest()
+//    {
+//        for(int i =0; i<ug.getNumOfUser(); i++)
+//            assertFalse(!Register(guest, validUserNames[i],badPWs[i]).isErrorOccurred());
+//    }
 
-    @Test
-    public void SadUsersTest()
-    {
-        for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(guest, sadUserNames[i],PWs[i]).isErrorOccurred());
-    }
+//    @Test
+//    public void SadUsersTest()
+//    {
+//        for(int i =0; i<ug.getNumOfUser(); i++)
+//            assertFalse(!Register(guest, sadUserNames[i],PWs[i]).isErrorOccurred());
+//    }
 
 
 }

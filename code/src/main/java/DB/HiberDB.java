@@ -6,8 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.EntityManagerFactory;
 
-
-
 public class HiberDB {
 
     public HiberDB()

@@ -219,7 +219,7 @@ public class Tester {
         return br.RemovePaymentService(path);
     }
 
-    public Result<Boolean, String> DeleteUserTest(String[] usernames)
+    public Response DeleteUserTest(String[] usernames)
     {
         return br.DeleteUserTest(usernames);
     }

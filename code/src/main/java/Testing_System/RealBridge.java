@@ -210,8 +210,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
-        return null;
+    public Response DeleteUserTest(String[] usernames) {
+        return sv.DeleteUserTest(usernames);
     }
 
     @Override

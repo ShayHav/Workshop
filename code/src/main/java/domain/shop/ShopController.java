@@ -413,4 +413,18 @@ public class ShopController {
         Shop shop = getShop(shopID);
         return shop.removePurchaseRule(purchaseRuleID);
     }
+
+    public void deleteShopTest(Integer key) {
+        shopList.remove(key);
+    }
+
+    public void RemoveShopOwnerTest(Integer key, String useID) throws ShopNotFoundException {
+        Shop shop = getShop(key);
+        shop.RemoveShopOwnerTest(useID);
+    }
+
+    public void RemoveShopManagerTest(Integer key, String useID) throws ShopNotFoundException {
+        Shop shop = getShop(key);
+        shop.RemoveShopManagerTest(useID);
+    }
 }
