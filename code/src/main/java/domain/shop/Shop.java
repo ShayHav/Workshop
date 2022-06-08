@@ -14,6 +14,8 @@ import domain.shop.predicate.*;
 import domain.user.*;
 import domain.user.filter.*;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.*;
 
 import java.util.function.Predicate;
@@ -21,8 +23,10 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Entity
 public class Shop {
     private String name;
+    @Id
     private final int shopID;
     private int rank;
     private final User ShopFounder;

@@ -2,13 +2,18 @@ package domain.notifications;
 
 import domain.user.User;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
+@Entity
 public class Message {
 
     private String sender;
+    @OneToMany(mappedBy = "msgs")
     private User addressee;
+    @Id
     private String content;
     private boolean read;
     private LocalDateTime sentDate;
