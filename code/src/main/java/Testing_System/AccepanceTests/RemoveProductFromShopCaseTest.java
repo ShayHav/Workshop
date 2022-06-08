@@ -44,8 +44,6 @@ public class RemoveProductFromShopCaseTest extends Tester {
     private int pID_4;
     private int pID_5;
     private int pID_6;
-    private String guest_1;
-    private String guest_2;
 
 
 
@@ -76,6 +74,9 @@ public class RemoveProductFromShopCaseTest extends Tester {
     @BeforeEach
     public void SetShops()
     {
+        String guest_1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        String guest_2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+
         Register(guest_1,user_1, pw_1);
         Login(guest_1,user_1,pw_1);
         Register(guest_2,user_2, pw_2);
@@ -103,7 +104,6 @@ public class RemoveProductFromShopCaseTest extends Tester {
     @AfterAll
     public void CleanUp()
     {
-        LeaveMarket(Guest_Id);
         ug.DeleteAdmin();
     }
 

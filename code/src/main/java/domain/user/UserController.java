@@ -236,7 +236,8 @@ public class UserController {
         return u;
     }
 
-    public boolean deleteUserTest(String[] userName) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
+    public boolean
+    deleteUserTest(String[] userName) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         for (int i = 0; i < userName.length; i++) {
             deleteUserTest(userName[i]);
         }
@@ -278,13 +279,15 @@ public class UserController {
                 for (Role runn : run.getValue()) {
                     if (runn == Role.ShopFounder)
                         ShopController.getInstance().deleteShopTest(run.getKey());
-                    if (runn == Role.ShopOwner)
+                    else if (runn == Role.ShopOwner)
                         ShopController.getInstance().RemoveShopOwnerTest(run.getKey(),useID);
-                    if(runn == Role.ShopManager)
+                    else if(runn == Role.ShopManager)
                         ShopController.getInstance().RemoveShopManagerTest(run.getKey(),useID);
                 }
             }
             memberList.remove(useID);
+            adminUser.remove(useID);
+            activeUser.remove(useID);
         }
     }
 

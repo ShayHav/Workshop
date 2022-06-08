@@ -41,7 +41,7 @@ public class ShopController {
         Shop newShop;
         synchronized(this) {
             shopCounter++;
-            newShop = new Shop(name, description, shopFounder, shopCounter);
+            newShop = new Shop(name, description,discountPolicy,purchasePolicy, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
         }
         shopFounder.addRole(shopCounter,Role.ShopFounder);
@@ -168,7 +168,7 @@ public class ShopController {
         try {
             s = getShop(shopID);
         } catch (ShopNotFoundException snfe) {
-            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
+            errorLogger.logMsg(Level.SEVERE, "this shop does not exist");
             return -1;
         }
         s.removeListing(productId, username);
@@ -418,13 +418,23 @@ public class ShopController {
         shopList.remove(key);
     }
 
-    public void RemoveShopOwnerTest(Integer key, String useID) throws ShopNotFoundException {
-        Shop shop = getShop(key);
-        shop.RemoveShopOwnerTest(useID);
+    public void RemoveShopOwnerTest(Integer key, String useID) {
+        try {
+            Shop shop = getShop(key);
+            shop.RemoveShopOwnerTest(useID);
+        }
+        catch (ShopNotFoundException shopNotFoundException){
+
+        }
     }
 
-    public void RemoveShopManagerTest(Integer key, String useID) throws ShopNotFoundException {
-        Shop shop = getShop(key);
-        shop.RemoveShopManagerTest(useID);
+    public void RemoveShopManagerTest(Integer key, String useID) {
+        try {
+            Shop shop = getShop(key);
+            shop.RemoveShopManagerTest(useID);
+        }
+        catch (ShopNotFoundException shopNotFoundException){
+
+        }
     }
 }

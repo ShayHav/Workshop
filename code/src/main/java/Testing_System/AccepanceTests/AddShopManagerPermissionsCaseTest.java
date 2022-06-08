@@ -88,7 +88,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
             String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
             Register(g, validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
-            assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
+            assertTrue(!AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).isErrorOccurred());
         }
     }
 
@@ -104,7 +104,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
             Register(g, validUsers[i],pws[i]);
             Login(g,validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
-            assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
+            assertTrue(!AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).isErrorOccurred());
         }
     }
 
@@ -119,14 +119,14 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
             Register(g, validUsers[i],pws[i]);
             Login(g,validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
-            assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
+            assertTrue(!AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).isErrorOccurred());
         }
 
         ls = new ArrayList<ShopManagersPermissions>();
         ls.add(ShopManagersPermissions.RemoveProductFromInventory);
 
         for(int i = 2; i<ug.getNumOfUser(); i++)
-            assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
+            assertTrue(!AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).isErrorOccurred());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
             Register(g,validUsers[i],pws[i]);
             Login(g, validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
-            assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],owner).GetFirstElement());
+            assertTrue(!AddShopMangerPermissions(shopID_1,ls, validUsers[i],owner).isErrorOccurred());
         }
     }
 
@@ -154,7 +154,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
             String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
             Register(g,validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
-            assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
+            assertTrue(!AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).isErrorOccurred());
         }
     }
 
@@ -166,7 +166,7 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
             String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
             Register(g,validUsers[i], pws[i]);
             AppointNewShopManager(shopID_1, validUsers[i], user_1);
-            assertFalse(AddShopMangerPermissions(shopID_1, ls, validUsers[i], owner).GetFirstElement());
+            assertFalse(!AddShopMangerPermissions(shopID_1, ls, validUsers[i], owner).isErrorOccurred());
         }
     }
 
@@ -179,9 +179,9 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
             String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
             Register(g,validUsers[i],pws[i]);
             Login(g,validUsers[i],pws[i]);
-            assertFalse(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
+            assertFalse(!AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).isErrorOccurred());
         }
-        assertFalse(AddShopMangerPermissions(shopID_1,ls, owner,user_1).GetFirstElement());
+        assertFalse(!AddShopMangerPermissions(shopID_1,ls, owner,user_1).isErrorOccurred());
 
     }
 
@@ -193,12 +193,12 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
         Register(g,validUsers[2],pws[2]);
         AppointNewShopManager(shopID_1,validUsers[2],user_1);
-        assertFalse(AddShopMangerPermissions(shopID_1+1,ls, validUsers[2],user_1).GetFirstElement());
-        assertFalse(AddShopMangerPermissions(-1,ls, validUsers[2],user_1).GetFirstElement());
-        assertFalse(AddShopMangerPermissions(shopID_1,ls_2, validUsers[2],user_1).GetFirstElement());
-        assertFalse(AddShopMangerPermissions(shopID_1,null, validUsers[2],user_1).GetFirstElement());
-        assertFalse(AddShopMangerPermissions(shopID_1,ls, null,user_1).GetFirstElement());
-        assertFalse(AddShopMangerPermissions(shopID_1,ls_2, validUsers[2],null).GetFirstElement());
+        assertFalse(!AddShopMangerPermissions(shopID_1+1,ls, validUsers[2],user_1).isErrorOccurred());
+        assertFalse(!AddShopMangerPermissions(-1,ls, validUsers[2],user_1).isErrorOccurred());
+        assertFalse(!AddShopMangerPermissions(shopID_1,ls_2, validUsers[2],user_1).isErrorOccurred());
+        assertFalse(!AddShopMangerPermissions(shopID_1,null, validUsers[2],user_1).isErrorOccurred());
+        assertFalse(!AddShopMangerPermissions(shopID_1,ls, null,user_1).isErrorOccurred());
+        assertFalse(!AddShopMangerPermissions(shopID_1,ls_2, validUsers[2],null).isErrorOccurred());
 
     }
 

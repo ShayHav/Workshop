@@ -143,7 +143,7 @@ public class Tester {
         return br.AppointNewShopManager(key, targetUser, userId);
     }
 
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
     {
         return br.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }

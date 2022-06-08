@@ -620,12 +620,12 @@ public class Services {
         int removedProductID;
         try {
             removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopName);
-        }catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc iae){
+        }catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc iae){
             return new Response(iae.getLocalizedMessage());
         }
         if(removedProductID != -1)
             return new Response();
-        return null;
+        return new Response(new InvalidSequenceOperationsExc(String.format("Product not exist: %d",productId)).getLocalizedMessage());
     }
 
     /**

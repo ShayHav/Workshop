@@ -38,8 +38,17 @@ public class MarketSystem {
         return ShopController.getInstance().checkPermissionsForManager(managerUsername, shopID);
     }
 
-    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
+    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID)  {
         //ShopController controller = ShopController.getInstance();
+        try {
+            if(!userController.userExist(username))
+                return new ResponseT<>(new InvalidSequenceOperationsExc("user not registered in").getLocalizedMessage());
+            if (!userController.isLogin(username))
+                return new ResponseT<>(new InvalidSequenceOperationsExc("user not logged in").getLocalizedMessage());
+        }
+        catch (IncorrectIdentification incorrectIdentification){
+            return new ResponseT<>(incorrectIdentification.getLocalizedMessage());
+        }
         Shop shop;
         try {
             shop = shopController.getShop(shopID);
@@ -313,11 +322,13 @@ public class MarketSystem {
         return UserController.getInstance().logout(username);
     }
 
-    public int RemoveProductFromShopInventory(int productId, String username, int shopname) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc {
+    public int RemoveProductFromShopInventory(int productId, String username, int shopname) throws InvalidAuthorizationException, IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if (username == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: username");
             throw new BlankDataExc("parameter is null: username");
         }
+            if(!userController.userExist(username))
+                throw new InvalidSequenceOperationsExc("user not registered in");
         if (userController.isLogin(username)) {
             return ShopController.getInstance().RemoveProductFromShopInventory(productId, username, shopname);
         } else {

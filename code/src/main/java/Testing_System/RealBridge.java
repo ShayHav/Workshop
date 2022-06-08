@@ -180,8 +180,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
-        return AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
+        return sv.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
 
     @Override
