@@ -118,6 +118,17 @@
                         </div>
                     </div>
                 </li>
+                    <script>
+                        document.querySelector('#combineRuleOr').onclick = (event)=> {
+                            document.querySelector('#combineRuleType').value = 'or';
+                            document.forms['rulesForm'].submit();
+                        };
+
+                        document.querySelector('#combineRuleAnd').onclick = (event)=> {
+                            document.querySelector('#combineRuleType').value = 'and';
+                            document.forms['rulesForm'].submit();
+                        };
+                    </script>
                 @endif
             </form>
             <form id="deleteRuleForm" method="post" action="/shops/${shop.id}/deleteRule">
@@ -165,7 +176,7 @@
     <div class="mt-5 mb-4">
         <h3>Discount Policies management</h3>
         <ul class="list-group mb-2 nt-2">
-            <form class="form mb-2" method="post" action="/shops/${shop.id}/composeDiscounts" id="rulesForm">
+            <form class="form mb-2" method="post" action="/shops/${shop.id}/composeDiscounts" id="discountsForm">
                 @for(Discount d: shop.discountPolicy.getAllDistinctDiscounts())
                     <li class="list-group-item">
                         <div class="form-check">
@@ -544,15 +555,7 @@
                     clearProductOrCategory();
     }
 
-    document.querySelector('#combineRuleOr').onclick = (event)=> {
-        document.querySelector('#combineRuleType').value = 'or';
-        document.forms['rulesForm'].submit();
-    };
 
-    document.querySelector('#combineRuleAnd').onclick = (event)=> {
-        document.querySelector('#combineRuleType').value = 'and';
-        document.forms['rulesForm'].submit();
-    };
 
     function addRegularDiscount(){
         let div = document.querySelector('#discountParams')

@@ -140,7 +140,7 @@ public class DiscountPolicy {
         }
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %d ", prodID));
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == prodID;
-        String discountStringed = String.format("discount of %d% on product %s can be applied.", percentage, productName);
+        String discountStringed = String.format("discount of %f on product %s can be applied.", percentage, productName);
         Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         prod_disc.add(newDiscount);
 
@@ -160,7 +160,7 @@ public class DiscountPolicy {
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
 
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %s ", category));
-        String discountStringed = String.format("discount of %d% on Category %s can be applied.", percentage, category);
+        String discountStringed = String.format("discount of %f on Category %s can be applied.", percentage, category);
         Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         category_discount.add(newDiscount);
 
@@ -171,7 +171,7 @@ public class DiscountPolicy {
         DiscountCalculatorType discountCalc = new PercentageDiscount(percentage);
         eventLogger.logMsg(Level.INFO, "added the discount to shop.");
         Predicate<ProductImp> relevantTo = (productImp)-> true;
-        String discountStringed = String.format("discount of %d% on all of shop's products can be applied", percentage);
+        String discountStringed = String.format("discount of %f on all of shop's products can be applied", percentage);
         Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         shopAllProducts_discounts.add(newDiscount);
         return newDiscount.getID();
@@ -192,7 +192,7 @@ public class DiscountPolicy {
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == prodID;
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %d ", prodID));
-        String discountStringed = String.format("discount of %d% on product %s can be applied %s", percentage, productName, pred.toString());
+        String discountStringed = String.format("discount of %f on product %s can be applied %s", percentage, productName, pred.toString());
         Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         prod_disc.add(newDiscount);
 
@@ -215,7 +215,7 @@ public class DiscountPolicy {
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %s ", category));
-        String discountStringed = String.format("discount of %d% on category %s can be applied %s", percentage, category, pred.toString());
+        String discountStringed = String.format("discount of %f on category %s can be applied %s", percentage, category, pred.toString());
         Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         category_discount.add(newDiscount);
 
@@ -226,7 +226,7 @@ public class DiscountPolicy {
         DiscountCalculatorType discountCalc = new PercentageDiscount(percentage);
         eventLogger.logMsg(Level.INFO, "added the discount to shop.");
         Predicate<ProductImp> relevantTo = (productImp)-> true;
-        String discountStringed = String.format("discount of %d% on any of the stores products can be applied %s", percentage, pred.toString());
+        String discountStringed = String.format("discount of %f on any of the stores products can be applied %s", percentage, pred.toString());
         Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         shopAllProducts_discounts.add(newDiscount);
 

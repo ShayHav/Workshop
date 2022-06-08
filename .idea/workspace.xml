@@ -6,9 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/discount/DiscountPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/discount/DiscountPolicy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/index.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/index.jte" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,13 +131,7 @@
       <workItem from="1653906343354" duration="9092000" />
       <workItem from="1654000947394" duration="308000" />
       <workItem from="1654343462330" duration="49005000" />
-      <workItem from="1654628125317" duration="6049000" />
-    </task>
-    <task id="LOCAL‎00010" summary="added search by category use case">
-      <created>1652547641492</created>
-      <option name="number" value="LOCAL‎00010" />
-      <option name="presentableId" value="LOCAL‎00010" />
-      <updated>1652547641492</updated>
+      <workItem from="1654628125317" duration="8155000" />
     </task>
     <task id="LOCAL‎00011" summary="changed product to hold it's amount in ceratin store">
       <created>1652709279725</created>
@@ -425,7 +421,13 @@
       <option name="presentableId" value="LOCAL‎00058" />
       <updated>1654633586760</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL‎00059" summary="add discount impl">
+      <created>1654634380676</created>
+      <option name="number" value="LOCAL‎00059" />
+      <option name="presentableId" value="LOCAL‎00059" />
+      <updated>1654634380676</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -450,7 +452,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added new user-personal dropdown in nav-bar" />
     <MESSAGE value="collapse animation works&#10;changed product page - if product out of stock we notify in shop page + in product shop there is no option of adding it to cart." />
     <MESSAGE value="when system manager requests history of sales - returns all shops or all users (2 different methods)" />
     <MESSAGE value="user can now access his orders - only if member&#10;fixed many return statements in system market- returned null if user isn't logged in instead of throwing an exception&#10;fixed some errors in services - method returns Response, in mistake returned ResponseT" />
@@ -475,7 +476,8 @@
     <MESSAGE value="started impl of policies in gui" />
     <MESSAGE value="design of discount add + compose" />
     <MESSAGE value="started impl discount from gui to domain" />
-    <option name="LAST_COMMIT_MESSAGE" value="started impl discount from gui to domain" />
+    <MESSAGE value="add discount impl" />
+    <option name="LAST_COMMIT_MESSAGE" value="add discount impl" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -489,6 +491,16 @@
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
           <line>153</line>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
+          <line>423</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
+          <line>318</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -415,14 +415,14 @@ public class ShopController {
 
         switch (ruleBase){
             case "category" -> {
-                String category = context.formParam("productOrCategoryLabel");
+                String category = context.formParam("productOrCategory");
                 return services.addCategoryPurchasePolicy(shopID, category, builder);
             }
             case "allProduct" -> {
                 return services.addShopAllProductsPurchasePolicy(shopID,builder);
             }
             case "product" -> {
-                int serialNumber = context.formParamAsClass("productOrCategoryLabel", int.class).get();
+                int serialNumber = context.formParamAsClass("productOrCategory", int.class).get();
                 return services.addProductPurchasePolicy(shopID, serialNumber, builder);
             }
             default -> {
@@ -486,12 +486,8 @@ public class ShopController {
         }
         String username = context.cookieStore("uid");
         int shopID = context.pathParamAsClass("shopID", int.class).get();
-        double percentage = context.formParamAsClass("percentage", int.class).get();
-        int targetProduct = context.formParamAsClass("targetProduct", int.class).get();
-        ResponseT<Product> response = services.getProduct(username, shopID, targetProduct);
-        if(response.isErrorOccurred()){
-            return response;
-        }
+        Double percentage = context.formParamAsClass("percentage", Double.class).get();
+
         switch (discountBase){
             case "category" -> {
                 String category = context.formParam("productOrCategoryDiscount");
@@ -501,7 +497,11 @@ public class ShopController {
                 return services.addShopAllProductsDiscount(shopID,percentage);
             }
             case "product" -> {
-                int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();;
+                int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();
+                ResponseT<Product> response = services.getProduct(username, shopID, serialNumber);
+                if(response.isErrorOccurred()){
+                    return response;
+                }
                 return services.addProductDiscount(shopID, serialNumber, percentage);
             }
             default -> {

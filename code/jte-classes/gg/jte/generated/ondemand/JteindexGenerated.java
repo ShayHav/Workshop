@@ -19,7 +19,7 @@ public final class JteindexGenerated {
 		gg.jte.generated.ondemand.JteshopFilterGenerated.render(jteOutput, jteHtmlInterceptor, "/", filteredName);
 		jteOutput.writeContent("\r\n    <div class=\"container row mx-auto\">\r\n        ");
 		for (Presentation.Model.PresentationShop shop: shops) {
-			jteOutput.writeContent("\r\n            <div class=\"card mt-1\" style=\"width: 18rem\">\r\n                <img src=\"https://cdn.pixabay.com/photo/2017/08/07/19/46/shop-2607121_960_720.jpg\"\r\n                     class=\"card-img-top\" alt=\"shop front image\">\r\n                <div class=\"card-body\">\r\n                    <h2 class=\"card-title\">");
+			jteOutput.writeContent("\r\n            <div class=\"card mt-1 me-3\" style=\"width: 18rem\">\r\n                <img src=\"https://cdn.pixabay.com/photo/2017/08/07/19/46/shop-2607121_960_720.jpg\"\r\n                     class=\"card-img-top\" alt=\"shop front image\">\r\n                <div class=\"card-body\">\r\n                    <h2 class=\"card-title\">");
 			jteOutput.setContext("h2", null);
 			jteOutput.writeUserContent(shop.name);
 			jteOutput.writeContent("</h2>\r\n                    <p class=\"card-text\">");
