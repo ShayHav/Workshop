@@ -237,7 +237,7 @@ public class Shop {
     }
 
     public synchronized Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price) throws InvalidProductInfoException, ProductNotFoundException {
-        if(ShopOwners.containsKey(userId)|| shopManagersPermissionsController.canChangeProductsDetail(userId)) {
+        if(ShopFounder.getUserName().equals(userId)|| ShopOwners.containsKey(userId)|| shopManagersPermissionsController.canChangeProductsDetail(userId)) {
             inventory.setAmount(prodID, amount);
             inventory.setPrice(prodID, price);
             return inventory.setProduct(prodID, name, description, category);

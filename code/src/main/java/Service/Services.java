@@ -450,7 +450,12 @@ public class Services {
      * @return Response object
      */
     public ResponseT<Product> ChangeProduct(String username, Product p, int shopID) {
-        return marketSystem.ChangeProduct(username,p,shopID);
+        try {
+            return marketSystem.ChangeProduct(username, p, shopID);
+        }
+        catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc){
+            return new ResponseT<>(invalidSequenceOperationsExc.getMessage());
+        }
     }
 
     /**

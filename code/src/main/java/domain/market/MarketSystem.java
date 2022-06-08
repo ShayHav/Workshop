@@ -69,15 +69,20 @@ public class MarketSystem {
         return new ResponseT<>(p);
     }
 
-    public ResponseT<Product> ChangeProduct(String username, Product p, int shopID) {
+    public ResponseT<Product> ChangeProduct(String username, Product p, int shopID) throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        if(!userController.userExist(username))
+            throw new InvalidSequenceOperationsExc("user not registered in");
+        if (!userController.isLogin(username)) {
+            throw new InvalidSequenceOperationsExc("user not logged in");
+        }
         Shop shop;
         try {
             shop = shopController.getShop(shopID);
         } catch (ShopNotFoundException snfe) {
             return new ResponseT<>(null, snfe.getLocalizedMessage());
         }
-        int newAmount = ((ServiceProduct) p).getAmount();
-        double newPrice = ((ServiceProduct) p).getPrice();
+        int newAmount = p.getAmount();
+        double newPrice = p.getPrice();
         Product changed;
         try {
             changed = shop.changeProductDetail(p.getId(), p.getName(), p.getDescription(), p.getCategory(), username, newAmount, newPrice);
