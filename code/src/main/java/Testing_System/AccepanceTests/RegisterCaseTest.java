@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,16 +19,18 @@ public class RegisterCaseTest extends Tester {
     private String[] sadUserNames;
     private String[] PWs;
     private String[] badPWs;
+    private String guest;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
         sadUserNames = ug.GetSadUsers();
-        ug.InitTest();
+//        ug.InitTest();
         PWs = ug.GetPW();
         badPWs = ug.GetBadPW();
+        guest = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+
     }
 
     @AfterEach
@@ -44,37 +48,37 @@ public class RegisterCaseTest extends Tester {
     public void GoodRegisterTest()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
+            assertTrue(!Register(guest,validUserNames[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void UserExistTest()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
+            assertTrue(!Register(guest,validUserNames[i],PWs[i]).isErrorOccurred());
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
+            assertFalse(!Register(guest, validUserNames[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void BadUserNameTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(badUserName[i],PWs[i]).isErrorOccurred());
+            assertFalse(!Register(guest, badUserName[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void BadPWTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(validUserNames[i],badPWs[i]).isErrorOccurred());
+            assertFalse(!Register(guest, validUserNames[i],badPWs[i]).isErrorOccurred());
     }
 
     @Test
     public void SadUsersTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!Register(sadUserNames[i],PWs[i]).isErrorOccurred());
+            assertFalse(!Register(guest, sadUserNames[i],PWs[i]).isErrorOccurred());
     }
 
 

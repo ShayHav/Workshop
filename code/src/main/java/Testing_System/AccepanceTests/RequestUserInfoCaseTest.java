@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.user.filter.SearchUserFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,15 +24,18 @@ public class RequestUserInfoCaseTest extends Tester {
     private String[] badPWs;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
         sadUserNames = ug.GetSadUsers();
         PWs = ug.GetPW();
         badPWs = ug.GetBadPW();
+        ug.InitTest();
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
+        {
+            String guest = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            assertTrue(!Register(guest,validUserNames[i],PWs[i]).isErrorOccurred());
+        }
     }
 
     @AfterEach

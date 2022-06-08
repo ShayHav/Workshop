@@ -1,6 +1,8 @@
 package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
@@ -25,24 +27,30 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
     private String owner_pw;
     private int shopID_1;
     private List<ShopManagersPermissions> ls;
+    private String guest_1;
+    private String guest_2;
+
 
 
     @BeforeAll
-    public void SetUp() {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUsers = ug.GetValidUsers();
         pws = ug.GetPW();
         ug.InitTest();
         user_1 = validUsers[0];
         pw_1 = pws[0];
-        Register(user_1, pw_1);
-        Login(user_1, pw_1,null);
+        guest_1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        guest_2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+
+        Register(guest_1, user_1, pw_1);
+        Login(guest_1, user_1, pw_1);
         ResponseT<Shop> shopResponseT = CreateShop("Hello Darkness My Old friend", user_1, "TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
         owner_pw = pws[1];
-        Register(owner,owner_pw);
+        Register(guest_2,owner,owner_pw);
         AppointNewShopOwner(shopID_1,owner,user_1);
 
 
@@ -77,8 +85,8 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
 
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
-            Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g, validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
@@ -92,8 +100,9 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
 
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
-            Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g, validUsers[i],pws[i]);
+            Login(g,validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
@@ -106,8 +115,9 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
 
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
-            Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g, validUsers[i],pws[i]);
+            Login(g,validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
@@ -122,13 +132,14 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
     @Test
     public void AppointedOwnerGivesPermissionTest()
     {
-        Login(owner,owner_pw,null);
+        Login(guest_2,owner,owner_pw);
         ls.add(ShopManagersPermissions.AddProductToInventory);
 
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
-            Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUsers[i],pws[i]);
+            Login(g, validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],owner).GetFirstElement());
         }
@@ -140,7 +151,8 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         ls.add(ShopManagersPermissions.AddProductToInventory);
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
-            Register(validUsers[i],pws[i]);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUsers[i],pws[i]);
             AppointNewShopManager(shopID_1,validUsers[i],user_1);
             assertTrue(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
@@ -151,7 +163,8 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
     {
         ls.add(ShopManagersPermissions.AddProductToInventory);
         for(int i = 2; i<ug.getNumOfUser(); i++) {
-            Register(validUsers[i], pws[i]);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUsers[i], pws[i]);
             AppointNewShopManager(shopID_1, validUsers[i], user_1);
             assertFalse(AddShopMangerPermissions(shopID_1, ls, validUsers[i], owner).GetFirstElement());
         }
@@ -163,8 +176,9 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
         ls.add(ShopManagersPermissions.AddProductToInventory);
         for(int i = 2; i<ug.getNumOfUser(); i++)
         {
-            Register(validUsers[i],pws[i]);
-            Login(validUsers[i],pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUsers[i],pws[i]);
+            Login(g,validUsers[i],pws[i]);
             assertFalse(AddShopMangerPermissions(shopID_1,ls, validUsers[i],user_1).GetFirstElement());
         }
         assertFalse(AddShopMangerPermissions(shopID_1,ls, owner,user_1).GetFirstElement());
@@ -176,7 +190,8 @@ public class AddShopManagerPermissionsCaseTest extends Tester{
     {
         ls.add(ShopManagersPermissions.AddProductToInventory);
         List<ShopManagersPermissions> ls_2 = new ArrayList<ShopManagersPermissions>();
-        Register(validUsers[2],pws[2]);
+        String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(g,validUsers[2],pws[2]);
         AppointNewShopManager(shopID_1,validUsers[2],user_1);
         assertFalse(AddShopMangerPermissions(shopID_1+1,ls, validUsers[2],user_1).GetFirstElement());
         assertFalse(AddShopMangerPermissions(-1,ls, validUsers[2],user_1).GetFirstElement());

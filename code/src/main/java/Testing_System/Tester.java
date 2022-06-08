@@ -40,13 +40,13 @@ public class Tester {
 
     //Guest-Visitor General
     //done
-    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
-        return br.Login(username, pw,uo);
+    public ResponseT<User> Login(String guest, String username, String pw) {
+        return br.Login(guest, username, pw);
     }
 
     //done
-    public Response Register(String username, String pw) {
-        return br.Register(username, pw);
+    public Response Register(String guest, String username, String pw) {
+        return br.Register(guest, username, pw);
     }
 
     //done - not needed

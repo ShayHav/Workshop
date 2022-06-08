@@ -22,12 +22,12 @@ import java.util.Map;
 public class ProxyBridge implements  Bridge {
 
     @Override
-    public ResponseT<User> Login(String username, String pw, UserObserver uo) {
+    public ResponseT<User> Login(String guest, String username, String pw) {
         return null;
     }
 
     @Override
-    public Response Register(String username, String pw) {
+    public Response Register(String guest, String username, String pw) {
         return null;
     }
 

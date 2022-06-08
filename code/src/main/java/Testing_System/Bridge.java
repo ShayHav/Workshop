@@ -27,9 +27,9 @@ import java.util.Map;
 public interface Bridge {
 
     //General Guest-Visitor
-    ResponseT<User> Login(String username, String pw,UserObserver uo); //done
+    ResponseT<User> Login(String guest, String username, String pw); //done
 
-    Response Register(String username, String pw); //done
+    Response Register(String guest, String username, String pw); //done
 
     ResponseT<User> EnterMarket();
 

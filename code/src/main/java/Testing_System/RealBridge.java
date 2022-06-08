@@ -28,13 +28,13 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
-        return sv.Login(username, pw,uo);
+    public ResponseT<User> Login(String guest, String username, String pw) {
+        return sv.Login(guest, username, pw);
     }
 
     @Override
-    public Response Register(String username, String pw) {
-        return sv.Register(username, pw);
+    public Response Register(String guest, String username, String pw) {
+        return sv.Register(guest,username, pw);
     }
 
     @Override

@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.market.*;
 import domain.shop.Order;
 import domain.shop.Product;
@@ -63,11 +65,12 @@ public class SupplyCaseTest extends Tester {
     private List<Product> pLs;
     private int pID_1;
     private int pID_2;
+    private String[] guestArr;
 
 
 
     @BeforeAll
-    public void SetUp() {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUserNames = ug.GetValidUsers();
         products = new HashMap<Integer,Integer>();
@@ -100,10 +103,12 @@ public class SupplyCaseTest extends Tester {
         payment = new PaymentServiceImp();
         supply = new SupplyServiceImp();
         ug.InitTest();
+        guestArr = new String[ug.getNumOfUser()];
         for(int i =0; i< ug.getNumOfUser(); i++)
         {
-            Register(validUserNames[i],pws[i]);
-            Login(validUserNames[i],pws[i],null);
+            guestArr[i] = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(guestArr[i],validUserNames[i],pws[i]);
+            Login(guestArr[i],validUserNames[i],pws[i]);
         }
         guest_id = EnterMarket().getValue().getUserName();
         shopID = CreateShop("Test",validUserNames[0],shopname).getValue().getShopID();

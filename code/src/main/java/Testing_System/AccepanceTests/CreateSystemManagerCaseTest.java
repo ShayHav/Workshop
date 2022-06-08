@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
@@ -24,8 +26,7 @@ public class CreateSystemManagerCaseTest extends Tester {
     private String[] badPWs;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug.InitTest();
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
