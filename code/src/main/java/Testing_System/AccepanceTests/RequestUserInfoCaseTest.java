@@ -46,7 +46,7 @@ public class RequestUserInfoCaseTest extends Tester {
 
     @Test
     public void NoFilterRequest(){
-        assertTrue(RequestUserInfo(null,"admin").getValue().size()== validUserNames.length);
+        assertTrue(RequestUserInfo(null,"Admin").getValue().size()== validUserNames.length);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class RequestUserInfoCaseTest extends Tester {
         SearchUserFilter f = new SearchUserFilter();
         for (int i = 0; i<ug.getNumOfUser(); i++) {
             f.setName(validUserNames[i]);
-            assertTrue(RequestUserInfo(f, "admin").getValue().get(0).equals(validUserNames[i]));
+            assertTrue(RequestUserInfo(f, "Admin").getValue().get(0).equals(validUserNames[i]));
         }
     }
 
@@ -69,12 +69,12 @@ public class RequestUserInfoCaseTest extends Tester {
         SearchUserFilter f = new SearchUserFilter();
         for (int i = 0; i<ug.getNumOfUser(); i++) {
             f.setName(badUserName[i]);
-            assertTrue(RequestUserInfo(f, "admin").getValue().size()==0);
+            assertTrue(RequestUserInfo(f, "Admin").getValue().size()==0);
         }
     }
     @Test
     public void MemberUser(){
         SearchUserFilter f = new SearchUserFilter("isMember");
-        assertTrue(RequestUserInfo(f, "admin").getValue().size()==validUserNames.length);
+        assertTrue(RequestUserInfo(f, "Admin").getValue().size()==validUserNames.length);
     }
 }

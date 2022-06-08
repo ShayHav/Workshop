@@ -433,7 +433,10 @@ public class UserController {
     public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws
             InvalidSequenceOperationsExc, IncorrectIdentification {
         if (getUser(userName).isSystemManager()) {
-            User[] result = (User[]) memberList.values().toArray(); //TODO: better way to solve.
+            User[] result = new User[memberList.values().size()]; //TODO: better way to solve.
+            memberList.values().toArray(result);
+            if(f==null)
+                return Arrays.asList(result);
             return f.applyFilter(Arrays.asList(result));
         }
         throw new InvalidSequenceOperationsExc();
