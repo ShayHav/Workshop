@@ -31,8 +31,8 @@ public class AppointManagerCaseTest extends Tester{
         user_1 = validUsers[0];
         pw_1 = pws[0];
         String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
-        Register(g1,user_1, pw_1);
-        Login(g1,user_1, pw_1);
+        Register(g,user_1, pw_1);
+        Login(g,user_1, pw_1);
         ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
@@ -116,7 +116,9 @@ public class AppointManagerCaseTest extends Tester{
         if(!shopResponseT.isErrorOccurred())
             shopID_3 = shopResponseT.getValue().getShopID();
         for (int i = 2; i < ug.getNumOfUser(); i++) {
-            assertTrue(!(AppointNewShopManager(shopID_2, validUsers[i], validUsers[1]).isErrorOccurred()));
+            String g2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g2,validUsers[i],pws[i]);
+            assertTrue(!(AppointNewShopManager(shopID_2, validUsers[i], user_1).isErrorOccurred()));
             assertTrue(!(AppointNewShopManager(shopID_3, validUsers[i], validUsers[1]).isErrorOccurred()));
             assertTrue(!(AppointNewShopManager(shopID_1, validUsers[i], user_1).isErrorOccurred()));
         }
