@@ -261,7 +261,7 @@ public class Services {
         try {
             List<Shop> shops = Collections.unmodifiableList(marketSystem.getInfoOfShops(userName, filter));
             return new ResponseList<>(shops);
-        } catch (BlankDataExc blankDataExc) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
             return new ResponseList<>(blankDataExc.getMessage());
         }
     }
@@ -277,7 +277,7 @@ public class Services {
         try {
             List<Product> products = marketSystem.getInfoOfProductInShop(userName, shopID, f);
             return new ResponseList<>(products);
-        } catch (BlankDataExc blankDataExc) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
             return new ResponseList<>(blankDataExc.getMessage());
         }
     }//display information of a product?
@@ -295,7 +295,7 @@ public class Services {
         try {
             Map<Integer,List<Product>> products = Collections.unmodifiableMap(marketSystem.searchProductByName(userName, pName, f));
             return new ResponseMap<>(products);
-        } catch (BlankDataExc blankDataExc) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc blankDataExc) {
             return new ResponseMap<>(blankDataExc.getMessage());
         }
     }
@@ -341,7 +341,7 @@ public class Services {
         try{
             Cart.ServiceCart c = marketSystem.showCart(username);
             return new ResponseT<>(c);
-        }catch (BlankDataExc e){
+        }catch (BlankDataExc | InvalidSequenceOperationsExc e){
             return new ResponseT<>(e.getMessage());
         }
     }
@@ -409,7 +409,7 @@ public class Services {
         try {
             List<String> list = marketSystem.Checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
             return new ResponseList<>(list);
-        } catch (IncorrectIdentification | BlankDataExc e) {
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc e) {
             return new ResponseList<>(e.getMessage());
         }
     }
@@ -576,7 +576,7 @@ public class Services {
         try {
             List<User> s = marketSystem.RequestShopOfficialsInfo(shopName, f, userName);
             return new ResponseList<>(s);
-        } catch (IncorrectIdentification | ShopNotFoundException | InvalidAuthorizationException | BlankDataExc e) {
+        } catch (IncorrectIdentification | ShopNotFoundException | InvalidAuthorizationException | BlankDataExc | InvalidSequenceOperationsExc e) {
             return new ResponseList<>(e.getMessage());
         }
     }
@@ -649,7 +649,7 @@ public class Services {
         try {
             Map<Shop, List<Order>> result = marketSystem.getOrderHistoryForShops(userName, f);
             return new ResponseMap<Shop, List<Order>>(result);
-        } catch (IncorrectIdentification | ShopNotFoundException | InvalidAuthorizationException | BlankDataExc exception) {
+        } catch (IncorrectIdentification | ShopNotFoundException | InvalidAuthorizationException | BlankDataExc | InvalidSequenceOperationsExc exception) {
             return new ResponseMap<>(exception.getLocalizedMessage());
         }
 
@@ -680,7 +680,7 @@ public class Services {
         try {
             Map<User, List<Order>> result  = marketSystem.getOrderHistoryForUsers(userName, f);
             return new ResponseMap<>(result);
-        } catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc e) {
+        } catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc e) {
             return new ResponseMap<>(e.getMessage());
         }
     }
@@ -696,7 +696,7 @@ public class Services {
         try {
             Product p = marketSystem.getProduct(username, shopId, serialNumber);
             return new ResponseT<>(p);
-        } catch (ShopNotFoundException | ProductNotFoundException | IncorrectIdentification | InvalidAuthorizationException | BlankDataExc e) {
+        } catch (ShopNotFoundException | ProductNotFoundException | IncorrectIdentification | InvalidAuthorizationException | BlankDataExc | InvalidSequenceOperationsExc e) {
             return new ResponseT<>(e.getMessage());
         }
     }

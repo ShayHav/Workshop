@@ -1,5 +1,5 @@
 package Testing_System.AccepanceTests;
-import Presentation.Model.PresentationShop;
+
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
