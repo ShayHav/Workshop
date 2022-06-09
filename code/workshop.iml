@@ -26,6 +26,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/main/java/domain/DAL" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/java/DB" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/java/Presentation" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
