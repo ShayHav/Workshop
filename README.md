@@ -13,14 +13,4 @@ should be a file name .env in code/src/main/resources/ and contain the following
   
 **state file setting:**
 
-should be a json file name state_init in code/src/main/resources/ and has the following attribute:
-- functions: array of: 
-  1. function: "name of the function to operate",
-  2. args: array of the arguements of the function
-
-  
-for example {
-             functions: [ {function: "functionA", 
-                            args: [args1, args2, ... , argsK]
-                        ]
-              }
+view the wiki page: https://github.com/ShayHav/Workshop/wiki/State-Initialization-File
