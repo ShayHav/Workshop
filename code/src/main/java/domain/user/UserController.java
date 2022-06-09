@@ -25,8 +25,9 @@ public class UserController {
     private static UserController instance = null;
     private List<User> adminUser;
     private int guestCounter = 0;
-    private final String userPattern ="^[a-zA-Z][a-zA-Z0-9_]{4,16}$";
-    private final String pwPattern ="^[a-zA-Z][a-zA-Z0-9_]{4,16}$";
+    private final String userPattern ="^[a-z][a-z0-9_]$";
+    private final String pwPattern ="^[a-z][a-z0-9_]$";
+    private boolean createSystemManager;
 
     private UserController() {
         memberList = new HashMap<>();
@@ -171,15 +172,15 @@ public class UserController {
      * @param pass password given by the user
      */
     public boolean register(String id, String pass) throws InvalidSequenceOperationsExc {
-        if(!isValidUser(id))
-        {
-            errorLogger.logMsg(Level.WARNING, String.format("Invalid username: %s.", id));
-            throw new InvalidSequenceOperationsExc("Username is invalid, should contain only a-z | A-Z | 0-9 and size 4-16");
-        }
-        if(!isValidPassword(pass))
-        {
-            errorLogger.logMsg(Level.WARNING, String.format("Invalid password: %s.", pass));
-            throw new InvalidSequenceOperationsExc("Password is invalid, should be of with no spaces size 4-16");
+        if(!createSystemManager) {
+            if (!isValidUser(id)) {
+                errorLogger.logMsg(Level.WARNING, String.format("Invalid username: %s.", id));
+                throw new InvalidSequenceOperationsExc("Username is invalid, should contain only a-z | A-Z | 0-9 and size 4-16");
+            }
+            if (!isValidPassword(pass)) {
+                errorLogger.logMsg(Level.WARNING, String.format("Invalid password: %s.", pass));
+                throw new InvalidSequenceOperationsExc("Password is invalid, should be of with no spaces size 4-16");
+            }
         }
         if (!memberList.containsKey(id)) {
             User user = new User(id);
@@ -312,14 +313,16 @@ public class UserController {
      * @throws InvalidSequenceOperationsExc
      */
     public boolean createSystemManager(String id, String pass) throws InvalidSequenceOperationsExc {
-        System.out.println("createSystemManager: "+id);
+        //System.out.println("createSystemManager: "+id);
+        createSystemManager = true;
         register(id,pass);
-        System.out.println("register: "+id);
+        createSystemManager = false;
+        //System.out.println("register: "+id);
         User u = memberList.get(id);
         synchronized (adminUser) {
             adminUser.add(u);
         }
-        System.out.println("makeSystemManager: "+id);
+        //System.out.println("makeSystemManager: "+id);
         u.makeSystemManager();
         return true;
     }

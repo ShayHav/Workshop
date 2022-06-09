@@ -128,13 +128,14 @@ public class Inventory {
         keyToProduct.get(product).setQuantity(currentAmount);
     }
 
-    public void removeProduct(int product) {
+    public void removeProduct(int product) throws InvalidProductInfoException {
         if(keyToProduct.containsKey(product)){
             Product p = keyToProduct.get(product);
             synchronized (keyToProduct) {
                 keyToProduct.remove(product);
             }
         }
+        else throw new InvalidProductInfoException(String.format("product is not exist id: %d",product));
     }
 
     public List<Product> getItemsInStock() {

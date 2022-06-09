@@ -145,13 +145,13 @@ public class ShopController {
         return s.getName();
     }
 
-    public String openShop(int key, String user) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public String openShop(int key, String user) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         Shop s;
         try {
             s = getShop(key);
         } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
+            throw new ShopNotFoundException("this shop does not exist, thus cannot be closed");
         }
         s.openShop(user);
         eventLogger.logMsg(Level.INFO, "close shop succeeded");
@@ -163,7 +163,7 @@ public class ShopController {
         shopList = new HashMap<>();
     }
 
-    public int RemoveProductFromShopInventory(int productId, String username, int shopID) throws InvalidAuthorizationException {
+    public int RemoveProductFromShopInventory(int productId, String username, int shopID) throws InvalidAuthorizationException, InvalidProductInfoException {
         Shop s;
         try {
             s = getShop(shopID);

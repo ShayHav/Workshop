@@ -560,7 +560,7 @@ public class Services {
         try {
             marketSystem.OpenShop(shopId, userName);
             return new Response();
-        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException incorrectIdentification) {
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException | ShopNotFoundException incorrectIdentification) {
             return new Response(incorrectIdentification.getLocalizedMessage());
         }
     }
@@ -630,7 +630,7 @@ public class Services {
         int removedProductID;
         try {
             removedProductID = marketSystem.RemoveProductFromShopInventory(productId, username, shopName);
-        }catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc iae){
+        }catch (InvalidAuthorizationException | IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidProductInfoException iae){
             return new Response(iae.getLocalizedMessage());
         }
         if(removedProductID != -1)
