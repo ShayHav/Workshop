@@ -38,8 +38,20 @@ public class MarketSystem {
         return ShopController.getInstance().checkPermissionsForManager(managerUsername, shopID);
     }
 
-    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID)  {
+    public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID) throws BlankDataExc {
         //ShopController controller = ShopController.getInstance();
+        if (serialNumber<1)
+            throw new BlankDataExc("parameter is null: serialNumber");
+        if(pName == null | pName == "")
+            throw new BlankDataExc("parameter is null: pName");
+        if(pCat == null | pCat =="")
+            throw new BlankDataExc("parameter is null: pCat");
+        if(pDis == null | pDis =="")
+            throw new BlankDataExc("parameter is null: pDis");
+        if (price<1)
+            throw new BlankDataExc("parameter is null: price");
+        if (amount<1)
+            throw new BlankDataExc("parameter is null: amount");
         try {
             if(!userController.userExist(username))
                 return new ResponseT<>(new InvalidSequenceOperationsExc("user not registered in").getLocalizedMessage());
@@ -263,7 +275,7 @@ public class MarketSystem {
         return UserController.getInstance().deleteUserTest(username);
     }
 
-    public boolean deleteUser(String admin, String username) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
+    public boolean deleteUser(String admin, String username) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, ShopNotFoundException {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");
         if (admin == null)
@@ -346,11 +358,13 @@ public class MarketSystem {
         }
     }
 
-    public void CloseShop(int shopId, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException {
+    public void CloseShop(int shopId, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException, ShopNotFoundException {
         if (username == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: username");
             throw new BlankDataExc("parameter is null: username");
         }
+        if(!userController.userExist(username))
+            throw new InvalidSequenceOperationsExc("user not registered in");
         if (userController.isLogin(username)) {
             ShopController.getInstance().closeShop(shopId, username);
         } else {
@@ -372,7 +386,7 @@ public class MarketSystem {
         }
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidAuthorizationException,InvalidSequenceOperationsExc {
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidAuthorizationException, InvalidSequenceOperationsExc, ShopNotFoundException {
         if (shopManagersPermissionsList == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: shopManagersPermissionsList");
             throw new BlankDataExc("parameter is null: shopManagersPermissionsList");
@@ -385,6 +399,8 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
         }
+        if(!userController.userExist(targetUser))
+            throw new InvalidSequenceOperationsExc("user not registered in");
         if(!userController.userExist(username))
             throw new InvalidSequenceOperationsExc("user not registered in");
         if (userController.isLogin(username))
@@ -565,7 +581,7 @@ public class MarketSystem {
 
     }
 
-    public boolean DismissalUser(String usernames, String targetUser) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+    public boolean DismissalUser(String usernames, String targetUser) throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, ShopNotFoundException {
         if (usernames == null)
             throw new BlankDataExc("parameter is null: usernames");
         if (targetUser == null)
@@ -581,6 +597,9 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: usernames");
         if (targetUser == null)
             throw new BlankDataExc("parameter is null: targetUser");
+        isExist(usernames);
+        isExist(targetUser);
+        isLogin(usernames);
         User u = userController.getUser(usernames);
         if (userController.DismissalOwner(usernames, targetUser, shop)) {
             String message = String.format("User: %s remove you from being an owner of shop %s", usernames, getShop(shop).getShopName());
@@ -589,6 +608,15 @@ public class MarketSystem {
         }
         return false;
 
+    }
+
+    private void isExist(String userName) throws InvalidSequenceOperationsExc {
+        if(!userController.userExist(userName))
+            throw new InvalidSequenceOperationsExc(String.format("user not registered in",userName));
+    }
+    private void isLogin(String userName) throws IncorrectIdentification, InvalidSequenceOperationsExc {
+        if (!userController.isLogin(userName))
+            throw  new InvalidSequenceOperationsExc(String.format("user not logged in",userName));
     }
 
     public List<User> RequestUserInfo(SearchUserFilter f, String userName) throws InvalidSequenceOperationsExc, IncorrectIdentification {
@@ -602,8 +630,9 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: pw");
         if (systemManager == null)
             throw new BlankDataExc("parameter is null: systemManager");
-        if(userController.userExist(username))
-            throw new InvalidSequenceOperationsExc("user not registered in");
+        //isExist(username);
+        isExist(systemManager);
+        isLogin(systemManager);
         if (UserController.getInstance().getUser(systemManager).isSystemManager()) {
             if (UserController.getInstance().createSystemManager(username, pw)) {
                 User u = UserController.getInstance().getUser(username);

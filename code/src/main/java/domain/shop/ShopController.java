@@ -132,13 +132,13 @@ public class ShopController {
         throw new ShopNotFoundException("shop does not exist in market");
     }
 
-    public String closeShop(int key, String user) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public String closeShop(int key, String user) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc,ShopNotFoundException {
         Shop s;
         try {
             s = getShop(key);
         } catch (ShopNotFoundException snfe) {
             errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
+            throw new ShopNotFoundException("this shop does not exist, thus cannot be closed");
         }
         s.closeShop(user);
         eventLogger.logMsg(Level.INFO, "close shop succeeded");
@@ -176,14 +176,9 @@ public class ShopController {
         return productId;
     }
 
-    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) {
+    public String RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser, String id) throws InvalidSequenceOperationsExc, ShopNotFoundException {
         Shop s;
-        try {
-            s = getShop(key);
-        } catch (ShopNotFoundException snfe) {
-            errorLogger.logMsg(Level.SEVERE, "this shop does not exist, thus cannot be closed");
-            return null;
-        }
+        s = getShop(key);
         if (s.removePermissions(shopManagersPermissionsList, tragetUser, id)) {
             eventLogger.logMsg(Level.INFO, "RemoveShopManagerPermissions succeeded");
             return "Shop Manager Permissions Removed";

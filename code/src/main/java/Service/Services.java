@@ -439,7 +439,12 @@ public class Services {
      * @return Response object
      */
     public ResponseT<Product> AddProductToShopInventory(int serialNumber, String pName, String pDis, String pCat, double price, int amount, String username, int shopID) {
-        return marketSystem.AddProductToShopInventory(serialNumber,pName,pDis,pCat,price,amount,username,shopID);
+        try {
+            return marketSystem.AddProductToShopInventory(serialNumber, pName, pDis, pCat, price, amount, username, shopID);
+        }
+        catch (BlankDataExc blankDataExc){
+            return new ResponseT<>(blankDataExc.getMessage());
+        }
     }
 
     /**
@@ -525,7 +530,7 @@ public class Services {
             if (s != null)
                 return new Response(s);
             return null;
-        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException | InvalidSequenceOperationsExc incorrectIdentification) {
+        } catch (IncorrectIdentification | BlankDataExc | InvalidAuthorizationException | InvalidSequenceOperationsExc | ShopNotFoundException incorrectIdentification) {
             return new Response(incorrectIdentification.getLocalizedMessage());
         }
     }
@@ -540,7 +545,7 @@ public class Services {
         try {
             marketSystem.CloseShop(shopId, userName);
             return new Response();
-        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException incorrectIdentification) {
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | InvalidAuthorizationException | ShopNotFoundException incorrectIdentification) {
             return new Response(incorrectIdentification.getLocalizedMessage());
         }
     }
@@ -608,7 +613,7 @@ public class Services {
         try {
             if (marketSystem.deleteUser(admin, username))
                 return new Response();
-        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification | InvalidAuthorizationException e) {
+        } catch (BlankDataExc | InvalidSequenceOperationsExc | IncorrectIdentification | InvalidAuthorizationException | ShopNotFoundException e) {
             return new Response(e.getMessage());
         }
         return null;
@@ -708,7 +713,7 @@ public class Services {
                 return new Response();
             return new Response("operation failed.");
         }
-        catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc blankDataExc){
+        catch (BlankDataExc | IncorrectIdentification | InvalidSequenceOperationsExc | ShopNotFoundException blankDataExc){
             return new Response(blankDataExc.getLocalizedMessage());
         }
     }

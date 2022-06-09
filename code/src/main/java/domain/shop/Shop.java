@@ -88,7 +88,7 @@ public class Shop {
         }
     }
 
-    public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
+    public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) throws InvalidSequenceOperationsExc {
         if (ShopOwners.containsKey(id) || shopManagersPermissionsController.canChangeShopManagersPermissions(id)) {
             return shopManagersPermissionsController.removePermissions(shopManagersPermissionsList, tragetUser);
         } else {
@@ -398,6 +398,7 @@ public class Shop {
             } else
                 throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s", userID));
         }
+        throw new InvalidSequenceOperationsExc(String.format("attempt to Close Shop without right permission userID: %s", userID));
     }
 
     public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {

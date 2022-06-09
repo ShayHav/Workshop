@@ -244,7 +244,7 @@ public class UserController {
         return true;
     }
 
-    public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         if (!memberList.containsKey(s)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to delete not exist user: %s", s));
             throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s", s));
@@ -259,7 +259,7 @@ public class UserController {
      * @param useID
      * @throws InvalidSequenceOperationsExc
      */
-    private void deleteUser(String useID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    private void deleteUser(String useID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         User u = memberList.get(useID);
         if (u != null) {
             Map<Integer, List<Role>> useRoleList = u.getRoleList();

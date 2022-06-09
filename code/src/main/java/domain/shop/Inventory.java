@@ -74,6 +74,8 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", serialNumber));
             throw new InvalidProductInfoException();
         }
+        if(keyToProduct.containsKey(serialNumber))
+            throw new InvalidProductInfoException(String.format("serialNumber is already in use: %d", serialNumber));
         ProductImp p = new ProductImp(serialNumber, productName, productDesc, productCategory, price, quantity);
         synchronized (keyToProduct) {
             keyToProduct.put(serialNumber, p);

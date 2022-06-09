@@ -1,6 +1,7 @@
 package domain.shop;
 
 import domain.ErrorLoggerSingleton;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -54,7 +55,9 @@ public class ShopManagersPermissionsController {
         return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.ChangeShopManagersPermissions);
     }
     public boolean canCloseShop(String userId){
-        return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.CloseShop);
+        if(shopManagersPermissionsMap.containsKey(userId))
+            return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.CloseShop);
+        else return false;
     }
     public boolean canOpenShop(String userId){
         return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.OpenShop);
@@ -68,7 +71,7 @@ public class ShopManagersPermissionsController {
     public boolean canRequestInformationOfShopsSalesHistory(String userId){
         return shopManagersPermissionsMap.get(userId).contains(ShopManagersPermissions.RequestInformationOfShopsSalesHistory);
     }
-    public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser) {
+    public boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser) throws InvalidSequenceOperationsExc {
         if (shopManagersPermissionsList != null || shopManagersPermissionsList.size() > 0) {
             List<ShopManagersPermissions> userShopManagersPermissionsList = shopManagersPermissionsMap.get(targetUser);
 
@@ -77,9 +80,8 @@ public class ShopManagersPermissionsController {
                     if (userShopManagersPermissionsList.contains(run))
                         userShopManagersPermissionsList.remove(run);
                 }
-            } else synchronized (shopManagersPermissionsMap) {
-                shopManagersPermissionsMap.put(targetUser, shopManagersPermissionsList);
             }
+            else throw new InvalidSequenceOperationsExc(String.format("not a Manager: %s",targetUser));
             return PermissionNotExist(shopManagersPermissionsList, targetUser);
         } else return false;
     }

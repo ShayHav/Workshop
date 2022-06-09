@@ -208,7 +208,6 @@ public class RemoveProductFromShopCaseTest extends Tester {
         assertFalse(!RemoveProductFromShopInventory(-1, user_1, shopID_1).isErrorOccurred());
         assertFalse(!RemoveProductFromShopInventory(pID_2, null, shopID_1).isErrorOccurred());
         assertFalse(!RemoveProductFromShopInventory(pID_2, user_1, -1).isErrorOccurred());
-
     }
 
 }
