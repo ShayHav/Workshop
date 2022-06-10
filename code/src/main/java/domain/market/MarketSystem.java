@@ -201,7 +201,7 @@ public class MarketSystem {
     //TODO: f==null is ok? getAllInfoProduct..
     public List<Product> getInfoOfProductInShop(String userID, int shopID, Filter<Product> f) throws BlankDataExc, InvalidSequenceOperationsExc {
         if (userID == null || f == null )
-            throw new BlankDataExc();
+            throw new BlankDataExc("username is null or not entered market");
         isEnter(userID);
         return ShopController.getInstance().getInfoOfProductInShop(shopID, f);
     }
@@ -209,21 +209,24 @@ public class MarketSystem {
     //TODO: f==null is ok? getAllInfoProduct..
     public Map<Integer, List<Product>> searchProductByName(String userID, String name, Filter<Product> f) throws BlankDataExc, InvalidSequenceOperationsExc {
         if (userID == null || name == null || f == null )
-            throw new BlankDataExc();
+            throw new BlankDataExc("parameter is null");
         isEnter(userID);
         return ShopController.getInstance().searchProductByName(name, f);
     }
 
     //TODO: f==null is ok? getAllInfoProduct..
-    public Map<Integer, List<Product>> searchProductByKeyword(String userID, String keyword, Filter<Product> f) throws BlankDataExc {
+    public Map<Integer, List<Product>> searchProductByKeyword(String userID, String keyword, Filter<Product> f) throws BlankDataExc, IncorrectIdentification, InvalidSequenceOperationsExc {
         if (userID == null || keyword == null || f == null || !userController.HasUserEnteredMarket(userID))
-            throw new BlankDataExc();
+            throw new BlankDataExc("parameter is null");
+        isEnter(userID);
+        if(isExist(userID))
+            isLogin(userID);
         return ShopController.getInstance().searchProductByKeyword(keyword, f);
     }
 
     public Map<Integer, List<Product>> searchProductByCategory(String userID, String category, Filter<Product> f) throws BlankDataExc {
         if (userID == null || category == null || f == null || !userController.HasUserEnteredMarket(userID))
-            throw new BlankDataExc();
+            throw new BlankDataExc("parameter is null");
         return ShopController.getInstance().searchProductByCategory(category, f);
     }
 
@@ -614,9 +617,10 @@ public class MarketSystem {
 
     }
 
-    private void isExist(String userName) throws InvalidSequenceOperationsExc {
+    private boolean isExist(String userName) throws InvalidSequenceOperationsExc {
         if(!userController.userExist(userName))
             throw new InvalidSequenceOperationsExc(String.format("user not registered in",userName));
+        return true;
     }
     private void isLogin(String userName) throws IncorrectIdentification, InvalidSequenceOperationsExc {
         if (!userController.isLogin(userName))

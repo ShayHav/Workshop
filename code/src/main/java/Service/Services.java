@@ -313,6 +313,10 @@ public class Services {
             return new ResponseMap<>(products);
         } catch (BlankDataExc blankDataExc) {
             return new ResponseMap<>(blankDataExc.getMessage());
+        } catch (IncorrectIdentification incorrectIdentification) {
+           return new ResponseMap<Integer, List<Product>>(incorrectIdentification.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new ResponseMap<Integer, List<Product>>(invalidSequenceOperationsExc.getLocalizedMessage());
         }
     }
 
