@@ -72,11 +72,16 @@ public class UserController {
         return false;
     }
 
-    public boolean userExist(String userName) {
-        return memberList.containsKey(userName) | guestUser.containsKey(userName);
+    public boolean userExist(String userName) throws IncorrectIdentification {
+        return memberList.containsKey(userName) | guestUser.containsKey(userName) | isSM(userName);
     }
-
-
+    private boolean isSM(String userName){
+        for(User u : adminUser){
+            if(u.getUserName().equals(userName))
+                return true;
+        }
+        return false;
+    }
 
     private static class UserControllerHolder {
         private static final UserController uc = new UserController();
@@ -234,7 +239,17 @@ public class UserController {
         if (u == null) {
             u = guestUser.get(id);
         }
+        if(u == null){
+            u = adminList(id);
+        }
         return u;
+    }
+    private User adminList(String userName){
+        for(User run: adminUser)
+            if(run.getUserName().equals(userName))
+                return run;
+
+        return null;
     }
 
     public boolean
@@ -287,9 +302,14 @@ public class UserController {
                 }
             }
             memberList.remove(useID);
-            adminUser.remove(useID);
             activeUser.remove(useID);
         }
+        deleteAdminTest(useID);
+    }
+    private void deleteAdminTest(String userName) throws IncorrectIdentification {
+        for (User run: adminUser)
+            if(run.getUserName().equals(userName))
+                adminUser.remove(getUser(userName));
     }
 
 
@@ -319,12 +339,20 @@ public class UserController {
         createSystemManager = false;
         //System.out.println("register: "+id);
         User u = memberList.get(id);
-        synchronized (adminUser) {
-            adminUser.add(u);
+        if(!isInAL(u)) {
+            synchronized (adminUser) {
+                adminUser.add(u);
+            }
+            //System.out.println("makeSystemManager: "+id);
+            u.makeSystemManager();
         }
-        //System.out.println("makeSystemManager: "+id);
-        u.makeSystemManager();
         return true;
+    }
+    private boolean isInAL(User u) {
+        for (User run : adminUser)
+            if(run.getUserName().equals(u.getUserName()))
+                return true;
+        return false;
     }
 
     public Map<User, List<Order>> getOrderHistoryForUsers(Filter<Order> f) {

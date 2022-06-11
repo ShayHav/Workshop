@@ -47,11 +47,11 @@ public class DismissalUserBySystemManagerCaseTest extends Tester {
     public void DismissalAllUsers()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!DismissalUserBySystemManager("admin",validUserNames[i]).isErrorOccurred());
+            assertTrue(!DismissalUserBySystemManager("Admin",validUserNames[i]).isErrorOccurred());
         SearchUserFilter f = new SearchUserFilter();
         for (int i = 0; i<ug.getNumOfUser(); i++){
             f.setName(validUserNames[i]);
-            assertFalse(!(RequestUserInfo(f,"admin").getValue().size()==0));
+            assertFalse(!(RequestUserInfo(f,"Admin").getValue().size()==0));
         }
     }
 

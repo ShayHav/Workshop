@@ -388,7 +388,7 @@ public class Shop {
     }
 
     public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
-        if (ShopFounder.getUserName().equals(userID) || shopManagersPermissionsController.canCloseShop(userID)) {
+        if (ShopFounder.getUserName().equals(userID) || ShopOwners.containsKey(userID) || shopManagersPermissionsController.canCloseShop(userID)) {
             if (isOpen) {
                 isOpen = false;
                 User user = ControllersBridge.getInstance().getUser(userID);
@@ -510,7 +510,7 @@ public class Shop {
     }
 
     public boolean canBeDismiss(String targetUser) {
-        return isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser);
+        return !(isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser));
     }
 
     public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {

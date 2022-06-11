@@ -340,6 +340,8 @@ public class MarketSystem {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: username");
             throw new BlankDataExc("username");
         }
+        isExist(username);
+        isLogin(username);
         return UserController.getInstance().logout(username);
     }
 
@@ -589,7 +591,6 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: usernames");
         if (targetUser == null)
             throw new BlankDataExc("parameter is null: targetUser");
-        isEnter(usernames);
         isExist(usernames);
         isExist(targetUser);
         isLogin(usernames);
@@ -617,7 +618,7 @@ public class MarketSystem {
 
     }
 
-    private boolean isExist(String userName) throws InvalidSequenceOperationsExc {
+    private boolean isExist(String userName) throws InvalidSequenceOperationsExc, IncorrectIdentification {
         if(!userController.userExist(userName))
             throw new InvalidSequenceOperationsExc(String.format("user not registered in",userName));
         return true;

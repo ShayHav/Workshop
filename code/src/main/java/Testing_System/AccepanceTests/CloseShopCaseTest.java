@@ -72,7 +72,7 @@ public class CloseShopCaseTest extends Tester {
     {
         Login(guest2,owner,owner_pw);
         Login(guest3,manager,manager_pw);
-        AddShopMangerPermissions(shopID_1,ls,manager,user_1);
+        //AddShopMangerPermissions(shopID_1,ls,manager,user_1);
         /**
          * Not supported offline --> Online shop
          */
@@ -91,19 +91,20 @@ public class CloseShopCaseTest extends Tester {
     @Test
     public void FounderCloseShopGoodTest()
     {
-        assertTrue(!CloseShop(shopID_1,user_1).isErrorOccurred());
+        assertTrue(!CloseShop(1,"u2").isErrorOccurred());
     }
 
     @Test
     public void OwnerCloseShopGoodTest()
     {
+        Login(!EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "",owner,owner_pw);
         assertTrue(!CloseShop(shopID_1,owner).isErrorOccurred());
     }
 
     @Test
     public void ManagerCloseShopBadTest()
     {
-        assertTrue(!CloseShop(shopID_1,manager).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,manager).isErrorOccurred());
     }
 
     @Test
@@ -117,7 +118,7 @@ public class CloseShopCaseTest extends Tester {
     @Test
     public void AlreadyClosedShopTest()
     {
-        assertTrue(!CloseShop(shopID_1,user_1).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1,user_1).isErrorOccurred());
         assertFalse(!CloseShop(shopID_1,user_1).isErrorOccurred());
         assertFalse(!CloseShop(shopID_1,owner).isErrorOccurred());
         assertFalse(!CloseShop(shopID_1,manager).isErrorOccurred());
