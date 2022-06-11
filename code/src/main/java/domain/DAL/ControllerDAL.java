@@ -5,6 +5,8 @@ import domain.shop.Product;
 import domain.shop.Shop;
 import domain.user.Cart;
 import domain.user.User;
+import jdk.jshell.spi.ExecutionControl;
+import org.hibernate.cfg.NotYetImplementedException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,6 +24,18 @@ public class ControllerDAL {
     {
         db.saveUser(u);
 
+    }
+
+    public void updateUser(User u){
+        throw new NotYetImplementedException();
+    }
+
+    public void deleteUser(String userName){
+        throw new NotYetImplementedException();
+    }
+
+    public void deleteAllUser(){
+        throw new NotYetImplementedException();
     }
 
     public User getUser(String username)

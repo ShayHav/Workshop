@@ -8,6 +8,7 @@ import domain.shop.Order;
 import domain.shop.Shop;
 import domain.shop.ShopController;
 import domain.user.filter.*;
+import domain.DAL.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,6 +28,7 @@ public class UserController {
     private int guestCounter = 0;
     private final String userPattern ="^[a-zA-Z][a-zA-Z0-9_]{4,16}$";
     private final String pwPattern ="^[a-zA-Z][a-zA-Z0-9_]{4,16}$";
+    private ControllerDAL controllerDAL = new ControllerDAL();
 
     private UserController() {
         memberList = new HashMap<>();
@@ -98,7 +100,13 @@ public class UserController {
         if (isUserisLog(username)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %s failed. user is already logged in", username));
             throw new InvalidSequenceOperationsExc("attempt of logIn for logged in user");
-        } else if (memberList.get(username) != null) {
+        } else{
+            if(memberList.get(username)== null){
+                User u = controllerDAL.getUser(username);
+                if(u!=null)
+                    memberList.put(u.getUserName(),u);
+            }
+        } if (memberList.get(username) != null) {
             if (securePasswordStorage.passwordCheck(username, pass)) {
                 synchronized (activeUser) {
                     activeUser.put(username, memberList.get(username));
@@ -182,11 +190,12 @@ public class UserController {
             throw new InvalidSequenceOperationsExc("Password is invalid, should be of with no spaces size 4-16");
         }
         if (!memberList.containsKey(id)) {
+            SecurePasswordStorage.getSecurePasswordStorage_singleton().inRole(id, pass);
             User user = new User(id);
             synchronized (memberList) {
                 memberList.put(id, user);
             }
-            SecurePasswordStorage.getSecurePasswordStorage_singleton().inRole(id, pass);
+            controllerDAL.saveUser(user);
             eventLogger.logMsg(Level.INFO, String.format("Registered for user: %s.", id));
             return true;
         } else {
@@ -233,6 +242,8 @@ public class UserController {
         if (u == null) {
             u = guestUser.get(id);
         }
+        if(u == null)
+            u = controllerDAL.getUser(id);
         return u;
     }
 
@@ -269,6 +280,7 @@ public class UserController {
                         ShopController.getInstance().closeShop(run.getKey(),useID);
             }
             memberList.remove(useID);
+            controllerDAL.deleteUser(useID);
         }
     }
     private void deleteUserTest(String useID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
@@ -288,6 +300,7 @@ public class UserController {
             memberList.remove(useID);
             adminUser.remove(useID);
             activeUser.remove(useID);
+            controllerDAL.deleteUser(useID);
         }
     }
 
@@ -296,6 +309,7 @@ public class UserController {
         adminUser = new ArrayList<>();
         guestUser = new HashMap<>();
         memberList = new HashMap<>();
+        controllerDAL.deleteAllUser();
     }
 
     public List<String> checkout(String userName, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
