@@ -1,11 +1,12 @@
 package domain.DAL;
 
 import DB.HiberDB;
+import domain.market.MarketSystem;
+import domain.shop.Order;
 import domain.shop.Product;
 import domain.shop.Shop;
 import domain.user.Cart;
 import domain.user.User;
-import jdk.jshell.spi.ExecutionControl;
 import org.hibernate.cfg.NotYetImplementedException;
 
 import javax.persistence.EntityManager;
@@ -20,22 +21,19 @@ public class ControllerDAL {
         db = new HiberDB();
     }
 
+    private static class DALHolder {
+        private static final ControllerDAL dal = new ControllerDAL();
+    }
+
+    public static ControllerDAL getInstance() {
+        return ControllerDAL.DALHolder.dal;
+    }
+
+
     public void saveUser(User u)
     {
         db.saveUser(u);
 
-    }
-
-    public void updateUser(User u){
-        throw new NotYetImplementedException();
-    }
-
-    public void deleteUser(String userName){
-        throw new NotYetImplementedException();
-    }
-
-    public void deleteAllUser(){
-        throw new NotYetImplementedException();
     }
 
     public User getUser(String username)
@@ -43,9 +41,14 @@ public class ControllerDAL {
         return db.getUser(username);
     }
 
-    public void saveCart(String username, Cart c)
+    public void saveCart(Cart c)
     {
         db.saveCart(c);
+    }
+
+    public void updateCart(Cart c)
+    {
+        throw new NotYetImplementedException();
     }
 
     public Cart getCart(String username)
@@ -72,5 +75,11 @@ public class ControllerDAL {
     {
         return getProduct(pID);
     }
+
+    public Order getOrderByUser(String username)
+    {
+        throw new NotYetImplementedException();
+    }
+
 
 }

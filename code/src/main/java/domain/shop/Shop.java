@@ -42,7 +42,9 @@ public class Shop {
     private ShopManagersPermissionsController shopManagersPermissionsController;
     @Embedded
     private final Inventory inventory;
+    @OneToOne
     private DiscountPolicy discountPolicy;
+    @OneToOne
     private PurchasePolicy purchasePolicy;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();

@@ -2,10 +2,12 @@ package domain.market;
 
 import domain.user.TransactionInfo;
 
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Entity
 public class ExternalConnector {
     private final List<PaymentService> paymentServices;
     private final List<SupplyService> supplyServices;

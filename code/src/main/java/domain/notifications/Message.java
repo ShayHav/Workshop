@@ -14,6 +14,7 @@ public class Message {
     @OneToMany(mappedBy = "msgs")
     private User addressee;
     @Id
+    private int msgID;
     private String content;
     private boolean read;
     private LocalDateTime sentDate;

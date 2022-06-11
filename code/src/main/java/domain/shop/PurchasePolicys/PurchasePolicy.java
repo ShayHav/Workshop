@@ -9,6 +9,8 @@ import domain.Exceptions.PurchaseRuleNotFoundException;
 import domain.shop.ProductImp;
 import domain.shop.discount.Basket;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +18,11 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
+@Entity
 public class PurchasePolicy {
 
+    @Id
+    private int shopID;
     private final Map<Integer, List<PurchaseRule>> product_purchaseRules;
     private final Map<String, List<PurchaseRule>> category_purchaseRules;
     private final List<PurchaseRule> general_PurchaseRules;
