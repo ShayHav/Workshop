@@ -63,6 +63,24 @@ public class Shop {
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
     }
 
+    public Shop(String name,String description, User shopFounder, int shopID) {
+        this.discountPolicy = new DiscountPolicy();
+        this.purchasePolicy = new PurchasePolicy();
+        inventory = new Inventory();
+        orders = new OrderHistory();
+        ShopOwners = new HashMap<>();
+        ShopManagers = new HashMap<>();
+        rank = -1;
+        this.name = name;
+        isOpen = true;
+        this.description = description;
+        this.ShopFounder = shopFounder;
+        this.shopID = shopID;
+        shopManagersPermissionsController = new ShopManagersPermissionsController();
+        shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+    }
+
+
     public void setDescription(String description) {
         this.description = description;
     }

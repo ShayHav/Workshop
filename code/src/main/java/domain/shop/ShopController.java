@@ -41,13 +41,12 @@ public class ShopController {
         Shop newShop;
         synchronized(this) {
             shopCounter++;
-            newShop = new Shop(name, description,discountPolicy,purchasePolicy, shopFounder, shopCounter);
+            newShop = new Shop(name, description, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
         }
         shopFounder.addRole(shopCounter,Role.ShopFounder);
         eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
         return newShop;
-
     }
 
     public List<Shop> getInfoOfShops(Filter<Shop> f) {
