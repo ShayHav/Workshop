@@ -29,7 +29,7 @@ public class ControllerDAL {
         return db.getUser(username);
     }
 
-    public void saveCart(Cart c)
+    public void saveCart(String username, Cart c)
     {
         db.saveCart(c);
     }
