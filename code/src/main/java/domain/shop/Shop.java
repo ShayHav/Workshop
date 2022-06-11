@@ -561,7 +561,7 @@ public class Shop {
         }catch (Exception e){}
         User finalBuyer = buyer;
         ShopOwners.values().forEach(owner -> {
-              market.sendMessage(owner, finalBuyer,message );
+              market.sendMessage(owner, finalBuyer, message);
         });
         market.sendMessage(ShopFounder, finalBuyer, message);
     }
