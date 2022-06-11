@@ -32,9 +32,8 @@ public class Shop {
     @ManyToOne
     private final User ShopFounder;
     private String description;
-    @Transient
     //private Map<String,User> ShopOwners;
-    @Transient
+
     //private Map<String,User> ShopManagers;
     @ManyToMany
     private List<User> ShopOwners;
