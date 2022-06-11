@@ -23,7 +23,7 @@ public class Cart {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     @Id
-    private String id;
+    private String username;
 
     public Cart() {
         baskets = new HashMap<>();
