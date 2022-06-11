@@ -21,6 +21,18 @@ public class ControllerDAL {
         db = new HiberDB();
     }
 
+    public void updateUser(User user) {
+        throw new NotYetImplementedException();
+    }
+
+    public void deleteUser(String useID) {
+        throw new NotYetImplementedException();
+    }
+
+    public void deleteAllUser() {
+        throw new NotYetImplementedException();
+    }
+
     private static class DALHolder {
         private static final ControllerDAL dal = new ControllerDAL();
     }

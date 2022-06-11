@@ -38,7 +38,7 @@ public class User {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     @Transient
     private boolean enteredMarket;
-    private ControllerDAL controllerDAL = new ControllerDAL();
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
