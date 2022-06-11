@@ -13,4 +13,4 @@ should be a file name .env in code/src/main/resources/ and contain the following
   
 **state file setting:**
 
-view the wiki page: https://github.com/ShayHav/Workshop/wiki/State-Initialization-File
+view the wiki page: [click here](https://github.com/ShayHav/Workshop/wiki/State-Initialization-File)
