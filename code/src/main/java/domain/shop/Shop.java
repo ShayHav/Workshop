@@ -32,14 +32,13 @@ public class Shop {
     @ManyToOne
     private final User ShopFounder;
     private String description;
-    @Transient
-    private Map<String,User> ShopOwners;
-    @Transient
-    private Map<String,User> ShopManagers;
+    //private Map<String,User> ShopOwners;
+
+    //private Map<String,User> ShopManagers;
     @ManyToMany
-    private List<User> ShopOwners2;
+    private List<User> ShopOwners;
     @ManyToMany
-    private List<User> ShopManagers2;
+    private List<User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
     @Embedded
     private final Inventory inventory;
@@ -53,8 +52,8 @@ public class Shop {
     private boolean isOpen;
     private MarketSystem marketSystem = MarketSystem.getInstance();
 
-    public boolean isShopOwner(String username){
-        for(User user: ShopOwners2) {
+    private boolean isShopOwner(String username){
+        for(User user: ShopOwners) {
             if(user.getUserName().equals(username))
                 return true;
         }
@@ -62,7 +61,7 @@ public class Shop {
     }
 
     public boolean isShopManager(String username){
-        for(User user: ShopManagers2) {
+        for(User user: ShopManagers) {
             if(user.getUserName().equals(username))
                 return true;
         }
@@ -74,8 +73,8 @@ public class Shop {
         this.purchasePolicy = purchasePolicy;
         inventory = new Inventory();
         orders = new OrderHistory();
-        ShopOwners = new HashMap<>();
-        ShopManagers = new HashMap<>();
+        ShopOwners = new LinkedList<>();
+        ShopManagers = new LinkedList<>();
         rank = -1;
         this.name = name;
         isOpen = true;
@@ -95,7 +94,7 @@ public class Shop {
     }
 
     public synchronized boolean addPermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String id) {
-        if ( ShopOwners.containsKey(id) ||shopManagersPermissionsController.canChangeShopManagersPermissions(id))
+        if ( isShopOwner(id) ||shopManagersPermissionsController.canChangeShopManagersPermissions(id))
             return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
         else {
             errorLogger.logMsg(Level.WARNING, String.format("user: %s cannot change permissions", id) );
@@ -103,7 +102,7 @@ public class Shop {
         }
     }
     public synchronized boolean addPermissions(ShopManagersPermissions shopManagersPermissionsList, String targetUser, String id) {
-        if ( ShopOwners.containsKey(id) || shopManagersPermissionsController.canChangeShopManagersPermissions(id))
+        if ( isShopOwner(id) || shopManagersPermissionsController.canChangeShopManagersPermissions(id))
             return shopManagersPermissionsController.addPermissions(shopManagersPermissionsList, targetUser);
         else {
             errorLogger.logMsg(Level.WARNING, String.format("user: %s cannot change permissions", id) );
@@ -112,7 +111,7 @@ public class Shop {
     }
 
     public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
-        if (ShopOwners.containsKey(id) || shopManagersPermissionsController.canChangeShopManagersPermissions(id)) {
+        if (isShopOwner(id) || shopManagersPermissionsController.canChangeShopManagersPermissions(id)) {
             return shopManagersPermissionsController.removePermissions(shopManagersPermissionsList, tragetUser);
         } else {
             errorLogger.logMsg(Level.WARNING, String.format("user: %s cannot remove permissions", id));
@@ -154,28 +153,28 @@ public class Shop {
     }
 
     public synchronized Product addListing(int serialNumber, String productName, String productDesc, String productCategory, double price, int quantity,String userId) throws InvalidAuthorizationException, InvalidProductInfoException {
-        if(ShopOwners.containsKey(userId) || shopManagersPermissionsController.canAddProductToInventory(userId))
+        if(isShopOwner(userId) || shopManagersPermissionsController.canAddProductToInventory(userId))
             return inventory.addProduct(serialNumber, productName, productDesc, productCategory, price, quantity);
         else
             throw new InvalidAuthorizationException("you do not have permission to list a product to this shop");
     }
 
     public synchronized void removeListing(int prodID,String userId) throws InvalidAuthorizationException {
-        if(ShopOwners.containsKey(userId) ||shopManagersPermissionsController.canRemoveProductFromInventory(userId) )
+        if(isShopOwner(userId) ||shopManagersPermissionsController.canRemoveProductFromInventory(userId) )
             inventory.removeProduct(prodID);
         else
             throw new InvalidAuthorizationException("you do not have permission to unlist a product from this shop");
     }
 
     public synchronized void editPrice(int prodID, double newPrice,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
-        if (ShopOwners.containsKey(userId) ||shopManagersPermissionsController.canChangeProductsDetail(userId) )
+        if (isShopOwner(userId) ||shopManagersPermissionsController.canChangeProductsDetail(userId) )
             inventory.setPrice(prodID, newPrice);
         else
             throw new InvalidAuthorizationException("you do not have permission to unlist a product from this shop");
     }
 
     public synchronized void editQuantity(int prodID, int newQuantity,String userId) throws InvalidProductInfoException, ProductNotFoundException, InvalidAuthorizationException {
-        if(ShopOwners.containsKey(userId) ||shopManagersPermissionsController.canChangeProductsDetail(userId))
+        if(isShopOwner(userId) ||shopManagersPermissionsController.canChangeProductsDetail(userId))
             inventory.setAmount(prodID, newQuantity);
         else
             throw new InvalidAuthorizationException("you can edit quantity of a product in this shop");
@@ -260,7 +259,7 @@ public class Shop {
     }
 
     public synchronized Product changeProductDetail(int prodID, String name, String description, String category,String userId, int amount, double price) throws InvalidProductInfoException, ProductNotFoundException {
-        if(ShopFounder.getUserName().equals(userId)|| ShopOwners.containsKey(userId)|| shopManagersPermissionsController.canChangeProductsDetail(userId)) {
+        if(ShopFounder.getUserName().equals(userId)|| isShopOwner(userId)|| shopManagersPermissionsController.canChangeProductsDetail(userId)) {
             inventory.setAmount(prodID, amount);
             inventory.setPrice(prodID, price);
             return inventory.setProduct(prodID, name, description, category);
@@ -360,20 +359,20 @@ public class Shop {
     }
 
     public boolean isOwner(String id) {
-        return ShopOwners.containsKey(id);
+        return isShopOwner(id);
     }
 
     //TODO: check it works
 
     public void AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if ( ShopOwners.containsKey(userId) ||ShopFounder.getUserName().equals(userId)) {
+        if ( isShopOwner(userId) ||ShopFounder.getUserName().equals(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointOwner(shopID)){
                         managerUser.AppointedMeOwner(this,usertarget);
-                        ShopOwners.putIfAbsent(usertarget, newManager);
+                        ShopOwners.add(newManager);
                         newManager.addRole(shopID,Role.ShopOwner);
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New Shop Owner User: %s", usertarget));
                         return;
@@ -390,14 +389,14 @@ public class Shop {
     }
 
     public void AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if (ShopFounder.getUserName().equals(userId) || ShopOwners.containsKey(userId) ||shopManagersPermissionsController.canAppointNewShopOwner(userId)) {
+        if (ShopFounder.getUserName().equals(userId) || isShopOwner(userId) ||shopManagersPermissionsController.canAppointNewShopOwner(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
                         managerUser.AppointedMeManager(this,usertarget);
-                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        ShopManagers.add(newManager);
                         newManager.addRole(shopID,Role.ShopManager);
                         shopManagersPermissionsController.initManager(newManager.getUserName());
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
@@ -424,7 +423,7 @@ public class Shop {
     }
 
     public synchronized void openShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
-        if(ShopFounder.getUserName().equals(userID) || ShopOwners.containsKey(userID) || shopManagersPermissionsController.canOpenShop(userID)) {
+        if(ShopFounder.getUserName().equals(userID) || isShopOwner(userID) || shopManagersPermissionsController.canOpenShop(userID)) {
             if (!isOpen) {
                 isOpen = true;
                 User opener = ControllersBridge.getInstance().getUser(userID);
@@ -490,19 +489,19 @@ public class Shop {
     }
 
     public List<User> RequestShopOfficialsInfo(SearchOfficialsFilter f, String userId) {
-        if(ShopOwners.containsKey(userId) || shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)) {
+        if(isShopOwner(userId) || shopManagersPermissionsController.canRequestInformationOnShopsOfficials(userId)) {
             return f.applyFilter(getUserList(),shopID);
         }
         return null;
     }
     public List<Order> RequestInformationOfShopsSalesHistory(SearchOrderFilter f, String userId) {
-        if(ShopOwners.containsKey(userId) ||shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId))
+        if(isShopOwner(userId) ||shopManagersPermissionsController.canRequestInformationOfShopsSalesHistory(userId))
             return f.applyFilter(orders.getOrders());
         else return null;
     }
 
     private List<User> getUserList(){
-        return Stream.concat(hashMapToList(ShopOwners).stream(),hashMapToList(ShopManagers).stream()).collect(Collectors.toList());
+        return Stream.concat(ShopOwners.stream(),ShopManagers.stream()).collect(Collectors.toList());
     }
 
     private List<User> hashMapToList(Map<String,User> hashMap) {
@@ -521,7 +520,7 @@ public class Shop {
     }
 
     public List<ShopManagersPermissions> requestInfoOnManagerPermissions(String managerUsername) throws IllegalArgumentException {
-        if(!ShopManagers.containsKey(managerUsername) && !ShopOwners.containsKey(managerUsername) && !ShopFounder.getUserName().equals(managerUsername))
+        if(!isShopManager(managerUsername) && !isShopOwner(managerUsername) && !ShopFounder.getUserName().equals(managerUsername))
             return new ArrayList<>();
         return shopManagersPermissionsController.getPermissions(managerUsername);
     }
@@ -531,12 +530,12 @@ public class Shop {
     }
 
     public boolean canBeDismiss(String targetUser) {
-        return isOwner(targetUser) | isFounder(targetUser) | ShopManagers.containsKey(targetUser);
+        return isOwner(targetUser) | isFounder(targetUser) | isShopManager(targetUser);
     }
 
     public boolean DismissalOwner(String userName, String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
-        if(( ShopFounder.getUserName().equals(userName) ||ShopOwners.containsKey(userName)) & ShopOwners.containsKey(targetUser)){
-            if (ShopFounder.getUserName().equals(userName)|| ShopOwners.containsKey(userName) ||shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) {
+        if(( ShopFounder.getUserName().equals(userName) ||isShopOwner(userName)) & isShopOwner(targetUser)){
+            if (ShopFounder.getUserName().equals(userName)|| isShopOwner(userName) ||shopManagersPermissionsController.canDismissalOfStoreOwner(userName)) {
                 ShopOwners.remove(targetUser);
                 ControllersBridge.getInstance().getUser(targetUser).removeRole(Role.ShopOwner,shopID);
                 return true;
@@ -547,13 +546,13 @@ public class Shop {
 
     public List<User> getShopOwners() {
         List<User> output = new LinkedList<>();
-        ShopOwners.values().forEach((u)->output.add(u));
+        ShopOwners.forEach((u)->output.add(u));
         output.add(ShopFounder);
         return output;
     }
 
     public List<User> getShopsManagers(){
-        return new ArrayList<>(this.ShopManagers.values());
+        return this.ShopManagers;
     }
 
     public User getShopFounder() {
@@ -572,7 +571,7 @@ public class Shop {
             buyer = market.getUser(order.getUserID());
         }catch (Exception e){}
         User finalBuyer = buyer;
-        ShopOwners.values().forEach(owner -> {
+        ShopOwners.forEach(owner -> {
               market.sendMessage(owner, finalBuyer,message );
         });
         market.sendMessage(ShopFounder, finalBuyer, message);
@@ -582,7 +581,7 @@ public class Shop {
     }
 
     public boolean isManager(String userName) {
-        return ShopManagers.containsKey(userName);
+        return isShopManager(userName);
     }
 
 
