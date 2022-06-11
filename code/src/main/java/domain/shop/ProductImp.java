@@ -1,7 +1,13 @@
 package domain.shop;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+
+@Entity
 public class ProductImp implements Product{
 
+    @Id
     private final int id;
     private String name;
     private String description;

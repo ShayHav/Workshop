@@ -8,13 +8,14 @@ import domain.Exceptions.ShopNotFoundException;
 import domain.Exceptions.BlankDataExc;
 import domain.user.ShoppingBasket.ServiceBasket;
 
+import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
+@Entity
 public class Cart {
     private Map<Integer, ShoppingBasket> baskets;
     private double totalAmount;

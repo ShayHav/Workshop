@@ -242,13 +242,30 @@ public class DiscountPolicy {
                 if (dis.getID() == discountID) {
                     prod_discounts.remove(dis);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
-                    if(dis instanceof BundleDiscount){
+                    /*if(dis instanceof BundleDiscount){
                         hasBundleDeal.remove(set.getKey());
-                    }
-                    return true;
+                    }*/
                 }
             }
         }
+
+        for(Map.Entry<String, List<Discount>> set : category_discounts.entrySet()){
+            List<Discount> prod_discounts = set.getValue();
+            for(Discount dis: prod_discounts) {
+                if (dis.getID() == discountID) {
+                    prod_discounts.remove(dis);
+                    eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
+                }
+            }
+        }
+
+        for(Discount dis: shopAllProducts_discounts) {
+            if (dis.getID() == discountID) {
+                shopAllProducts_discounts.remove(dis);
+                eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
+            }
+        }
+
         eventLogger.logMsg(Level.INFO, String.format("no such discount in the shop: %d", discountID));
         return false;
     }

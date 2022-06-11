@@ -11,6 +11,9 @@ import domain.user.filter.*;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
+
+import javax.persistence.*;
+
 import java.util.*;
 import java.util.logging.Level;
 
@@ -18,6 +21,7 @@ public class User {
     private String userName;
     private UserState2 us;
     private Map<Integer,List<Role>> roleList;
+    @OneToOne
     private Cart userCart;
     private boolean loggedIn;
     private List<ManagerAppointment> managerAppointeeList;

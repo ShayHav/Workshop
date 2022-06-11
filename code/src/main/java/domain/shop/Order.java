@@ -1,16 +1,21 @@
 package domain.shop;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Entity
 public class Order {
+    @Id
     private long orderId;
     private LocalDateTime buyingTime;
     private String userID;
+    @Embedded
     private List<Product> broughtItem;
     private double totalAmount;
     private int shopID;

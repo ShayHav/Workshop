@@ -10,10 +10,12 @@ import domain.Exceptions.ProductNotFoundException;
 import domain.shop.ProductImp;
 import domain.shop.Shop;
 
+import javax.persistence.Entity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+@Entity
 public class ShoppingBasket {
 
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
