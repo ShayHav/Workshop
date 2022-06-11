@@ -272,7 +272,6 @@ public class MarketSystem {
     }
 
     public boolean deleteUserTest(String[] username) throws InvalidSequenceOperationsExc, BlankDataExc, IncorrectIdentification, ShopNotFoundException {
-
         for (String user : username) {
             if (user == null)
                 throw new BlankDataExc("parameter is null: username");
