@@ -9,6 +9,7 @@ import domain.Exceptions.BlankDataExc;
 import domain.user.ShoppingBasket.ServiceBasket;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,8 @@ public class Cart {
     private double totalAmount;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Id
+    private String id;
 
     public Cart() {
         baskets = new HashMap<>();

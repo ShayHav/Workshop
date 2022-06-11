@@ -14,9 +14,7 @@ import domain.shop.predicate.*;
 import domain.user.*;
 import domain.user.filter.*;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.security.Provider;
 import java.util.*;
 
@@ -31,10 +29,17 @@ public class Shop {
     @Id
     private final int shopID;
     private int rank;
+    @ManyToOne
     private final User ShopFounder;
     private String description;
+    @Transient
     private Map<String,User> ShopOwners;
+    @Transient
     private Map<String,User> ShopManagers;
+    @ManyToMany
+    private List<User> ShopOwners2;
+    @ManyToMany
+    private List<User> ShopManagers2;
     private ShopManagersPermissionsController shopManagersPermissionsController;
     @Embedded
     private final Inventory inventory;
@@ -45,6 +50,22 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
     private MarketSystem marketSystem = MarketSystem.getInstance();
+
+    public boolean isShopOwner(String username){
+        for(User user: ShopOwners2) {
+            if(user.getUserName().equals(username))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isShopManager(String username){
+        for(User user: ShopManagers2) {
+            if(user.getUserName().equals(username))
+                return true;
+        }
+        return false;
+    }
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;

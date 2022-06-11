@@ -19,7 +19,6 @@ public class User {
     private String userName;
     private UserState2 us;
     private Map<Integer,List<Role>> roleList;
-    @OneToOne
     private Cart userCart;
     private boolean loggedIn;
     private List<ManagerAppointment> managerAppointeeList;
