@@ -3,6 +3,7 @@ package domain.shop;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -14,6 +15,7 @@ public class Order {
     @Id
     private long orderId;
     private LocalDateTime buyingTime;
+    @ManyToOne
     private String userID;
     @Embedded
     private List<Product> broughtItem;

@@ -17,16 +17,25 @@ import java.util.logging.Level;
 public class User {
     @Id
     private String userName;
+    @Enumerated
     private UserState2 us;
     private Map<Integer,List<Role>> roleList;
+    @OneToOne
     private Cart userCart;
+    @Transient
     private boolean loggedIn;
+    @ManyToMany
     private List<ManagerAppointment> managerAppointeeList;
+    @ManyToMany
     private List<OwnerAppointment> ownerAppointmentList;
+    @OneToMany
     private List<Order> orderHistory;
     private boolean isSystemManager;
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Transient
     private boolean enteredMarket;
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.

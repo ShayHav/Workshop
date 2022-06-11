@@ -8,12 +8,17 @@ import domain.Exceptions.InvalidParamException;
 import domain.shop.Inventory;
 import domain.shop.ProductImp;
 import domain.shop.PurchasePolicys.PurchaseRule;
+import org.junit.jupiter.api.Test;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+@Entity
 public class DiscountPolicy {
 
     /**
@@ -21,10 +26,16 @@ public class DiscountPolicy {
      */
     private Map<Integer, List<Discount>> product_discounts;
     private Map<String, List<Discount>> category_discounts; ///check if needed
+
     private List<Discount> shopAllProducts_discounts; ///check if needed
+    @Transient
     private List<Integer> hasBundleDeal;
+    @Id
+    private int shopID;
     private int discountIDCounter;
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
 
@@ -35,7 +46,13 @@ public class DiscountPolicy {
         hasBundleDeal = new ArrayList<>();
         discountIDCounter = 1;
     }
-
+    public DiscountPolicy(int shopID){
+        product_discounts = new HashMap<>();
+        category_discounts = new HashMap<>();
+        shopAllProducts_discounts = new ArrayList<>();
+        hasBundleDeal = new ArrayList<>();
+        discountIDCounter = 1;
+    }
 
     /*public void addProductDiscount(int prodID, Discount discount){
         List<Discount> prod_disc = product_discounts.get(prodID);
