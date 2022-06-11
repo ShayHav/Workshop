@@ -772,7 +772,7 @@ public class MarketSystem {
         return shopController.removeDiscount(discountID, shopID);
     }
 
-    public boolean removePurchaseRule(int purchaseRuleID, int shopID) throws ShopNotFoundException {
-        return shopController.removePurchaseRule(purchaseRuleID, shopID);
+    public void removePurchaseRule(int purchaseRuleID, int shopID) throws ShopNotFoundException {
+        shopController.removePurchaseRule(purchaseRuleID, shopID);
     }
 }

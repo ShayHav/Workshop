@@ -737,7 +737,7 @@ public class Shop {
     public boolean removeDiscount(int discountID){
         return discountPolicy.removeDiscount(discountID);
     }
-    public boolean removePurchaseRule(int purchaseRuleID){ return purchasePolicy.removePurchaseRule(purchaseRuleID); }
+    public void removePurchaseRule(int purchaseRuleID){ purchasePolicy.removePurchaseRule(purchaseRuleID); }
 
     public PurchasePolicy getPurchasePolicy() {
         return purchasePolicy;

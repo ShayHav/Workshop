@@ -408,9 +408,9 @@ public class ShopController {
         return shop.removeDiscount(discountID);
     }
 
-    public boolean removePurchaseRule(int purchaseRuleID, int shopID) throws ShopNotFoundException {
+    public void removePurchaseRule(int purchaseRuleID, int shopID) throws ShopNotFoundException {
         Shop shop = getShop(shopID);
-        return shop.removePurchaseRule(purchaseRuleID);
+        shop.removePurchaseRule(purchaseRuleID);
     }
 
     public void deleteShopTest(Integer key) {

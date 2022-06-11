@@ -1078,11 +1078,11 @@ public class Services {
     public ResponseT<Boolean> removePR(int purchaseRuleID, int shopID){
         boolean removed;
         try {
-            removed = marketSystem.removePurchaseRule(purchaseRuleID, shopID);
+            marketSystem.removePurchaseRule(purchaseRuleID, shopID);
+            return new ResponseT<>();
         }catch (ShopNotFoundException shopNotFoundException){
             return new ResponseT<>(String.format("discount not removed, shop was not found. error: %s", shopNotFoundException.getMessage()));
         }
-        return new ResponseT<>(removed);
     }
   
     public void startFromInit() {
