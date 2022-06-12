@@ -6,6 +6,7 @@ import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.Cart;
+import domain.user.SecurePasswordStorage;
 import domain.user.User;
 import domain.user.UserController;
 import org.hibernate.cfg.NotYetImplementedException;
@@ -44,8 +45,7 @@ public class ControllerDAL {
     }
 
 
-    public void saveUser(User u)
-    {
+    public void saveUser(User u) {
         db.saveUser(u);
 
     }
@@ -136,5 +136,17 @@ public class ControllerDAL {
     public void upDateOrder(Order order){
         throw new NotYetImplementedException();
     }
+
+    public void saveSecurePasswordStorage(SecurePasswordStorage securePasswordStorage) {
+        throw new NotYetImplementedException();
+    }
+    public void updateSecurePasswordStorage(SecurePasswordStorage securePasswordStorage){
+        throw new NotYetImplementedException();
+    }
+
+    public SecurePasswordStorage getSecurePasswordStorage(){
+        throw new NotYetImplementedException();
+    }
+
 
 }

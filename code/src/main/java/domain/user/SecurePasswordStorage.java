@@ -1,28 +1,30 @@
 package domain.user;
 
+import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 
 
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-
+import javax.persistence.Transient;
 
 
 //TODO: https://www.quickprogrammingtips.com/java/how-to-securely-store-passwords-in-java.html
 public class SecurePasswordStorage {
     private static SecurePasswordStorage securePasswordStorage_singleton = null;
     // Simulates database of users!
-    private final Map<String, UserInfo> userDatabase = new HashMap<>();
+    //private final Map<String, UserInfo> userDatabase = new HashMap<>();
+    private List<UserInfo> userDatabase = new LinkedList<>();
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
     private SecurePasswordStorage(){}
 
@@ -45,7 +47,7 @@ public class SecurePasswordStorage {
     private boolean authenticateUser(String inputUser, String inputPass) throws Exception {
         UserInfo user;
         synchronized (userDatabase) {
-            user = userDatabase.get(inputUser);
+            user = getUser(inputUser);
         }
         if (user == null) {
             return false;
@@ -68,6 +70,7 @@ public class SecurePasswordStorage {
         user.userid = userid;
         user.userSalt = salt;
         saveUser(user);
+        controllerDAL.updateSecurePasswordStorage(this);
     }
 
     // Get a encrypted password using PBKDF2 hash algorithm
@@ -95,11 +98,19 @@ public class SecurePasswordStorage {
     }
 
     private synchronized void saveUser(UserInfo user) {
-        userDatabase.put(user.userid, user);
+        userDatabase.add(user);
     }
 
     public boolean isUserRole(String userName) {
-        return userDatabase.get(userName)!=null;
+        return getUser(userName)!=null;
+    }
+
+    private synchronized UserInfo getUser(String userName){
+        for(UserInfo userInfo : userDatabase){
+            if(userInfo.userid.equals(userName))
+                return userInfo;
+        }
+        return null;
     }
 }
 
