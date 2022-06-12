@@ -1,7 +1,6 @@
 package Testing_System;
 
-import Presentation.Model.PresentationShop;
-import Presentation.Model.PresentationUser;
+
 import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;

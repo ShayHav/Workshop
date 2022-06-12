@@ -1,6 +1,6 @@
 package domain.notifications;
 
-import Presentation.Model.Messages.NotificationMessage;
+
 import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidAuthorizationException;

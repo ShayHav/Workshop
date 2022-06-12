@@ -50,6 +50,10 @@ public class User {
         roleList = new HashMap<>();
     }
 
+    private UserState2 getUserState(){
+        return us;
+    }
+
     public boolean isEnteredMarket() {
         return enteredMarket;
     }
@@ -396,7 +400,7 @@ public class User {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
