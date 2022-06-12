@@ -1,6 +1,7 @@
 package domain.shop;
 
 import domain.ControllersBridge;
+import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
@@ -51,6 +52,8 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
     private MarketSystem marketSystem = MarketSystem.getInstance();
+    @Transient
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
     private boolean isShopOwner(String username){
         for(User user: ShopOwners) {
@@ -70,9 +73,13 @@ public class Shop {
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
+        controllerDAL.saveDiscountPolicy(discountPolicy);
         this.purchasePolicy = purchasePolicy;
+        controllerDAL.savePurchasePolicy(purchasePolicy);
         inventory = new Inventory();
+        controllerDAL.saveInventory(inventory);
         orders = new OrderHistory();
+        controllerDAL.saveOrderHistory(orders);
         ShopOwners = new LinkedList<>();
         ShopManagers = new LinkedList<>();
         rank = -1;
@@ -81,8 +88,9 @@ public class Shop {
         this.description = description;
         this.ShopFounder = shopFounder;
         this.shopID = shopID;
-        shopManagersPermissionsController = new ShopManagersPermissionsController();
+        shopManagersPermissionsController = new ShopManagersPermissionsController(shopID);
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+        controllerDAL.saveShopManagersPermissionsController(shopManagersPermissionsController);
     }
 
     public void setDescription(String description) {
@@ -506,7 +514,6 @@ public class Shop {
 
     private List<User> hashMapToList(Map<String,User> hashMap) {
         return new LinkedList(hashMap.values());
-
     }
 
     private static List<ShopManagersPermissions> getAllPermissionsList()
@@ -757,4 +764,5 @@ public class Shop {
     public void RemoveShopManagerTest(String useID) {
         ShopManagers.remove(useID);
     }
+
 }

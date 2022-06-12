@@ -1,5 +1,6 @@
 package domain.shop.discount;
 
+import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.CriticalInvariantException;
@@ -37,6 +38,8 @@ public class DiscountPolicy {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Transient
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
 
     public DiscountPolicy(){
@@ -160,6 +163,7 @@ public class DiscountPolicy {
         String discountStringed = String.format("discount of %f on product %s can be applied.", percentage, productName);
         Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         prod_disc.add(newDiscount);
+        controllerDAL.upDateDiscountPolicy(this);
 
         return newDiscount.getID();
     }
@@ -180,6 +184,7 @@ public class DiscountPolicy {
         String discountStringed = String.format("discount of %f on Category %s can be applied.", percentage, category);
         Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         category_discount.add(newDiscount);
+        controllerDAL.upDateDiscountPolicy(this);
 
         return newDiscount.getID();
     }
@@ -191,6 +196,7 @@ public class DiscountPolicy {
         String discountStringed = String.format("discount of %f on all of shop's products can be applied", percentage);
         Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
         shopAllProducts_discounts.add(newDiscount);
+
         return newDiscount.getID();
     }
 
@@ -212,6 +218,7 @@ public class DiscountPolicy {
         String discountStringed = String.format("discount of %f on product %s can be applied %s", percentage, productName, pred.toString());
         Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         prod_disc.add(newDiscount);
+        controllerDAL.upDateDiscountPolicy(this);
 
         return newDiscount.getID();
     }
@@ -235,6 +242,7 @@ public class DiscountPolicy {
         String discountStringed = String.format("discount of %f on category %s can be applied %s", percentage, category, pred.toString());
         Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         category_discount.add(newDiscount);
+        controllerDAL.upDateDiscountPolicy(this);
 
         return newDiscount.getID();
     }
@@ -246,6 +254,7 @@ public class DiscountPolicy {
         String discountStringed = String.format("discount of %f on any of the stores products can be applied %s", percentage, pred.toString());
         Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
         shopAllProducts_discounts.add(newDiscount);
+        controllerDAL.upDateDiscountPolicy(this);
 
         return newDiscount.getID();
     }
@@ -280,10 +289,12 @@ public class DiscountPolicy {
             if (dis.getID() == discountID) {
                 shopAllProducts_discounts.remove(dis);
                 eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
+                controllerDAL.upDateDiscountPolicy(this);
+                return true;
             }
         }
-
         eventLogger.logMsg(Level.INFO, String.format("no such discount in the shop: %d", discountID));
+        //controllerDAL.upDateDiscountPolicy(this);
         return false;
     }
 
@@ -335,6 +346,8 @@ public class DiscountPolicy {
         }catch (InvalidParamException invalidParamException){
             throw new CriticalInvariantException("fundamental error, the complex type sent here is Invalid");
         }
+        controllerDAL.upDateDiscountPolicy(this);
+
         return discID;
     }
 
@@ -345,6 +358,8 @@ public class DiscountPolicy {
         }catch (InvalidParamException invalidParamException){
             throw new CriticalInvariantException("fundamental error, the complex type sent here is Invalid");
         }
+        controllerDAL.upDateDiscountPolicy(this);
+
         return discID;
     }
 
@@ -355,6 +370,8 @@ public class DiscountPolicy {
         }catch (InvalidParamException invalidParamException){
             throw new CriticalInvariantException("fundamental error, the complex type sent here is Invalid");
         }
+        controllerDAL.upDateDiscountPolicy(this);
+
         return discID;
     }
 
@@ -424,6 +441,7 @@ public class DiscountPolicy {
         listOfDiscount1.add(newDiscount);
         if(listOfDiscount1 != listOfDiscount2)
             listOfDiscount2.add(newDiscount);
+        controllerDAL.upDateDiscountPolicy(this);
 
         return newDiscount.getID();
     }
@@ -437,6 +455,7 @@ public class DiscountPolicy {
         for(List<Discount> valueSet : category_discounts.values())
             prodPR.addAll(valueSet);
         prodPR.addAll(shopAllProducts_discounts);
+        controllerDAL.upDateDiscountPolicy(this);
 
         return prodPR.stream().distinct().collect(Collectors.toList());
     }

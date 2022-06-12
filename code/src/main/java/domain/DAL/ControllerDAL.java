@@ -2,11 +2,12 @@ package domain.DAL;
 
 import DB.HiberDB;
 import domain.market.MarketSystem;
-import domain.shop.Order;
-import domain.shop.Product;
-import domain.shop.Shop;
+import domain.shop.*;
+import domain.shop.PurchasePolicys.PurchasePolicy;
+import domain.shop.discount.DiscountPolicy;
 import domain.user.Cart;
 import domain.user.User;
+import domain.user.UserController;
 import org.hibernate.cfg.NotYetImplementedException;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class ControllerDAL {
+    private static ControllerDAL instance = null;
     private HiberDB db;
 
     public ControllerDAL()
@@ -73,6 +75,8 @@ public class ControllerDAL {
         db.saveShop(shop);
     }
 
+    public void upDateShop(Shop shop){throw new NotYetImplementedException();}
+
     public Shop getShop(int shopID)
     {
         return db.getShop(shopID);
@@ -83,7 +87,7 @@ public class ControllerDAL {
         saveProduct(p);
     }
 
-    public Product getProduct(int pID)
+    public ProductImp getProduct(int pID)
     {
         return getProduct(pID);
     }
@@ -93,5 +97,44 @@ public class ControllerDAL {
         throw new NotYetImplementedException();
     }
 
+    public void saveShopManagersPermissionsController(ShopManagersPermissionsController shopManagersPermissionsController){throw new NotYetImplementedException();}
+
+    public void saveDiscountPolicy(DiscountPolicy discountPolicy){
+        throw new NotYetImplementedException();
+    }
+
+    public void upDateDiscountPolicy(DiscountPolicy discountPolicy){
+        throw new NotYetImplementedException();
+    }
+
+    public void savePurchasePolicy(PurchasePolicy purchasePolicy){
+        throw new NotYetImplementedException();
+    }
+
+    public void upDatePurchasePolicy(PurchasePolicy purchasePolicy){
+        throw new NotYetImplementedException();
+    }
+    public void saveInventory(Inventory inventory){
+        throw new NotYetImplementedException();
+    }
+
+    public void upDateInventory(Inventory inventory){
+        throw new NotYetImplementedException();
+    }
+
+    public void saveOrderHistory(OrderHistory order){
+        throw new NotYetImplementedException();
+    }
+
+    public void upDateOrderHistory(OrderHistory order){
+        throw new NotYetImplementedException();
+    }
+    public void saveOrder(Order order){
+        throw new NotYetImplementedException();
+    }
+
+    public void upDateOrder(Order order){
+        throw new NotYetImplementedException();
+    }
 
 }

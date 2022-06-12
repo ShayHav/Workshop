@@ -28,7 +28,7 @@ public class UserController {
     private int guestCounter = 0;
     private final String userPattern ="^[a-zA-Z][a-zA-Z0-9_]{4,16}$";
     private final String pwPattern ="^[a-zA-Z][a-zA-Z0-9_]{4,16}$";
-    private ControllerDAL controllerDAL = new ControllerDAL();
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
     private UserController() {
         memberList = new HashMap<>();
