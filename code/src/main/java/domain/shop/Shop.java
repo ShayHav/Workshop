@@ -775,11 +775,11 @@ public class Shop {
             return discountPolicy.removeDiscount(discountID);
         else return false;
     }
-    public boolean removePurchaseRule(String userName, int purchaseRuleID){
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeBuyingShopPolicy(userName))
-            return purchasePolicy.removePurchaseRule(purchaseRuleID);
-        else return false;
-    }
+//    public boolean removePurchaseRule(String userName, int purchaseRuleID){
+//        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeBuyingShopPolicy(userName))
+//            return purchasePolicy.removePurchaseRule(purchaseRuleID);
+//        else return false;
+//    }
 
     public void removePurchaseRule(String userName, int purchaseRuleID){ 
       if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeBuyingShopPolicy(userName))
