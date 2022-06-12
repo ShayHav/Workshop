@@ -9,13 +9,15 @@ import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.user.filter.*;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Enumerated;
+
 import javax.persistence.*;
+
 import java.util.*;
 import java.util.logging.Level;
 
-@Entity
 public class User {
-    @Id
     private String userName;
     private UserState2 us;
     private Map<Integer,List<Role>> roleList;

@@ -222,13 +222,14 @@ public class PurchasePolicy {
     }
 
 
-    public boolean removePurchaseRule(int purchaseRuleID){
+    public void removePurchaseRule(int purchaseRuleID){
         for(Map.Entry<Integer, List<PurchaseRule>> set : product_purchaseRules.entrySet()){
             List<PurchaseRule> prod_pr = set.getValue();
             for(PurchaseRule pr: prod_pr) {
                 if (pr.getID() == purchaseRuleID) {
                     prod_pr.remove(pr);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
+                    break;
                 }
             }
         }
@@ -239,6 +240,7 @@ public class PurchasePolicy {
                 if (pr.getID() == purchaseRuleID) {
                     prod_pr.remove(pr);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
+                    break;
                 }
             }
         }
@@ -247,10 +249,10 @@ public class PurchasePolicy {
             if (pr.getID() == purchaseRuleID) {
                 general_PurchaseRules.remove(pr);
                 eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
+                break;
             }
         }
         eventLogger.logMsg(Level.INFO, String.format("no such discount in the shop: %d", purchaseRuleID));
-        return false;
     }
 
     public List<PurchaseRule> getAllDistinctPurchaseRules(){

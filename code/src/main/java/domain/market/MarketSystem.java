@@ -861,9 +861,7 @@ public class MarketSystem {
         return shopController.removeDiscount(userName,discountID, shopID);
     }
 
-
-
-    public boolean removePurchaseRule(String userName, int purchaseRuleID, int shopID) throws ShopNotFoundException {
-        return shopController.removePurchaseRule(userName,purchaseRuleID, shopID);
+    public void removePurchaseRule(String userName,int purchaseRuleID, int shopID) throws ShopNotFoundException {
+        shopController.removePurchaseRule(purchaseRuleID, shopID);
     }
 }

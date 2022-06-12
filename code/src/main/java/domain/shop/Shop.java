@@ -63,6 +63,24 @@ public class Shop {
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
     }
 
+    public Shop(String name,String description, User shopFounder, int shopID) {
+        this.discountPolicy = new DiscountPolicy();
+        this.purchasePolicy = new PurchasePolicy();
+        inventory = new Inventory();
+        orders = new OrderHistory();
+        ShopOwners = new HashMap<>();
+        ShopManagers = new HashMap<>();
+        rank = -1;
+        this.name = name;
+        isOpen = true;
+        this.description = description;
+        this.ShopFounder = shopFounder;
+        this.shopID = shopID;
+        shopManagersPermissionsController = new ShopManagersPermissionsController();
+        shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+    }
+
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -552,7 +570,7 @@ public class Shop {
         }catch (Exception e){}
         User finalBuyer = buyer;
         ShopOwners.values().forEach(owner -> {
-              market.sendMessage(owner, finalBuyer,message );
+              market.sendMessage(owner, finalBuyer, message);
         });
         market.sendMessage(ShopFounder, finalBuyer, message);
     }
@@ -761,6 +779,11 @@ public class Shop {
         if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeBuyingShopPolicy(userName))
             return purchasePolicy.removePurchaseRule(purchaseRuleID);
         else return false;
+    }
+
+    public void removePurchaseRule(String userName, int purchaseRuleID){ 
+      if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeBuyingShopPolicy(userName))
+        purchasePolicy.removePurchaseRule(purchaseRuleID); 
     }
 
     public PurchasePolicy getPurchasePolicy() {

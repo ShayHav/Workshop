@@ -41,13 +41,12 @@ public class ShopController {
         Shop newShop;
         synchronized(this) {
             shopCounter++;
-            newShop = new Shop(name, description,discountPolicy,purchasePolicy, shopFounder, shopCounter);
+            newShop = new Shop(name, description, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
         }
         shopFounder.addRole(shopCounter,Role.ShopFounder);
         eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
         return newShop;
-
     }
 
     public List<Shop> getInfoOfShops(Filter<Shop> f) {
@@ -404,9 +403,10 @@ public class ShopController {
         return shop.removeDiscount(userName,discountID);
     }
 
-    public boolean removePurchaseRule(String userName, int purchaseRuleID, int shopID) throws ShopNotFoundException {
+
+    public void removePurchaseRule(String userName, int purchaseRuleID, int shopID) throws ShopNotFoundException {
         Shop shop = getShop(shopID);
-        return shop.removePurchaseRule(userName,purchaseRuleID);
+        shop.removePurchaseRule(userName,purchaseRuleID);
     }
 
     public void deleteShopTest(Integer key) {

@@ -1103,11 +1103,11 @@ public class Services {
     public ResponseT<Boolean> removePR(String userName, int purchaseRuleID, int shopID){
         boolean removed;
         try {
-            removed = marketSystem.removePurchaseRule(userName,purchaseRuleID, shopID);
+            marketSystem.removePurchaseRule(purchaseRuleID, shopID);
+            return new ResponseT<>();
         }catch (ShopNotFoundException shopNotFoundException){
             return new ResponseT<>(String.format("discount not removed, shop was not found. error: %s", shopNotFoundException.getMessage()));
         }
-        return new ResponseT<>(removed);
     }
   
     public void startFromInit() {
