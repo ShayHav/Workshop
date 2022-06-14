@@ -5,18 +5,20 @@ import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.market.*;
+import domain.market.ExternalConnectors.PaymentService;
+import domain.market.ExternalConnectors.PaymentServiceImp;
+import domain.market.ExternalConnectors.SupplyService;
+import domain.market.ExternalConnectors.SupplyServiceImp;
 import domain.shop.Order;
 import domain.shop.Product;
 import domain.shop.ProductImp;
 import domain.user.TransactionInfo;
-import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

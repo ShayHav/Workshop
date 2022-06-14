@@ -1,4 +1,4 @@
-package domain.market;
+package domain.market.ExternalConnectors;
 
 import domain.user.TransactionInfo;
 
@@ -45,9 +45,9 @@ public class ExternalConnector {
 
     public synchronized boolean pay(TransactionInfo ti){
         for(PaymentService service: paymentServices){
-            boolean processed = service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(),
+            int processed = service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(),
                     ti.getExpirationDate(), ti.getTotalAmount());
-            if(processed)
+            if(processed > 0)
                 return true;
         }
         return false;
@@ -55,8 +55,25 @@ public class ExternalConnector {
 
     public synchronized boolean supply(TransactionInfo ti, Map<Integer,Integer> products){
         for(SupplyService service: supplyServices){
-            boolean processed = service.supply(ti.getFullName(), ti.getAddress(), products);
-            if(processed)
+            int processed = service.supply(ti.getFullName(), ti.getAddress(), products);
+            if(processed > 0)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean cancelSupply(int transactionID){
+        for (SupplyService service: supplyServices){
+            if(service.cancelSupply(transactionID)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean cancelPayment(int transactionID){
+        for(PaymentService service: paymentServices){
+            if(service.cancelPayment(transactionID))
                 return true;
         }
         return false;

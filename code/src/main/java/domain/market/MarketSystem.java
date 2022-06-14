@@ -2,6 +2,7 @@ package domain.market;
 
 import domain.*;
 import domain.Exceptions.*;
+import domain.market.ExternalConnectors.*;
 import domain.notifications.AdminObserver;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
@@ -127,14 +128,26 @@ public class MarketSystem {
         Dotenv dotenv = Dotenv.configure().filename(".env").load();
         String adminUsername = dotenv.get("Admin_username"), password = dotenv.get("Admin_password");
         String mod = dotenv.get("Mod");
-        if (!userController.createSystemManager(adminUsername, password)) {
+        if(!userController.createSystemManager(adminUsername, password)) {
             return false;
         }
-        if(mod.equals("production")) {
-            return externalConnector.connectToSupplyService(new SupplyServiceImp()) && externalConnector.connectToPaymentService(new PaymentServiceImp());
+        switch (mod){
+            case "production" -> {
+                return externalConnector.connectToSupplyService(new SupplyServiceImp()) && externalConnector.connectToPaymentService(new PaymentServiceImp());
+            }
+            case "release" -> {
+                String paymentServiceUrl = dotenv.get("Payment_Connector");
+                String supplyServiceUrl = dotenv.get("Supply_Connector");
+                PaymentService paymentService = new RealPaymentSystem(paymentServiceUrl);
+                SupplyServiceReal supplyService = new SupplyServiceReal(supplyServiceUrl);
+                return externalConnector.connectToPaymentService(paymentService)
+                        && externalConnector.connectToSupplyService(supplyService);
+            }
+            default -> {
+                errorLogger.logMsg(Level.SEVERE, "unsupported mod in env file");
+                throw new RuntimeException("not supported mod");
+            }
         }
-        //TODO figure out what to do if we are at release
-        return true;
     }
 
     /***

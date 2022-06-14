@@ -4,24 +4,19 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.ResponseT;
 import domain.market.*;
-import domain.shop.*;
-import domain.shop.Order;
+import domain.market.ExternalConnectors.PaymentService;
+import domain.market.ExternalConnectors.PaymentServiceImp;
+import domain.market.ExternalConnectors.SupplyService;
+import domain.market.ExternalConnectors.SupplyServiceImp;
 import domain.user.TransactionInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchProductFilter;
-import domain.user.User;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import Testing_System.Tester;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PaymentCaseTest extends Tester {
 

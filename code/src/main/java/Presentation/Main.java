@@ -156,6 +156,7 @@ public class Main {
 
         app.exception(AuthenticationException.class, ((e, ctx) ->
                 ctx.status(400).render("errorPage.jte", Map.of("errorMessage", e.getExplanation(), "status", 400))));
+
     }
 
     public static void fillData(){

@@ -13,6 +13,7 @@
     {"function": "EnterMarket", "args": [] },
     {"function": "Login","args": ["-Guest0","Admin", "Admin"]},
     {"function": "CreateSystemManager","args": ["Admin", "u1", "pass"]},
+    {"function": "Logout","args": ["Admin"]},
     {"function": "Register","args": ["-Guest2","u2", "pass"]},
     {"function": "Register","args": ["-Guest3","u3", "pass"]},
     {"function": "Register","args": ["-Guest4","u4", "pass"]},

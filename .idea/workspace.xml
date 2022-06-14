@@ -4,9 +4,48 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="add discount impl">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_4_9_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_2_8_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_github_cdimascio_dotenv_java_2_2_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/Client.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/PaymentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/PaymentServiceImp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/RealPaymentSystem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyServiceReal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_1_5_32.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_1_4_10.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_common_1_5_32.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_common_1_4_0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/notifications/NotificationManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/notifications/NotificationManagerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/code/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/code/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteNavBarGenerated.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteshopFilterGenerated.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/code/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/com/company/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/PaymentCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/PaymentCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/Bridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/ProxyBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/Tester.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/Tester.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/UserGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/UserGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalConnector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/PaymentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/PaymentServiceImp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/SupplyService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/SupplyServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/resources/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/resources/state_init.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/state_init.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +55,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -37,6 +76,18 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectId" id="2974Zwr79onHhRue6hzZoLuD64v" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -46,12 +97,17 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -60,8 +116,11 @@
       <recent name="domain.user" />
       <recent name="domain" />
     </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="domain.market.ExternalConnectors" />
+    </key>
   </component>
-  <component name="RunManager" selected="JUnit.NotificationManagerTest">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
       <module name="workshop" />
@@ -147,10 +206,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.NotificationManagerTest" />
         <item itemvalue="JUnit.NotificationManagerTest.removeFromObserversList" />
         <item itemvalue="JUnit.NotificationManagerTest.notifyAdmin" />
-        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.ShoppingBasketTest" />
       </list>
     </recent_temporary>
@@ -179,6 +238,9 @@
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="1662000" />
+      <workItem from="1655214788218" duration="1165000" />
+      <workItem from="1655219339041" duration="91000" />
+      <workItem from="1655231256249" duration="3418000" />
     </task>
     <task id="LOCAL‎00011" summary="changed product to hold it's amount in ceratin store">
       <created>1652709279725</created>
@@ -543,6 +605,11 @@
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
           <line>318</line>
           <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java</url>
+          <line>44</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

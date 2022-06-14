@@ -7,6 +7,8 @@ import domain.ResponseList;
 import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.*;
+import domain.market.ExternalConnectors.PaymentService;
+import domain.market.ExternalConnectors.SupplyService;
 import domain.notifications.AdminObserver;
 import domain.notifications.UserObserver;
 import domain.shop.*;
