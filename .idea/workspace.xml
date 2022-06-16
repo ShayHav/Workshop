@@ -4,48 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="add discount impl">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okhttp3_okhttp_4_9_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_squareup_okio_okio_2_8_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_github_cdimascio_dotenv_java_2_2_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/Client.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/PaymentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/PaymentServiceImp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/RealPaymentSystem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyServiceReal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_1_5_32.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_1_4_10.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_common_1_5_32.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_kotlin_kotlin_stdlib_common_1_4_0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="add real external connectors">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/code/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/code/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteNavBarGenerated.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteshopFilterGenerated.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/code/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/com/company/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/PaymentCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/PaymentCaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/Bridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/ProxyBridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/Tester.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/Tester.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/UserGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/UserGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalConnector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalConnector.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/PaymentService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/PaymentServiceImp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/SupplyService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/SupplyServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyServiceImp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/resources/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/resources/state_init.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/target/classes/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/state_init.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,11 +42,15 @@
   <component name="JpbToolWindowState">
     <option name="myId2FirstActivated">
       <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
         <entry key="com.haulmont.jpb.jpaStructure" value="true" />
       </map>
     </option>
     <option name="myId2Visible">
       <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="false" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="false" />
         <entry key="com.haulmont.jpb.jpaStructure" value="false" />
       </map>
     </option>
@@ -240,13 +207,9 @@
       <workItem from="1654694608746" duration="1662000" />
       <workItem from="1655214788218" duration="1165000" />
       <workItem from="1655219339041" duration="91000" />
-      <workItem from="1655231256249" duration="3418000" />
-    </task>
-    <task id="LOCAL‎00011" summary="changed product to hold it's amount in ceratin store">
-      <created>1652709279725</created>
-      <option name="number" value="LOCAL‎00011" />
-      <option name="presentableId" value="LOCAL‎00011" />
-      <updated>1652709279725</updated>
+      <workItem from="1655231256249" duration="3606000" />
+      <workItem from="1655279582364" duration="2672000" />
+      <workItem from="1655372913620" duration="4457000" />
     </task>
     <task id="LOCAL‎00012" summary="add product works. made some adjustments">
       <created>1652719527070</created>
@@ -536,7 +499,13 @@
       <option name="presentableId" value="LOCAL‎00059" />
       <updated>1654634380676</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL‎00060" summary="add real external connectors">
+      <created>1655234873464</created>
+      <option name="number" value="LOCAL‎00060" />
+      <option name="presentableId" value="LOCAL‎00060" />
+      <updated>1655234873465</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -561,7 +530,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="collapse animation works&#10;changed product page - if product out of stock we notify in shop page + in product shop there is no option of adding it to cart." />
     <MESSAGE value="when system manager requests history of sales - returns all shops or all users (2 different methods)" />
     <MESSAGE value="user can now access his orders - only if member&#10;fixed many return statements in system market- returned null if user isn't logged in instead of throwing an exception&#10;fixed some errors in services - method returns Response, in mistake returned ResponseT" />
     <MESSAGE value="solved conflicts" />
@@ -586,7 +554,8 @@
     <MESSAGE value="design of discount add + compose" />
     <MESSAGE value="started impl discount from gui to domain" />
     <MESSAGE value="add discount impl" />
-    <option name="LAST_COMMIT_MESSAGE" value="add discount impl" />
+    <MESSAGE value="add real external connectors" />
+    <option name="LAST_COMMIT_MESSAGE" value="add real external connectors" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

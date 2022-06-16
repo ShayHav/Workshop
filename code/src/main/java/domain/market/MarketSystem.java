@@ -124,7 +124,7 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    public boolean start(PaymentService payment, SupplyService supply) throws InvalidSequenceOperationsExc, IncorrectIdentification {
+    public boolean start(PaymentService payment, SupplyService supply) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         Dotenv dotenv = Dotenv.configure().filename(".env").load();
         String adminUsername = dotenv.get("Admin_username"), password = dotenv.get("Admin_password");
         String mod = dotenv.get("Mod");
@@ -133,15 +133,15 @@ public class MarketSystem {
         }
         switch (mod){
             case "production" -> {
-                return externalConnector.connectToSupplyService(new SupplyServiceImp()) && externalConnector.connectToPaymentService(new PaymentServiceImp());
+                return externalConnector.setSupplyService(new SupplyServiceImp()) && externalConnector.setPaymentService(new PaymentServiceImp());
             }
             case "release" -> {
                 String paymentServiceUrl = dotenv.get("Payment_Connector");
                 String supplyServiceUrl = dotenv.get("Supply_Connector");
                 PaymentService paymentService = new RealPaymentSystem(paymentServiceUrl);
                 SupplyServiceReal supplyService = new SupplyServiceReal(supplyServiceUrl);
-                return externalConnector.connectToPaymentService(paymentService)
-                        && externalConnector.connectToSupplyService(supplyService);
+                return externalConnector.setPaymentService(paymentService)
+                        && externalConnector.setSupplyService(supplyService);
             }
             default -> {
                 errorLogger.logMsg(Level.SEVERE, "unsupported mod in env file");

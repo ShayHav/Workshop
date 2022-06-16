@@ -226,8 +226,8 @@ public class Services {
         try {
             marketSystem.start(payment, supply);
             return new Response();
-        } catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc | IncorrectIdentification | BlankDataExc exception) {
+            return new Response(exception.getLocalizedMessage());
         }
     }
 
