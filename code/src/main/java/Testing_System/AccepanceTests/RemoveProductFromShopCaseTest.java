@@ -178,11 +178,14 @@ public class RemoveProductFromShopCaseTest extends Tester {
         Login(g3,validUsers[ug.getNumOfUser() - 1], pws[ug.getNumOfUser() - 1]);
         AppointNewShopManager(shopID_2, validUsers[ug.getNumOfUser() - 1], user_2); //appointed, no permissions were given yet
         AppointNewShopManager(shopID_1, validUsers[2], user_1);
-        ShopManagersPermissions sp = ShopManagersPermissions.RemoveProductFromInventory;
+        ShopManagersPermissions sp1 = ShopManagersPermissions.RemoveProductFromInventory;
         List<ShopManagersPermissions> ls = new ArrayList<ShopManagersPermissions>();
-        ls.add(sp);
+        ls.add(sp1);
         AddShopMangerPermissions(shopID_1, ls, validUsers[2], user_1);
         AppointNewShopOwner(shopID_1, validUsers[3], user_1);
+        RemoveShopManagerPermissions(shopID_2,ls,validUsers[ug.getNumOfUser() - 1],validUsers[1]);
+        RemoveShopManagerPermissions(shopID_2,ls,validUsers[2],validUsers[1]);
+        RemoveShopManagerPermissions(shopID_2,ls,validUsers[3],validUsers[1]);
 
         assertFalse(!RemoveProductFromShopInventory(pID_2, validUsers[ug.getNumOfUser() - 1], shopID_2).isErrorOccurred());
         assertFalse(!RemoveProductFromShopInventory(pID_1, validUsers[ug.getNumOfUser() - 1], shopID_2).isErrorOccurred());
@@ -200,7 +203,7 @@ public class RemoveProductFromShopCaseTest extends Tester {
     public void ProductAlreadyRemovedTest()
     {
         assertTrue(!RemoveProductFromShopInventory(pID_1, user_1, shopID_1).isErrorOccurred());
-        assertFalse(!RemoveProductFromShopInventory(pID_2, user_1, shopID_1).isErrorOccurred());
+        assertFalse(!RemoveProductFromShopInventory(pID_1, user_1, shopID_1).isErrorOccurred());
     }
 
     @Test
@@ -208,7 +211,6 @@ public class RemoveProductFromShopCaseTest extends Tester {
         assertFalse(!RemoveProductFromShopInventory(-1, user_1, shopID_1).isErrorOccurred());
         assertFalse(!RemoveProductFromShopInventory(pID_2, null, shopID_1).isErrorOccurred());
         assertFalse(!RemoveProductFromShopInventory(pID_2, user_1, -1).isErrorOccurred());
-
     }
 
 }

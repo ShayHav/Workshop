@@ -49,8 +49,11 @@ public class GetOrderHistoryInShopCaseTest extends Tester {
 
     @BeforeAll
     public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        guest_1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        guest_2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
         ug = new UserGenerator();
         validUsers = ug.GetValidUsers();
+        DeleteUserTest(validUsers);
         pws = ug.GetPW();
         admin = validUsers[0];
         pw_admin = pws[0];
