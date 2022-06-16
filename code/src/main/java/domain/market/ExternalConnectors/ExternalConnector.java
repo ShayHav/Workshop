@@ -45,6 +45,9 @@ public class ExternalConnector {
      * @return true if the payment was processed and false otherwise
      */
     public synchronized boolean pay(TransactionInfo ti){
+        boolean connected = connectToPaymentService(this.paymentService);
+        if(!connected)
+            return false;
         Integer transactionID = submit(() ->
                 paymentService.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(),
                     ti.getExpirationDate(), ti.getTotalAmount()));
@@ -59,6 +62,9 @@ public class ExternalConnector {
      * @return true if a delivery was created and false otherwise
      */
     public synchronized boolean supply(TransactionInfo ti, Map<Integer,Integer> products){
+        boolean connected = connectToSupplyService(this.supplyService);
+        if(!connected)
+            return false;
         Integer transactionID = submit(() -> supplyService.supply(ti.getFullName(), ti.getAddress(), products));
         return transactionID != null && transactionID >= 0;
     }
