@@ -1,9 +1,9 @@
 package domain.ExternalServicesTest;
 
 import domain.Exceptions.BlankDataExc;
-import domain.market.ExternalConnectors.ExternalConnector;
-import domain.market.ExternalConnectors.PaymentService;
-import domain.market.ExternalConnectors.SupplyService;
+import domain.ExternalConnectors.ExternalConnector;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.user.TransactionInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

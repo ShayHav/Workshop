@@ -4,16 +4,65 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="added time limit to all external connection request">
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="bug fixes and add test with lose connection and no answer from the external services">
+      <change afterPath="$PROJECT_DIR$/code/src/main/resources/EnvFiles/ProductionEnvFile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/resources/EnvFiles/ReleaseEnvFile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/resources/EnvFiles/TestingEnvFile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/AppointMangerMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/AppointMangerMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationOrder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Functions.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/StateFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AddProductToShopCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AddProductToShopCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AddShopManagerPermissionsCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AddShopManagerPermissionsCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AddToCartCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AddToCartCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AppointManagerCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AppointManagerCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AppointNewOwnerCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/AppointNewOwnerCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/ChangeProductInfoCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/ChangeProductInfoCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CheckoutCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CheckoutCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CloseShopCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CloseShopCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CreateSystemManagerCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CreateSystemManagerCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/DismissalOwnerByOwnerCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/DismissalOwnerByOwnerCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/GetOrderHistoryInShopCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/GetOrderHistoryInShopCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/GetShopsInfoCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/GetShopsInfoCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/OpenShopCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/OpenShopCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/PaymentCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/PaymentCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/RemoveManagerPermissionsCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/RemoveManagerPermissionsCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/RequestShopOfficialsCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/RequestShopOfficialsCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SearchProductCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SearchProductCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/Bridge.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/ProxyBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/Tester.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/Tester.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalConnector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/notifications/SystemInfoMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/notifications/SystemInfoMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/market/ExternalConnectorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/ExternalServicesTest/ExternalConnectorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/market/MarketSystemTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/market/MarketSystemTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/Responses/Response.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ResponseList.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/Responses/ResponseList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ResponseMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/Responses/ResponseMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ResponseT.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/Responses/ResponseT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/Tuple.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/ExternalConnector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/ExternalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/ExternalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/PaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/PaymentServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/PaymentServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/RealPaymentSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/RealPaymentSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/ExternalConnectors/SupplyServiceReal.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyServiceReal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/ShoppingBasket.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/ShoppingBasket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/.env" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/META-INF/persistence.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/state_init.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/ExternalServicesTest/ExternalConnectorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/ExternalServicesTest/ExternalConnectorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -84,16 +133,16 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="domain" />
       <recent name="domain.shop" />
       <recent name="domain.market" />
       <recent name="domain.user" />
-      <recent name="domain" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="domain.market.ExternalConnectors" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.ExternalConnectorTest.pay">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
       <module name="workshop" />
@@ -179,10 +228,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.ExternalConnectorTest.pay" />
         <item itemvalue="JUnit.ExternalConnectorTest" />
         <item itemvalue="JUnit.ExternalConnectorTest.paymentWithInfiniteLoop" />
-        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.NotificationManagerTest" />
       </list>
     </recent_temporary>
@@ -216,13 +265,8 @@
       <workItem from="1655231256249" duration="3606000" />
       <workItem from="1655279582364" duration="2672000" />
       <workItem from="1655372913620" duration="4752000" />
-      <workItem from="1655387398297" duration="4312000" />
-    </task>
-    <task id="LOCAL‎00013" summary="started to add impl for cart, the class presentation basket + cart">
-      <created>1652721092217</created>
-      <option name="number" value="LOCAL‎00013" />
-      <option name="presentableId" value="LOCAL‎00013" />
-      <updated>1652721092217</updated>
+      <workItem from="1655387398297" duration="5147000" />
+      <workItem from="1655467246112" duration="2602000" />
     </task>
     <task id="LOCAL‎00014" summary="started to add impl for cart,add to cart,  cart.jte">
       <created>1652775905749</created>
@@ -512,7 +556,13 @@
       <option name="presentableId" value="LOCAL‎00061" />
       <updated>1655380111303</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL‎00062" summary="bug fixes and add test with lose connection and no answer from the external services">
+      <created>1655392390124</created>
+      <option name="number" value="LOCAL‎00062" />
+      <option name="presentableId" value="LOCAL‎00062" />
+      <updated>1655392390125</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -537,7 +587,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="user can now access his orders - only if member&#10;fixed many return statements in system market- returned null if user isn't logged in instead of throwing an exception&#10;fixed some errors in services - method returns Response, in mistake returned ResponseT" />
     <MESSAGE value="solved conflicts" />
     <MESSAGE value="users now have access to old orders and all their shops (if they are the shop founders)&#10;fixed bug i created in mistake - checked login for actions that could be performed by guests" />
     <MESSAGE value="bug fix in user - reset order history in every entrance in mistake&#10;appearance changes in addProduct.jte, editProduct.jte etc." />
@@ -562,7 +611,8 @@
     <MESSAGE value="add discount impl" />
     <MESSAGE value="add real external connectors" />
     <MESSAGE value="added time limit to all external connection request" />
-    <option name="LAST_COMMIT_MESSAGE" value="added time limit to all external connection request" />
+    <MESSAGE value="bug fixes and add test with lose connection and no answer from the external services" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fixes and add test with lose connection and no answer from the external services" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

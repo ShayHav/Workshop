@@ -1,6 +1,5 @@
-package domain;
+package domain.Responses;
 
-import java.util.List;
 import java.util.Map;
 
 public class ResponseMap<T1,T2> extends Response {

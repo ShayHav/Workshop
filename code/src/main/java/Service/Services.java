@@ -2,13 +2,13 @@ package Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.Exceptions.*;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
 import domain.market.*;
-import domain.market.ExternalConnectors.PaymentService;
-import domain.market.ExternalConnectors.SupplyService;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.notifications.AdminObserver;
 import domain.notifications.UserObserver;
 import domain.shop.*;
@@ -1122,8 +1122,8 @@ public class Services {
         ObjectMapper objectMapper = new ObjectMapper();
         Method[] methods = this.getClass().getDeclaredMethods();
         try(FileReader file = new FileReader(s)){
-            Functions functions = objectMapper.readValue(file,Functions.class);
-            for(Function function : functions.getFunctions()){
+            StateFile stateFile = objectMapper.readValue(file, StateFile.class);
+            for(Function function : stateFile.getFunctions()){
                 for(Method m : methods){
                     if(m.getName().equals(function.getFunction())){
                         Response response = (Response) m.invoke(this, function.args);

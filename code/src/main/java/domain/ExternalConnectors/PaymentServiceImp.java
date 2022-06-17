@@ -1,4 +1,4 @@
-package domain.market.ExternalConnectors;
+package domain.ExternalConnectors;
 
 public class PaymentServiceImp implements PaymentService{
     @Override

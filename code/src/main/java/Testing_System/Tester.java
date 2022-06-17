@@ -1,17 +1,12 @@
 package Testing_System;
 
 
-import domain.Exceptions.BlankDataExc;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Exceptions.ShopNotFoundException;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
-import domain.market.ExternalConnectors.PaymentService;
-import domain.market.ExternalConnectors.SupplyService;
-import domain.notifications.UserObserver;
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;

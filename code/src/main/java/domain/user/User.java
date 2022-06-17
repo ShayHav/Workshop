@@ -3,14 +3,10 @@ package domain.user;
 
 import domain.*;
 import domain.Exceptions.*;
-import domain.Exceptions.IllegalStateException;
-import domain.ResponseT;
-import domain.market.MarketSystem;
+import domain.Responses.Response;
+import domain.Responses.ResponseT;
 import domain.shop.*;
 import domain.user.filter.*;
-
-import javax.persistence.Embeddable;
-import javax.persistence.Enumerated;
 
 import javax.persistence.*;
 

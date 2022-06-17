@@ -1,4 +1,4 @@
-package domain.market.ExternalConnectors;
+package domain.ExternalConnectors;
 
 import java.util.Map;
 

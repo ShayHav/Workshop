@@ -5,10 +5,10 @@ import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.market.*;
-import domain.market.ExternalConnectors.PaymentService;
-import domain.market.ExternalConnectors.PaymentServiceImp;
-import domain.market.ExternalConnectors.SupplyService;
-import domain.market.ExternalConnectors.SupplyServiceImp;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.PaymentServiceImp;
+import domain.ExternalConnectors.SupplyService;
+import domain.ExternalConnectors.SupplyServiceImp;
 import domain.user.TransactionInfo;
 import org.junit.jupiter.api.*;
 

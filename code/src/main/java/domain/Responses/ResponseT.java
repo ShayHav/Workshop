@@ -1,4 +1,4 @@
-package domain;
+package domain.Responses;
 
 public class ResponseT<T> extends Response{
     private T value;

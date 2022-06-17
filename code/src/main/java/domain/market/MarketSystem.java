@@ -2,7 +2,9 @@ package domain.market;
 
 import domain.*;
 import domain.Exceptions.*;
-import domain.market.ExternalConnectors.*;
+import domain.ExternalConnectors.*;
+import domain.Responses.Response;
+import domain.Responses.ResponseT;
 import domain.notifications.AdminObserver;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
@@ -154,6 +156,12 @@ public class MarketSystem {
                 SupplyServiceReal supplyService = new SupplyServiceReal(supplyServiceUrl);
                 return externalConnector.setPaymentService(paymentService)
                         && externalConnector.setSupplyService(supplyService);
+            }
+            case "test" -> {
+                String paymentServiceUrl = dotenv.get("Payment_Connector");
+                String supplyServiceUrl = dotenv.get("Supply_Connector");
+                return externalConnector.setPaymentService(new RealPaymentSystem(paymentServiceUrl)) &&
+                        externalConnector.setSupplyService(new SupplyServiceReal(supplyServiceUrl));
             }
             default -> {
                 errorLogger.logMsg(Level.SEVERE, "unsupported mod in env file");
