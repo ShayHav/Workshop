@@ -1110,6 +1110,7 @@ public class Services {
     public ResponseT<Boolean> removePR(String userName, int purchaseRuleID, int shopID){
         boolean removed;
         try {
+            //todo removed??
             marketSystem.removePurchaseRule(userName,purchaseRuleID, shopID);
             return new ResponseT<>();
         }catch (ShopNotFoundException shopNotFoundException){
@@ -1120,7 +1121,26 @@ public class Services {
             return new ResponseT<>(invalidSequenceOperationsExc.getMessage());
         }
     }
-  
+
+    public Response acceptBid(int shopID, int bidID, User approver){
+        try {
+            marketSystem.acceptBid(shopID, bidID, approver);
+            return new Response();
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
+            return new Response(exception.getMessage());
+        }
+    }
+
+    public Response declineBid(int shopID, int bidID, User decliner){
+        try {
+            marketSystem.declineBid(shopID, bidID, decliner);
+            return new Response();
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
+            return new Response(exception.getMessage());
+        }
+    }
+
+
     public void startFromInit() {
         Path p = Paths.get("");
         String s = p.toAbsolutePath().toString() + "/src/main/resources/state_init.json";

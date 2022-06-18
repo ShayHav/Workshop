@@ -119,14 +119,14 @@ public class ShopTest {
     void calculateTotalAmountOfOrder() {
         Map<Integer, Integer> product_Quantity = new HashMap<>();
         product_Quantity.put(appleID, 3);
-        assertEquals(50, shop.calculateTotalAmountOfOrder(product_Quantity), "product p1 price after discounts should have been 4");
+        assertEquals(50, shop.calculateTotalAmountOfOrder(product_Quantity, new ArrayList<>()), "product p1 price after discounts should have been 4");
         product_Quantity.put(orangeID, 7);
         when(mockBasket.calculateTotal()).thenReturn(90.0);
-        assertEquals(90.0, shop.calculateTotalAmountOfOrder(product_Quantity), "product p2 price after discounts should have been 4");
+        assertEquals(90.0, shop.calculateTotalAmountOfOrder(product_Quantity, new ArrayList<>()), "product p2 price after discounts should have been 4");
         product_Quantity = new HashMap<>();
         product_Quantity.put(orangeID + 200, 3);
         when(mockBasket.calculateTotal()).thenReturn(0.0);
-        assertEquals(0.0, shop.calculateTotalAmountOfOrder(product_Quantity), "product p3 doesn't not exist and should have returned price 0");
+        assertEquals(0.0, shop.calculateTotalAmountOfOrder(product_Quantity, new ArrayList<>()), "product p3 doesn't not exist and should have returned price 0");
     }
 
     @Test
@@ -145,7 +145,7 @@ public class ShopTest {
         }
         ResponseT<Order> checkoutRet = null;
         try {
-            checkoutRet = shop.checkout(product_QuantityInBasket, trans);
+            checkoutRet = shop.checkout(product_QuantityInBasket, new ArrayList<>(), trans);
         } catch (BlankDataExc blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
@@ -170,7 +170,7 @@ public class ShopTest {
         }
         ResponseT<Order> checkoutRet = null;
         try {
-            checkoutRet = shop.checkout(product_QuantityInBasket, trans);
+            checkoutRet = shop.checkout(product_QuantityInBasket, new ArrayList<>(), trans);
         } catch (BlankDataExc blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
