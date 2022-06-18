@@ -7,6 +7,7 @@ import domain.Exceptions.*;
 import domain.Responses.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchaseFormats.BidFormat;
+import domain.shop.PurchaseFormats.BidHandler;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Basket;
 import domain.shop.discount.Discount;
@@ -81,6 +82,7 @@ public class Shop {
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+        bidHandler = new BidHandler();
     }
 
 

@@ -12,6 +12,7 @@ import domain.shop.ProductImp;
 import domain.shop.Shop;
 
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
