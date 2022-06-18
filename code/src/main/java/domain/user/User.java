@@ -294,6 +294,23 @@ public class User {
         return userCart.addProductToCart(shopID, productID, amount);
     }
 
+    public Response addNewBid(int shopID, int productID, int amount) throws ShopNotFoundException {
+        if(getUserState().equals(UserState2.guest))
+            return new ResponseT<>("guests may not submit bids");
+        return userCart.addNewBidToCart(shopID, productID, amount, this);
+    }
+
+    public void bidApproved(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {
+        userCart.bidApproved(shopID, bidID);
+    }
+
+    public void removeBid(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {
+        userCart.removeBid(shopID, bidID);
+        userCart.getTotalAmount();
+    }
+
+
+
     public Response updateAmountOfProduct(int shopID, int productID, int amount) {
         return userCart.updateAmountOfProduct(shopID, productID, amount);
     }

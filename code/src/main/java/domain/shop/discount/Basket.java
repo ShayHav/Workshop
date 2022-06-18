@@ -34,11 +34,12 @@ public class Basket extends HashMap<ProductImp, Integer> {
     }
 
     public int findAmount(int prodID) {
+        int amount = 0;
         for (Map.Entry<ProductImp, Integer> product: this.entrySet()){
             if (product.getKey().getId() == prodID)
-                return product.getValue();
+                amount += product.getValue();
         }
-        return  0;
+        return  amount;
     }
 
     public List<String> findAllDistinctCategories(){
