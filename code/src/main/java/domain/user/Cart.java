@@ -2,9 +2,6 @@ package domain.user;
 
 import domain.*;
 import domain.Exceptions.ProductNotFoundException;
-import domain.Responses.Response;
-import domain.Responses.ResponseT;
-import domain.Exceptions.*;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.Exceptions.ShopNotFoundException;
