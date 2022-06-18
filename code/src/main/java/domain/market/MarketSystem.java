@@ -888,4 +888,12 @@ public class MarketSystem {
         isLogin(userName);
         shopController.removePurchaseRule(userName,purchaseRuleID, shopID);
     }
+
+    public void acceptBid(int shopID, int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        shopController.acceptBid(shopID, bidID, approver);
+    }
+
+    public void declineBid(int shopID, int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        shopController.declineBid(shopID, bidID, decliner);
+    }
 }
