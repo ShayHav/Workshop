@@ -3,11 +3,10 @@ package domain.user;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.BlankDataExc;
-import domain.ResponseT;
+import domain.Responses.ResponseT;
 import domain.shop.Order;
 import domain.shop.Product;
 import domain.Exceptions.ProductNotFoundException;
-import domain.shop.ProductImp;
 import domain.shop.Shop;
 
 import javax.persistence.Entity;

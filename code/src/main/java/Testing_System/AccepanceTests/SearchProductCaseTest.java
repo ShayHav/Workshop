@@ -4,7 +4,7 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.ResponseT;
+import domain.Responses.ResponseT;
 import domain.shop.*;
 import domain.user.filter.Filter;
 import domain.user.filter.SearchProductFilter;

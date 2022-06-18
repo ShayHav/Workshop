@@ -1,7 +1,7 @@
 package domain.shop;
 
 import domain.Exceptions.*;
-import domain.ResponseT;
+import domain.Responses.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Basket;
@@ -17,7 +17,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.mockito.Mockito;
-import org.mockito.Mockito.*;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

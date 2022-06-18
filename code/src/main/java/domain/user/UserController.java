@@ -3,7 +3,7 @@ package domain.user;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
-import domain.Response;
+import domain.Responses.Response;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.shop.ShopController;
@@ -12,8 +12,6 @@ import domain.user.filter.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UserController {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
