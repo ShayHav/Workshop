@@ -2,6 +2,7 @@ package domain.user;
 
 
 import domain.*;
+import domain.DAL.ControllerDAL;
 import domain.Exceptions.*;
 import domain.Exceptions.IllegalStateException;
 import domain.ResponseT;
@@ -37,6 +38,7 @@ public class User {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     @Transient
     private boolean enteredMarket;
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
@@ -66,6 +68,7 @@ public class User {
 
     public void setSystemManager(boolean systemManager) {
         isSystemManager = systemManager;
+        controllerDAL.saveUser(this);
     }
 
     public boolean isSystemManager() {
@@ -132,9 +135,11 @@ public class User {
     //TODO: why there is a difference
     public void AppointedMeOwner(Shop s,String id) throws IncorrectIdentification, BlankDataExc {
         ownerAppointmentList.add(new OwnerAppointment(s,userName,ControllersBridge.getInstance().getUser(id)));
+        controllerDAL.updateUser(this);
     }
     public void AppointedMeManager(Shop s,String id) throws IncorrectIdentification, BlankDataExc {
         managerAppointeeList.add(new ManagerAppointment(s,this,ControllersBridge.getInstance().getUser(id)));
+        controllerDAL.updateUser(this);
     }
 
     public boolean appointManager(int shopName) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
@@ -439,6 +444,7 @@ public class User {
 
     public void removeRole(Role shopOwner, int shopID) {
         roleList.get(shopID).remove(shopOwner);
+        controllerDAL.updateUser(this);
     }
 
     public UserState2 getUs() {

@@ -1,8 +1,10 @@
 package domain.shop;
 
+import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
 import domain.user.filter.SearchOrderFilter;
 
+import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDateTime;
@@ -16,6 +18,8 @@ public class OrderHistory {
 
     private final List<Order> orders;
     private long orderIdGen = 0;
+    @Transient
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
     public OrderHistory(){
         orders = new ArrayList<>();
     }
@@ -27,6 +31,8 @@ public class OrderHistory {
     public synchronized void addOrder(Order o){
         orders.add(o);
         o.setOrderId(orderIdGen);
+        controllerDAL.saveOrder(o);
+        controllerDAL.upDateOrderHistory(this);
         orderIdGen++;
     }
 

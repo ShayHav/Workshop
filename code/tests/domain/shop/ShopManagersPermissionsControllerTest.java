@@ -21,7 +21,7 @@ class ShopManagersPermissionsControllerTest {
 
     @BeforeEach
     void setUp(){
-        shopManagersPermissionsController = new ShopManagersPermissionsController();
+        shopManagersPermissionsController = new ShopManagersPermissionsController(0);
         shopManagersPermissionsController.testRestart();
         shopManagersPermissionsList = new LinkedList<>();
     }
