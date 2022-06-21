@@ -12,6 +12,7 @@ import org.hibernate.cfg.NotYetImplementedException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class ControllerDAL {
     private HiberDB db;
@@ -66,20 +67,32 @@ public class ControllerDAL {
         return db.getShop(shopID);
     }
 
-    public void saveProduct(Product p)
+    public void saveProduct(Product p, int shopID)
     {
-        saveProduct(p);
+        db.saveProduct(p);
     }
 
-    public Product getProduct(int pID)
+    public Product getProduct(int pID, int shopID)
     {
-        return getProduct(pID);
+        return db.getProduct(pID);
+    }
+
+    public void saveOrder(String username)
+    {
+        throw new NotYetImplementedException();
     }
 
     public Order getOrderByUser(String username)
     {
         throw new NotYetImplementedException();
     }
+
+    public List<Order> getOrdersByShop(int shopID)
+    {
+        throw new NotYetImplementedException();
+    }
+
+
 
 
 }

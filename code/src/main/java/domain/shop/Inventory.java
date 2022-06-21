@@ -11,12 +11,9 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class Inventory {
-    @Id
     private String shopID;
     private final Map<Integer, ProductImp> keyToProduct;
-    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
-    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
     public Inventory(){

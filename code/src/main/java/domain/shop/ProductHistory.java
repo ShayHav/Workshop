@@ -1,7 +1,12 @@
 package domain.shop;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class ProductHistory implements Product{
 
+    @Id
     private final int serialNumber;
     private final String name;
     private final String description;

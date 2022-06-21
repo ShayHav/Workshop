@@ -2,6 +2,7 @@ package domain.notifications;
 
 import domain.user.User;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -11,7 +12,8 @@ import java.util.Objects;
 public class Message {
 
     private String sender;
-    @OneToMany(mappedBy = "msgs")
+//    @OneToMany(mappedBy = "msgs")
+    @Embeddable
     private User addressee;
     @Id
     private int msgID;
