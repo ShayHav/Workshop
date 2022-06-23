@@ -4,6 +4,7 @@ import domain.*;
 import domain.Exceptions.ProductNotFoundException;
 import domain.Responses.Response;
 import domain.Responses.ResponseT;
+import domain.Exceptions.*;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.Exceptions.ShopNotFoundException;
@@ -156,7 +157,7 @@ public class Cart {
                                            String phoneNumber, String cardNumber, String ccv, String expirationDate) throws BlankDataExc {
         LocalDate transaction_date = LocalDate.now();
         totalAmount = getTotalAmount();
-        TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, city, country, zip, phoneNumber, cardNumber,ccv, expirationDate, transaction_date, totalAmount);
+        TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
 
         List<ResponseT<Order>> orders = new ArrayList<>();
         for (Integer shopId : baskets.keySet()) {
