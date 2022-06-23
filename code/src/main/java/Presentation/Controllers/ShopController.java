@@ -8,11 +8,13 @@ import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
+import domain.Exceptions.InvalidParamException;
 import domain.Responses.Response;
 import domain.Responses.ResponseList;
 import domain.Responses.ResponseT;
 import domain.shop.*;
 import domain.shop.predicate.PRPredType;
+import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchProductFilter;
@@ -461,7 +463,8 @@ public class ShopController {
         switch (ruleType){
             case "regularDiscount" -> response = addRegularDiscount(context);
             case "bundleDiscount" -> response = addBundleDiscount(context);
-            case "conditionalDiscount" -> response = addConditionalDiscount(context);
+            case "productConditionalDiscount" -> response = addProductConditionalDiscount(context);
+            case "basketConditionalDiscount" -> response = addBasketConditionalDiscount(context);
             default -> response = new Response("unsupported option in discount type");
         }
         if(response.isErrorOccurred()){
@@ -473,8 +476,92 @@ public class ShopController {
 
     }
 
-    private Response addConditionalDiscount(Context context) {
-        return new Response("unsupported Operation yet");
+    private Response addProductConditionalDiscount(Context context) {
+        String discountBase = context.formParam("discountBase");
+        if(discountBase == null){
+            return new Response("the basis of the rule is null");
+        }
+        String username = context.cookieStore("uid");
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        double percentage = context.formParamAsClass("percentage", Double.class).get();
+        int productIDCond = context.formParamAsClass("productIDCond", int.class).get();
+        int amountToBuy = context.formParamAsClass("amountToBuyFromProduct", int.class).get();
+
+        ResponseT<Product> response = services.getProduct(username,shopID,productIDCond);
+        if(response.isErrorOccurred()){
+            return response;
+        }
+
+        String productName = response.getValue().getName();
+        ToBuildDiscountPredicate predicate;
+        try {
+            predicate = new ToBuildDiscountPredicate(productIDCond, productName, amountToBuy);
+        }catch(InvalidParamException e){
+            return new Response(e.getMessage());
+        }
+
+
+        switch (discountBase){
+            case "category" -> {
+                String category = context.formParam("productOrCategoryDiscount");
+                return services.addConditionalCategoryDiscount(username,shopID,category,percentage,predicate);
+            }
+            case "allProduct" -> {
+                return services.addConditionalShopAllProductsDiscount(username, shopID,percentage,predicate);
+            }
+            case "product" -> {
+                int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();
+                response = services.getProduct(username, shopID, serialNumber);
+                if(response.isErrorOccurred()){
+                    return response;
+                }
+                return services.addConditionalProductDiscount(username, shopID,serialNumber,percentage,predicate);
+            }
+            default -> {
+                return new Response("not a legal ruleBase");
+            }
+        }
+    }
+
+    private Response addBasketConditionalDiscount(Context context) {
+        String discountBase = context.formParam("discountBase");
+        if(discountBase == null){
+            return new Response("the basis of the rule is null");
+        }
+        String username = context.cookieStore("uid");
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        double percentage = context.formParamAsClass("percentage", Double.class).get();
+        double basketPrice = context.formParamAsClass("basketPrice", double.class).get();
+
+
+        ToBuildDiscountPredicate predicate;
+        try {
+            predicate = new ToBuildDiscountPredicate(basketPrice);
+        }catch(InvalidParamException e){
+            return new Response(e.getMessage());
+        }
+
+
+        switch (discountBase){
+            case "category" -> {
+                String category = context.formParam("productOrCategoryDiscount");
+                return services.addConditionalCategoryDiscount(username,shopID,category,percentage,predicate);
+            }
+            case "allProduct" -> {
+                return services.addConditionalShopAllProductsDiscount(username, shopID,percentage,predicate);
+            }
+            case "product" -> {
+                int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();
+                ResponseT<Product> response = services.getProduct(username, shopID, serialNumber);
+                if(response.isErrorOccurred()){
+                    return response;
+                }
+                return services.addConditionalProductDiscount(username, shopID,serialNumber,percentage,predicate);
+            }
+            default -> {
+                return new Response("not a legal ruleBase");
+            }
+        }
     }
 
     private Response addRegularDiscount(Context context) {
@@ -512,6 +599,8 @@ public class ShopController {
         return new Response("unsupported operation yet");
     }
 
+
+
     public void deleteRule(Context context) {
         int shopID = context.pathParamAsClass("shopID", int.class).get();
         int ruleId = context.formParamAsClass("deleteRuleId", int.class).get();
@@ -535,5 +624,9 @@ public class ShopController {
             return;
         }
         context.redirect("/shops/"+ shopID+ "/edit");
+    }
+
+    public void composeDiscounts(WsConfig wsConfig) {
+
     }
 }

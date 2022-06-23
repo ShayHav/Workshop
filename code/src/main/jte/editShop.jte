@@ -186,9 +186,9 @@
                 @for(Discount d: shop.discountPolicy.getAllDistinctDiscounts())
                     <li class="list-group-item">
                         <div class="form-check">
-                            <input class="form-check-input" name="rule" type="checkbox" value="${d.getID()}"
-                                   id="rule${d.getID()}">
-                            <label class="form-check-label mx-2" for="rule${d.getID()}">
+                            <input class="form-check-input discount" name="discount" type="checkbox" value="${d.getID()}"
+                                   id="discount${d.getID()}">
+                            <label class="form-check-label mx-2" for="discount${d.getID()}">
                                 ${d.toString()}
                             </label>
                             <button class="btn btn-danger deleteDiscountBtn" type="button" id="deleteDiscount${d.getID()}">
@@ -202,7 +202,7 @@
                 @endfor
                 <li class="list-group-item">
                     <div class="col-4 mb-2">
-                        <select id="discountCompose" class="form-select" name="discountCompose"
+                        <select id="discountComposeOperator" class="form-select" name="discountComposeOperator"
                                 aria-label="Select Discount composition operator">
                             <option selected>Select Discount composition operator</option>
                             <option value="and">And</option>
@@ -210,7 +210,7 @@
                             <option value="xor">Xor</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-warning">Compose Discounts</button>
+                    <button type="submit" id="discountComposeBtn" class="btn btn-warning">Compose Discounts</button>
                 </li>
             </form>
 
@@ -233,7 +233,8 @@
                     <select id="discountType" class="form-select" name="discountType" aria-label="Select Discount Type">
                         <option selected>Select Discount Type</option>
                         <option value="regularDiscount">Regular Discount</option>
-                        <option value="conditionalDiscount">Conditional Discount</option>
+                        <option value="productConditionalDiscount">Product Conditional Discount</option>
+                        <option value="basketConditionalDiscount">Basket value Conditional Discount</option>
                     </select>
                     </span>
                         <span class="col-4">
@@ -266,6 +267,32 @@
 
 <script>
     const socket = new WebSocket('ws://localhost:${Main.port}/shops/${shop.id}');
+
+    const composeDis_socket = new WebSocket('ws://localhost:${Main.port}/shops/${shop.id}/composeDiscounts');
+
+    const composeDiscounts = function (event){
+        let discount_checked = [];
+        document.querySelectorAll(".discount").forEach(inp => {
+            if(inp.checked === true)
+                discount_checked.add(inp.value);
+
+        })
+        if(discount_checked.size() < 2) {
+            throw "must choose 2 discounts to combine";
+        }
+
+        const username = "${user.getUsername()}";
+        const shopID = "${shop.id}";
+        const dis1 = parseInt(discount_checked[0]);
+        const dis2 = parseInt(discount_checked[1]);
+        const type = document.querySelector("#discountComposeOperator").value;
+        const message = {username: username, shopID: shopID, dis1: dis1, dis2: dis2, type:type}
+
+        composeDis_socket.send(JSON.stringify(message));
+    }
+
+    document.querySelector("#discountComposeBtn").addEventListener("click",composeDiscounts);
+
     socket.onopen = () => console.log("trying to connect to sever using websocket")
     const removeManager = function (event) {
         const message = {
@@ -645,8 +672,98 @@
         div.append(toGetFree);
     }
 
-    function addConditionalDiscount() {
+    function addProductConditionalDiscount() {
+        let div = document.querySelector('#discountParams')
+
+        let p_cond_input = document.createElement('input');
+        p_cond_input.type = "number";
+        p_cond_input.min = '0';
+        p_cond_input.max = '100';
+        p_cond_input.step = '0.5';
+        p_cond_input.id = 'percentage';
+        p_cond_input.name = "percentage";
+        p_cond_input.required = true;
+        p_cond_input.classList.add('form-control');
+
+        let p_id_input = document.createElement('input');
+        p_id_input.type = 'text';
+        p_id_input.id = "productIDCond";
+        p_id_input.name = "productIDCond";
+        p_id_input.required = true;
+        p_id_input.classList.add('form-control');
+
+        let p_toBuy = document.createElement('input');
+        p_toBuy.type = "number";
+        p_toBuy.min = '0';
+        p_toBuy.max = '5000';
+        p_toBuy.step = '1';
+        p_toBuy.id = 'amountToBuyFromProduct';
+        p_toBuy.name = "amountToBuyFromProduct";
+        p_toBuy.required = true;
+        p_toBuy.classList.add('form-control');
+
+        let p_toBuy_label = document.createElement('label');
+        p_toBuy_label.for = 'amountToBuyFromProduct';
+        p_toBuy_label.classList.add('form-label');
+        p_toBuy_label.innerText = "Amount to buy from product";
+
+        let p_cond_label = document.createElement('label');
+        p_cond_label.for = 'percentage';
+        p_cond_label.classList.add('form-label');
+        p_cond_label.innerText = "Percentage";
+
+        let p_id_label = document.createElement('label');
+        p_id_label.for = 'productIDCond';
+        p_id_label.classList.add('form-label');
+        p_id_label.innerText = "Product ID in the condition";
+
+        div.append(p_cond_label);
+        div.append(p_cond_input);
+        div.append(p_id_label);
+        div.append(p_id_input);
+        div.append(p_toBuy_label);
+        div.append(p_toBuy);
     }
+
+    function addBasketConditionalDiscount() {
+        let div = document.querySelector('#discountParams')
+
+        let cond_percentage = document.createElement('input');
+        cond_percentage.type = "number";
+        cond_percentage.min = '0';
+        cond_percentage.max = '100';
+        cond_percentage.step = '0.5';
+        cond_percentage.id = 'percentage';
+        cond_percentage.name = "percentage";
+        cond_percentage.required = true;
+        cond_percentage.classList.add('form-control');
+
+        let cond_basketPrice = document.createElement('input');
+        cond_basketPrice.type = "number";
+        cond_basketPrice.min = '0';
+        cond_basketPrice.max = '10000';
+        cond_basketPrice.step = '0.5';
+        cond_basketPrice.id = 'basketPrice';
+        cond_basketPrice.name = "basketPrice";
+        cond_basketPrice.required = true;
+        cond_basketPrice.classList.add('form-control');
+
+        let cond_percentage_label = document.createElement('label');
+        cond_percentage_label.for = 'percentage';
+        cond_percentage_label.classList.add('form-label');
+        cond_percentage_label.innerText = "Percentage";
+
+        let cond_basket_label = document.createElement('label');
+        cond_basket_label.for = 'basketPrice';
+        cond_basket_label.classList.add('form-label');
+        cond_basket_label.innerText = "Basket Price to buy";
+
+        div.append(cond_percentage_label);
+        div.append(cond_percentage);
+        div.append(cond_basket_label);
+        div.append(cond_basketPrice);
+    }
+
 
     function clearProductOrCategoryDiscount() {
         let input = document.querySelector('#productOrCategoryDiscount');
@@ -688,8 +805,11 @@
         clearRuleParam()
         value === 'regularDiscount' ? addRegularDiscount() :
             value === 'bundleDiscount' ? addBundleDiscount() :
-                value === 'conditionalDiscount' ? addConditionalDiscount() : clearDiscountParam()
+                value === 'productConditionalDiscount' ? addProductConditionalDiscount() :
+                    value === 'basketConditionalDiscount' ? addBasketConditionalDiscount(): clearDiscountParam()
     })
+
+
 
 </script>
 </html>

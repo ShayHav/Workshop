@@ -5,14 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/ComposeDiscountsMessage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteadminManagingPageGenerated.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Transaction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/discount/DiscountPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/discount/DiscountPolicy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/predicate/ToBuildDiscountPredicate.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/predicate/ToBuildDiscountPredicate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/cart.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/cart.jte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/resources/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/resources/state_init.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/product.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/product.jte" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +23,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -185,12 +186,6 @@
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="6384000" />
-    </task>
-    <task id="LOCAL‎00013" summary="started to add impl for cart, the class presentation basket + cart">
-      <created>1652721092217</created>
-      <option name="number" value="LOCAL‎00013" />
-      <option name="presentableId" value="LOCAL‎00013" />
-      <updated>1652721092217</updated>
     </task>
     <task id="LOCAL‎00014" summary="started to add impl for cart,add to cart,  cart.jte">
       <created>1652775905749</created>
@@ -480,7 +475,13 @@
       <option name="presentableId" value="LOCAL‎00061" />
       <updated>1655995769061</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL‎00062" summary="remove discounts">
+      <created>1656000476924</created>
+      <option name="number" value="LOCAL‎00062" />
+      <option name="presentableId" value="LOCAL‎00062" />
+      <updated>1656000476924</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -505,7 +506,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="user can now access his orders - only if member&#10;fixed many return statements in system market- returned null if user isn't logged in instead of throwing an exception&#10;fixed some errors in services - method returns Response, in mistake returned ResponseT" />
     <MESSAGE value="solved conflicts" />
     <MESSAGE value="users now have access to old orders and all their shops (if they are the shop founders)&#10;fixed bug i created in mistake - checked login for actions that could be performed by guests" />
     <MESSAGE value="bug fix in user - reset order history in every entrance in mistake&#10;appearance changes in addProduct.jte, editProduct.jte etc." />
@@ -530,25 +530,26 @@
     <MESSAGE value="add discount impl" />
     <MESSAGE value="fix notification tests" />
     <MESSAGE value="merged with main" />
-    <option name="LAST_COMMIT_MESSAGE" value="merged with main" />
+    <MESSAGE value="remove discounts" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove discounts" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>136</line>
+          <line>138</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>152</line>
+          <line>154</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>527</line>
-          <option name="timeStamp" value="17" />
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java</url>
+          <line>128</line>
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
