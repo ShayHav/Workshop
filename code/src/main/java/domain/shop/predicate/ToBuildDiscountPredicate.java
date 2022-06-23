@@ -11,8 +11,8 @@ public class ToBuildDiscountPredicate {
     private DiscountPredType predType;
     private String productName;
 
-
-    public ToBuildDiscountPredicate(int productID, String productName,int amount) throws InvalidParamException {
+    //product ID, product name, amount,
+    public ToBuildDiscountPredicate(int productID, String productName, int amount) throws InvalidParamException {
         if(productID < 0)
             throw new InvalidParamException("invalid product ID");
         if(amount < 0)
@@ -25,7 +25,7 @@ public class ToBuildDiscountPredicate {
 
 
     //price
-    public ToBuildDiscountPredicate(double price) throws InvalidParamException {
+    public ToBuildDiscountPredicate(int price) throws InvalidParamException {
         if(amount < 0)
             throw new InvalidParamException("invalid amount");
         this.price = price;
