@@ -1,11 +1,9 @@
 package Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jdi.InvocationException;
+import domain.*;
 import domain.Exceptions.*;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
 import domain.market.*;
 import domain.notifications.AdminObserver;
 import domain.notifications.UserObserver;
@@ -25,9 +23,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Services {
     private final MarketSystem marketSystem;
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
     private Services() {
         marketSystem = MarketSystem.getInstance();
@@ -1089,7 +1090,7 @@ public class Services {
             Functions functions = objectMapper.readValue(file,Functions.class);
             for(Function function : functions.getFunctions()){
                 for(Method m : methods){
-                    if(m.getName().equals(function.getFunction())){
+                    if(m.getName().equals(function.getName())){
                         Response response = (Response) m.invoke(this, function.args);
                         // check if the result of the invocation was failure
                         if(response.isErrorOccurred()){
@@ -1099,6 +1100,8 @@ public class Services {
                         break;
                     }
                 }
+//                errorLogger.logMsg(Level.SEVERE,String.format("Method with given name %s could not be invoked ", function.getName()));
+//                throw new RuntimeException(String.format("Method with given name %s could not be invoked", function.getName()));
             }
         }catch(IOException  e) {
             throw new RuntimeException("couldn't open the state init file");
