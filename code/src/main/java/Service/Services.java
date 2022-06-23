@@ -1,6 +1,8 @@
 package Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jdi.InvocationException;
+import domain.*;
 import domain.Exceptions.*;
 import domain.Responses.Response;
 import domain.Responses.ResponseList;
@@ -27,9 +29,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Services {
     private final MarketSystem marketSystem;
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
     private Services() {
         marketSystem = MarketSystem.getInstance();
@@ -1125,7 +1130,7 @@ public class Services {
             StateFile stateFile = objectMapper.readValue(file, StateFile.class);
             for(Function function : stateFile.getFunctions()){
                 for(Method m : methods){
-                    if(m.getName().equals(function.getFunction())){
+                    if(m.getName().equals(function.getName())){
                         Response response = (Response) m.invoke(this, function.args);
                         // check if the result of the invocation was failure
                         if(response.isErrorOccurred()){
