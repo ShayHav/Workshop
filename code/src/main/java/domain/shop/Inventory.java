@@ -4,6 +4,7 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.InvalidProductInfoException;
 import domain.Exceptions.ProductNotFoundException;
+import domain.shop.PurchaseFormats.BidFormat;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -240,5 +241,6 @@ public class Inventory {
     public synchronized List<Product> getAllProductInfo(){
         return new ArrayList<>(keyToProduct.values());
     }
+
 
 }
