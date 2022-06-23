@@ -543,7 +543,7 @@ public class Shop {
         return shopManagersPermissionsController.getPermissions(managerUsername);
     }
 
-    private void setMarketSystem(MarketSystem ms){
+    public void setMarketSystem(MarketSystem ms){
         marketSystem = ms;
     }
 

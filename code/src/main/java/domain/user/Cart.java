@@ -158,6 +158,7 @@ public class Cart {
         LocalDate transaction_date = LocalDate.now();
         totalAmount = getTotalAmount();
         TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
+
         List<ResponseT<Order>> orders = new ArrayList<>();
         for (Integer shopId : baskets.keySet()) {
             ShoppingBasket s = baskets.get(shopId);

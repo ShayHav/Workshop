@@ -8,6 +8,7 @@ import domain.Responses.ResponseT;
 import domain.shop.Order;
 import domain.shop.Product;
 import domain.Exceptions.ProductNotFoundException;
+import domain.shop.ProductImp;
 import domain.shop.Shop;
 
 import javax.persistence.Entity;
