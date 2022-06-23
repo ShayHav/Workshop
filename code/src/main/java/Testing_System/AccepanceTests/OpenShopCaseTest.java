@@ -2,7 +2,9 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
-import domain.ResponseT;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Responses.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
@@ -27,39 +29,48 @@ public class OpenShopCaseTest extends Tester {
     private String manager;
     private String manager_pw;
     List<ShopManagersPermissions> ls;
+    private String guest_1;
+    private String guest_2;
+    private String guest_3;
 
     @BeforeAll
-    public void SetUp() {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUsers = ug.GetValidUsers();
         pws = ug.GetPW();
         ug.InitTest();
         user_1 = validUsers[0];
         pw_1 = pws[0];
-        Register(user_1, pw_1);
-        Login(user_1, pw_1,null);
+        guest_1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        guest_2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        guest_3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guest_1,user_1, pw_1);
+        Login(guest_1,user_1, pw_1);
         ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
         owner_pw = pws[1];
-        Register(owner,owner_pw);
+        Register(guest_2,owner,owner_pw);
         AppointNewShopOwner(shopID_1,owner,user_1);
         manager = validUsers[2];
         manager_pw = pws[2];
-        Register(manager,manager_pw);
+        Register(guest_3,manager,manager_pw);
         AppointNewShopManager(shopID_1,manager,user_1);
         ls = new ArrayList<ShopManagersPermissions>();
         ls.add(ShopManagersPermissions.CloseShop);
         ls.add(ShopManagersPermissions.OpenShop);
+        AddShopMangerPermissions(shopID_1,ls,owner,user_1);
         CloseShop(shopID_1,user_1);
     }
 
     @BeforeEach
     public void SetShop()
     {
-        Login(owner,owner_pw,null);
-        Login(manager,manager_pw,null);
+        String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        String gt = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Login(g,owner,owner_pw);
+        Login(gt,manager,manager_pw);
         AddShopMangerPermissions(shopID_1,ls,manager,user_1);
         /**
          * Not supported offline --> Online shop
@@ -85,13 +96,13 @@ public class OpenShopCaseTest extends Tester {
     @Test
     public void OwnerCloseShopGoodTest()
     {
-        assertTrue(!OpenShop(shopID_1,owner).isErrorOccurred());
+        assertTrue(!CloseShop(shopID_1,owner).isErrorOccurred());
     }
 
     @Test
     public void ManagerCloseShopBadTest()
     {
-        assertTrue(!OpenShop(shopID_1,manager).isErrorOccurred());
+        assertFalse(!OpenShop(shopID_1,validUsers[3]).isErrorOccurred());
     }
 
     @Test
@@ -128,7 +139,7 @@ public class OpenShopCaseTest extends Tester {
     @Test
     public void BadInputsTest()
     {
-        assertFalse(!OpenShop(shopID_1-1,user_1).isErrorOccurred());
+        assertFalse(!OpenShop(5,user_1).isErrorOccurred());
         assertFalse(!OpenShop(-1,user_1).isErrorOccurred());
         assertFalse(!OpenShop(shopID_1,null).isErrorOccurred());
 

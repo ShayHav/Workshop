@@ -1,0 +1,6 @@
+Admin_username="Admin"
+Admin_password="Workshop2022"
+Mod="release"
+Database="test_DB"
+Payment_Connector="https://cs-bgu-wsep.herokuapp.com/"
+Supply_Connector="https://cs-bgu-wsep.herokuapp.com/"

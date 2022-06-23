@@ -1,13 +1,12 @@
 package Testing_System;
 
 import Service.Services;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
-import domain.market.PaymentService;
-import domain.market.SupplyService;
-import domain.notifications.UserObserver;
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
@@ -28,13 +27,13 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
-        return sv.Login(username, pw,uo);
+    public ResponseT<User> Login(String guest, String username, String pw) {
+        return sv.Login(guest, username, pw);
     }
 
     @Override
-    public Response Register(String username, String pw) {
-        return sv.Register(username, pw);
+    public Response Register(String guest, String username, String pw) {
+        return sv.Register(guest,username, pw);
     }
 
     @Override
@@ -180,8 +179,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
-        return AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
+        return sv.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
 
     @Override
@@ -210,8 +209,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
-        return null;
+    public Response DeleteUserTest(String[] usernames) {
+        return sv.DeleteUserTest(usernames);
     }
 
     @Override

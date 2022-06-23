@@ -1,8 +1,7 @@
 package Testing_System;
 
-import domain.market.MarketSystem;
-import domain.market.PaymentServiceImp;
-import domain.market.SupplyServiceImp;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 
 public class UserGenerator extends Tester {
 
@@ -47,6 +46,10 @@ public class UserGenerator extends Tester {
     public void DeleteAdmin(){
         String[] arr = {adminID};
         DeleteUserTest(arr);
+    }
+
+    public void InitTest() throws InvalidSequenceOperationsExc, IncorrectIdentification {
+//        MarketSystem.getInstance().start(new PaymentServiceImp(),new SupplyServiceImp());
     }
 
     public String[] getNitayNames() {

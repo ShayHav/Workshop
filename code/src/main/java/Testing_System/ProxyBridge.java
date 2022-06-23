@@ -1,13 +1,12 @@
 package Testing_System;
 
-import Presentation.Model.PresentationShop;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
-import domain.market.PaymentService;
-import domain.market.SupplyService;
-import domain.notifications.UserObserver;
+
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
@@ -22,12 +21,12 @@ import java.util.Map;
 public class ProxyBridge implements  Bridge {
 
     @Override
-    public ResponseT<User> Login(String username, String pw, UserObserver uo) {
+    public ResponseT<User> Login(String guest, String username, String pw) {
         return null;
     }
 
     @Override
-    public Response Register(String username, String pw) {
+    public Response Register(String guest, String username, String pw) {
         return null;
     }
 
@@ -172,7 +171,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
         return null;
     }
 
@@ -202,7 +201,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
+    public Response DeleteUserTest(String[] usernames) {
         return null;
     }
 

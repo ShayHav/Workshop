@@ -6,10 +6,10 @@ import Presentation.Model.Messages.CheckoutFormMessage;
 import Presentation.Model.Messages.NotificationMessage;
 import Presentation.Model.Messages.RegisterMessage;
 import Service.Services;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
 import domain.notifications.Message;
 import domain.notifications.SystemInfoMessage;
 import domain.shop.Order;
@@ -315,7 +315,9 @@ public class UserController {
 
         wsConfig.onClose(ctx -> {
             PresentationUser currentUser = getUser(ctx.cookie("uid"));
-            services.removeFromNotificationCenter(currentUser.getUsername());
+            if(currentUser != null) {
+                services.removeFromNotificationCenter(currentUser.getUsername());
+            }
         });
 
 

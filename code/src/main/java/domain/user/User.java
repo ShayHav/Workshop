@@ -3,25 +3,21 @@ package domain.user;
 
 import domain.*;
 import domain.Exceptions.*;
-import domain.Exceptions.IllegalStateException;
-import domain.ResponseT;
-import domain.market.MarketSystem;
+import domain.Responses.Response;
+import domain.Responses.ResponseT;
 import domain.shop.*;
 import domain.user.filter.*;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 import java.util.*;
 import java.util.logging.Level;
 
-@Entity
 public class User {
-    @Id
     private String userName;
     private UserState2 us;
     private Map<Integer,List<Role>> roleList;
+    @OneToOne
     private Cart userCart;
     private boolean loggedIn;
     private List<ManagerAppointment> managerAppointeeList;
@@ -48,6 +44,10 @@ public class User {
         ownerAppointmentList = new ArrayList<>();
         orderHistory = new ArrayList<>();
         roleList = new HashMap<>();
+    }
+
+    private UserState2 getUserState(){
+        return us;
     }
 
     public boolean isEnteredMarket() {
@@ -396,7 +396,7 @@ public class User {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));

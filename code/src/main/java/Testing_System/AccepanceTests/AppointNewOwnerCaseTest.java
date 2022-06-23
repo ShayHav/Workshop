@@ -1,7 +1,9 @@
 package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
-import domain.ResponseT;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Responses.ResponseT;
 import domain.shop.Shop;
 import org.junit.jupiter.api.*;
 
@@ -18,18 +20,20 @@ public class AppointNewOwnerCaseTest extends Tester {
     private String user_1;
     private String pw_1;
     private int shopID_1;
+    private String guest;
 
 
     @BeforeAll
-    public void SetUp() {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUsers = ug.GetValidUsers();
         pws = ug.GetPW();
         ug.InitTest();
         user_1 = validUsers[0];
         pw_1 = pws[0];
-        Register(user_1, pw_1);
-        Login(user_1, pw_1,null);
+        guest = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guest,user_1, pw_1);
+        Login(guest,user_1, pw_1);
         ResponseT<Shop> shopResponseT = CreateShop("Test",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
@@ -55,8 +59,9 @@ public class AppointNewOwnerCaseTest extends Tester {
     @Test
     public void GoodAppoint() {
         for (int i = 1; i < ug.getNumOfUser(); i++) {
-            Register(validUsers[i], pws[i]);
-            Login(validUsers[i], pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUsers[i], pws[i]);
+            Login(g,validUsers[i], pws[i]);
             assertTrue(!AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
         }
     }
@@ -64,7 +69,8 @@ public class AppointNewOwnerCaseTest extends Tester {
     @Test
     public void AppointedNotLoggedInCaseTest() {
         for (int i = 1; i < ug.getNumOfUser(); i++) {
-            Register(validUsers[i], pws[i]);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUsers[i], pws[i]);
             assertTrue(!AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
         }
     }
@@ -72,20 +78,23 @@ public class AppointNewOwnerCaseTest extends Tester {
 
     @Test
     public void NewOwnerAppointsOwnerTest() {
-        Register(validUsers[1], pws[1]);
-        Login(validUsers[1], pws[1],null);
+        String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(g,validUsers[1], pws[1]);
+        Login(g,validUsers[1], pws[1]);
         assertTrue(!AppointNewShopOwner(shopID_1, validUsers[1], user_1).isErrorOccurred());
         for (int i = 2; i < ug.getNumOfUser(); i++) {
-            Register(validUsers[i], pws[i]);
-            Login(validUsers[i], pws[i],null);
+            String gt = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(gt,validUsers[i], pws[i]);
+            Login(gt,validUsers[i], pws[i]);
             assertTrue(!AppointNewShopOwner(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred());
         }
     }
 
     @Test
     public void FounderAppointFounderAsOwnerTest() {
-        Register(validUsers[1], pws[1]);
-        Login(validUsers[1], pws[1],null);
+        String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(g,validUsers[1], pws[1]);
+        Login(g,validUsers[1], pws[1]);
         int shopID_2 = -1;
         ResponseT<Shop> shopResponseT = CreateShop("Test_2",validUsers[1], "TestShop_2");
         if(!shopResponseT.isErrorOccurred())
@@ -101,16 +110,21 @@ public class AppointNewOwnerCaseTest extends Tester {
         ResponseT<Shop> shopResponseT = CreateShop("Test_2",user_1, "TestShop_2");
         if(!shopResponseT.isErrorOccurred())
             shopID_2 = shopResponseT.getValue().getShopID();
-        Register(validUsers[1], pws[1]);
-        Login(validUsers[1], pws[1],null);
+        String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        String g1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        String g2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        String g3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(g,validUsers[1], pws[1]);
+        Login(g,validUsers[1], pws[1]);
+        Register(g1,validUsers[2],pws[2]);
+        Register(g2,validUsers[3],pws[3]);
+        Register(g3,validUsers[4],pws[4]);
         shopResponseT = CreateShop("Test_3",validUsers[1], "TestShop_3");
         if(!shopResponseT.isErrorOccurred())
             shopID_3 = shopResponseT.getValue().getShopID();
-        if(!shopResponseT.isErrorOccurred())
-            shopID_2 = shopResponseT.getValue().getShopID();
-        for (int i = 2; i < ug.getNumOfUser(); i++) {
+        for (int i = 2; i < 5; i++) {
             assertTrue(!AppointNewShopOwner(shopID_3, validUsers[i], validUsers[1]).isErrorOccurred());
-            assertTrue(!AppointNewShopOwner(shopID_2, validUsers[i], validUsers[1]).isErrorOccurred());
+            assertTrue(!AppointNewShopOwner(shopID_2, validUsers[i], validUsers[0]).isErrorOccurred());
             assertTrue(!AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
         }
     }
@@ -118,14 +132,17 @@ public class AppointNewOwnerCaseTest extends Tester {
     @Test
     public void MemberAppointOwnerTest()
     {
-        Register(validUsers[1],pws[1]);
-        Login(validUsers[1],pws[1],null);
-        Register(validUsers[2],pws[2]);
+        String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        String gt = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(g,validUsers[1], pws[1]);
+        Login(g,validUsers[1], pws[1]);
+        Register(gt,validUsers[2], pws[2]);
         assertFalse(!AppointNewShopOwner(shopID_1,validUsers[2],validUsers[1]).isErrorOccurred());
     }
     @Test
     public void NotLoggedAppointerTest() {
-        Register(validUsers[1], pws[1]);
+        String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(g,validUsers[1], pws[1]);
         assertTrue(!AppointNewShopOwner(shopID_1, validUsers[1], user_1).isErrorOccurred());
         for (int i = 2; i < ug.getNumOfUser(); i++)
             assertFalse(!AppointNewShopOwner(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred());
@@ -141,8 +158,8 @@ public class AppointNewOwnerCaseTest extends Tester {
     @Test
     public void BadValuesTest() {
         for (int i = 1; i < ug.getNumOfUser(); i++) {
-            Register(validUsers[i],pws[i]);
-            assertFalse(!AppointNewShopOwner(shopID_1+1, validUsers[i], user_1).isErrorOccurred());
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUsers[i], pws[i]);
             assertFalse(!AppointNewShopOwner(shopID_1, validUsers[i], null).isErrorOccurred());
             assertFalse(!AppointNewShopOwner(shopID_1, null, user_1).isErrorOccurred());
 

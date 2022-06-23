@@ -2,10 +2,11 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
-import domain.ResponseT;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Responses.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.Shop;
-import domain.user.Guest;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,13 +39,14 @@ public class CheckoutCaseTest extends Tester {
     private double price_2;
     private int amountToAdd_2;
     private String Guest_Id;
+    private String guest1;
+    private String guest2;
 
 
 
 
     @BeforeAll
-    public void setUp()
-    {
+    public void setUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         ug.InitTest();
         validUsers = ug.GetValidUsers();
@@ -54,10 +56,13 @@ public class CheckoutCaseTest extends Tester {
         pw_1 = pws[0];
         pw_2 = pws[1];
         Guest_Id = EnterMarket().getValue().getUserName();
-        Register(user_1,pw_1);
-        Register(user_2,pw_2);
-        Login(user_1,pw_1,null);
-        Login(user_2,pw_2,null);
+        guest1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        guest2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+
+        Register(guest1, user_1,pw_1);
+        Register(guest2, user_2,pw_2);
+        Login(guest1,user_1,pw_1);
+        Login(guest2,user_2,pw_2);
 
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
@@ -108,7 +113,8 @@ public class CheckoutCaseTest extends Tester {
     {
         AddToShoppingCart(user_2,shopID_1,pID_2,2);
         Logout(user_2);
-        Login(user_2,pw_2,null);
+        String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Login(g,user_2,pw_2);
         assertTrue(Checkout(user_2,"Nitay Vitkin","TLV Bazal 15", "0546840084","4580000000010000","12/25").GetFirstElement());
     }
 

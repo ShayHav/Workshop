@@ -74,6 +74,8 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", serialNumber));
             throw new InvalidProductInfoException();
         }
+        if(keyToProduct.containsKey(serialNumber))
+            throw new InvalidProductInfoException(String.format("serialNumber is already in use: %d", serialNumber));
         ProductImp p = new ProductImp(serialNumber, productName, productDesc, productCategory, price, quantity);
         synchronized (keyToProduct) {
             keyToProduct.put(serialNumber, p);
@@ -126,13 +128,14 @@ public class Inventory {
         keyToProduct.get(product).setQuantity(currentAmount);
     }
 
-    public void removeProduct(int product) {
+    public void removeProduct(int product) throws InvalidProductInfoException {
         if(keyToProduct.containsKey(product)){
             Product p = keyToProduct.get(product);
             synchronized (keyToProduct) {
                 keyToProduct.remove(product);
             }
         }
+        else throw new InvalidProductInfoException(String.format("product is not exist id: %d",product));
     }
 
     public List<Product> getItemsInStock() {

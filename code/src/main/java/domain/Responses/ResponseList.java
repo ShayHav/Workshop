@@ -1,4 +1,4 @@
-package domain;
+package domain.Responses;
 
 import java.util.List;
 

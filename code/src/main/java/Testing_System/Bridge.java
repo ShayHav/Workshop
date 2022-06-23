@@ -1,18 +1,12 @@
 package Testing_System;
 
-import Presentation.Model.PresentationShop;
-import Presentation.Model.PresentationUser;
-import domain.Exceptions.BlankDataExc;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Exceptions.ShopNotFoundException;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
-import domain.market.PaymentService;
-import domain.market.SupplyService;
-import domain.notifications.UserObserver;
+
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;
@@ -27,9 +21,9 @@ import java.util.Map;
 public interface Bridge {
 
     //General Guest-Visitor
-    ResponseT<User> Login(String username, String pw,UserObserver uo); //done
+    ResponseT<User> Login(String guest, String username, String pw); //done
 
-    Response Register(String username, String pw); //done
+    Response Register(String guest, String username, String pw); //done
 
     ResponseT<User> EnterMarket();
 
@@ -105,7 +99,7 @@ public interface Bridge {
 
     Response AppointNewShopManager(int key, String targetUser, String userId);//done
 
-    Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);//done
+    Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);//done
 
     Response RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser, String ownerID); //done
 
@@ -117,7 +111,7 @@ public interface Bridge {
 
     ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName);
 
-    Result<Boolean, String> DeleteUserTest(String[] usernames);
+    Response DeleteUserTest(String[] usernames);
 
     ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName);
 

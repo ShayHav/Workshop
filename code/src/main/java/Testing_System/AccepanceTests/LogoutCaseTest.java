@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,29 +15,40 @@ public class LogoutCaseTest extends Tester {
     private UserGenerator ug = new UserGenerator();
     private String[] validUserNames = ug.GetValidUsers();
     private String[] PWs = ug.GetPW();
+    private String[] guestArr;
 
 
     @BeforeAll
-    public void SetUp()
-    {
-        for(int i = 0; i < ug.getNumOfUser()/2; i++)
-            Register(validUserNames[i], PWs[i]);
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        DeleteUserTest(validUserNames);
+        ug.InitTest();
 
     }
 
     @BeforeEach
     public void LogUsers()
     {
-        for(int i = 0; i < ug.getNumOfUser()/2; i++)
-            Login(validUserNames[i], PWs[i],null);
+        guestArr = new String[ug.getNumOfUser()];
+        for(int i = 0; i < ug.getNumOfUser()/2; i++) {
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            guestArr[i] = g;
+            Register(g, validUserNames[i], PWs[i]);
+            Login(g, validUserNames[i], PWs[i]);
+        }
     }
 
 
 
+    @AfterEach
+    public void CleanTest()
+    {
+        DeleteUserTest(validUserNames);
+    }
+
     @AfterAll
     public void CleanUp()
     {
-        DeleteUserTest(validUserNames);
+        ug.DeleteAdmin();
     }
 
     @Test

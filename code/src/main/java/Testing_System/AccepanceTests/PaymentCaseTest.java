@@ -2,24 +2,21 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
-import domain.ResponseT;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.market.*;
-import domain.shop.*;
-import domain.shop.Order;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.PaymentServiceImp;
+import domain.ExternalConnectors.SupplyService;
+import domain.ExternalConnectors.SupplyServiceImp;
 import domain.user.TransactionInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchProductFilter;
-import domain.user.User;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import Testing_System.Tester;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PaymentCaseTest extends Tester {
 
@@ -62,7 +59,7 @@ public class PaymentCaseTest extends Tester {
 
 
     @BeforeAll
-    public void SetUp() {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUserNames = ug.GetValidUsers();
         pws = ug.GetPW();
@@ -96,8 +93,9 @@ public class PaymentCaseTest extends Tester {
         ug.InitTest();
         for(int i =0; i< ug.getNumOfUser(); i++)
         {
-            Register(validUserNames[i],pws[i]);
-            Login(validUserNames[i],pws[i],null);
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(g,validUserNames[i],pws[i]);
+            Login(g,validUserNames[i],pws[i]);
         }
         guest_id = EnterMarket().getValue().getUserName();
         shopID = CreateShop("Test",validUserNames[0],shopname).getValue().getShopID();

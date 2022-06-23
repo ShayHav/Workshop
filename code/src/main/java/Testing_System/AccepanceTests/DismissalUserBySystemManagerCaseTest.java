@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.user.filter.SearchUserFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,22 +17,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DismissalUserBySystemManagerCaseTest extends Tester {
     private UserGenerator ug = new UserGenerator();
-    private String[] validUserNames;
+    private String[] validUserNames = ug.GetValidUsers();
     private String[] badUserName;
     private String[] sadUserNames;
     private String[] PWs;
     private String[] badPWs;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        DeleteUserTest(validUserNames);
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
         sadUserNames = ug.GetSadUsers();
         PWs = ug.GetPW();
         badPWs = ug.GetBadPW();
-        for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
+        ug.InitTest();
+        for(int i = 0; i<ug.getNumOfUser(); i++) {
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            assertTrue(!Register(g,validUserNames[i], PWs[i]).isErrorOccurred());
+        }
     }
 
     @AfterEach
@@ -43,11 +48,11 @@ public class DismissalUserBySystemManagerCaseTest extends Tester {
     public void DismissalAllUsers()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!DismissalUserBySystemManager("admin",validUserNames[i]).isErrorOccurred());
+            assertTrue(!DismissalUserBySystemManager("Admin",validUserNames[i]).isErrorOccurred());
         SearchUserFilter f = new SearchUserFilter();
         for (int i = 0; i<ug.getNumOfUser(); i++){
             f.setName(validUserNames[i]);
-            assertFalse(!(RequestUserInfo(f,"admin").getValue().size()==0));
+            assertFalse(!(RequestUserInfo(f,"Admin").getValue().size()==0));
         }
     }
 

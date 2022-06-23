@@ -1,7 +1,9 @@
 package Testing_System.AccepanceTests;
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
-import domain.ResponseT;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Responses.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
@@ -28,28 +30,34 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     private int shopID_1;
     private List<ShopManagersPermissions> ls;
     private List<ShopManagersPermissions> pToRemove;
+    private String guest_1;
+    private String guest_2;
+    private String guest_3;
 
 
     @BeforeAll
-    public void SetUp() {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUsers = ug.GetValidUsers();
         pws = ug.GetPW();
         ug.InitTest();
         user_1 = validUsers[0];
         pw_1 = pws[0];
-        Register(user_1, pw_1);
-        Login(user_1, pw_1,null);
+        guest_1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        guest_2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        guest_3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guest_1,user_1, pw_1);
+        Login(guest_1,user_1, pw_1);
         ResponseT<Shop> shopResponseT = CreateShop("Test_1",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
         owner_pw = pws[1];
-        Register(owner,owner_pw);
+        Register(guest_2,owner,owner_pw);
         AppointNewShopOwner(shopID_1,owner,user_1);
         manager = validUsers[2];
         manager_pw = pws[2];
-        Register(manager,manager_pw);
+        Register(guest_3,manager,manager_pw);
         AppointNewShopManager(shopID_1,manager,user_1);
         List<ShopManagersPermissions> ls = new ArrayList<ShopManagersPermissions>();
         ls.add(ShopManagersPermissions.RemoveProductFromInventory);
@@ -134,7 +142,8 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     public void RemoveToNoManagerTest()
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
-        Register(validUsers[3],pws[3]);
+        String guest = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guest, validUsers[3],pws[3]);
         assertFalse(!RemoveShopManagerPermissions(shopID_1,pToRemove, validUsers[3], user_1).isErrorOccurred());
         assertFalse(!RemoveShopManagerPermissions(shopID_1,pToRemove, owner,user_1).isErrorOccurred());
 
@@ -152,7 +161,8 @@ public class RemoveManagerPermissionsCaseTest extends Tester{
     {
         pToRemove.add(ShopManagersPermissions.AddProductToInventory);
         List<ShopManagersPermissions> ls_2 = new ArrayList<ShopManagersPermissions>();
-        Register(validUsers[3],pws[3]);
+        String guest = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guest, validUsers[3],pws[3]);
         AppointNewShopManager(shopID_1,validUsers[2],user_1);
         assertFalse(!RemoveShopManagerPermissions(shopID_1+1,pToRemove, validUsers[3], user_1).isErrorOccurred());
         assertFalse(!RemoveShopManagerPermissions(-1,pToRemove, validUsers[3], user_1).isErrorOccurred());

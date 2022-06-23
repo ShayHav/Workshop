@@ -1,9 +1,11 @@
 package Testing_System.AccepanceTests;
 
-import Presentation.Model.PresentationShop;
+
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
-import domain.ResponseT;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.Responses.ResponseT;
 import domain.shop.Shop;
 import domain.user.User;
 import org.junit.jupiter.api.*;
@@ -44,10 +46,12 @@ public class AddToCartCaseTest extends Tester {
     private int amountToAdd_2;
     private int pID_1;
     private  int pID_2;
+    private String g1;
+    private String g2;
+    private String g3;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
         pCat_1 = "Sex";
@@ -76,11 +80,14 @@ public class AddToCartCaseTest extends Tester {
         if(!u.isErrorOccurred())
             guest = u.getValue().getUserName();
 
-        Register(user_1,pw_user_1);
-        Register(user_2,pw_user_2);
-        Register(user_3,pw_user_3);
+        g1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        g2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        g3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(g1, user_1,pw_user_1);
+        Register(g2, user_2,pw_user_2);
+        Register(g3,user_3,pw_user_3);
 
-        Login(user_1,pw_user_1,null);
+        Login(g1,user_1,pw_user_1);
 
         ResponseT<Shop> shopResponseT = CreateShop("Test_1",user_1,"TestShop");
         if(!shopResponseT.isErrorOccurred())
