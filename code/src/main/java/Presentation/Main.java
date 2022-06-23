@@ -114,6 +114,7 @@ public class Main {
                     post("/combineRules", shopController::combineRules);
                     post("/deleteRule", shopController::deleteRule);
                     post("/addDiscount", shopController::addDiscount);
+                    post("/deleteDiscount", shopController::deleteDiscount);
 
 
                     path("{serialNumber}", () -> {

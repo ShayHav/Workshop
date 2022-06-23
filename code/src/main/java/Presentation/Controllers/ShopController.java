@@ -523,4 +523,17 @@ public class ShopController {
         }
         context.redirect("/shops/"+ shopID+ "/edit");
     }
+
+    public void deleteDiscount(Context context) {
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int discountID = context.formParamAsClass("discountIDToDelete", int.class).get();
+        String username = context.cookieStore("uid");
+        Response response = services.removeDiscount(username,discountID,shopID);
+
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/"+ shopID+ "/edit");
+    }
 }

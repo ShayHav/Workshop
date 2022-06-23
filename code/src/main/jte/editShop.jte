@@ -92,39 +92,45 @@
         <h3 class="mb-2">Purchase Rules management</h3>
         <ul class="list-group mb-2">
             <form class="form mb-2" method="post" action="/shops/${shop.id}/combineRules" id="rulesForm">
-            @for(PurchaseRule rule : shop.getAllRules())
-                <li class="list-group-item">
-                    <div class="form-check">
-                        <input class="form-check-input" name="rule" type="checkbox" value="${rule.getID()}" id="rule${rule.getID()}">
-                        <label class="form-check-label" for="rule${rule.getID()}">
-                            ${rule.toString()}
-                        </label>
-                        <button id="deleteRule${rule.getID()}" type="button" class="btn btn-danger deleteRuleBtn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
-                            </svg></button>
-                    </div>
+                @for(PurchaseRule rule : shop.getAllRules())
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" name="rule" type="checkbox" value="${rule.getID()}"
+                                   id="rule${rule.getID()}">
+                            <label class="form-check-label" for="rule${rule.getID()}">
+                                ${rule.toString()}
+                            </label>
+                            <button id="deleteRule${rule.getID()}" type="button" class="btn btn-danger deleteRuleBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                </svg>
+                            </button>
+                        </div>
 
-                </li>
-            @endfor
+                    </li>
+                @endfor
                 @if(shop.getAllRules().size() > 1)
-                <li class="list-group-item">
-                    <input id="combineRuleType" type="hidden" name="combineRuleType">
-                    <div class="row">
-                        <div class="col-3">
-                            <button id="combineRuleOr" type="submit" class="btn btn-warning">Combine Rules: Or</button>
+                    <li class="list-group-item">
+                        <input id="combineRuleType" type="hidden" name="combineRuleType">
+                        <div class="row">
+                            <div class="col-3">
+                                <button id="combineRuleOr" type="submit" class="btn btn-warning">Combine Rules: Or
+                                </button>
+                            </div>
+                            <div class="col-3">
+                                <button id="combineRuleAnd" type="submit" class="btn btn-info">Combine Rules: And
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-3">
-                            <button id="combineRuleAnd" type="submit" class="btn btn-info">Combine Rules: And</button>
-                        </div>
-                    </div>
-                </li>
+                    </li>
                     <script>
-                        document.querySelector('#combineRuleOr').onclick = (event)=> {
+                        document.querySelector('#combineRuleOr').onclick = (event) => {
                             document.querySelector('#combineRuleType').value = 'or';
                             document.forms['rulesForm'].submit();
                         };
 
-                        document.querySelector('#combineRuleAnd').onclick = (event)=> {
+                        document.querySelector('#combineRuleAnd').onclick = (event) => {
                             document.querySelector('#combineRuleType').value = 'and';
                             document.forms['rulesForm'].submit();
                         };
@@ -135,9 +141,9 @@
                 <input type="hidden" id="deleteRuleId" name="deleteRuleId">
             </form>
             <script>
-                document.querySelectorAll('.deleteRuleBtn').forEach(btn => btn.addEventListener("click", ()=> {
+                document.querySelectorAll('.deleteRuleBtn').forEach(btn => btn.addEventListener("click", () => {
                     const deleteForm = document.querySelector('#deleteRuleForm');
-                    document.querySelector('#deleteRuleId').value = btn.id.replace('deleteRule', '') ;
+                    document.querySelector('#deleteRuleId').value = btn.id.replace('deleteRule', '');
                     deleteForm.submit();
                 }));
             </script>
@@ -182,24 +188,44 @@
                         <div class="form-check">
                             <input class="form-check-input" name="rule" type="checkbox" value="${d.getID()}"
                                    id="rule${d.getID()}">
-                            <label class="form-check-label" for="rule${d.getID()}">
+                            <label class="form-check-label mx-2" for="rule${d.getID()}">
                                 ${d.toString()}
                             </label>
+                            <button class="btn btn-danger deleteDiscountBtn" type="button" id="deleteDiscount${d.getID()}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                </svg>
+                            </button>
                         </div>
                     </li>
                 @endfor
-                <li class="list-group-item col-4">
-                    <select id="discountCompose" class="form-select" name="discountCompose" aria-label="Select Discount composition operator">
-                        <option selected>Select Discount composition operator</option>
-                        <option value="and">And</option>
-                        <option value="or">Or</option>
-                        <option value="xor">Xor</option>
-                    </select>
-                </li>
                 <li class="list-group-item">
+                    <div class="col-4 mb-2">
+                        <select id="discountCompose" class="form-select" name="discountCompose"
+                                aria-label="Select Discount composition operator">
+                            <option selected>Select Discount composition operator</option>
+                            <option value="and">And</option>
+                            <option value="or">Or</option>
+                            <option value="xor">Xor</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-warning">Compose Discounts</button>
                 </li>
             </form>
+
+            <form method="post" class="form" id="removeDiscountForm" name="removeDiscountForm"
+                  action="/shops/${shop.id}/deleteDiscount">
+                <input class="visually-hidden" name="discountIDToDelete" id="discountIDToDelete" readonly>
+            </form>
+            <script>
+                document.querySelectorAll('.deleteDiscountBtn').forEach(btn => btn.addEventListener('click', ()=> {
+                    const deleteDiscountForm = document.querySelector("#removeDiscountForm");
+                    document.querySelector('#discountIDToDelete').value = btn.id.replace("deleteDiscount", '');
+                    deleteDiscountForm.submit();
+                }));
+            </script>
+
             <li class="list-group-item">
                 <form class="form" id="addDiscountForm" action="/shops/${shop.id}/addDiscount" method="post">
                     <div class="row">
@@ -223,8 +249,10 @@
                         <div id="discountParams" class="col-6">
                         </div>
                         <div class="visually-hidden col-6">
-                            <label id='productOrCategoryDiscountLabel' for="productOrCategoryDiscount" class="form-label"></label>
-                            <input type="text" class="form-control" name="productOrCategoryDiscount" id="productOrCategoryDiscount">
+                            <label id='productOrCategoryDiscountLabel' for="productOrCategoryDiscount"
+                                   class="form-label"></label>
+                            <input type="text" class="form-control" name="productOrCategoryDiscount"
+                                   id="productOrCategoryDiscount">
                         </div>
                     </div>
                     <button class="btn btn-success" type="submit">Add Discount</button>
@@ -556,8 +584,7 @@
     }
 
 
-
-    function addRegularDiscount(){
+    function addRegularDiscount() {
         let div = document.querySelector('#discountParams')
 
         let regular_input = document.createElement('input');
@@ -579,7 +606,7 @@
         div.append(regular_input);
     }
 
-    function addBundleDiscount(){
+    function addBundleDiscount() {
         let div = document.querySelector('#discountParams')
 
         let toBuy = document.createElement('input');
@@ -618,7 +645,8 @@
         div.append(toGetFree);
     }
 
-    function addConditionalDiscount(){}
+    function addConditionalDiscount() {
+    }
 
     function clearProductOrCategoryDiscount() {
         let input = document.querySelector('#productOrCategoryDiscount');

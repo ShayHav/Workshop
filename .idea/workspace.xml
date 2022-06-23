@@ -6,6 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteadminManagingPageGenerated.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Transaction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/resources/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/resources/state_init.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,12 +185,6 @@
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="6384000" />
-    </task>
-    <task id="LOCAL‎00012" summary="add product works. made some adjustments">
-      <created>1652719527070</created>
-      <option name="number" value="LOCAL‎00012" />
-      <option name="presentableId" value="LOCAL‎00012" />
-      <updated>1652719527070</updated>
     </task>
     <task id="LOCAL‎00013" summary="started to add impl for cart, the class presentation basket + cart">
       <created>1652721092217</created>
@@ -473,7 +474,13 @@
       <option name="presentableId" value="LOCAL‎00060" />
       <updated>1654696317219</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL‎00061" summary="merged with main">
+      <created>1655995769060</created>
+      <option name="number" value="LOCAL‎00061" />
+      <option name="presentableId" value="LOCAL‎00061" />
+      <updated>1655995769061</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -498,7 +505,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="when system manager requests history of sales - returns all shops or all users (2 different methods)" />
     <MESSAGE value="user can now access his orders - only if member&#10;fixed many return statements in system market- returned null if user isn't logged in instead of throwing an exception&#10;fixed some errors in services - method returns Response, in mistake returned ResponseT" />
     <MESSAGE value="solved conflicts" />
     <MESSAGE value="users now have access to old orders and all their shops (if they are the shop founders)&#10;fixed bug i created in mistake - checked login for actions that could be performed by guests" />
@@ -523,7 +529,8 @@
     <MESSAGE value="started impl discount from gui to domain" />
     <MESSAGE value="add discount impl" />
     <MESSAGE value="fix notification tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix notification tests" />
+    <MESSAGE value="merged with main" />
+    <option name="LAST_COMMIT_MESSAGE" value="merged with main" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -540,8 +547,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>317</line>
-          <option name="timeStamp" value="14" />
+          <line>527</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
