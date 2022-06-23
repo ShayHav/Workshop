@@ -626,7 +626,27 @@ public class ShopController {
         context.redirect("/shops/"+ shopID+ "/edit");
     }
 
-    public void composeDiscounts(WsConfig wsConfig) {
+    public void composeDiscounts(Context context) {
+        String username = context.cookieStore("uid");
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        List<Integer> discounts = context.formParams("discount").stream().map(Integer::parseInt).collect(Collectors.toList());
+        String type = context.formParam("discountComposeOperator");
 
+        if(type == null){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", "message type cannot be null", "status", 400));
+            return;
+        }
+        Response response;
+        switch (type){
+            case "and" -> response = services.addAndDiscount(username, discounts.get(0), discounts.get(1), shopID);
+            case "or" -> response = services.addOrDiscount(username, discounts.get(0), discounts.get(1), shopID);
+            case "xor" -> response = services.addXorDiscount(username, discounts.get(0), discounts.get(1), shopID);
+            default -> response = new Response("Not supported operation");
+        }
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/"+ shopID+"/edit");
     }
 }

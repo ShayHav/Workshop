@@ -268,30 +268,30 @@
 <script>
     const socket = new WebSocket('ws://localhost:${Main.port}/shops/${shop.id}');
 
-    const composeDis_socket = new WebSocket('ws://localhost:${Main.port}/shops/${shop.id}/composeDiscounts');
+    <%--const composeDis_socket = new WebSocket('ws://localhost:${Main.port}/shops/${shop.id}/composeDiscounts');--%>
 
-    const composeDiscounts = function (event){
-        let discount_checked = [];
-        document.querySelectorAll(".discount").forEach(inp => {
-            if(inp.checked === true)
-                discount_checked.add(inp.value);
+    <%--const composeDiscounts = function (event){--%>
+    <%--    let discount_checked = [];--%>
+    <%--    document.querySelectorAll(".discount").forEach(inp => {--%>
+    <%--        if(inp.checked === true)--%>
+    <%--            discount_checked.add(inp.value);--%>
 
-        })
-        if(discount_checked.size() < 2) {
-            throw "must choose 2 discounts to combine";
-        }
+    <%--    })--%>
+    <%--    if(discount_checked.size() < 2) {--%>
+    <%--        throw "must choose 2 discounts to combine";--%>
+    <%--    }--%>
 
-        const username = "${user.getUsername()}";
-        const shopID = "${shop.id}";
-        const dis1 = parseInt(discount_checked[0]);
-        const dis2 = parseInt(discount_checked[1]);
-        const type = document.querySelector("#discountComposeOperator").value;
-        const message = {username: username, shopID: shopID, dis1: dis1, dis2: dis2, type:type}
+    <%--    const username = "${user.getUsername()}";--%>
+    <%--    const shopID = "${shop.id}";--%>
+    <%--    const dis1 = parseInt(discount_checked[0]);--%>
+    <%--    const dis2 = parseInt(discount_checked[1]);--%>
+    <%--    const type = document.querySelector("#discountComposeOperator").value;--%>
+    <%--    const message = {username: username, shopID: shopID, dis1: dis1, dis2: dis2, type:type}--%>
 
-        composeDis_socket.send(JSON.stringify(message));
-    }
+    <%--    composeDis_socket.send(JSON.stringify(message));--%>
+    <%--}--%>
 
-    document.querySelector("#discountComposeBtn").addEventListener("click",composeDiscounts);
+    <%--document.querySelector("#discountComposeBtn").addEventListener("click",composeDiscounts);--%>
 
     socket.onopen = () => console.log("trying to connect to sever using websocket")
     const removeManager = function (event) {

@@ -115,7 +115,7 @@ public class Main {
                     post("/deleteRule", shopController::deleteRule);
                     post("/addDiscount", shopController::addDiscount);
                     post("/deleteDiscount", shopController::deleteDiscount);
-                    ws("/composeDiscounts", shopController::composeDiscounts);
+                    post("/composeDiscounts", shopController::composeDiscounts);
 
 
                     path("{serialNumber}", () -> {
