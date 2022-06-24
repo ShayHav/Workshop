@@ -65,7 +65,7 @@ public interface Bridge {
 
     Response EditShoppingCart(String userId, int shopId, int productId, int amount);
 
-    Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate);
+    Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String city, String country, String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate);
 
     Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname);
 

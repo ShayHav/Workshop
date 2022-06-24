@@ -90,11 +90,11 @@ public class GetOrderHistoryInShopCaseTest extends Tester {
         pID_1 = AddProductToShopInventory(1,pName_1,pDis_1,pCat_1,price_1,amountToAdd_1,user_1,shopID_1).getValue().getId();
         pID_2 = AddProductToShopInventory(2,pName_2,pDis_2,pCat_2,price_2,amountToAdd_2,user_1,shopID_1).getValue().getId();
         AddToShoppingCart(user_1,shopID_1,pID_1,10);
-        Checkout(user_1,"Ariel Ronen", "TLV Bazal 13", "0546840084","4580000000000000","12/25");
+        Checkout(user_1,"Ariel Ronen", "Bazal 13","Tel Aviv", "Israel", "1", "0546840084","4580000000000000","123","12/25");
         AddToShoppingCart(user_1,shopID_1,pID_2,11);
-        Checkout(user_2,"Nitay Vitkin", "TLV Bazal 13", "0546840014","4580000000000001","12/25");
+        Checkout(user_2,"Nitay Vitkin", "Bazal 13","Tel Aviv", "Israel", "1", "0546840014","4580000000000001","123","12/25");
         AddToShoppingCart(user_1,shopID_1,pID_1,8);
-        Checkout(admin,"Omery Arviv", "TLV Bazal 13", "0546840083","4580000000000002","12/25");
+        Checkout(admin,"Omery Arviv", "Bazal 13","Tel Aviv", "Israel", "1", "0546840083","4580000000000002","123", "12/25");
 
     }
 

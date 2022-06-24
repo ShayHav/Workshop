@@ -13,13 +13,15 @@ public class SupplyServiceReal extends ExternalService implements SupplyService{
 
 
     @Override
-    public int supply(String fullName, String address, Map<Integer, Integer> items) {
+    public int supply(String fullName, String address, String city, String country, String zip, Map<Integer, Integer> items) {
         try{
             Map<String, String> params = new HashMap<>();
             params.put("action_type", "supply");
             params.put("name ", fullName);
             params.put("address", address);
-            //TODO send city, country, zip
+            params.put("city", city);
+            params.put("country", country);
+            params.put("zip", zip);
             String response = client.sendPost(params);
             int transactionID =  Integer.parseInt(response);
             if(10000 <= transactionID && transactionID <= 100000)

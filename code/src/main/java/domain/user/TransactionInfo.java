@@ -9,14 +9,18 @@ public class TransactionInfo {
     private String userID;
     private String fullName;
     private String address;
+    private String city;
+    private String country;
+    private String zip;
     private String phoneNumber;
     private String cardNumber;
     private String expirationDate;
+    private String ccv;
     private LocalDate transactionDate;
     private double totalAmount;
 
-
-    public TransactionInfo(String userID, String fullName, String address,String phoneNumber,String cardNumber, String expirationDate, LocalDate transactionDate, double totalAmount){
+    public TransactionInfo(String userID, String fullName, String address,String city, String country, String zip,String phoneNumber,String cardNumber,
+                           String expirationDate, String ccv, LocalDate transactionDate, double totalAmount){
         this.userID = userID;
         this.fullName = fullName;
         this.address = address;
@@ -25,6 +29,10 @@ public class TransactionInfo {
         this.expirationDate = expirationDate;
         this.transactionDate = transactionDate;
         this.totalAmount = totalAmount;
+        this.city = city;
+        this.country = country;
+        this.zip = zip;
+        this.ccv = ccv;
     }
 
     public TransactionInfo(String userID, String fullName, String address,String phoneNumber,String cardNumber, String expirationDate, LocalDate transactionDate){
@@ -74,5 +82,21 @@ public class TransactionInfo {
 
     public String getUserID() {
         return userID;
+    }
+
+    public String getCcv() {
+        return ccv;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getZip() {
+        return zip;
     }
 }
