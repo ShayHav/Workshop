@@ -432,4 +432,14 @@ public class ShopController {
 
         }
     }
+
+    public void acceptBid(int shopID, int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        Shop shop = getShop(shopID);
+        shop.acceptBid(bidID, approver);
+    }
+
+    public void declineBid(int shopID, int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        Shop shop = getShop(shopID);
+        shop.declineBid(bidID, decliner);
+    }
 }

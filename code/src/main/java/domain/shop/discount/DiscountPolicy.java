@@ -242,6 +242,7 @@ public class DiscountPolicy {
                 if (dis.getID() == discountID) {
                     prod_discounts.remove(dis);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
+                    break;
                     /*if(dis instanceof BundleDiscount){
                         hasBundleDeal.remove(set.getKey());
                     }*/
@@ -255,6 +256,7 @@ public class DiscountPolicy {
                 if (dis.getID() == discountID) {
                     prod_discounts.remove(dis);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
+                    break;
                 }
             }
         }
@@ -263,6 +265,7 @@ public class DiscountPolicy {
             if (dis.getID() == discountID) {
                 shopAllProducts_discounts.remove(dis);
                 eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
+                break;
             }
         }
 

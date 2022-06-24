@@ -1,7 +1,7 @@
 package domain.shop;
 
 import domain.Exceptions.*;
-import domain.ResponseT;
+import domain.Responses.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Basket;
@@ -16,10 +16,11 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.Mockito.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class ShopTest {
     DiscountPolicy discountPolicy;
@@ -71,8 +72,12 @@ public class ShopTest {
     @Test
     void addAndGetProduct() {
         Product apple;
+        String productNameApple = "doom apple";
+        String productDescApple = "red apple";
+
+
         try {
-            apple = shop.addListing(2,"apple", "red apple", "fruits", 5.0, 3, "Davidos");
+            apple = shop.addListing(3,productNameApple, productDescApple, "fruits", 5.0, 3, "Davidos");
         } catch (InvalidAuthorizationException InvAuthExc) {
             fail("founder can add product");
             return;
@@ -84,8 +89,8 @@ public class ShopTest {
         assertTrue(shop.isProductAvailable(apple.getId()));
         try {
             assertEquals(shop.getProduct(apple.getId()).getId(), apple.getId());
-            assertEquals(0, shop.getProduct(appleID).getName().compareTo("apple"), "product p1 should have been returned");
-            assertEquals(0, shop.getProduct(appleID).getDescription().compareTo("red apple"));
+            assertEquals(0, shop.getProduct(appleID).getName().compareTo(productNameApple), "product p1 should have been returned");
+            assertEquals(0, shop.getProduct(appleID).getDescription().compareTo(productDescApple));
         }catch (ProductNotFoundException productNotFoundException){
             fail("product exists, but failed to find it.");
             return;
@@ -93,8 +98,10 @@ public class ShopTest {
 
         assertThrows(ProductNotFoundException.class, () -> shop.getProduct(appleID + 100), "this item should not exist");
         Product orange;
+        String productNameOrange = "doom orange";
+        String productDescOrange = "red orange";
         try {
-            orange = shop.addListing(1, "orange", "red orange", "fruits", 12.0, 7, "Davidos");
+            orange = shop.addListing(4, productNameOrange, productDescOrange, "fruits", 12.0, 7, "Davidos");
         } catch (InvalidAuthorizationException InvAuthExc) {
             fail("founder can add product");
             return;
@@ -106,8 +113,8 @@ public class ShopTest {
         assertTrue(shop.isProductAvailable(orangeID));
         try{
             assertEquals(shop.getProduct(orangeID).getId(), orangeID);
-            assertEquals(0, shop.getProduct(orangeID).getName().compareTo("orange"), "product p1 should have been returned");
-            assertEquals(0, shop.getProduct(orangeID).getDescription().compareTo("red orange"), "incorrect description of orange");
+            assertEquals(0, shop.getProduct(orangeID).getName().compareTo(productNameOrange), "product p1 should have been returned");
+            assertEquals(0, shop.getProduct(orangeID).getDescription().compareTo(productDescOrange), "incorrect description of orange");
         }catch (ProductNotFoundException productNotFoundException){
             fail("product exists, but failed to find it.");
         }
@@ -119,14 +126,14 @@ public class ShopTest {
     void calculateTotalAmountOfOrder() {
         Map<Integer, Integer> product_Quantity = new HashMap<>();
         product_Quantity.put(appleID, 3);
-        assertEquals(50, shop.calculateTotalAmountOfOrder(product_Quantity), "product p1 price after discounts should have been 4");
+        assertEquals(50, shop.calculateTotalAmountOfOrder(product_Quantity, new ArrayList<>()), "product p1 price after discounts should have been 4");
         product_Quantity.put(orangeID, 7);
         when(mockBasket.calculateTotal()).thenReturn(90.0);
-        assertEquals(90.0, shop.calculateTotalAmountOfOrder(product_Quantity), "product p2 price after discounts should have been 4");
+        assertEquals(90.0, shop.calculateTotalAmountOfOrder(product_Quantity, new ArrayList<>()), "product p2 price after discounts should have been 4");
         product_Quantity = new HashMap<>();
         product_Quantity.put(orangeID + 200, 3);
         when(mockBasket.calculateTotal()).thenReturn(0.0);
-        assertEquals(0.0, shop.calculateTotalAmountOfOrder(product_Quantity), "product p3 doesn't not exist and should have returned price 0");
+        assertEquals(0.0, shop.calculateTotalAmountOfOrder(product_Quantity, new ArrayList<>()), "product p3 doesn't not exist and should have returned price 0");
     }
 
     @Test
@@ -136,6 +143,20 @@ public class ShopTest {
         product_QuantityInBasket.put(appleID, 3);
         product_QuantityInBasket.put(orangeID, 7);
         MarketSystem ms = mock(MarketSystem.class);
+        /*try (MockedStatic utilities = (MarketSystem.class)) {
+            utilities.when(MarketSystem::getInstance).thenReturn(ms);
+        }*/
+
+
+        User mockUser = mock(User.class);
+        when(MarketSystem.getInstance()).thenReturn(ms);
+        doNothing().when(ms).sendMessage(any(), any(), any());
+        try {
+            when(ms.getUser(any())).thenReturn(mockUser);
+        } catch (IncorrectIdentification | BlankDataExc incorrectIdentification) {
+            fail(incorrectIdentification.getMessage());
+            return;
+        }
         when(ms.pay(trans)).thenReturn(true);
         try {
             when(ms.supply(trans, product_QuantityInBasket)).thenReturn(true);
@@ -144,8 +165,9 @@ public class ShopTest {
             return;
         }
         ResponseT<Order> checkoutRet = null;
+
         try {
-            checkoutRet = shop.checkout(product_QuantityInBasket, trans);
+            checkoutRet = shop.checkout(product_QuantityInBasket, new ArrayList<>(), trans);
         } catch (BlankDataExc blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
@@ -170,7 +192,7 @@ public class ShopTest {
         }
         ResponseT<Order> checkoutRet = null;
         try {
-            checkoutRet = shop.checkout(product_QuantityInBasket, trans);
+            checkoutRet = shop.checkout(product_QuantityInBasket, new ArrayList<>(), trans);
         } catch (BlankDataExc blankDataExc) {
             fail(blankDataExc.getMessage());
             return;

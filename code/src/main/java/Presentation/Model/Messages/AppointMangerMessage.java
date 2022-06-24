@@ -1,7 +1,5 @@
 package Presentation.Model.Messages;
 
-import domain.Response;
-
 public class AppointMangerMessage {
 
     public String errorMessage;

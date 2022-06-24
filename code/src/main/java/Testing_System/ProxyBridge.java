@@ -1,13 +1,12 @@
 package Testing_System;
 
 
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
-import domain.market.PaymentService;
-import domain.market.SupplyService;
-import domain.notifications.UserObserver;
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.shop.*;
 import domain.user.*;
 import domain.user.TransactionInfo;

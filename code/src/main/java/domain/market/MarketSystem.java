@@ -2,6 +2,9 @@ package domain.market;
 
 import domain.*;
 import domain.Exceptions.*;
+import domain.ExternalConnectors.*;
+import domain.Responses.Response;
+import domain.Responses.ResponseT;
 import domain.notifications.AdminObserver;
 import domain.notifications.NotificationManager;
 import domain.notifications.UserObserver;
@@ -135,18 +138,36 @@ public class MarketSystem {
      * Connect to supply service
      * Ensures there is at least 1 System manager
      */
-    public boolean start(PaymentService payment, SupplyService supply) throws InvalidSequenceOperationsExc, IncorrectIdentification {
+    public boolean start(PaymentService payment, SupplyService supply) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         Dotenv dotenv = Dotenv.configure().filename(".env").load();
         String adminUsername = dotenv.get("Admin_username"), password = dotenv.get("Admin_password");
         String mod = dotenv.get("Mod");
-        if (!userController.createSystemManager(adminUsername, password)) {
+        if(!userController.createSystemManager(adminUsername, password)) {
             return false;
         }
-        if(mod.equals("production")) {
-            return externalConnector.connectToSupplyService(new SupplyServiceImp()) && externalConnector.connectToPaymentService(new PaymentServiceImp());
+        switch (mod){
+            case "production" -> {
+                return externalConnector.setSupplyService(new SupplyServiceImp()) && externalConnector.setPaymentService(new PaymentServiceImp());
+            }
+            case "release" -> {
+                String paymentServiceUrl = dotenv.get("Payment_Connector");
+                String supplyServiceUrl = dotenv.get("Supply_Connector");
+                PaymentService paymentService = new RealPaymentSystem(paymentServiceUrl);
+                SupplyServiceReal supplyService = new SupplyServiceReal(supplyServiceUrl);
+                return externalConnector.setPaymentService(paymentService)
+                        && externalConnector.setSupplyService(supplyService);
+            }
+            case "test" -> {
+                String paymentServiceUrl = dotenv.get("Payment_Connector");
+                String supplyServiceUrl = dotenv.get("Supply_Connector");
+                return externalConnector.setPaymentService(new RealPaymentSystem(paymentServiceUrl)) &&
+                        externalConnector.setSupplyService(new SupplyServiceReal(supplyServiceUrl));
+            }
+            default -> {
+                errorLogger.logMsg(Level.SEVERE, "unsupported mod in env file");
+                throw new RuntimeException("not supported mod");
+            }
         }
-        //TODO figure out what to do if we are at release
-        return true;
     }
 
     /***
@@ -866,5 +887,13 @@ public class MarketSystem {
         isExist(userName);
         isLogin(userName);
         shopController.removePurchaseRule(userName,purchaseRuleID, shopID);
+    }
+
+    public void acceptBid(int shopID, int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        shopController.acceptBid(shopID, bidID, approver);
+    }
+
+    public void declineBid(int shopID, int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+        shopController.declineBid(shopID, bidID, decliner);
     }
 }

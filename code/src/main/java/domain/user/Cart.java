@@ -2,10 +2,12 @@ package domain.user;
 
 import domain.*;
 import domain.Exceptions.ProductNotFoundException;
+import domain.Responses.Response;
+import domain.Responses.ResponseT;
+
+import domain.Exceptions.*;
 import domain.shop.Order;
 import domain.shop.Shop;
-import domain.Exceptions.ShopNotFoundException;
-import domain.Exceptions.BlankDataExc;
 import domain.user.ShoppingBasket.ServiceBasket;
 
 import javax.persistence.Entity;
@@ -53,6 +55,52 @@ public class Cart {
         }
     }
 
+
+    public ResponseT<Integer> addNewBidToCart(int shopID, int productID, int amount, User basketOwner) throws ShopNotFoundException {
+        if (!baskets.containsKey(shopID)) {
+            try {
+                Shop shop = ControllersBridge.getInstance().getShop(shopID);
+                ShoppingBasket newBasket = new ShoppingBasket(shop);
+                int bidID = newBasket.addBidToBasket(shopID, productID, amount, basketOwner);
+                baskets.put(shopID, newBasket);
+                totalAmount = getTotalAmount();
+                eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
+                return new ResponseT<>(bidID);
+            } catch (IllegalArgumentException | ProductNotFoundException e) {
+                errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
+                return new ResponseT<>(e.getMessage());
+            }
+        } else {
+            try {
+                int bidID = baskets.get(shopID).addBidToBasket(shopID, productID, amount, basketOwner);
+                totalAmount = getTotalAmount();
+                return new ResponseT<>(bidID);
+            } catch (IllegalArgumentException | ProductNotFoundException e) {
+                errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
+                return new ResponseT<>(e.getMessage());
+            }
+        }
+    }
+
+    public void bidApproved(int shopID, int bidID) throws CriticalInvariantException, BidNotFoundException {
+        synchronized (baskets) {
+            if (!baskets.containsKey(shopID))
+                throw new CriticalInvariantException();
+            baskets.get(shopID).acceptBid(bidID);
+        }
+    }
+
+    public void removeBid(int shopID, int bidID) throws CriticalInvariantException, BidNotFoundException {
+        synchronized (baskets) {
+            if (!baskets.containsKey(shopID))
+                throw new CriticalInvariantException("tried to remove bid from a shop that isn't in user's cart");
+            ShoppingBasket basket = baskets.get(shopID);
+            basket.removeBid(bidID);
+            if(basket.shouldBeRemovedFromCart())
+                baskets.remove(basket);
+        }
+    }
+
     public Response updateAmountOfProduct(int shopID, int productID, int amount) {
         if (!baskets.containsKey(shopID)) {
             errorLogger.logMsg(Level.WARNING, String.format("cannot update amount of product %d because cart doesn't contain basket with shop %d", productID, shopID));
@@ -75,7 +123,7 @@ public class Cart {
         }
         try {
             baskets.get(shopID).removeProduct(productID);
-            if(baskets.get(shopID).getProductAmountList().size() == 0){
+            if(baskets.get(shopID).shouldBeRemovedFromCart()){
                 baskets.remove(shopID);
             }
             getTotalAmount();
@@ -109,6 +157,7 @@ public class Cart {
         LocalDate transaction_date = LocalDate.now();
         totalAmount = getTotalAmount();
         TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
+
         List<ResponseT<Order>> orders = new ArrayList<>();
         for (Integer shopId : baskets.keySet()) {
             ShoppingBasket s = baskets.get(shopId);

@@ -4,8 +4,9 @@ import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
-import domain.ResponseT;
+import domain.Responses.ResponseT;
 import domain.market.MarketSystem;
+import domain.shop.PurchaseFormats.BidFormat;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Basket;
 import domain.shop.discount.Discount;
@@ -17,7 +18,6 @@ import domain.user.filter.*;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.security.Provider;
 import java.util.*;
 
 import java.util.function.Predicate;
@@ -44,6 +44,7 @@ public class Shop {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final OrderHistory orders;
     private boolean isOpen;
+    private BidHandler bidHandler;
     private MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
@@ -61,6 +62,7 @@ public class Shop {
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+        bidHandler = new BidHandler();
     }
 
     public Shop(String name,String description, User shopFounder, int shopID) {
@@ -136,8 +138,8 @@ public class Shop {
         return inventory.getItemsInStock();
     }
 
-    public Product getProduct(int prodID) throws ProductNotFoundException {
-        Product product = inventory.findProduct(prodID);
+    public ProductImp getProduct(int prodID) throws ProductNotFoundException {
+        ProductImp product = inventory.findProduct(prodID);
         if(product != null) {
             eventLogger.logMsg(Level.INFO, String.format("returned product: %d", prodID));
             return product;
@@ -192,7 +194,7 @@ public class Shop {
             return 0;
 
         try {
-            newPrice = cartItemsPricesAfterDiscounts(productAmountList).findProduct(prodID).getBasePrice();
+            newPrice = cartItemsPricesAfterDiscounts(productAmountList, new ArrayList<>()).findProduct(prodID).getBasePrice();
         }catch (ProductNotFoundException productNotFoundException){
             return 0;
         }
@@ -217,12 +219,30 @@ public class Shop {
         return basket;
     }
 
-    public Double calculateTotalAmountOfOrder(Map<Integer, Integer> productAmountList){
-        return cartItemsPricesAfterDiscounts(productAmountList).calculateTotal();
+
+    public Basket idsToBids(List<Integer> bidIDs){
+        ProductImp product;
+        Basket basket = new Basket();
+        for(Integer bidID : bidIDs){
+            //check purchase policy regarding the Product
+            //Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            try {
+                product = bidHandler.getBid(bidID);
+            }catch (BidNotFoundException bidNotFoundException){
+                continue;
+            }
+            basket.put(product, product.getAmount());
+        }
+        return basket;
     }
 
-    public Basket cartItemsPricesAfterDiscounts(Map<Integer, Integer> productAmountList){
+    public Double calculateTotalAmountOfOrder(Map<Integer, Integer> productAmountList, List<Integer> acceptedbidIDs){
+        return cartItemsPricesAfterDiscounts(productAmountList, acceptedbidIDs).calculateTotal();
+    }
+
+    public Basket cartItemsPricesAfterDiscounts(Map<Integer, Integer> productAmountList, List<Integer> acceptedbidIDs){
         Basket basket = IDsToProducts(productAmountList);
+        basket.putAll(idsToBids(acceptedbidIDs));
         return discountPolicy.calcPricePerProductForCartTotal(basket);
     }
 
@@ -289,9 +309,9 @@ public class Shop {
      * @param transaction the info of the client to be charged and supply
      * @return true if successfully created the order and add to the inventory
      */
-    public ResponseT<Order> checkout(Map<Integer,Integer> products, TransactionInfo transaction) throws BlankDataExc {
-        double productBasePrice;
+    public ResponseT<Order> checkout(Map<Integer,Integer> products, List<Integer> acceptedBids, TransactionInfo transaction) throws BlankDataExc {
         Basket basket = IDsToProducts(products);
+        basket.putAll(idsToBids(acceptedBids));
 
         if (!purchasePolicyLegal(basket)) {
             return new ResponseT("violates purchase policy");
@@ -523,7 +543,7 @@ public class Shop {
         return shopManagersPermissionsController.getPermissions(managerUsername);
     }
 
-    private void setMarketSystem(MarketSystem ms){
+    public void setMarketSystem(MarketSystem ms){
         marketSystem = ms;
     }
 
@@ -799,5 +819,34 @@ public class Shop {
 
     public void RemoveShopManagerTest(String useID) {
         ShopManagers.remove(useID);
+    }
+
+    public int addNewBid(ProductImp product, User buyer) throws ProductNotFoundException {
+        return bidHandler.addNewBid(product, getShopOwners(), buyer, inventory.getPrice(product.getId()), this);
+    }
+
+    public double calculateBid(int bidID){
+        BidFormat bid = null;
+        try {
+            bid = bidHandler.getBid(bidID);
+        } catch (BidNotFoundException e) {
+            return 0;
+        }
+        Basket tempBasket = new Basket();
+        tempBasket.put(bid, bid.getAmount());
+        tempBasket = discountPolicy.calcPricePerProductForCartTotal(tempBasket);
+        return tempBasket.calculateTotal();
+    }
+
+    public boolean removeBid(int bidID){
+        return bidHandler.removeBid(bidID);
+    }
+
+    public void acceptBid(int bidID, User approver) throws BidNotFoundException, CriticalInvariantException {
+        bidHandler.acceptBid(bidID, approver);
+    }
+
+    public void declineBid(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
+        bidHandler.declineBid(bidID, decliner);
     }
 }

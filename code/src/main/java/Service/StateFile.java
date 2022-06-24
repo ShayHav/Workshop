@@ -2,10 +2,10 @@ package Service;
 
 import java.util.List;
 
-public class Functions {
+public class StateFile {
     private List<Function> functions;
 
-    public Functions(){}
+    public StateFile(){}
 
     public List<Function> getFunctions() {
         return functions;

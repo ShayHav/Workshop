@@ -1,12 +1,16 @@
 package Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jdi.InvocationException;
+import domain.*;
 import domain.Exceptions.*;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
 import domain.market.*;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.notifications.AdminObserver;
 import domain.notifications.UserObserver;
 import domain.shop.*;
@@ -25,9 +29,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Services {
     private final MarketSystem marketSystem;
+    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
 
     private Services() {
         marketSystem = MarketSystem.getInstance();
@@ -224,8 +231,8 @@ public class Services {
         try {
             marketSystem.start(payment, supply);
             return new Response();
-        } catch (InvalidSequenceOperationsExc | IncorrectIdentification invalidSequenceOperationsExc) {
-            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc | IncorrectIdentification | BlankDataExc exception) {
+            return new Response(exception.getLocalizedMessage());
         }
     }
 
@@ -1014,7 +1021,7 @@ public class Services {
         return new ResponseT<>(purchaseRuleID);
     }
 
-    public ResponseT<Integer> addOrDiscount(String userName,int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public ResponseT<Integer> addOrDiscount(String userName,int dis1ID, int dis2ID, int shopID){
         int discountID = -1;
         try {
             discountID = marketSystem.addOrDiscount(userName,dis1ID, dis2ID, shopID);
@@ -1033,16 +1040,14 @@ public class Services {
 
     }
 
-    public ResponseT<Integer> addAndDiscount(String userName,int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public ResponseT<Integer> addAndDiscount(String userName,int dis1ID, int dis2ID, int shopID){
         int discountID;
         try {
             discountID = marketSystem.addAndDiscount(userName,dis1ID, dis2ID, shopID);
         }catch (CriticalInvariantException criticalInvariantException){
             return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
-        }catch (ShopNotFoundException shopNotFoundException){
+        }catch (ShopNotFoundException | DiscountNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc shopNotFoundException){
             return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
-        }catch (DiscountNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc discountNotFoundException){
-            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", discountNotFoundException.getMessage()));
         }
         return new ResponseT<>(discountID);
     }
@@ -1054,10 +1059,8 @@ public class Services {
             discountID = marketSystem.addXorDiscount(userName,dis1ID, dis2ID, shopID);
         }catch (CriticalInvariantException criticalInvariantException){
             return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
-        }catch (ShopNotFoundException shopNotFoundException){
+        }catch (ShopNotFoundException | DiscountNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc shopNotFoundException){
             return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
-        }catch (DiscountNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc discountNotFoundException){
-            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", discountNotFoundException.getMessage()));
         }
         return new ResponseT<>(discountID);
     }
@@ -1103,6 +1106,7 @@ public class Services {
     public ResponseT<Boolean> removePR(String userName, int purchaseRuleID, int shopID){
         boolean removed;
         try {
+            //todo removed??
             marketSystem.removePurchaseRule(userName,purchaseRuleID, shopID);
             return new ResponseT<>();
         }catch (ShopNotFoundException shopNotFoundException){
@@ -1113,17 +1117,36 @@ public class Services {
             return new ResponseT<>(invalidSequenceOperationsExc.getMessage());
         }
     }
-  
+
+    public Response acceptBid(int shopID, int bidID, User approver){
+        try {
+            marketSystem.acceptBid(shopID, bidID, approver);
+            return new Response();
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
+            return new Response(exception.getMessage());
+        }
+    }
+
+    public Response declineBid(int shopID, int bidID, User decliner){
+        try {
+            marketSystem.declineBid(shopID, bidID, decliner);
+            return new Response();
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
+            return new Response(exception.getMessage());
+        }
+    }
+
+
     public void startFromInit() {
         Path p = Paths.get("");
         String s = p.toAbsolutePath().toString() + "/src/main/resources/state_init.json";
         ObjectMapper objectMapper = new ObjectMapper();
         Method[] methods = this.getClass().getDeclaredMethods();
         try(FileReader file = new FileReader(s)){
-            Functions functions = objectMapper.readValue(file,Functions.class);
-            for(Function function : functions.getFunctions()){
+            StateFile stateFile = objectMapper.readValue(file, StateFile.class);
+            for(Function function : stateFile.getFunctions()){
                 for(Method m : methods){
-                    if(m.getName().equals(function.getFunction())){
+                    if(m.getName().equals(function.getName())){
                         Response response = (Response) m.invoke(this, function.args);
                         // check if the result of the invocation was failure
                         if(response.isErrorOccurred()){

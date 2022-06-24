@@ -5,8 +5,8 @@ import Presentation.Controllers.UserController;
 import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationUser;
 import Service.Services;
-import domain.ResponseMap;
-import domain.ResponseT;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
 import domain.shop.Product;
 import domain.shop.Shop;
 import domain.user.User;
@@ -114,6 +114,8 @@ public class Main {
                     post("/combineRules", shopController::combineRules);
                     post("/deleteRule", shopController::deleteRule);
                     post("/addDiscount", shopController::addDiscount);
+                    post("/deleteDiscount", shopController::deleteDiscount);
+                    post("/composeDiscounts", shopController::composeDiscounts);
 
 
                     path("{serialNumber}", () -> {
@@ -156,6 +158,7 @@ public class Main {
 
         app.exception(AuthenticationException.class, ((e, ctx) ->
                 ctx.status(400).render("errorPage.jte", Map.of("errorMessage", e.getExplanation(), "status", 400))));
+
     }
 
     public static void fillData(){
