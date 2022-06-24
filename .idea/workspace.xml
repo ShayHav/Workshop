@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,15 +13,15 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="PresentationCont" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -178,24 +176,6 @@
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="6384000" />
-    </task>
-    <task id="LOCAL‎00012" summary="add product works. made some adjustments">
-      <created>1652719527070</created>
-      <option name="number" value="LOCAL‎00012" />
-      <option name="presentableId" value="LOCAL‎00012" />
-      <updated>1652719527070</updated>
-    </task>
-    <task id="LOCAL‎00013" summary="started to add impl for cart, the class presentation basket + cart">
-      <created>1652721092217</created>
-      <option name="number" value="LOCAL‎00013" />
-      <option name="presentableId" value="LOCAL‎00013" />
-      <updated>1652721092217</updated>
-    </task>
-    <task id="LOCAL‎00014" summary="started to add impl for cart,add to cart,  cart.jte">
-      <created>1652775905749</created>
-      <option name="number" value="LOCAL‎00014" />
-      <option name="presentableId" value="LOCAL‎00014" />
-      <updated>1652775905749</updated>
     </task>
     <task id="LOCAL‎00015" summary="serach upgraded to return a map of products associated with their shop id">
       <created>1652790874627</created>
@@ -473,7 +453,25 @@
       <option name="presentableId" value="LOCAL‎00060" />
       <updated>1654696317219</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL‎00061" summary="merged with main">
+      <created>1655995769060</created>
+      <option name="number" value="LOCAL‎00061" />
+      <option name="presentableId" value="LOCAL‎00061" />
+      <updated>1655995769061</updated>
+    </task>
+    <task id="LOCAL‎00062" summary="remove discounts">
+      <created>1656000476924</created>
+      <option name="number" value="LOCAL‎00062" />
+      <option name="presentableId" value="LOCAL‎00062" />
+      <updated>1656000476924</updated>
+    </task>
+    <task id="LOCAL‎00063" summary="delete discounts, started compose discounts">
+      <created>1656005876234</created>
+      <option name="number" value="LOCAL‎00063" />
+      <option name="presentableId" value="LOCAL‎00063" />
+      <updated>1656005876234</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -498,9 +496,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="when system manager requests history of sales - returns all shops or all users (2 different methods)" />
-    <MESSAGE value="user can now access his orders - only if member&#10;fixed many return statements in system market- returned null if user isn't logged in instead of throwing an exception&#10;fixed some errors in services - method returns Response, in mistake returned ResponseT" />
-    <MESSAGE value="solved conflicts" />
     <MESSAGE value="users now have access to old orders and all their shops (if they are the shop founders)&#10;fixed bug i created in mistake - checked login for actions that could be performed by guests" />
     <MESSAGE value="bug fix in user - reset order history in every entrance in mistake&#10;appearance changes in addProduct.jte, editProduct.jte etc." />
     <MESSAGE value="changed register and login signatures &#10;added state to user presentation to support admin operations only" />
@@ -523,25 +518,33 @@
     <MESSAGE value="started impl discount from gui to domain" />
     <MESSAGE value="add discount impl" />
     <MESSAGE value="fix notification tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix notification tests" />
+    <MESSAGE value="merged with main" />
+    <MESSAGE value="remove discounts" />
+    <MESSAGE value="delete discounts, started compose discounts" />
+    <option name="LAST_COMMIT_MESSAGE" value="delete discounts, started compose discounts" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>136</line>
+          <line>138</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>152</line>
+          <line>154</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java</url>
+          <line>128</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>317</line>
-          <option name="timeStamp" value="14" />
+          <line>629</line>
+          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

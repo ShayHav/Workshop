@@ -1021,7 +1021,7 @@ public class Services {
         return new ResponseT<>(purchaseRuleID);
     }
 
-    public ResponseT<Integer> addOrDiscount(String userName,int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public ResponseT<Integer> addOrDiscount(String userName,int dis1ID, int dis2ID, int shopID){
         int discountID = -1;
         try {
             discountID = marketSystem.addOrDiscount(userName,dis1ID, dis2ID, shopID);
@@ -1040,16 +1040,14 @@ public class Services {
 
     }
 
-    public ResponseT<Integer> addAndDiscount(String userName,int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public ResponseT<Integer> addAndDiscount(String userName,int dis1ID, int dis2ID, int shopID){
         int discountID;
         try {
             discountID = marketSystem.addAndDiscount(userName,dis1ID, dis2ID, shopID);
         }catch (CriticalInvariantException criticalInvariantException){
             return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
-        }catch (ShopNotFoundException shopNotFoundException){
+        }catch (ShopNotFoundException | DiscountNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc shopNotFoundException){
             return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
-        }catch (DiscountNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc discountNotFoundException){
-            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", discountNotFoundException.getMessage()));
         }
         return new ResponseT<>(discountID);
     }
@@ -1061,10 +1059,8 @@ public class Services {
             discountID = marketSystem.addXorDiscount(userName,dis1ID, dis2ID, shopID);
         }catch (CriticalInvariantException criticalInvariantException){
             return new ResponseT<>(String.format("discount not created, invalid paramaters. error: %s", criticalInvariantException.getMessage()));
-        }catch (ShopNotFoundException shopNotFoundException){
+        }catch (ShopNotFoundException | DiscountNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc shopNotFoundException){
             return new ResponseT<>(String.format("discount not created, shop not found. error: %s", shopNotFoundException.getMessage()));
-        }catch (DiscountNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc discountNotFoundException){
-            return new ResponseT<>(String.format("discount not created, shop not found. error: %s", discountNotFoundException.getMessage()));
         }
         return new ResponseT<>(discountID);
     }
