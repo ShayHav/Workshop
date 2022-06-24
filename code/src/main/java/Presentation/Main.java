@@ -177,7 +177,7 @@ public class Main {
         services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", shop.getShopID());
         services.AddProductToShopInventory(3, "Product3", "testing product", "test",20,0, "shay", shop.getShopID());
         services.AddToShoppingCart("shay",shop.getShopID(),1,5);
-        services.Checkout("shay","shay havivyan","patish", "0506874838", "12345", "02/24");
+        services.Checkout("shay","shay havivyan","patish","patish", "israel", "1" ,"0506874838", "12345","121", "02/24");
         r = services.Logout("shay");
         shay_guest = r.getValue().getUserName();
         services.LeaveMarket(shay_guest);

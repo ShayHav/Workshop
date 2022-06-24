@@ -152,11 +152,11 @@ public class Cart {
         return new ServiceCart(totalAmount, basketMap);
     }
 
-    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String
-            phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
+    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String city, String country, String zip,
+                                           String phoneNumber, String cardNumber, String ccv, String expirationDate) throws BlankDataExc {
         LocalDate transaction_date = LocalDate.now();
         totalAmount = getTotalAmount();
-        TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
+        TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, city, country, zip, phoneNumber, cardNumber,ccv, expirationDate, transaction_date, totalAmount);
 
         List<ResponseT<Order>> orders = new ArrayList<>();
         for (Integer shopId : baskets.keySet()) {

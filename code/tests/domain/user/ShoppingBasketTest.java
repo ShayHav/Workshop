@@ -2,14 +2,13 @@ package domain.user;
 
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import domain.Exceptions.*;
 import domain.market.MarketSystem;
-import domain.market.PaymentServiceImp;
-import domain.market.SupplyServiceImp;
+import domain.ExternalConnectors.PaymentServiceImp;
+import domain.ExternalConnectors.SupplyServiceImp;
 import domain.shop.ProductInfo;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.Shop;

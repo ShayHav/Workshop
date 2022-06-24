@@ -121,7 +121,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, List<String>> Checkout(String userID, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public Result<Boolean, List<String>> Checkout(String userID, String fullName, String address, String city, String country, String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) {
         return null;
     }
 

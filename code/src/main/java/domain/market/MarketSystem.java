@@ -479,7 +479,9 @@ public class MarketSystem {
 
 
 
-    public List<String> Checkout(String username, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public List<String> Checkout(String username, String fullName, String address, String city, String country,
+                                 String zip, String phoneNumber, String cardNumber, String ccv,
+                                 String expirationDate) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if (username == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: userID");
             throw new BlankDataExc("parameter is null: username");
@@ -505,7 +507,7 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: expirationDate");
         }
         isEnter(username);
-        return userController.checkout(username, fullName, address, phoneNumber, cardNumber, expirationDate);
+        return userController.checkout(username, fullName, address, city, country, zip, phoneNumber, cardNumber, ccv,expirationDate);
     }
 
     public void setExternalConnector(ExternalConnector ec) {

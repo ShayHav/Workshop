@@ -29,9 +29,8 @@ class NotificationManagerTest {
         }
     }
 
-
     @Test
-    void removeFromObserversListNoSuchUserRegistered() {
+    void removeFromObserversList() {
         Map<String, List<UserObserver>> observerMap = notificationManager.getObservers();
         String username = "user3";
 
@@ -89,7 +88,6 @@ class NotificationManagerTest {
         assertEquals(1, adminObservers.get(admin1).size());
         assertEquals(observer, adminObservers.get(admin1).get(0));
     }
-
 
     @Test
     void notifyAdminWhenLoggedIn() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc {
@@ -158,10 +156,19 @@ class NotificationManagerTest {
         assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
     }
 
-
-
-
-
-
+    @Test
+    void delayedNotificationTest(){
+        User sender = new User("user1");
+        User addressee = new User("user2");
+        Message[] messages = {null};
+        sender.login();
+        addressee.login();
+        addressee.logout();
+        String messageContent = "message content";
+        notificationManager.sendMessage(addressee, messageContent, sender);
+        notificationManager.registerObserver(addressee, message -> messages[0] = message);
+        assertNotNull(messages[0]);
+        assertEquals(messageContent, messages[0].getContent());
+        assertEquals(addressee, messages[0].getAddressee());
+    }
 }
-

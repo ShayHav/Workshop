@@ -9,7 +9,7 @@ public class SupplyServiceImp implements SupplyService{
     }
 
     @Override
-    public int supply(String fullName, String address, Map<Integer, Integer> items) {
+    public int supply(String fullName, String address, String city, String country, String zip, Map<Integer, Integer> items) {
         return 1;
     }
 

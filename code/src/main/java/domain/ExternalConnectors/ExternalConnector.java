@@ -50,7 +50,7 @@ public class ExternalConnector {
             return false;
         Integer transactionID = submit(() ->
                 paymentService.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(),
-                    ti.getExpirationDate(), ti.getTotalAmount()));
+                    ti.getExpirationDate(), ti.getCcv(), ti.getTotalAmount()));
         return transactionID != null && transactionID >= 0;
     }
 
@@ -65,7 +65,8 @@ public class ExternalConnector {
         boolean connected = connectToSupplyService(this.supplyService);
         if(!connected)
             return false;
-        Integer transactionID = submit(() -> supplyService.supply(ti.getFullName(), ti.getAddress(), products));
+        Integer transactionID = submit(() -> supplyService.supply(ti.getFullName(), ti.getAddress(), ti.getCity(),
+                ti.getCountry(), ti.getZip(), products));
         return transactionID != null && transactionID >= 0;
     }
 

@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ShopTest {
@@ -138,7 +137,7 @@ public class ShopTest {
 
     @Test
     void checkOut() {
-        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166", "0534356345", "123123", "10/30", LocalDate.of(2022, 5, 10), 68);
+        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166","Beer Sheva","Israel","1", "0534356345", "123123", "10/30","123", LocalDate.of(2022, 5, 10), 68);
         Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
         product_QuantityInBasket.put(appleID, 3);
         product_QuantityInBasket.put(orangeID, 7);
@@ -179,7 +178,7 @@ public class ShopTest {
 
     @Test
     void checkOut2() {
-        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166", "0534356345", "123123", "10/30", LocalDate.of(2022, 5, 10), 68);
+        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166","Beer Sheva","Israel","1", "0534356345", "123123", "10/30","123", LocalDate.of(2022, 5, 10), 68);
         Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
         product_QuantityInBasket.put(appleID, 3);
         MarketSystem ms = mock(MarketSystem.class);

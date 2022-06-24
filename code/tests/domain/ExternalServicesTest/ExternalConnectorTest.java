@@ -17,8 +17,10 @@ import static org.mockito.Mockito.*;
 class ExternalConnectorTest {
 
     private ExternalConnector connector;
-    TransactionInfo ti = new TransactionInfo("1", "yosi", "", "","","", LocalDate.now(),0.0);
-    TransactionInfo ti1 = new TransactionInfo("2", "shmuel", "", "", "", "",LocalDate.now(), 0.0);
+    TransactionInfo ti = new TransactionInfo("1", "yosi", "Street 1", "City","County","00001", "050123456", "123456",
+            "01/25", "123", LocalDate.now(),0.0);
+    TransactionInfo ti1 = new TransactionInfo("2", "shmuel", "Street2", "City", "Country", "000001",
+            "0503456789", "1234567", "02/28", "123",LocalDate.now(), 0.0);
 
 
     @BeforeEach
@@ -56,8 +58,8 @@ class ExternalConnectorTest {
 
         when(p1.connect()).thenReturn(true);
 
-        when(p1.processPayment(ti.getFullName(),ti.getUserID(),ti.getCardNumber(), ti.getExpirationDate(), ti.getTotalAmount())).thenReturn(1000);
-        when(p1.processPayment(ti1.getFullName(),ti1.getUserID(),ti1.getCardNumber(), ti1.getExpirationDate(), ti.getTotalAmount())).thenReturn(-1);
+        when(p1.processPayment(ti.getFullName(),ti.getUserID(),ti.getCardNumber(), ti.getExpirationDate(),  ti.getCcv(), ti.getTotalAmount())).thenReturn(1000);
+        when(p1.processPayment(ti1.getFullName(),ti1.getUserID(),ti1.getCardNumber(), ti1.getExpirationDate(),ti1.getCcv(), ti1.getTotalAmount())).thenReturn(-1);
 
 
         try {
@@ -75,12 +77,12 @@ class ExternalConnectorTest {
         SupplyService s1 = mock(SupplyService.class);
         HashMap<Integer, Integer> items = new HashMap<>();
         when(s1.connect()).thenReturn(true);
-        when(s1.supply(ti.getFullName(),ti.getAddress(), items)).thenReturn(1000);
-        when(s1.supply(ti1.getFullName(), ti1.getAddress(), items)).thenReturn(-1);
+        when(s1.supply(ti.getFullName(),ti.getAddress(), ti.getCity(), ti.getCountry(), ti.getZip(), items)).thenReturn(1000);
+        when(s1.supply(ti1.getFullName(), ti1.getAddress(), ti1.getCity(), ti1.getCountry(), ti1.getZip(), items)).thenReturn(-1);
 
         SupplyService s2 = mock(SupplyService.class);
-        when(s2.supply(ti.getFullName(),ti.getAddress(), items)).thenReturn(-1);
-        when(s2.supply(ti1.getFullName(), ti1.getAddress(), items)).thenReturn(-1);
+        when(s2.supply(ti.getFullName(),ti.getAddress(),ti.getCity(), ti.getCountry(), ti.getZip(), items)).thenReturn(-1);
+        when(s2.supply(ti1.getFullName(), ti1.getAddress(),ti1.getCity(), ti1.getCountry(), ti1.getZip(), items)).thenReturn(-1);
         when(s2.connect()).thenReturn(true);
 
         try {
@@ -98,7 +100,7 @@ class ExternalConnectorTest {
         SupplyService service = mock(SupplyService.class);
         when(service.connect()).thenReturn(true);
         HashMap<Integer, Integer> items = new HashMap<>();
-        when(service.supply(ti.getFullName(), ti.getAddress(),items )).then(invocationOnMock -> {
+        when(service.supply(ti.getFullName(), ti.getAddress(),ti.getCity(), ti.getCountry(), ti.getZip(), items )).then(invocationOnMock -> {
             while(true);
         });
         when(service.cancelSupply(1)).then(invocationOnMock -> {
@@ -118,7 +120,7 @@ class ExternalConnectorTest {
     void paymentWithInfiniteLoop(){
         PaymentService service = mock(PaymentService.class);
         when(service.connect()).thenReturn(true);
-        when(service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(), ti.getExpirationDate(), ti.getTotalAmount())).then(invocationOnMock -> {
+        when(service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(), ti.getExpirationDate(), ti.getCcv(), ti.getTotalAmount())).then(invocationOnMock -> {
             while (true);
         });
         when(service.cancelPayment(1)).then(invocationOnMock -> {
@@ -143,7 +145,7 @@ class ExternalConnectorTest {
             connect[0] = !current;
             return current;
         });
-        when(service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(), ti.getExpirationDate(), ti.getTotalAmount())).thenReturn(1000);
+        when(service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(), ti.getExpirationDate(),ti.getCcv(), ti.getTotalAmount())).thenReturn(1000);
         when(service.cancelPayment(1)).thenReturn(true);
 
         try{
