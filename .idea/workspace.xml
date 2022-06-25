@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="" />
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/notifications/NotificationManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/notifications/NotificationManagerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/.$workshop.drawio.bkp" beforeDir="false" afterPath="$PROJECT_DIR$/docs/.$workshop.drawio.bkp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/workshop.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/docs/workshop.drawio" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -176,18 +182,7 @@
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="6384000" />
-    </task>
-    <task id="LOCAL‎00015" summary="serach upgraded to return a map of products associated with their shop id">
-      <created>1652790874627</created>
-      <option name="number" value="LOCAL‎00015" />
-      <option name="presentableId" value="LOCAL‎00015" />
-      <updated>1652790874627</updated>
-    </task>
-    <task id="LOCAL‎00016" summary="add to cart message&#10;rpoduct changes">
-      <created>1652792516003</created>
-      <option name="number" value="LOCAL‎00016" />
-      <option name="presentableId" value="LOCAL‎00016" />
-      <updated>1652792516003</updated>
+      <workItem from="1656156218301" duration="2258000" />
     </task>
     <task id="LOCAL‎00017" summary="changed navbar">
       <created>1652793908596</created>
@@ -471,7 +466,19 @@
       <option name="presentableId" value="LOCAL‎00063" />
       <updated>1656005876234</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL‎00064" summary="delete discounts, started compose discounts">
+      <created>1656006744853</created>
+      <option name="number" value="LOCAL‎00064" />
+      <option name="presentableId" value="LOCAL‎00064" />
+      <updated>1656006744853</updated>
+    </task>
+    <task id="LOCAL‎00065" summary="delete discounts, started compose discounts">
+      <created>1656006967063</created>
+      <option name="number" value="LOCAL‎00065" />
+      <option name="presentableId" value="LOCAL‎00065" />
+      <updated>1656006967063</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -540,11 +547,6 @@
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java</url>
           <line>128</line>
           <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>629</line>
-          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

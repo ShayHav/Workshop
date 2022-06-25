@@ -29,16 +29,22 @@ class NotificationManagerTest {
         }
     }
 
+
     @Test
-    void removeFromObserversList() {
+    void removeFromObserversListNoSuchUserRegistered() {
         Map<String, List<UserObserver>> observerMap = notificationManager.getObservers();
         String username = "user3";
-        // case 1 no such user registered
+
         assertNull(observerMap.get(username));
         notificationManager.removeFromObserversList(username);
         assertNull(observerMap.get(username));
+    }
 
-        // case 2 user is registered to the observer
+    @Test
+    void removeFromObserversListUserRegistered() {
+        Map<String, List<UserObserver>> observerMap = notificationManager.getObservers();
+        String username = "user3";
+
         User user = new User(username);
         notificationManager.registerObserver(user, msg -> {});
         assertNotNull(observerMap.get(username));
@@ -84,8 +90,9 @@ class NotificationManagerTest {
         assertEquals(observer, adminObservers.get(admin1).get(0));
     }
 
+
     @Test
-    void notifyAdmin() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc {
+    void notifyAdminWhenLoggedIn() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc {
         boolean[] notified = new boolean[1];
         User admin = new User("admin2");
         notificationManager.registerAdminObserver(admin, () -> notified[0] = true);
@@ -99,26 +106,62 @@ class NotificationManagerTest {
     }
 
     @Test
-    void getNumberOfUnreadMessage() {
+    void getNumberOfUnreadMessageUnregisteredUser() {
         User user = new User("user3");
         List<Message> messages = new ArrayList<>();
 
-        // case 1 unregistered user
-        assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
-
-        // case 2 registered without messages
-        notificationManager.registerObserver(user, messages::add);
-        assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
-
-        // case 3 registered with messages unread sent
-        notificationManager.sendMessage(user, "testing messages", user);
-        assertEquals(1, notificationManager.getNumberOfUnreadMessage(user));
-
-        // case 4 after reading the message
-        messages.get(0).markAsRead();
-        assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
-        messages.get(0).markAsRead();
-        // case 5 reading message twice don't change the counter
+        //unregistered user
         assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
     }
+
+    @Test
+    void getNumberOfUnreadMessageRegisteredWithoutMessage() {
+        User user = new User("user3");
+        List<Message> messages = new ArrayList<>();
+
+        notificationManager.registerObserver(user, messages::add);
+        assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
+    }
+
+    @Test
+    void getNumberOfUnreadMessageRegisteredWithUnreadMessage() {
+        User user = new User("user3");
+        List<Message> messages = new ArrayList<>();
+
+        notificationManager.registerObserver(user, messages::add);
+        notificationManager.sendMessage(user, "testing messages", user);
+        assertEquals(1, notificationManager.getNumberOfUnreadMessage(user));
+    }
+
+    @Test
+    void getNumberOfUnreadMessageRegisteredAfterReadMessage() {
+        User user = new User("user3");
+        List<Message> messages = new ArrayList<>();
+
+        notificationManager.registerObserver(user, messages::add);
+        notificationManager.sendMessage(user, "testing messages", user);
+        messages.get(0).markAsRead();
+        assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
+    }
+
+    @Test
+    void getNumberOfUnreadMessageRegisteredAfterReadTwiceMessage() {
+        User user = new User("user3");
+        List<Message> messages = new ArrayList<>();
+
+        notificationManager.registerObserver(user, messages::add);
+        notificationManager.sendMessage(user, "testing messages", user);
+        messages.get(0).markAsRead();
+        assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
+        messages.get(0).markAsRead();
+        //reading message twice don't change the counter
+        assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
+    }
+
+
+
+
+
+
 }
+
