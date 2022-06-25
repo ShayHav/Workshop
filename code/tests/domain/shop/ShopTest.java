@@ -17,9 +17,9 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ShopTest {
@@ -63,8 +63,8 @@ public class ShopTest {
         }
         mockBasket = mock(Basket.class);
         when(mockBasket.calculateTotal()).thenReturn(50.0);
-        when(discountPolicy.calcPricePerProductForCartTotal(Mockito.anyMap())).thenReturn(mockBasket);
-        when(purchasePolicy.checkCart_RulesAreMet(Mockito.anyMap())).thenReturn(true);
+        when(discountPolicy.calcPricePerProductForCartTotal(Mockito.any())).thenReturn(mockBasket);
+        when(purchasePolicy.checkCart_RulesAreMet(Mockito.any())).thenReturn(true);
         shop.setDiscountPolicy(discountPolicy);
         shop.setPurchasePolicy(purchasePolicy);
     }
@@ -138,18 +138,13 @@ public class ShopTest {
 
     @Test
     void checkOut() {
-        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166","Beer Sheva","Israel","1", "0534356345", "123123", "10/30","123", LocalDate.of(2022, 5, 10), 68);
-        Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
+        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166","Beer Sheva","Israel","1", "0534356345", "123123", "10/30","123", LocalDate.of(2022, 5, 10), 68);        Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
         product_QuantityInBasket.put(appleID, 3);
         product_QuantityInBasket.put(orangeID, 7);
         MarketSystem ms = mock(MarketSystem.class);
-        /*try (MockedStatic utilities = (MarketSystem.class)) {
-            utilities.when(MarketSystem::getInstance).thenReturn(ms);
-        }*/
-
+        shop.setMarketSystem(ms);
 
         User mockUser = mock(User.class);
-        when(MarketSystem.getInstance()).thenReturn(ms);
         doNothing().when(ms).sendMessage(any(), any(), any());
         try {
             when(ms.getUser(any())).thenReturn(mockUser);
@@ -158,10 +153,21 @@ public class ShopTest {
             return;
         }
         try {
-            when(ms.pay(trans)).thenReturn(15000);
-            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(15000);
-        } catch (BlankDataExc | ConnectException blankDataExc) {
+            when(ms.pay(trans)).thenReturn(2);
+        } catch (BlankDataExc blankDataExc) {
             fail(blankDataExc.getMessage());
+            return;
+        } catch (ConnectException e) {
+            fail(e.getMessage());
+            return;
+        }
+        try {
+            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(2);
+        } catch (BlankDataExc blankDataExc) {
+            fail(blankDataExc.getMessage());
+            return;
+        } catch (ConnectException e) {
+            fail(e.getMessage());
             return;
         }
         ResponseT<Order> checkoutRet = null;
@@ -177,8 +183,48 @@ public class ShopTest {
         assertFalse(shop.isProductAvailable(orangeID));
     }
 
-    @Test
+
+
+        @Test
     void checkOut2() {
+        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166","Beer Sheva","Israel","1", "0534356345", "123123", "10/30","123", LocalDate.of(2022, 5, 10), 68);
+        Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
+        product_QuantityInBasket.put(appleID, 3);
+        MarketSystem ms = mock(MarketSystem.class);
+        try {
+            when(ms.pay(trans)).thenReturn(1);
+        } catch (BlankDataExc blankDataExc) {
+            fail(blankDataExc.getMessage());
+            return;
+        } catch (ConnectException e) {
+            fail(e.getMessage());
+            return;
+        }
+        shop.setMarketSystem(ms);
+        try {
+            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(1);
+        } catch (BlankDataExc blankDataExc) {
+            fail(blankDataExc.getMessage());
+            return;
+        } catch (ConnectException e) {
+            fail(e.getMessage());
+            return;
+        }
+        ResponseT<Order> checkoutRet = null;
+        try {
+            checkoutRet = shop.checkout(product_QuantityInBasket, new ArrayList<>(), trans);
+        } catch (BlankDataExc blankDataExc) {
+            fail(blankDataExc.getMessage());
+            return;
+        }
+        assertFalse(checkoutRet.isErrorOccurred());
+        assertFalse(shop.isProductAvailable(appleID));
+        assertTrue(shop.isProductAvailable(orangeID));
+    }
+
+
+    @Test
+    void checkOut3() {
         TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166","Beer Sheva","Israel","1", "0534356345", "123123", "10/30","123", LocalDate.of(2022, 5, 10), 68);
         Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
         product_QuantityInBasket.put(appleID, 3);

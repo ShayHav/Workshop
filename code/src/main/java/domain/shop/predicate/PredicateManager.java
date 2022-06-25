@@ -10,9 +10,10 @@ public class PredicateManager {
 
     public static Predicate<Basket> createPricePredicate(double price){
         return new Predicate<Basket>() {
+
             @Override
             public boolean test(Basket basket) {
-                return basket.calculateTotal() >= price;
+                return basket.getBasePrice() >= price;
             }
 
             @Override

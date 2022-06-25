@@ -378,6 +378,23 @@ public class Services {
         }
     }
 
+
+    /**
+     * Add a product to the user's shopping cart (member or guest)
+     * @param userName - user identifier
+     * @param shopID - shop identifier
+     * @param productId - product identifier
+     * @param amount
+     * @return Response object
+     */
+    public Response addBidToShoppingCart(String userName, int shopID, int productId, int amount, double price) {
+        try {
+            return marketSystem.addBidToCart(userName, shopID, productId, amount, price);
+        } catch (InvalidSequenceOperationsExc | ShopNotFoundException | BlankDataExc | IncorrectIdentification | InvalidAuthorizationException e) {
+            return new Response(e.getMessage());
+        }
+    }
+
     /**
      * update amount of a certain product quantity in the user's shopping cart
      * @param userName - user identifier

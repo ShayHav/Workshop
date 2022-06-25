@@ -5,11 +5,12 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.CriticalInvariantException;
 import domain.Exceptions.DiscountNotFoundException;
 import domain.Exceptions.InvalidParamException;
-import domain.shop.Inventory;
 import domain.shop.ProductImp;
-import domain.shop.PurchasePolicys.PurchaseRule;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -19,10 +20,10 @@ public class DiscountPolicy {
     /**
      *
      */
-    private Map<Integer, List<Discount>> product_discounts;
-    private Map<String, List<Discount>> category_discounts; ///check if needed
-    private List<Discount> shopAllProducts_discounts; ///check if needed
-    private List<Integer> hasBundleDeal;
+    private final Map<Integer, List<Discount>> product_discounts;
+    private final Map<String, List<Discount>> category_discounts; ///check if needed
+    private final List<Discount> shopAllProducts_discounts; ///check if needed
+    private final List<Integer> hasBundleDeal;
     private int discountIDCounter;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
@@ -102,12 +103,14 @@ public class DiscountPolicy {
 
 
 
-    public Basket calcPricePerProductForCartTotal(Map<ProductImp, Integer> productsToAmounts){
+    public Basket calcPricePerProductForCartTotal(Basket productsToAmounts){
         Basket basket = new Basket();
 
         for (Map.Entry<ProductImp, Integer> product_amount: productsToAmounts.entrySet()){
             basket.put(new ProductImp(product_amount.getKey()), product_amount.getValue());
         }
+
+        basket.setBasePrice(productsToAmounts.getBasePrice());
 
         List<Discount> prodDiscounts = new ArrayList<>();
         for(Map.Entry<ProductImp, Integer> set : productsToAmounts.entrySet())
@@ -346,52 +349,55 @@ public class DiscountPolicy {
 
 
 
+
+
+
     public int addComplexDiscount(int discountID1, int discountID2, String complexType) throws InvalidParamException, DiscountNotFoundException {
         Discount discount1 = null;
         Discount discount2 = null;
-        List<Discount> listOfDiscount1 = new ArrayList<>();
-        List<Discount> listOfDiscount2 = new ArrayList<>();
+        List<List<Discount>> listOfDiscount1 = new ArrayList<>();
+        List<List<Discount>> listOfDiscount2 = new ArrayList<>();
 
         for (List<Discount> discounts : product_discounts.values()) {
             for (Discount disc : discounts) {
                 if (disc.getID() == discountID1) {
                     discount1 = disc;
-                    listOfDiscount1 = discounts;
+                    listOfDiscount1.add(discounts);
                 }
                 if (disc.getID() == discountID2) {
                     discount2 = disc;
-                    listOfDiscount2 = discounts;
+                    listOfDiscount2.add(discounts);
                 }
             }
         }
 
-        if (discount1 == null || discount2 == null) {
-            for (List<Discount> discounts : category_discounts.values()) {
-                for (Discount disc : discounts) {
-                    if (disc.getID() == discountID1) {
-                        discount1 = disc;
-                        listOfDiscount1 = discounts;
-                    }
-                    if (disc.getID() == discountID2) {
-                        discount2 = disc;
-                        listOfDiscount2 = discounts;
-                    }
-                }
-            }
-        }
 
-        if (discount1 == null || discount2 == null) {
-            for (Discount disc: shopAllProducts_discounts){
+        for (List<Discount> discounts : category_discounts.values()) {
+            for (Discount disc : discounts) {
                 if (disc.getID() == discountID1) {
                     discount1 = disc;
-                    listOfDiscount1 = shopAllProducts_discounts;
+                    listOfDiscount1.add(discounts);
                 }
                 if (disc.getID() == discountID2) {
                     discount2 = disc;
-                    listOfDiscount2 = shopAllProducts_discounts;
+                    listOfDiscount2.add(discounts);
                 }
             }
         }
+
+
+
+        for (Discount disc: shopAllProducts_discounts){
+            if (disc.getID() == discountID1) {
+                discount1 = disc;
+                listOfDiscount1.add(shopAllProducts_discounts);
+            }
+            if (disc.getID() == discountID2) {
+                discount2 = disc;
+                listOfDiscount2.add(shopAllProducts_discounts);
+            }
+        }
+
 
         if(discount1 == null || discount2 == null){
             throw new DiscountNotFoundException("one of the discounts given was not found.");
@@ -404,12 +410,20 @@ public class DiscountPolicy {
             default -> throw new InvalidParamException("Complex type given is illegal.");
         };
 
+        for (List<Discount> listDiscount1: listOfDiscount1)
+            listDiscount1.remove(discount1);
 
-        listOfDiscount1.remove(discount1);
-        listOfDiscount2.remove(discount2);
-        listOfDiscount1.add(newDiscount);
-        if(listOfDiscount1 != listOfDiscount2)
-            listOfDiscount2.add(newDiscount);
+
+        for (List<Discount> listDiscount2: listOfDiscount2)
+            listDiscount2.remove(discount2);
+
+/*        removeDiscount(discountID1);
+        removeDiscount(discountID2);*/
+        listOfDiscount1.addAll(listOfDiscount2);
+        listOfDiscount1.stream().distinct().collect(Collectors.toList());
+
+        for (List<Discount> listDiscount1: listOfDiscount1)
+            listDiscount1.add(newDiscount);
 
         return newDiscount.getID();
     }
