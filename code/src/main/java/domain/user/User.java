@@ -290,7 +290,7 @@ public class User {
         return userCart.addProductToCart(shopID, productID, amount);
     }
 
-    public Response addNewBid(int shopID, int productID, int amount) throws ShopNotFoundException {
+    public ResponseT<Integer> addNewBid(int shopID, int productID, int amount) throws ShopNotFoundException {
         if(getUserState().equals(UserState2.guest))
             return new ResponseT<>("guests may not submit bids");
         return userCart.addNewBidToCart(shopID, productID, amount, this);

@@ -2,6 +2,7 @@ package domain.shop;
 
 import domain.Exceptions.*;
 import domain.Responses.ResponseT;
+import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Basket;
 import domain.shop.discount.DiscountPolicy;
@@ -22,7 +23,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ShopIntegrationTest {
-    DiscountPolicy discountPolicy;
     PurchasePolicy purchasePolicy;
     Shop shop;
     int appleID;
@@ -57,7 +57,7 @@ public class ShopIntegrationTest {
         when(p3.getId()).thenReturn(3);
         try {
             orangeID = shop.addListing(1,"orange", "red orange", category1, 12.0, 7, "Davidos").getId();
-            appleID = shop.addListing(2, "apple", "red apple", category1, 5.0, 10, "Davidos").getId();
+            appleID = shop.addListing(2, "apple", "red apple", category1, 5.0, 40, "Davidos").getId();
             shoesID = shop.addListing(5, "black shoes", "black running shoes", category2, 20, 10, "Davidos").getId();
         } catch (InvalidAuthorizationException InvAuthExc) {
             fail("founder can add product");
@@ -66,7 +66,7 @@ public class ShopIntegrationTest {
             fail("product info is legal");
             return;
         }
-        when(purchasePolicy.checkCart_RulesAreMet(Mockito.anyMap())).thenReturn(true);
+        when(purchasePolicy.checkCart_RulesAreMet(Mockito.any())).thenReturn(true);
         shop.setPurchasePolicy(purchasePolicy);
     }
 
@@ -97,7 +97,7 @@ public class ShopIntegrationTest {
 
 
     @Test
-    void ComplexDiscount(){
+    void addConditionalDiscount(){
         int discountID1;
         ToBuildDiscountPredicate toBuild1;
         ToBuildDiscountPredicate toBuild2;
@@ -141,6 +141,9 @@ public class ShopIntegrationTest {
         productAmounts.remove(appleID);
         productAmounts.put(orangeID, 5);
         assertEquals(32 + 54 , shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
+
+        shop.removeDiscount(storeOwner.getUserName(), discountID2);
+        assertEquals(40 + 54 , shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
     }
 
 
@@ -153,29 +156,106 @@ public class ShopIntegrationTest {
         int complexDiscountID1;
         int complexDiscountID2;
         int complexDiscountID3;
+
+        ToBuildDiscountPredicate toBuild3;
+        ToBuildDiscountPredicate toBuild4;
         try {
-            discountID1 = shop.addSimpleProductDiscount(storeOwner.getUserName(), 1, 10);
+            toBuild3 = new ToBuildDiscountPredicate(shoesID, "black shoes", 1);
+            toBuild4 = new ToBuildDiscountPredicate(100);
+        } catch (InvalidParamException invalidParamException) {
+            fail("the tobuilds are written incorrectly.");
+            return;
+        }
+        try {
+            discountID1 = shop.addSimpleProductDiscount(storeOwner.getUserName(), appleID, 20);
+            discountID2 = shop.addSimpleCategoryDiscount(storeOwner.getUserName(), category1, 15);
+            discountID3 = shop.addConditionalProductDiscount(storeOwner.getUserName(), orangeID, 20, toBuild3);
+            discountID4 = shop.addConditionalProductDiscount(storeOwner.getUserName(), orangeID, 20, toBuild4);
+            //either 20 percent off on apples or 15 percent off on fruits.
+            complexDiscountID1 = shop.addXorDiscount(storeOwner.getUserName(), discountID1, discountID2);
+            //20 percent off oranges if bought black shoe or if basket price >= 100
+            complexDiscountID2 = shop.addOrDiscount(storeOwner.getUserName(), discountID3, discountID4);
+            //(20 percent off on oranges) or (or 20 percent off on apples or 15 percent off on fruits) if bought black shoe or if basket price >= 100
+            complexDiscountID3 = shop.addAndDiscount(storeOwner.getUserName(), complexDiscountID1, complexDiscountID2);
         } catch (InvalidParamException invalidParamException) {
             fail("params given are viable");
             return;
         } catch (ProductNotFoundException productNotFoundException) {
             fail("product exists");
             return;
+        } catch (AccessDeniedException accessDeniedException) {
+            fail("toBuild accessed illegally" + accessDeniedException.getMessage());
+            return;
+        } catch (CriticalInvariantException criticalInvariantException) {
+            fail("toBuild has an unsupported type");
+            return;
+        } catch (DiscountNotFoundException discountNotFoundException) {
+            fail("discount should have existed");
+            return;
         }
 
         Map<Integer, Integer> productAmounts  = new HashMap<>();
-
-        productAmounts.put(1, 2);
-        assertEquals(21.6, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
-
-        productAmounts.put(2, 2);
-        assertEquals(31.6, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
-
-        shop.removeDiscount(storeOwner.getUserName(), discountID1);
-        assertEquals(34, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
+        //(20 percent off on oranges) or (or 20 percent off on apples or 15 percent off on fruits) if bought black shoe or if basket price >= 100
+        productAmounts.put(orangeID, 1);
+        //og price 24
+        assertEquals(12, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
+        //productAmounts.remove(orangeID);
+        productAmounts.put(shoesID, 1);
+        //og price is 20
+        assertEquals(20 + 9.6, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
+        productAmounts.put(appleID, 10);
+        assertEquals(20 + 12 + 40, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
+        productAmounts.put(orangeID, 2);
+        assertEquals(20 + 42.5 + 20.4, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
+        productAmounts.remove(shoesID);
+        assertEquals(50 + 24, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
+        productAmounts.put(orangeID, 5);
+        assertEquals(42.5 + 51, shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
+        productAmounts.put(shoesID, 1);
+        assertEquals(20 + 42.5 + 51 , shop.calculateTotalAmountOfOrder(productAmounts, new ArrayList<>()));
     }
 
 
+
+    /*@Test
+    void bidTest(){
+        String regUN = "Haim Nehmad";
+        User buyer;
+        try {
+            MarketSystem.getInstance().
+                    MarketSystem.getInstance().register("haim", regUN, "123456");
+            buyer = MarketSystem.getInstance().getUser(regUN);
+        } catch (BlankDataExc blankDataExc) {
+            fail("params given are viable");
+            return;
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            fail("sequencing incorrect");
+            return;
+        } catch (IncorrectIdentification incorrectIdentification) {
+            fail("id incorrect, should not happen");
+            return;
+        } catch (InvalidAuthorizationException e) {
+            fail("invalid authorization");
+            return;
+        }
+        int bidID;
+        ResponseT<Integer> bidSucceed;
+        try {
+            bidSucceed = buyer.addNewBid(shop.getShopID(), orangeID, 1);
+        } catch (ShopNotFoundException shopNotFoundException) {
+            fail("shop should exist");
+            return;
+        }
+
+        if(bidSucceed.isErrorOccurred()) {
+            fail("bid should succeed");
+            return;
+        }
+
+        bidID = bidSucceed.getValue();
+
+    }
+*/
 
 
 

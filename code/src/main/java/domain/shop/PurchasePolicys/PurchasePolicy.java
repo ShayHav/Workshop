@@ -58,7 +58,8 @@ public class PurchasePolicy {
     }
 
 
-    public boolean checkCart_RulesAreMet(Map<ProductImp, Integer> productsToAmounts){
+    public boolean checkCart_RulesAreMet(Basket productsToAmounts){
+
         Basket basket = new Basket(productsToAmounts);
 
         List<PurchaseRule> prodPR = new ArrayList<>();

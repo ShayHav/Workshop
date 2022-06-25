@@ -63,8 +63,8 @@ public class ShopTest {
         }
         mockBasket = mock(Basket.class);
         when(mockBasket.calculateTotal()).thenReturn(50.0);
-        when(discountPolicy.calcPricePerProductForCartTotal(Mockito.anyMap())).thenReturn(mockBasket);
-        when(purchasePolicy.checkCart_RulesAreMet(Mockito.anyMap())).thenReturn(true);
+        when(discountPolicy.calcPricePerProductForCartTotal(Mockito.any())).thenReturn(mockBasket);
+        when(purchasePolicy.checkCart_RulesAreMet(Mockito.any())).thenReturn(true);
         shop.setDiscountPolicy(discountPolicy);
         shop.setPurchasePolicy(purchasePolicy);
     }
