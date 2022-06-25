@@ -11,6 +11,7 @@ import domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.net.ConnectException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -156,10 +157,10 @@ public class ShopTest {
             fail(incorrectIdentification.getMessage());
             return;
         }
-        when(ms.pay(trans)).thenReturn(true);
         try {
-            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(true);
-        } catch (BlankDataExc blankDataExc) {
+            when(ms.pay(trans)).thenReturn(15000);
+            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(15000);
+        } catch (BlankDataExc | ConnectException blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
         }
@@ -182,10 +183,10 @@ public class ShopTest {
         Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
         product_QuantityInBasket.put(appleID, 3);
         MarketSystem ms = mock(MarketSystem.class);
-        when(ms.pay(trans)).thenReturn(true);
         try {
-            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(true);
-        } catch (BlankDataExc blankDataExc) {
+            when(ms.pay(trans)).thenReturn(15000);
+            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(15000);
+        } catch (BlankDataExc | ConnectException blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
         }

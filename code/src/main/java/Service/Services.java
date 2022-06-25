@@ -23,6 +23,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -207,18 +208,22 @@ public class Services {
     public ResponseT<Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
         try {
             MarketSystem m = MarketSystem.getInstance();
-            boolean ans = m.supply(ti, products);
-            return new ResponseT<>(ans);
-        } catch (BlankDataExc blankDataExc) {
-            return null;
+            int ans = m.supply(ti, products);
+            return new ResponseT<>(ans >= 10000 && ans <= 100000);
+        } catch (BlankDataExc | ConnectException blankDataExc) {
+            return new ResponseT<>(false);
         }
     }
 
     //shay  //TODO: only for test? answer: yes
     public ResponseT<Boolean> Payment(TransactionInfo ti) {
         //MarketSystem m = MarketSystem.getInstance();
-        boolean ans = marketSystem.pay(ti);
-        return new ResponseT<>(ans);
+        try {
+            int ans = marketSystem.pay(ti);
+            return new ResponseT<>(10000 <= ans && ans <= 100000);
+        }catch (BlankDataExc | ConnectException  e){
+            return new ResponseT<>(false);
+        }
     }
 
     /**

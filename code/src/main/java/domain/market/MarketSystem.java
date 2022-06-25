@@ -18,6 +18,7 @@ import domain.user.TransactionInfo;
 import domain.user.filter.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -145,50 +146,59 @@ public class MarketSystem {
         if(!userController.createSystemManager(adminUsername, password)) {
             return false;
         }
-        switch (mod){
-            case "production" -> {
-                return externalConnector.setSupplyService(new SupplyServiceImp()) && externalConnector.setPaymentService(new PaymentServiceImp());
+        try {
+            switch (mod) {
+                case "production" -> {
+                    return externalConnector.setSupplyService(new SupplyServiceImp()) && externalConnector.setPaymentService(new PaymentServiceImp());
+                }
+                case "release" -> {
+                    String paymentServiceUrl = dotenv.get("Payment_Connector");
+                    String supplyServiceUrl = dotenv.get("Supply_Connector");
+                    PaymentService paymentService = new RealPaymentSystem(paymentServiceUrl);
+                    SupplyServiceReal supplyService = new SupplyServiceReal(supplyServiceUrl);
+                    return externalConnector.setPaymentService(paymentService)
+                            && externalConnector.setSupplyService(supplyService);
+                }
+                case "test" -> {
+                    String paymentServiceUrl = dotenv.get("Payment_Connector");
+                    String supplyServiceUrl = dotenv.get("Supply_Connector");
+                    return externalConnector.setPaymentService(new RealPaymentSystem(paymentServiceUrl)) &&
+                            externalConnector.setSupplyService(new SupplyServiceReal(supplyServiceUrl));
+                }
+                default -> {
+                    errorLogger.logMsg(Level.SEVERE, "unsupported mod in env file");
+                    throw new RuntimeException("not supported mod");
+                }
             }
-            case "release" -> {
-                String paymentServiceUrl = dotenv.get("Payment_Connector");
-                String supplyServiceUrl = dotenv.get("Supply_Connector");
-                PaymentService paymentService = new RealPaymentSystem(paymentServiceUrl);
-                SupplyServiceReal supplyService = new SupplyServiceReal(supplyServiceUrl);
-                return externalConnector.setPaymentService(paymentService)
-                        && externalConnector.setSupplyService(supplyService);
-            }
-            case "test" -> {
-                String paymentServiceUrl = dotenv.get("Payment_Connector");
-                String supplyServiceUrl = dotenv.get("Supply_Connector");
-                return externalConnector.setPaymentService(new RealPaymentSystem(paymentServiceUrl)) &&
-                        externalConnector.setSupplyService(new SupplyServiceReal(supplyServiceUrl));
-            }
-            default -> {
-                errorLogger.logMsg(Level.SEVERE, "unsupported mod in env file");
-                throw new RuntimeException("not supported mod");
-            }
+        } catch (ConnectException e){
+            errorLogger.logMsg(Level.SEVERE, e.getMessage());
+            throw new RuntimeException("Couldn't start market system: failed to connect to external service");
         }
     }
 
     /***
      *
      * @param ti - contains amount, method of payment etc
-     * @return true if approve, false if otherwise
+     * @return the transaction id
      */
 
 
-    public boolean pay(TransactionInfo ti) {
+    public int pay(TransactionInfo ti) throws BlankDataExc, ConnectException {
         if (ti == null)
-            return false;
+            throw new BlankDataExc("ti is null");
         return externalConnector.pay(ti);
+    }
+
+    public boolean cancelPayment(int transactionID) throws ConnectException {
+        return externalConnector.cancelPayment(transactionID);
     }
 
     /***
      *
      * @param ti - should be address and maybe also date
-     * @return - true if supply is approved, false otherwise
+     * @return - transaction id from the external service
      */
-    public boolean supply(TransactionInfo ti, Map<Integer, Integer> products) throws BlankDataExc {
+    public int supply(TransactionInfo ti, Map<Integer, Integer> products) throws BlankDataExc, ConnectException {
         if (ti == null)
             throw new BlankDataExc("parameter is null: TransactionInfo");
         if (products == null)

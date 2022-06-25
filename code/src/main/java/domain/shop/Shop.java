@@ -18,6 +18,7 @@ import domain.user.filter.*;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.net.ConnectException;
 import java.util.*;
 
 import java.util.function.Predicate;
@@ -335,23 +336,21 @@ public class Shop {
         for(ProductImp productImp : basket.keySet()){
             product_PricePer.put(productImp.getId(), productImp.getBasePrice());
         }
-
-        //calculate price
-
-        if(!marketSystem.pay(transaction)){
-            synchronized (inventory) {
-                try {
+        try {
+            int paymentTransactionID = marketSystem.pay(transaction);
+            if (paymentTransactionID < 10000 || paymentTransactionID > 100000) {
+                synchronized (inventory) {
                     inventory.restoreStock(products);
-                }catch (Exception e){
-                    errorLogger.logMsg(Level.SEVERE, "couldn't restock, Fatal. Explanation:\n" + e.getMessage());
-                    e.printStackTrace();
                 }
+                return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please try again later", shopID));
             }
-            return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please contact the company representative", shopID));
-        }
-
-        if(!marketSystem.supply(transaction, products)){
-            return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
+            int supplyTransactionID = marketSystem.supply(transaction, products);
+            if (supplyTransactionID < 10000 || supplyTransactionID > 100000) {
+                marketSystem.cancelPayment(paymentTransactionID);
+                return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please try again later", shopID));
+            }
+        }catch (Exception e){
+            return new ResponseT<>(String.format("fail to checkout in shop %d, please try agian later", shopID));
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(basket, transaction);
