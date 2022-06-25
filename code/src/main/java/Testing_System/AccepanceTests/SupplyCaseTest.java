@@ -151,7 +151,6 @@ public class SupplyCaseTest extends Tester {
         assertFalse(!PurchaseDelivery(ti_good_4,products).isErrorOccurred());
         assertFalse(!PurchaseDelivery(ti_good_5,products).isErrorOccurred());
         assertFalse(!PurchaseDelivery(ti_good_guest,products).isErrorOccurred());
-        MarketSystem.getInstance().setSupplierConnection(true);
 
     }
 
