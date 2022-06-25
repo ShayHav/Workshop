@@ -23,6 +23,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -207,18 +208,22 @@ public class Services {
     public ResponseT<Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
         try {
             MarketSystem m = MarketSystem.getInstance();
-            boolean ans = m.supply(ti, products);
-            return new ResponseT<>(ans);
-        } catch (BlankDataExc blankDataExc) {
-            return null;
+            int ans = m.supply(ti, products);
+            return new ResponseT<>(ans >= 10000 && ans <= 100000);
+        } catch (BlankDataExc | ConnectException blankDataExc) {
+            return new ResponseT<>(false);
         }
     }
 
     //shay  //TODO: only for test? answer: yes
     public ResponseT<Boolean> Payment(TransactionInfo ti) {
         //MarketSystem m = MarketSystem.getInstance();
-        boolean ans = marketSystem.pay(ti);
-        return new ResponseT<>(ans);
+        try {
+            int ans = marketSystem.pay(ti);
+            return new ResponseT<>(10000 <= ans && ans <= 100000);
+        }catch (BlankDataExc | ConnectException  e){
+            return new ResponseT<>(false);
+        }
     }
 
     /**
@@ -411,14 +416,20 @@ public class Services {
      * @param userName - user identifier
      * @param fullName - user full name
      * @param address - user address
+     * @param city - user's city
+     * @param country - user's country
+     * @param zip - user's zip
      * @param phoneNumber - user phone number
      * @param cardNumber - user credit card number
+     * @param ccv - card ccv number
      * @param expirationDate - user credit card expiration date
      * @return list of Response object
      */
-    public ResponseList<String> Checkout(String userName, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
+    public ResponseList<String> Checkout(String userName, String fullName, String address, String city, String country, String zip,
+                                         String phoneNumber, String cardNumber, String ccv, String expirationDate) {
         try {
-            List<String> list = marketSystem.Checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
+            List<String> list = marketSystem.Checkout(userName, fullName, address, city, country, zip,
+                    phoneNumber, cardNumber,ccv, expirationDate);
             return new ResponseList<>(list);
         } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc e) {
             return new ResponseList<>(e.getMessage());
@@ -1145,23 +1156,32 @@ public class Services {
         try(FileReader file = new FileReader(s)){
             StateFile stateFile = objectMapper.readValue(file, StateFile.class);
             for(Function function : stateFile.getFunctions()){
-                for(Method m : methods){
-                    if(m.getName().equals(function.getName())){
-                        Response response = (Response) m.invoke(this, function.args);
-                        // check if the result of the invocation was failure
-                        if(response.isErrorOccurred()){
-                            throw new RuntimeException(String.format("couldn't invoke the method %s with param %s", m.getName(), Arrays.toString(function.args)));
-                        }
-                        // in case we succeed with the invocation we can move on to the next function in the file
-                        break;
-                    }
-                }
+                callMethod(methods, function);
             }
         }catch(IOException  e) {
+            errorLogger.logMsg(Level.SEVERE, "couldn't open the state init file");
             throw new RuntimeException("couldn't open the state init file");
         }catch (InvocationTargetException | IllegalAccessException e){
+            errorLogger.logMsg(Level.SEVERE, "mismatch in method name or argument");
             throw new RuntimeException("cannot invoke this methods due to mismatch in name or arguments");
         }
 
+    }
+
+    private void callMethod(Method[] methods, Function function) throws IllegalAccessException, InvocationTargetException {
+        for(Method m : methods){
+            if(m.getName().equals(function.getName())){
+                Response response = (Response) m.invoke(this, function.args);
+                // check if the result of the invocation was failure
+                if(response.isErrorOccurred()){
+                    errorLogger.logMsg(Level.SEVERE,"method fount but couldn't successfully invoked");
+                    throw new RuntimeException(String.format("couldn't invoke the method %s with param %s", m.getName(), Arrays.toString(function.args)));
+                }
+                // in case we succeed with the invocation we can move on to the next function in the file
+                return;
+            }
+        }
+        errorLogger.logMsg(Level.SEVERE,"method not found in service's methods");
+        throw new RuntimeException(String.format("method %s not found in service methods list", function.getName()));
     }
 }

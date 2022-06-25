@@ -13,7 +13,7 @@ public class RealPaymentSystem extends ExternalService implements PaymentService
     }
 
     @Override
-    public int processPayment(String fullName, String id, String creditCard, String expiredDate, double total) {
+    public int processPayment(String fullName, String id, String creditCard, String expiredDate, String ccv, double total) {
         try{
             Map<String, String> params = new HashMap<>();
             params.put("action_type", "pay");
@@ -23,7 +23,7 @@ public class RealPaymentSystem extends ExternalService implements PaymentService
             String[] splitExpiredDate = expiredDate.split("/");
             params.put("month", splitExpiredDate[0]);
             params.put("year", splitExpiredDate[1]);
-            params.put("ccv", ""); //TODO send ccv
+            params.put("ccv", ccv);
             String response = client.sendPost(params);
             int transactionID =  Integer.parseInt(response);
             if(10000 <= transactionID && transactionID <= 100000)

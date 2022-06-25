@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="" />
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="change payment and supply to return transaction id from external service instead of boolean">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteshopFilterGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteshopFilterGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CheckoutCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CheckoutCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,6 +44,25 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/code/src/main/java/Service/Services.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="false" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="false" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectId" id="2974Zwr79onHhRue6hzZoLuD64v" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -43,12 +72,14 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -59,7 +90,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.Main">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
       <module name="workshop" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code" />
@@ -69,86 +100,94 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="NotificationManagerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="CheckoutCaseTest.NoConnectionPaymentTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="workshop" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.notifications.*" />
+          <option name="PATTERN" value="Testing_System.AccepanceTests.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.notifications" />
-      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="NotificationManagerTest.notifyAdmin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="workshop" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="domain.notifications.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="domain.notifications" />
-      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
-      <option name="METHOD_NAME" value="notifyAdmin" />
+      <option name="PACKAGE_NAME" value="Testing_System.AccepanceTests" />
+      <option name="MAIN_CLASS_NAME" value="Testing_System.AccepanceTests.CheckoutCaseTest" />
+      <option name="METHOD_NAME" value="NoConnectionPaymentTest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="NotificationManagerTest.removeFromObserversList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ExternalConnectorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="workshop" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.notifications.*" />
+          <option name="PATTERN" value="domain.ExternalServicesTest.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.notifications" />
-      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
-      <option name="METHOD_NAME" value="removeFromObserversList" />
+      <option name="PACKAGE_NAME" value="domain.ExternalServicesTest" />
+      <option name="MAIN_CLASS_NAME" value="domain.ExternalServicesTest.ExternalConnectorTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExternalConnectorTest.supplyWithInfiniteLoop" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.ExternalServicesTest.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.ExternalServicesTest" />
+      <option name="MAIN_CLASS_NAME" value="domain.ExternalServicesTest.ExternalConnectorTest" />
+      <option name="METHOD_NAME" value="supplyWithInfiniteLoop" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ShoppingBasketTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Testing_System in workshop" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="workshop" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.*" />
+          <option name="PATTERN" value="Testing_System.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.user" />
-      <option name="MAIN_CLASS_NAME" value="domain.user.ShoppingBasketTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="Testing_System" />
+      <option name="TEST_OBJECT" value="package" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
       <item itemvalue="Application.Main" />
-      <item itemvalue="JUnit.ShoppingBasketTest" />
-      <item itemvalue="JUnit.NotificationManagerTest" />
-      <item itemvalue="JUnit.NotificationManagerTest.notifyAdmin" />
-      <item itemvalue="JUnit.NotificationManagerTest.removeFromObserversList" />
+      <item itemvalue="JUnit.CheckoutCaseTest.NoConnectionPaymentTest" />
+      <item itemvalue="JUnit.Testing_System in workshop" />
+      <item itemvalue="JUnit.ExternalConnectorTest" />
+      <item itemvalue="JUnit.ExternalConnectorTest.supplyWithInfiniteLoop" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
-        <item itemvalue="JUnit.NotificationManagerTest" />
-        <item itemvalue="JUnit.NotificationManagerTest.removeFromObserversList" />
-        <item itemvalue="JUnit.NotificationManagerTest.notifyAdmin" />
-        <item itemvalue="JUnit.ShoppingBasketTest" />
+        <item itemvalue="JUnit.CheckoutCaseTest.NoConnectionPaymentTest" />
+        <item itemvalue="JUnit.Testing_System in workshop" />
+        <item itemvalue="JUnit.ExternalConnectorTest" />
+        <item itemvalue="JUnit.ExternalConnectorTest.supplyWithInfiniteLoop" />
       </list>
     </recent_temporary>
   </component>
@@ -176,18 +215,7 @@
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="6384000" />
-    </task>
-    <task id="LOCAL‎00015" summary="serach upgraded to return a map of products associated with their shop id">
-      <created>1652790874627</created>
-      <option name="number" value="LOCAL‎00015" />
-      <option name="presentableId" value="LOCAL‎00015" />
-      <updated>1652790874627</updated>
-    </task>
-    <task id="LOCAL‎00016" summary="add to cart message&#10;rpoduct changes">
-      <created>1652792516003</created>
-      <option name="number" value="LOCAL‎00016" />
-      <option name="presentableId" value="LOCAL‎00016" />
-      <updated>1652792516003</updated>
+      <workItem from="1656157361083" duration="6597000" />
     </task>
     <task id="LOCAL‎00017" summary="changed navbar">
       <created>1652793908596</created>
@@ -471,7 +499,19 @@
       <option name="presentableId" value="LOCAL‎00063" />
       <updated>1656005876234</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL‎00064" summary="Add tests to delayed notification and add field to TransactionInfo to support new demand of external services">
+      <created>1656074756278</created>
+      <option name="number" value="LOCAL‎00064" />
+      <option name="presentableId" value="LOCAL‎00064" />
+      <updated>1656074756278</updated>
+    </task>
+    <task id="LOCAL‎00065" summary="change payment and supply to return transaction id from external service instead of boolean">
+      <created>1656161599683</created>
+      <option name="number" value="LOCAL‎00065" />
+      <option name="presentableId" value="LOCAL‎00065" />
+      <updated>1656161599683</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -496,8 +536,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="users now have access to old orders and all their shops (if they are the shop founders)&#10;fixed bug i created in mistake - checked login for actions that could be performed by guests" />
-    <MESSAGE value="bug fix in user - reset order history in every entrance in mistake&#10;appearance changes in addProduct.jte, editProduct.jte etc." />
     <MESSAGE value="changed register and login signatures &#10;added state to user presentation to support admin operations only" />
     <MESSAGE value="register fix in gui, &#10;started to impl admin page" />
     <MESSAGE value="Admin has a new page where he can see information about the market : active users, total registered, list of users and option to delete, etc." />
@@ -521,7 +559,9 @@
     <MESSAGE value="merged with main" />
     <MESSAGE value="remove discounts" />
     <MESSAGE value="delete discounts, started compose discounts" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete discounts, started compose discounts" />
+    <MESSAGE value="Add tests to delayed notification and add field to TransactionInfo to support new demand of external services" />
+    <MESSAGE value="change payment and supply to return transaction id from external service instead of boolean" />
+    <option name="LAST_COMMIT_MESSAGE" value="change payment and supply to return transaction id from external service instead of boolean" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -537,14 +577,19 @@
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java</url>
-          <line>128</line>
-          <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
           <line>629</line>
           <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/tests/domain/ExternalServicesTest/ExternalConnectorTest.java</url>
+          <line>113</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java</url>
+          <line>131</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

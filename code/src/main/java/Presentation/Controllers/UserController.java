@@ -183,7 +183,9 @@ public class UserController {
             String username = ctx.pathParam("id");
             CheckoutFormMessage checkout = ctx.messageAsClass(CheckoutFormMessage.class);
             String expirationDate = checkout.getMonth() + "/" + checkout.getYear();
-            ResponseList<String> response = services.Checkout(username, checkout.getFullName(), checkout.getAddress(), checkout.getPhoneNumber(), checkout.getCardNumber(), expirationDate);
+            ResponseList<String> response = services.Checkout(username, checkout.getFullName(), checkout.getAddress(),
+                    checkout.getCity(), checkout.getCountry(), checkout.getZip(), checkout.getPhoneNumber(),
+                    checkout.getCardNumber(), checkout.getCcv() ,expirationDate);
             StringBuilder error = new StringBuilder(response.isErrorOccurred() ? response.errorMessage : "");
             if (response.getValue().size() > 0) {
                 for (String s : response.getValue()) {

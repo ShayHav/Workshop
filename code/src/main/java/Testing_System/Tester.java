@@ -83,8 +83,8 @@ public class Tester {
         return br.EditShoppingCart(userId, shopId, productId, amount);
     }
 
-    public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-        return br.Checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate);
+    public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String city, String country, String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) {
+        return br.Checkout(userID, fullName, address, city, country, zip, phoneNumber, cardNumber, ccv, expirationDate);
     }//???
 
     public Result<Boolean, Integer> CalculatePriceForProduct(Product p, String shopname) {

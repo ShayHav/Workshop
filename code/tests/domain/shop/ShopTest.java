@@ -11,6 +11,7 @@ import domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.net.ConnectException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -19,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ShopTest {
@@ -138,7 +138,7 @@ public class ShopTest {
 
     @Test
     void checkOut() {
-        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166", "0534356345", "123123", "10/30", LocalDate.of(2022, 5, 10), 68);
+        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166","Beer Sheva","Israel","1", "0534356345", "123123", "10/30","123", LocalDate.of(2022, 5, 10), 68);
         Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
         product_QuantityInBasket.put(appleID, 3);
         product_QuantityInBasket.put(orangeID, 7);
@@ -157,10 +157,10 @@ public class ShopTest {
             fail(incorrectIdentification.getMessage());
             return;
         }
-        when(ms.pay(trans)).thenReturn(true);
         try {
-            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(true);
-        } catch (BlankDataExc blankDataExc) {
+            when(ms.pay(trans)).thenReturn(15000);
+            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(15000);
+        } catch (BlankDataExc | ConnectException blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
         }
@@ -179,14 +179,14 @@ public class ShopTest {
 
     @Test
     void checkOut2() {
-        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166", "0534356345", "123123", "10/30", LocalDate.of(2022, 5, 10), 68);
+        TransactionInfo trans = new TransactionInfo("hamood", "Haham mood", "tel hai 166","Beer Sheva","Israel","1", "0534356345", "123123", "10/30","123", LocalDate.of(2022, 5, 10), 68);
         Map<Integer, Integer> product_QuantityInBasket = new HashMap<>();
         product_QuantityInBasket.put(appleID, 3);
         MarketSystem ms = mock(MarketSystem.class);
-        when(ms.pay(trans)).thenReturn(true);
         try {
-            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(true);
-        } catch (BlankDataExc blankDataExc) {
+            when(ms.pay(trans)).thenReturn(15000);
+            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(15000);
+        } catch (BlankDataExc | ConnectException blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
         }

@@ -3,6 +3,7 @@ package domain.ExternalConnectors;
 import domain.Exceptions.BlankDataExc;
 import domain.user.TransactionInfo;
 
+import java.net.ConnectException;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -16,7 +17,7 @@ public class ExternalConnector {
     public ExternalConnector(){
     }
 
-    public boolean setPaymentService(PaymentService service) throws BlankDataExc {
+    public boolean setPaymentService(PaymentService service) throws BlankDataExc, ConnectException {
         if(service == null){
             throw new BlankDataExc("payment service to set is null");
         }
@@ -27,7 +28,7 @@ public class ExternalConnector {
         return false;
     }
 
-    public boolean setSupplyService(SupplyService service) throws BlankDataExc {
+    public boolean setSupplyService(SupplyService service) throws BlankDataExc, ConnectException {
         if(service == null){
             throw new BlankDataExc("supply service to set is null");
         }
@@ -43,15 +44,16 @@ public class ExternalConnector {
      * if the process exceed 15 seconds it will terminate and return false
      * @param ti an object that contain all the information to process the payment
      * @return true if the payment was processed and false otherwise
+     * @throws ConnectException if fail to open connection or didn't get an answer within 15 seconds
      */
-    public synchronized boolean pay(TransactionInfo ti){
+    public synchronized int pay(TransactionInfo ti) throws ConnectException {
         boolean connected = connectToPaymentService(this.paymentService);
         if(!connected)
-            return false;
-        Integer transactionID = submit(() ->
+            throw new ConnectException("no connection to external service");
+
+        return submit(() ->
                 paymentService.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(),
-                    ti.getExpirationDate(), ti.getTotalAmount()));
-        return transactionID != null && transactionID >= 0;
+                    ti.getExpirationDate(), ti.getCcv(), ti.getTotalAmount()));
     }
 
     /**
@@ -60,13 +62,14 @@ public class ExternalConnector {
      * @param ti all the information about the delivery
      * @param products the prodcuts to deliver
      * @return true if a delivery was created and false otherwise
+     * @throws ConnectException if failed to get an answer withing 15 seconds or failed to open connection
      */
-    public synchronized boolean supply(TransactionInfo ti, Map<Integer,Integer> products){
+    public synchronized int supply(TransactionInfo ti, Map<Integer,Integer> products) throws ConnectException {
         boolean connected = connectToSupplyService(this.supplyService);
         if(!connected)
-            return false;
-        Integer transactionID = submit(() -> supplyService.supply(ti.getFullName(), ti.getAddress(), products));
-        return transactionID != null && transactionID >= 0;
+            throw new ConnectException("failed to connect to external supply service");
+        return submit(() -> supplyService.supply(ti.getFullName(), ti.getAddress(), ti.getCity(),
+                ti.getCountry(), ti.getZip(), products));
     }
 
     /**
@@ -75,7 +78,7 @@ public class ExternalConnector {
      * @param transactionID number to identify previously successful supply request
      * @return true if the supply request was canceled in less than 15 second
      */
-    public boolean cancelSupply(int transactionID){
+    public boolean cancelSupply(int transactionID) throws ConnectException {
         Boolean succeed = submit(() -> supplyService.cancelSupply(transactionID));
         return succeed != null && succeed;
     }
@@ -86,7 +89,7 @@ public class ExternalConnector {
      * @param transactionID
      * @return
      */
-    public boolean cancelPayment(int transactionID){
+    public boolean cancelPayment(int transactionID) throws ConnectException {
         Boolean succeed = submit(()-> paymentService.cancelPayment(transactionID));
         return succeed != null && succeed;
     }
@@ -97,7 +100,7 @@ public class ExternalConnector {
      * @param <T> the answer type we expect to return i.e. boolean or integer
      * @return the answer from the external service if it took less than MAX_REQUEST_TIME second otherwise null
      */
-    private <T> T submit(Callable<T> callback){
+    private <T> T submit(Callable<T> callback) throws ConnectException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<T> future = executor.submit(callback);
         try{
@@ -105,7 +108,7 @@ public class ExternalConnector {
         }
         catch (TimeoutException | InterruptedException | ExecutionException timeout){
             future.cancel(true);
-            return null;
+            throw new ConnectException("failed to receive answer from external service");
         }
         finally {
             executor.shutdownNow();
@@ -117,7 +120,7 @@ public class ExternalConnector {
      * @param service external supply service
      * @return true if the service return that connection started
      */
-    private boolean connectToSupplyService(SupplyService service){
+    private boolean connectToSupplyService(SupplyService service) throws ConnectException {
         Boolean connected = submit(service::connect);
         return connected != null && connected;
     }
@@ -127,7 +130,7 @@ public class ExternalConnector {
      * @param service external payment service
      * @return true if the service return that connection started
      */
-    private boolean connectToPaymentService(PaymentService service){
+    private boolean connectToPaymentService(PaymentService service) throws ConnectException {
         Boolean connected = submit(service::connect);
         return connected != null && connected;
     }

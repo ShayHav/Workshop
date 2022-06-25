@@ -317,9 +317,9 @@ public class UserController {
         memberList = new HashMap<>();
     }
 
-    public List<String> checkout(String userName, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
+    public List<String> checkout(String userName, String fullName, String address, String city, String country, String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) throws IncorrectIdentification, BlankDataExc {
         User user = getUser(userName);
-        return user.checkout(fullName, address, phoneNumber, cardNumber, expirationDate);
+        return user.checkout(fullName, address, city, country,zip ,phoneNumber, cardNumber, ccv, expirationDate);
     }
 
     /**
