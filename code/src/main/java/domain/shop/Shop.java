@@ -585,7 +585,7 @@ public class Shop {
     }
 
     private void sendCheckoutMessage(Order order){
-        MarketSystem  market = MarketSystem.getInstance();
+        MarketSystem  market = marketSystem;
         String message = order.checkoutMessage();
         User buyer = null;
         try {
