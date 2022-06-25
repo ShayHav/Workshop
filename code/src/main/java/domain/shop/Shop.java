@@ -47,6 +47,7 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
     private BidHandler bidHandler;
+    private AppointHandler appointHandler;
     private MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
@@ -65,6 +66,7 @@ public class Shop {
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
         bidHandler = new BidHandler();
+        appointHandler = new AppointHandler();
     }
 
     public Shop(String name,String description, User shopFounder, int shopID) {
@@ -422,11 +424,14 @@ public class Shop {
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
-                        managerUser.AppointedMeManager(this,usertarget);
-                        ShopManagers.putIfAbsent(usertarget, newManager);
-                        newManager.addRole(shopID,Role.ShopManager);
-                        shopManagersPermissionsController.initManager(newManager.getUserName());
-                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+//                        managerUser.AppointedMeManager(this,usertarget);
+//                        ShopManagers.putIfAbsent(usertarget, newManager);
+//                        newManager.addRole(shopID,Role.ShopManager);
+//                        shopManagersPermissionsController.initManager(newManager.getUserName());
+//                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+                        List<User> toc = getShopOwners();
+                        toc.remove(managerUser);
+                        appointHandler.addNewAppoint(newManager,managerUser,this,toc);
                         return;
                     }
                 }
@@ -857,5 +862,22 @@ public class Shop {
 
     public void declineBid(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
         bidHandler.declineBid(bidID, decliner);
+    }
+
+    public void acceptAppoint(int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        appointHandler.acceptAppoint(bidID, approver);
+    }
+
+    public void declineAppoint(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
+        appointHandler.declineAppoint(bidID, decliner);
+        appointHandler.removeBid(bidID);
+    }
+
+    public void initManager(User userName){
+        shopManagersPermissionsController.initManager(userName.getUserName());
+    }
+
+    public void putIfAbsentManager(String userName, User appointUser) {
+        ShopManagers.putIfAbsent(userName, appointUser);
     }
 }

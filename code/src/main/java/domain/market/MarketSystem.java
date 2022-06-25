@@ -908,11 +908,30 @@ public class MarketSystem {
         shopController.removePurchaseRule(userName,purchaseRuleID, shopID);
     }
 
-    public void acceptBid(int shopID, int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public void acceptBid(int shopID, int bidID, String approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        isEnter(approver);
+        isExist(approver);
+        isLogin(approver);
         shopController.acceptBid(shopID, bidID, approver);
     }
 
-    public void declineBid(int shopID, int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public void declineBid(int shopID, int bidID, String decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        isEnter(decliner);
+        isExist(decliner);
+        isLogin(decliner);
         shopController.declineBid(shopID, bidID, decliner);
+    }
+    public void acceptAppoint(int shopID, int bidID, String approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        isEnter(approver);
+        isExist(approver);
+        isLogin(approver);
+        shopController.acceptAppoint(shopID, bidID, approver);
+    }
+
+    public void declineAppoin(int shopID, int bidID, String decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+        isEnter(decliner);
+        isExist(decliner);
+        isLogin(decliner);
+        shopController.declineAppoint(shopID, bidID, decliner);
     }
 }
