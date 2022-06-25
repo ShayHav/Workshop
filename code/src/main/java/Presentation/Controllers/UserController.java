@@ -20,9 +20,11 @@ import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
+import io.javalin.websocket.WsConnectHandler;
 
 import javax.naming.AuthenticationException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,10 +33,12 @@ public class UserController {
 
     private final Map<String, PresentationUser> requestedUsers;
     private final Services services;
+    private final Map<String, LocalDateTime> activeUsers;
 
     public UserController() {
         requestedUsers = new HashMap<>();
         services = Services.getInstance();
+        activeUsers = new HashMap<>();
     }
 
     public PresentationUser getUser(String username) {
@@ -57,6 +61,7 @@ public class UserController {
                 requestedUsers.put(user.getUsername(), user);
             }
 
+            activeUsers.remove(guest);
             ctx.cookieStore("uid", user.getUsername());
             ctx.redirect("/");
         }
@@ -428,5 +433,35 @@ public class UserController {
         shopName = shopName == null || shopName.isEmpty()? null : shopName;
         return new SearchShopFilter(shopName,null);
     }
+
+    public void activeUser(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx -> {
+            String username = ctx.getUpgradeCtx$javalin().cookieStore("uid");
+            activeUsers.putIfAbsent(username, LocalDateTime.now());
+        });
+
+        wsConfig.onMessage(ctx ->{
+            String username = ctx.getUpgradeCtx$javalin().cookieStore("uid");
+            activeUsers.put(username, LocalDateTime.now());
+        });
+
+    }
+
+    public void manageActiveUsers(){
+        LocalDateTime minuteBefore = LocalDateTime.now().minusMinutes(1);
+        for(String username: activeUsers.keySet()){
+            if(activeUsers.get(username).isBefore(minuteBefore)){
+                ResponseT<User> user = services.GetUser(username);
+                if(user.getValue().isLoggedIn()){
+                    ResponseT<User> guest = services.Logout(username);
+                    services.LeaveMarket(guest.getValue().getUserName());
+                }
+                else
+                    services.LeaveMarket(username);
+            }
+
+        }
+    }
+
 
 }

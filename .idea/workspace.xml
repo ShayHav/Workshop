@@ -5,38 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/code/tests/SystemManager/SystemManagerPageTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteshopFilterGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteshopFilterGenerated.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/CheckoutFormMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/CheckoutFormMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CheckoutCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CheckoutCaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/GetOrderHistoryInShopCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/GetOrderHistoryInShopCaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/PaymentCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/PaymentCaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/Bridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/Bridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/ProxyBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/ProxyBridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/Tester.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/Tester.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/ExternalConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/ExternalConnector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/PaymentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/PaymentServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/PaymentServiceImp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/RealPaymentSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/RealPaymentSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyServiceImp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyServiceReal.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/ExternalConnectors/SupplyServiceReal.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/TransactionInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/TransactionInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/jte/checkoutForm.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/checkoutForm.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/ExternalServicesTest/ExternalConnectorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/ExternalServicesTest/ExternalConnectorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/notifications/NotificationManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/notifications/NotificationManagerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/user/ShoppingBasketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/user/ShoppingBasketTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/user/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/user/UserTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/notifications/NotificationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/notifications/NotificationManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/adminManagingPage.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/adminManagingPage.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/navBar.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/navBar.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/resources/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/resources/state_init.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/state_init.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,90 +90,100 @@
       <recent name="domain" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.NotificationManagerTest.delayedNotificationTest">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
-      <module name="workshop" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="Presentation.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="All in workshop" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="workshop" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="NotificationManagerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.SystemManagerPageTest">
+    <configuration name="SystemManagerPageTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="workshop" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.notifications.*" />
+          <option name="PATTERN" value="SystemManager.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.notifications" />
-      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
+      <option name="PACKAGE_NAME" value="SystemManager" />
+      <option name="MAIN_CLASS_NAME" value="SystemManager.SystemManagerPageTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="NotificationManagerTest.delayedNotificationTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemManagerPageTest.testActiveMembers" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="workshop" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.notifications.*" />
+          <option name="PATTERN" value="SystemManager.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.notifications" />
-      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
-      <option name="METHOD_NAME" value="delayedNotificationTest" />
+      <option name="PACKAGE_NAME" value="SystemManager" />
+      <option name="MAIN_CLASS_NAME" value="SystemManager.SystemManagerPageTest" />
+      <option name="METHOD_NAME" value="testActiveMembers" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="NotificationManagerTest.removeFromObserversList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SystemManagerPageTest.testActiveUsers" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="workshop" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="domain.notifications.*" />
+          <option name="PATTERN" value="SystemManager.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="domain.notifications" />
-      <option name="MAIN_CLASS_NAME" value="domain.notifications.NotificationManagerTest" />
-      <option name="METHOD_NAME" value="removeFromObserversList" />
+      <option name="PACKAGE_NAME" value="SystemManager" />
+      <option name="MAIN_CLASS_NAME" value="SystemManager.SystemManagerPageTest" />
+      <option name="METHOD_NAME" value="testActiveUsers" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SystemManagerPageTest.testTotalRegistered" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="SystemManager.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="SystemManager" />
+      <option name="MAIN_CLASS_NAME" value="SystemManager.SystemManagerPageTest" />
+      <option name="METHOD_NAME" value="testTotalRegistered" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SystemManagerPageTest.testUsers" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="SystemManager.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="SystemManager" />
+      <option name="MAIN_CLASS_NAME" value="SystemManager.SystemManagerPageTest" />
+      <option name="METHOD_NAME" value="testUsers" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Main" />
-      <item itemvalue="JUnit.NotificationManagerTest" />
-      <item itemvalue="JUnit.NotificationManagerTest.removeFromObserversList" />
-      <item itemvalue="JUnit.All in workshop" />
-      <item itemvalue="JUnit.NotificationManagerTest.delayedNotificationTest" />
+      <item itemvalue="JUnit.SystemManagerPageTest" />
+      <item itemvalue="JUnit.SystemManagerPageTest.testUsers" />
+      <item itemvalue="JUnit.SystemManagerPageTest.testActiveUsers" />
+      <item itemvalue="JUnit.SystemManagerPageTest.testActiveMembers" />
+      <item itemvalue="JUnit.SystemManagerPageTest.testTotalRegistered" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.NotificationManagerTest.delayedNotificationTest" />
-        <item itemvalue="JUnit.All in workshop" />
-        <item itemvalue="Application.Main" />
-        <item itemvalue="JUnit.NotificationManagerTest" />
-        <item itemvalue="JUnit.NotificationManagerTest.removeFromObserversList" />
+        <item itemvalue="JUnit.SystemManagerPageTest" />
+        <item itemvalue="JUnit.SystemManagerPageTest.testUsers" />
+        <item itemvalue="JUnit.SystemManagerPageTest.testActiveUsers" />
+        <item itemvalue="JUnit.SystemManagerPageTest.testTotalRegistered" />
+        <item itemvalue="JUnit.SystemManagerPageTest.testActiveMembers" />
       </list>
     </recent_temporary>
   </component>
@@ -219,12 +211,6 @@
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="6384000" />
-    </task>
-    <task id="LOCAL‎00015" summary="serach upgraded to return a map of products associated with their shop id">
-      <created>1652790874627</created>
-      <option name="number" value="LOCAL‎00015" />
-      <option name="presentableId" value="LOCAL‎00015" />
-      <updated>1652790874627</updated>
     </task>
     <task id="LOCAL‎00016" summary="add to cart message&#10;rpoduct changes">
       <created>1652792516003</created>
@@ -514,7 +500,13 @@
       <option name="presentableId" value="LOCAL‎00063" />
       <updated>1656005876234</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL‎00064" summary="merged with external connector branch">
+      <created>1656159184901</created>
+      <option name="number" value="LOCAL‎00064" />
+      <option name="presentableId" value="LOCAL‎00064" />
+      <updated>1656159184901</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -539,7 +531,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="users now have access to old orders and all their shops (if they are the shop founders)&#10;fixed bug i created in mistake - checked login for actions that could be performed by guests" />
     <MESSAGE value="bug fix in user - reset order history in every entrance in mistake&#10;appearance changes in addProduct.jte, editProduct.jte etc." />
     <MESSAGE value="changed register and login signatures &#10;added state to user presentation to support admin operations only" />
     <MESSAGE value="register fix in gui, &#10;started to impl admin page" />
@@ -564,7 +555,8 @@
     <MESSAGE value="merged with main" />
     <MESSAGE value="remove discounts" />
     <MESSAGE value="delete discounts, started compose discounts" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete discounts, started compose discounts" />
+    <MESSAGE value="merged with external connector branch" />
+    <option name="LAST_COMMIT_MESSAGE" value="merged with external connector branch" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -578,11 +570,6 @@
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
           <line>154</line>
           <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java</url>
-          <line>128</line>
-          <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>

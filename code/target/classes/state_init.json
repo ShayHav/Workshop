@@ -30,6 +30,9 @@
     {"function": "AppointNewShopOwner","args": [1, "u4", "u2"]},
     {"function": "AppointNewShopOwner","args": [1, "u5", "u2"]},
     {"function": "Logout","args": ["u5"]},
-    {"function": "Logout","args": ["u4"]}
+    {"function": "Logout","args": ["u4"]},
+    {"function": "LeaveMarket", "args": ["-Guest7"]},
+    {"function": "LeaveMarket", "args": ["-Guest8"]},
+    {"function": "LeaveMarket", "args": ["-Guest9"]}
   ]
 }

@@ -110,7 +110,7 @@
                     @else
                         <td colspan="2">member</td>
                     @endif
-                    @if(users.get(i).isLoggedIn())
+                    @if(users.get(i).isLoggedIn() || users.get(i).getUsername().contains("Guest"))
                         <td colspan="2" class="table-success">active</td>
                     @else
                         <td colspan="2">disconnected</td>

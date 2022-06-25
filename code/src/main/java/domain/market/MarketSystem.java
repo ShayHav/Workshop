@@ -142,6 +142,12 @@ public class MarketSystem {
         Dotenv dotenv = Dotenv.configure().filename(".env").load();
         String adminUsername = dotenv.get("Admin_username"), password = dotenv.get("Admin_password");
         String mod = dotenv.get("Mod");
+
+        if(adminUsername == null || password == null){
+            errorLogger.logMsg(Level.SEVERE,"User tried to start market with Admin username/password null");
+            throw new RuntimeException("Given Admin username or password is null");
+        }
+
         if(!userController.createSystemManager(adminUsername, password)) {
             return false;
         }

@@ -36,6 +36,7 @@ public class Main {
         ShopController shopController = new ShopController(userController);
         Javalin app;
 
+
         // FOR MY SANITY ADD SOME OBJECTS TO THE SYSTEM
         fillData();
 
@@ -47,18 +48,33 @@ public class Main {
         }
         app = Javalin.create(JavalinConfig::enableWebjars).start(port);
 
+
+        Thread activeUsers = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000 * 60);
+                    userController.manageActiveUsers();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+
+        activeUsers.start();
+
         app.routes(() -> {
             before(userController::validateUser);
             get(shopController::renderHomepage);
             //admin interface
-            path("admin",() -> {
-                path("{id}", ()->{
-                    get("systemMonitor",userController::renderAdminPage);
-                    ws("systemMonitor",userController::getSystemInfo);
+            path("admin", () -> {
+                path("{id}", () -> {
+                    get("systemMonitor", userController::renderAdminPage);
+                    ws("systemMonitor", userController::getSystemInfo);
 
-                    post("removeUser",userController::deleteUserPermanently);
+                    post("removeUser", userController::deleteUserPermanently);
 
-                    get("sales",userController::renderAllHistorySales);
+                    get("sales", userController::renderAllHistorySales);
                 });
 
             });
@@ -80,6 +96,7 @@ public class Main {
                     ws("/addToCart", userController::addToCart);
                     get("/orders", userController::renderUserOrderHistory);
                     get("/shops", userController::renderUserShops);
+                    ws("/active", userController::activeUser);
 
                     path("messages", () -> {
                         get(userController::renderInbox);
@@ -151,7 +168,7 @@ public class Main {
 
             Double minPrice = filter.getMinPrice();
             Double maxPrice = filter.getMaxPrice();
-            String category = filter.getCategory() == null? "" : filter.getCategory();
+            String category = filter.getCategory() == null ? "" : filter.getCategory();
 
             ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult, "minPrice", minPrice, "maxPrice", maxPrice, "category", category, "searchBy", searchBy, "query", query));
         });
@@ -161,23 +178,23 @@ public class Main {
 
     }
 
-    public static void fillData(){
+    public static void fillData() {
         Services services = Services.getInstance();
         ResponseT<User> r = services.EnterMarket();
         String shay_guest = r.getValue().getUserName();
-        services.Register(shay_guest,"shay", "123");
+        services.Register(shay_guest, "shay", "123");
 
         r = services.EnterMarket();
         String shahar_guest = r.getValue().getUserName();
-        services.Register(shahar_guest,"shahar", "123");
+        services.Register(shahar_guest, "shahar", "123");
 
-        services.Login(shay_guest,"shay","123");
-        Shop shop = services.CreateShop("testing shop","shay","shop").getValue();
-        services.AddProductToShopInventory(1, "Product1", "testing product", "test",1.90,15, "shay", shop.getShopID());
-        services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", shop.getShopID());
-        services.AddProductToShopInventory(3, "Product3", "testing product", "test",20,0, "shay", shop.getShopID());
-        services.AddToShoppingCart("shay",shop.getShopID(),1,5);
-        services.Checkout("shay","shay havivyan","patish","patish", "israel", "1" ,"0506874838", "12345","121", "02/24");
+        services.Login(shay_guest, "shay", "123");
+        Shop shop = services.CreateShop("testing shop", "shay", "shop").getValue();
+        services.AddProductToShopInventory(1, "Product1", "testing product", "test", 1.90, 15, "shay", shop.getShopID());
+        services.AddProductToShopInventory(2, "Product2", "testing product", "test", 20, 5, "shay", shop.getShopID());
+        services.AddProductToShopInventory(3, "Product3", "testing product", "test", 20, 0, "shay", shop.getShopID());
+        services.AddToShoppingCart("shay", shop.getShopID(), 1, 5);
+        services.Checkout("shay", "shay havivyan", "patish", "patish", "israel", "1", "0506874838", "12345", "121", "02/24");
         r = services.Logout("shay");
         shay_guest = r.getValue().getUserName();
         services.LeaveMarket(shay_guest);
