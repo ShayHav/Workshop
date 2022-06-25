@@ -1,24 +1,19 @@
 package domain.shop;
 
 import domain.Exceptions.*;
-import domain.Responses.ResponseT;
-import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
-import domain.shop.discount.Basket;
-import domain.shop.discount.DiscountPolicy;
 import domain.shop.predicate.ToBuildDiscountPredicate;
-import domain.user.TransactionInfo;
 import domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +23,6 @@ public class ShopIntegrationTest {
     int appleID;
     int orangeID;
     int shoesID;
-    Basket mockBasket;
     User storeOwner;
     String category1 = "fruits";
     String category2 = "shoes";

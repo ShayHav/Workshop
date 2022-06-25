@@ -1,11 +1,11 @@
 package domain.user;
 
 import domain.*;
-import domain.Exceptions.ProductNotFoundException;
+import domain.Exceptions.*;
+import domain.Responses.Response;
+import domain.Responses.ResponseT;
 import domain.shop.Order;
 import domain.shop.Shop;
-import domain.Exceptions.ShopNotFoundException;
-import domain.Exceptions.BlankDataExc;
 import domain.user.ShoppingBasket.ServiceBasket;
 
 import javax.persistence.Entity;
@@ -95,7 +95,7 @@ public class Cart {
             ShoppingBasket basket = baskets.get(shopID);
             basket.removeBid(bidID);
             if(basket.shouldBeRemovedFromCart())
-                baskets.remove(basket);
+                baskets.remove(shopID);
         }
     }
 
@@ -173,8 +173,8 @@ public class Cart {
 
     public class ServiceCart {
 
-        private double totalAmount;
-        private Map<Integer,ServiceBasket> baskets;
+        private final double totalAmount;
+        private final Map<Integer,ServiceBasket> baskets;
 
         public ServiceCart(double totalAmount, Map<Integer,ServiceBasket> baskets) {
             this.totalAmount = totalAmount;

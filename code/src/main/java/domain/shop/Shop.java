@@ -440,9 +440,7 @@ public class Shop {
             if (isOpen) {
                 isOpen = false;
                 User user = ControllersBridge.getInstance().getUser(userID);
-                getShopOwners().forEach(owner -> {
-                    marketSystem.sendMessage(owner, user, String.format("store %s was closed by %s", name, user.getUserName()));
-                });
+                getShopOwners().forEach(owner -> marketSystem.sendMessage(owner, user, String.format("store %s was closed by %s", name, user.getUserName())));
             } else
                 throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s", userID));
         }
@@ -485,8 +483,7 @@ public class Shop {
     }
 
     public List<Product> getProductInfoOfShop() {
-        List<Product> info = inventory.getAllProductInfo();
-        return info;
+        return inventory.getAllProductInfo();
     }
 
     public Product getInfoOnProduct(int productId) throws ProductNotFoundException {
@@ -540,11 +537,7 @@ public class Shop {
     private static List<ShopManagersPermissions> getAllPermissionsList()
     {
         ShopManagersPermissions[] SMP = ShopManagersPermissions.values();
-        List<ShopManagersPermissions> list = new LinkedList<ShopManagersPermissions>();
-        for (ShopManagersPermissions permission: SMP) {
-            list.add(permission);
-        }
-        return list;
+        return new LinkedList<>(Arrays.asList(SMP));
     }
 
     public List<ShopManagersPermissions> requestInfoOnManagerPermissions(String managerUsername) throws IllegalArgumentException {
@@ -573,8 +566,7 @@ public class Shop {
     }
 
     public List<User> getShopOwners() {
-        List<User> output = new LinkedList<>();
-        ShopOwners.values().forEach((u)->output.add(u));
+        List<User> output = new LinkedList<>(ShopOwners.values());
         output.add(ShopFounder);
         return output;
     }
@@ -599,9 +591,7 @@ public class Shop {
             buyer = market.getUser(order.getUserID());
         }catch (Exception e){}
         User finalBuyer = buyer;
-        ShopOwners.values().forEach(owner -> {
-              market.sendMessage(owner, finalBuyer, message);
-        });
+        ShopOwners.values().forEach(owner -> market.sendMessage(owner, finalBuyer, message));
         market.sendMessage(ShopFounder, finalBuyer, message);
     }
     public boolean isProductAvailable(int prodID){
