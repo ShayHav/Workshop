@@ -18,6 +18,7 @@ import domain.user.TransactionInfo;
 import domain.user.filter.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -151,28 +152,33 @@ public class MarketSystem {
         if(!userController.createSystemManager(adminUsername, password)) {
             return false;
         }
-        switch (mod){
-            case "production" -> {
-                return externalConnector.setSupplyService(new SupplyServiceImp()) && externalConnector.setPaymentService(new PaymentServiceImp());
+        try {
+            switch (mod) {
+                case "production" -> {
+                    return externalConnector.setSupplyService(new SupplyServiceImp()) && externalConnector.setPaymentService(new PaymentServiceImp());
+                }
+                case "release" -> {
+                    String paymentServiceUrl = dotenv.get("Payment_Connector");
+                    String supplyServiceUrl = dotenv.get("Supply_Connector");
+                    PaymentService paymentService = new RealPaymentSystem(paymentServiceUrl);
+                    SupplyServiceReal supplyService = new SupplyServiceReal(supplyServiceUrl);
+                    return externalConnector.setPaymentService(paymentService)
+                            && externalConnector.setSupplyService(supplyService);
+                }
+                case "test" -> {
+                    String paymentServiceUrl = dotenv.get("Payment_Connector");
+                    String supplyServiceUrl = dotenv.get("Supply_Connector");
+                    return externalConnector.setPaymentService(new RealPaymentSystem(paymentServiceUrl)) &&
+                            externalConnector.setSupplyService(new SupplyServiceReal(supplyServiceUrl));
+                }
+                default -> {
+                    errorLogger.logMsg(Level.SEVERE, "unsupported mod in env file");
+                    throw new RuntimeException("not supported mod");
+                }
             }
-            case "release" -> {
-                String paymentServiceUrl = dotenv.get("Payment_Connector");
-                String supplyServiceUrl = dotenv.get("Supply_Connector");
-                PaymentService paymentService = new RealPaymentSystem(paymentServiceUrl);
-                SupplyServiceReal supplyService = new SupplyServiceReal(supplyServiceUrl);
-                return externalConnector.setPaymentService(paymentService)
-                        && externalConnector.setSupplyService(supplyService);
-            }
-            case "test" -> {
-                String paymentServiceUrl = dotenv.get("Payment_Connector");
-                String supplyServiceUrl = dotenv.get("Supply_Connector");
-                return externalConnector.setPaymentService(new RealPaymentSystem(paymentServiceUrl)) &&
-                        externalConnector.setSupplyService(new SupplyServiceReal(supplyServiceUrl));
-            }
-            default -> {
-                errorLogger.logMsg(Level.SEVERE, "unsupported mod in env file");
-                throw new RuntimeException("not supported mod");
-            }
+        } catch (ConnectException e){
+            errorLogger.logMsg(Level.SEVERE, e.getMessage());
+            throw new RuntimeException("Couldn't start market system: failed to connect to external service");
         }
     }
 
@@ -181,22 +187,26 @@ public class MarketSystem {
     /***
      *
      * @param ti - contains amount, method of payment etc
-     * @return true if approve, false if otherwise
+     * @return the transaction id
      */
 
 
-    public boolean pay(TransactionInfo ti) {
+    public int pay(TransactionInfo ti) throws BlankDataExc, ConnectException {
         if (ti == null)
-            return false;
+            throw new BlankDataExc("ti is null");
         return externalConnector.pay(ti);
+    }
+
+    public boolean cancelPayment(int transactionID) throws ConnectException {
+        return externalConnector.cancelPayment(transactionID);
     }
 
     /***
      *
      * @param ti - should be address and maybe also date
-     * @return - true if supply is approved, false otherwise
+     * @return - transaction id from the external service
      */
-    public boolean supply(TransactionInfo ti, Map<Integer, Integer> products) throws BlankDataExc {
+    public int supply(TransactionInfo ti, Map<Integer, Integer> products) throws BlankDataExc, ConnectException {
         if (ti == null)
             throw new BlankDataExc("parameter is null: TransactionInfo");
         if (products == null)
@@ -564,6 +574,13 @@ public class MarketSystem {
         return userController.addProductToCart(username, shopID, productId, amount);
     }
 
+    public Response addBidToCart(String username, int shopID, int productId, int amount, double price) throws InvalidSequenceOperationsExc, ShopNotFoundException, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+        if (username == null)
+            throw new BlankDataExc("parameter is null: username");
+        isEnter(username);
+        return userController.addBidToCart(username, shopID, productId, amount, price);
+    }
+
     public Response EditShoppingCart(String username, int shopId, int productId, int amount) throws InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, IncorrectIdentification {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");
@@ -899,11 +916,30 @@ public class MarketSystem {
         shopController.removePurchaseRule(userName,purchaseRuleID, shopID);
     }
 
-    public void acceptBid(int shopID, int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public void acceptBid(int shopID, int bidID, String approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        isEnter(approver);
+        isExist(approver);
+        isLogin(approver);
         shopController.acceptBid(shopID, bidID, approver);
     }
 
-    public void declineBid(int shopID, int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public void declineBid(int shopID, int bidID, String decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        isEnter(decliner);
+        isExist(decliner);
+        isLogin(decliner);
         shopController.declineBid(shopID, bidID, decliner);
+    }
+    public void acceptAppoint(int shopID, int bidID, String approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        isEnter(approver);
+        isExist(approver);
+        isLogin(approver);
+        shopController.acceptAppoint(shopID, bidID, approver);
+    }
+
+    public void declineAppoin(int shopID, int bidID, String decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+        isEnter(decliner);
+        isExist(decliner);
+        isLogin(decliner);
+        shopController.declineAppoint(shopID, bidID, decliner);
     }
 }

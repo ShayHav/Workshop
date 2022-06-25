@@ -36,7 +36,6 @@ public class Main {
         ShopController shopController = new ShopController(userController);
         Javalin app;
 
-
         // FOR MY SANITY ADD SOME OBJECTS TO THE SYSTEM
         fillData();
 
@@ -188,13 +187,13 @@ public class Main {
         String shahar_guest = r.getValue().getUserName();
         services.Register(shahar_guest, "shahar", "123");
 
-        services.Login(shay_guest, "shay", "123");
-        Shop shop = services.CreateShop("testing shop", "shay", "shop").getValue();
-        services.AddProductToShopInventory(1, "Product1", "testing product", "test", 1.90, 15, "shay", shop.getShopID());
-        services.AddProductToShopInventory(2, "Product2", "testing product", "test", 20, 5, "shay", shop.getShopID());
-        services.AddProductToShopInventory(3, "Product3", "testing product", "test", 20, 0, "shay", shop.getShopID());
-        services.AddToShoppingCart("shay", shop.getShopID(), 1, 5);
-        services.Checkout("shay", "shay havivyan", "patish", "patish", "israel", "1", "0506874838", "12345", "121", "02/24");
+        services.Login(shay_guest,"shay","123");
+        Shop shop = services.CreateShop("testing shop","shay","shop").getValue();
+        services.AddProductToShopInventory(1, "Product1", "testing product", "test",1.90,15, "shay", shop.getShopID());
+        services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", shop.getShopID());
+        services.AddProductToShopInventory(3, "Product3", "testing product", "test",20,0, "shay", shop.getShopID());
+        services.AddToShoppingCart("shay",shop.getShopID(),1,5);
+        services.Checkout("shay","shay havivyan","patish","patish", "israel", "1" ,"0506874838", "12345","121", "02/24");
         r = services.Logout("shay");
         shay_guest = r.getValue().getUserName();
         services.LeaveMarket(shay_guest);

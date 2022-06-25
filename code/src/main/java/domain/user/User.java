@@ -290,10 +290,11 @@ public class User {
         return userCart.addProductToCart(shopID, productID, amount);
     }
 
-    public Response addNewBid(int shopID, int productID, int amount) throws ShopNotFoundException {
+
+    public ResponseT<Integer> addNewBid(int shopID, int productID, int amount, double price) throws ShopNotFoundException {
         if(getUserState().equals(UserState2.guest))
             return new ResponseT<>("guests may not submit bids");
-        return userCart.addNewBidToCart(shopID, productID, amount, this);
+        return userCart.addNewBidToCart(shopID, productID, amount, this, price);
     }
 
     public void bidApproved(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {

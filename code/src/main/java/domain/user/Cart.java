@@ -1,11 +1,9 @@
 package domain.user;
 
 import domain.*;
-import domain.Exceptions.ProductNotFoundException;
+import domain.Exceptions.*;
 import domain.Responses.Response;
 import domain.Responses.ResponseT;
-
-import domain.Exceptions.*;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.ShoppingBasket.ServiceBasket;
@@ -56,12 +54,12 @@ public class Cart {
     }
 
 
-    public ResponseT<Integer> addNewBidToCart(int shopID, int productID, int amount, User basketOwner) throws ShopNotFoundException {
+    public ResponseT<Integer> addNewBidToCart(int shopID, int productID, int amount, User basketOwner, double price) throws ShopNotFoundException {
         if (!baskets.containsKey(shopID)) {
             try {
                 Shop shop = ControllersBridge.getInstance().getShop(shopID);
                 ShoppingBasket newBasket = new ShoppingBasket(shop);
-                int bidID = newBasket.addBidToBasket(shopID, productID, amount, basketOwner);
+                int bidID = newBasket.addBidToBasket(productID, amount, price, basketOwner);
                 baskets.put(shopID, newBasket);
                 totalAmount = getTotalAmount();
                 eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
@@ -72,7 +70,7 @@ public class Cart {
             }
         } else {
             try {
-                int bidID = baskets.get(shopID).addBidToBasket(shopID, productID, amount, basketOwner);
+                int bidID = baskets.get(shopID).addBidToBasket(productID, amount, price, basketOwner);
                 totalAmount = getTotalAmount();
                 return new ResponseT<>(bidID);
             } catch (IllegalArgumentException | ProductNotFoundException e) {
@@ -97,7 +95,7 @@ public class Cart {
             ShoppingBasket basket = baskets.get(shopID);
             basket.removeBid(bidID);
             if(basket.shouldBeRemovedFromCart())
-                baskets.remove(basket);
+                baskets.remove(shopID);
         }
     }
 
@@ -175,8 +173,8 @@ public class Cart {
 
     public class ServiceCart {
 
-        private double totalAmount;
-        private Map<Integer,ServiceBasket> baskets;
+        private final double totalAmount;
+        private final Map<Integer,ServiceBasket> baskets;
 
         public ServiceCart(double totalAmount, Map<Integer,ServiceBasket> baskets) {
             this.totalAmount = totalAmount;

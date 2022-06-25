@@ -35,6 +35,8 @@ public class TransactionInfo {
         this.ccv = ccv;
     }
 
+
+
     public TransactionInfo(String userID, String fullName, String address,String phoneNumber,String cardNumber, String expirationDate, LocalDate transactionDate){
         this.userID = userID;
         this.fullName = fullName;

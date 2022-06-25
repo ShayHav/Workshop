@@ -8,7 +8,7 @@ public class PaymentServiceImp implements PaymentService{
 
     @Override
     public int processPayment(String fullName, String id, String creditCard, String expiredDate, String ccv, double total) {
-        return 1;
+        return 15000;
     }
 
     @Override

@@ -8,6 +8,7 @@ import domain.user.TransactionInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.net.ConnectException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -21,7 +22,7 @@ class ExternalConnectorTest {
             "01/25", "123", LocalDate.now(),0.0);
     TransactionInfo ti1 = new TransactionInfo("2", "shmuel", "Street2", "City", "Country", "000001",
             "0503456789", "1234567", "02/28", "123",LocalDate.now(), 0.0);
-
+    int goodReturn = 10000, badReturn = -1;
 
     @BeforeEach
     void setUp() {
@@ -32,10 +33,14 @@ class ExternalConnectorTest {
     void connectToPaymentService() throws BlankDataExc {
         PaymentService ps = mock(PaymentService.class);
         when(ps.connect()).thenReturn(false);
-        assertFalse(connector.setPaymentService(ps));
-        PaymentService ps1 = mock(PaymentService.class);
-        when(ps1.connect()).thenReturn(true);
-        assertTrue(connector.setPaymentService(ps1));
+        try {
+            assertFalse(connector.setPaymentService(ps));
+            PaymentService ps1 = mock(PaymentService.class);
+            when(ps1.connect()).thenReturn(true);
+            assertTrue(connector.setPaymentService(ps1));
+        } catch (ConnectException e) {
+            fail();
+        }
     }
 
     @Test
@@ -58,14 +63,13 @@ class ExternalConnectorTest {
 
         when(p1.connect()).thenReturn(true);
 
-        when(p1.processPayment(ti.getFullName(),ti.getUserID(),ti.getCardNumber(), ti.getExpirationDate(),  ti.getCcv(), ti.getTotalAmount())).thenReturn(1000);
-        when(p1.processPayment(ti1.getFullName(),ti1.getUserID(),ti1.getCardNumber(), ti1.getExpirationDate(),ti1.getCcv(), ti1.getTotalAmount())).thenReturn(-1);
-
+        when(p1.processPayment(ti.getFullName(),ti.getUserID(),ti.getCardNumber(), ti.getExpirationDate(),  ti.getCcv(), ti.getTotalAmount())).thenReturn(goodReturn);
+        when(p1.processPayment(ti1.getFullName(),ti1.getUserID(),ti1.getCardNumber(), ti1.getExpirationDate(),ti1.getCcv(), ti1.getTotalAmount())).thenReturn(badReturn);
 
         try {
             assertTrue(connector.setPaymentService(p1));
-            assertTrue(connector.pay(ti));
-            assertFalse(connector.pay(ti1));
+            assertEquals(goodReturn,connector.pay(ti));
+            assertEquals(badReturn,connector.pay(ti1));
         }catch (Exception e){
             fail();
         }
@@ -77,7 +81,7 @@ class ExternalConnectorTest {
         SupplyService s1 = mock(SupplyService.class);
         HashMap<Integer, Integer> items = new HashMap<>();
         when(s1.connect()).thenReturn(true);
-        when(s1.supply(ti.getFullName(),ti.getAddress(), ti.getCity(), ti.getCountry(), ti.getZip(), items)).thenReturn(1000);
+        when(s1.supply(ti.getFullName(),ti.getAddress(), ti.getCity(), ti.getCountry(), ti.getZip(), items)).thenReturn(goodReturn);
         when(s1.supply(ti1.getFullName(), ti1.getAddress(), ti1.getCity(), ti1.getCountry(), ti1.getZip(), items)).thenReturn(-1);
 
         SupplyService s2 = mock(SupplyService.class);
@@ -87,10 +91,10 @@ class ExternalConnectorTest {
 
         try {
             connector.setSupplyService(s1);
-            assertTrue(connector.supply(ti, items));
+            assertEquals(goodReturn, connector.supply(ti, items));
             connector.setSupplyService(s2);
-            assertFalse(connector.supply(ti1, items));
-        } catch (BlankDataExc e) {
+            assertEquals(badReturn, connector.supply(ti1, items));
+        } catch (Exception e) {
             fail();
         }
     }
@@ -108,8 +112,8 @@ class ExternalConnectorTest {
         });
         try{
             assertTrue(connector.setSupplyService(service));
-            assertFalse(connector.supply(ti, items));
-            assertFalse(connector.cancelSupply(1));
+            assertThrows(ConnectException.class, () -> connector.supply(ti, items));
+            assertThrows(ConnectException.class, () -> connector.cancelSupply(1));
         }
         catch (Exception e){
             fail();
@@ -128,8 +132,8 @@ class ExternalConnectorTest {
         });
         try {
             assertTrue(connector.setPaymentService(service));
-            assertFalse(connector.pay(ti));
-            assertFalse(connector.cancelPayment(1));
+            assertThrows(ConnectException.class, () -> connector.pay(ti));
+            assertThrows(ConnectException.class, () -> connector.cancelPayment(1));
         }
         catch (Exception e){
             fail();
@@ -145,13 +149,12 @@ class ExternalConnectorTest {
             connect[0] = !current;
             return current;
         });
-        when(service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(), ti.getExpirationDate(),ti.getCcv(), ti.getTotalAmount())).thenReturn(1000);
-        when(service.cancelPayment(1)).thenReturn(true);
+        when(service.processPayment(ti.getFullName(), ti.getUserID(), ti.getCardNumber(), ti.getExpirationDate(),ti.getCcv(), ti.getTotalAmount())).thenReturn(goodReturn);
 
         try{
             assertTrue(connector.setPaymentService(service));
-            assertFalse(connector.pay(ti));
-            assertTrue(connector.pay(ti));
+            assertThrows(ConnectException.class, () -> connector.pay(ti));
+            assertEquals(goodReturn, connector.pay(ti));
         }
         catch (Exception e){
             fail();

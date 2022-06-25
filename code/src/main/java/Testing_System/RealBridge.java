@@ -130,7 +130,9 @@ public class RealBridge implements Bridge{
     @Override
     public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String city, String country,
                                                   String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) {
-       return (Result<Boolean, List<String>>) sv.Checkout(userID, fullName, address, city, country,zip, phoneNumber, cardNumber,ccv,  expirationDate).getValue();
+        List<String> response = sv.Checkout(userID, fullName, address, city, country,zip, phoneNumber, cardNumber,ccv,  expirationDate).getValue();
+
+       return new Result<>(response != null, response);
     }
 
     @Override

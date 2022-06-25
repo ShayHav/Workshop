@@ -379,6 +379,16 @@ public class UserController {
         return u.addProductToCart(shopNumber, productId, amount);
     }
 
+
+    public Response addBidToCart(String userName, int shopNumber, int productId, int amount, double price) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+        if (!HasUserEnteredMarket(userName)) {
+            errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
+            throw new InvalidSequenceOperationsExc();
+        }
+        User u = activeUser.get(userName);
+        return u.addNewBid(shopNumber, productId, amount, price);
+    }
+
     /**
      * Checking operation validity and performing
      * @param userName

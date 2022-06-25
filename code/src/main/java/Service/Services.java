@@ -23,6 +23,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -207,18 +208,22 @@ public class Services {
     public ResponseT<Boolean> PurchaseDelivery(TransactionInfo ti, Map<Integer, Integer> products) {
         try {
             MarketSystem m = MarketSystem.getInstance();
-            boolean ans = m.supply(ti, products);
-            return new ResponseT<>(ans);
-        } catch (BlankDataExc blankDataExc) {
-            return null;
+            int ans = m.supply(ti, products);
+            return new ResponseT<>(ans >= 10000 && ans <= 100000);
+        } catch (BlankDataExc | ConnectException blankDataExc) {
+            return new ResponseT<>(false);
         }
     }
 
     //shay  //TODO: only for test? answer: yes
     public ResponseT<Boolean> Payment(TransactionInfo ti) {
         //MarketSystem m = MarketSystem.getInstance();
-        boolean ans = marketSystem.pay(ti);
-        return new ResponseT<>(ans);
+        try {
+            int ans = marketSystem.pay(ti);
+            return new ResponseT<>(10000 <= ans && ans <= 100000);
+        }catch (BlankDataExc | ConnectException  e){
+            return new ResponseT<>(false);
+        }
     }
 
     /**
@@ -368,6 +373,23 @@ public class Services {
     public Response AddToShoppingCart(String userName, int shopID, int productId, int amount) {
         try {
             return marketSystem.AddProductToCart(userName, shopID, productId, amount);
+        } catch (InvalidSequenceOperationsExc | ShopNotFoundException | BlankDataExc | IncorrectIdentification | InvalidAuthorizationException e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    /**
+     * Add a product to the user's shopping cart (member or guest)
+     * @param userName - user identifier
+     * @param shopID - shop identifier
+     * @param productId - product identifier
+     * @param amount
+     * @return Response object
+     */
+    public Response addBidToShoppingCart(String userName, int shopID, int productId, int amount, double price) {
+        try {
+            return marketSystem.addBidToCart(userName, shopID, productId, amount, price);
         } catch (InvalidSequenceOperationsExc | ShopNotFoundException | BlankDataExc | IncorrectIdentification | InvalidAuthorizationException e) {
             return new Response(e.getMessage());
         }
@@ -1124,21 +1146,51 @@ public class Services {
         }
     }
 
-    public Response acceptBid(int shopID, int bidID, User approver){
+    public Response acceptBid(int shopID, int bidID, String approver){
         try {
             marketSystem.acceptBid(shopID, bidID, approver);
             return new Response();
-        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc exception) {
             return new Response(exception.getMessage());
         }
     }
 
-    public Response declineBid(int shopID, int bidID, User decliner){
+    public Response declineBid(int shopID, int bidID, String decliner){
         try {
             marketSystem.declineBid(shopID, bidID, decliner);
             return new Response();
         } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
             return new Response(exception.getMessage());
+        } catch (IncorrectIdentification incorrectIdentification) {
+            return new Response(incorrectIdentification.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (BlankDataExc blankDataExc) {
+            return new Response(blankDataExc.getLocalizedMessage());
+        }
+    }
+
+    public Response acceptAppoint(int shopID, int bidID, String approver){
+        try {
+            marketSystem.acceptAppoint(shopID, bidID, approver);
+            return new Response();
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc exception) {
+            return new Response(exception.getMessage());
+        }
+    }
+
+    public Response declineAppoint(int shopID, int bidID, String decliner){
+        try {
+            marketSystem.declineAppoin(shopID, bidID, decliner);
+            return new Response();
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
+            return new Response(exception.getMessage());
+        } catch (IncorrectIdentification incorrectIdentification) {
+            return new Response(incorrectIdentification.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (BlankDataExc blankDataExc) {
+            return new Response(blankDataExc.getLocalizedMessage());
         }
     }
 

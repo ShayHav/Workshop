@@ -7,6 +7,7 @@ import domain.Exceptions.*;
 import domain.Responses.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchaseFormats.BidFormat;
+import domain.shop.PurchaseFormats.BidHandler;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Basket;
 import domain.shop.discount.Discount;
@@ -18,6 +19,7 @@ import domain.user.filter.*;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.net.ConnectException;
 import java.util.*;
 
 import java.util.function.Predicate;
@@ -45,6 +47,7 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
     private BidHandler bidHandler;
+    private AppointHandler appointHandler;
     private MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
@@ -63,6 +66,7 @@ public class Shop {
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
         bidHandler = new BidHandler();
+        appointHandler = new AppointHandler();
     }
 
     public Shop(String name,String description, User shopFounder, int shopID) {
@@ -80,6 +84,7 @@ public class Shop {
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
+        bidHandler = new BidHandler();
     }
 
 
@@ -205,7 +210,9 @@ public class Shop {
 
     public Basket IDsToProducts(Map<Integer, Integer> productAmountList){
         ProductImp product;
+
         Basket basket = new Basket();
+        basket.setBasePrice(getCartTotalWithNoDiscounts(productAmountList));
         for(Map.Entry<Integer, Integer> set : productAmountList.entrySet()){
             //check purchase policy regarding the Product
             //Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
@@ -223,6 +230,7 @@ public class Shop {
     public Basket idsToBids(List<Integer> bidIDs){
         ProductImp product;
         Basket basket = new Basket();
+        double basketPrice = 0;
         for(Integer bidID : bidIDs){
             //check purchase policy regarding the Product
             //Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
@@ -232,7 +240,9 @@ public class Shop {
                 continue;
             }
             basket.put(product, product.getAmount());
+            basketPrice += product.getPrice();
         }
+        basket.setBasePrice(basketPrice);
         return basket;
     }
 
@@ -242,7 +252,9 @@ public class Shop {
 
     public Basket cartItemsPricesAfterDiscounts(Map<Integer, Integer> productAmountList, List<Integer> acceptedbidIDs){
         Basket basket = IDsToProducts(productAmountList);
-        basket.putAll(idsToBids(acceptedbidIDs));
+        Basket basketBids = idsToBids(acceptedbidIDs);
+        basket.putAll(basketBids);
+        basket.setBasePrice(basket.getBasePrice() + basketBids.getBasePrice());
         return discountPolicy.calcPricePerProductForCartTotal(basket);
     }
 
@@ -299,6 +311,7 @@ public class Shop {
     public boolean purchasePolicyLegal(Basket basket){
         if(purchasePolicy == null)
             return true;
+
         return purchasePolicy.checkCart_RulesAreMet(basket);
     }
 
@@ -311,7 +324,9 @@ public class Shop {
      */
     public ResponseT<Order> checkout(Map<Integer,Integer> products, List<Integer> acceptedBids, TransactionInfo transaction) throws BlankDataExc {
         Basket basket = IDsToProducts(products);
-        basket.putAll(idsToBids(acceptedBids));
+        Basket basketBids = idsToBids(acceptedBids);
+        basket.putAll(basketBids);
+        basket.setBasePrice(basket.getBasePrice() + basketBids.getBasePrice());
 
         if (!purchasePolicyLegal(basket)) {
             return new ResponseT("violates purchase policy");
@@ -335,23 +350,21 @@ public class Shop {
         for(ProductImp productImp : basket.keySet()){
             product_PricePer.put(productImp.getId(), productImp.getBasePrice());
         }
-
-        //calculate price
-
-        if(!marketSystem.pay(transaction)){
-            synchronized (inventory) {
-                try {
+        try {
+            int paymentTransactionID = marketSystem.pay(transaction);
+            if (paymentTransactionID < 10000 || paymentTransactionID > 100000) {
+                synchronized (inventory) {
                     inventory.restoreStock(products);
-                }catch (Exception e){
-                    errorLogger.logMsg(Level.SEVERE, "couldn't restock, Fatal. Explanation:\n" + e.getMessage());
-                    e.printStackTrace();
                 }
+                return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please try again later", shopID));
             }
-            return new ResponseT<>(String.format("checkout in shop %d failed: problem with pay system, please contact the company representative", shopID));
-        }
-
-        if(!marketSystem.supply(transaction, products)){
-            return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please contact the company representative", shopID));
+            int supplyTransactionID = marketSystem.supply(transaction, products);
+            if (supplyTransactionID < 10000 || supplyTransactionID > 100000) {
+                marketSystem.cancelPayment(paymentTransactionID);
+                return new ResponseT<>(String.format("checkout in shop %d failed: problem with supply system, please try again later", shopID));
+            }
+        }catch (Exception e){
+            return new ResponseT<>(String.format("fail to checkout in shop %d, please try agian later", shopID));
         }
         // creating Order object to store in the Order History with unmutable copy of product
         Order o = createOrder(basket, transaction);
@@ -411,11 +424,14 @@ public class Shop {
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
-                        managerUser.AppointedMeManager(this,usertarget);
-                        ShopManagers.putIfAbsent(usertarget, newManager);
-                        newManager.addRole(shopID,Role.ShopManager);
-                        shopManagersPermissionsController.initManager(newManager.getUserName());
-                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+//                        managerUser.AppointedMeManager(this,usertarget);
+//                        ShopManagers.putIfAbsent(usertarget, newManager);
+//                        newManager.addRole(shopID,Role.ShopManager);
+//                        shopManagersPermissionsController.initManager(newManager.getUserName());
+//                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+                        List<User> toc = getShopOwners();
+                        toc.remove(managerUser);
+                        appointHandler.addNewAppoint(newManager,managerUser,this,toc);
                         return;
                     }
                 }
@@ -430,9 +446,7 @@ public class Shop {
             if (isOpen) {
                 isOpen = false;
                 User user = ControllersBridge.getInstance().getUser(userID);
-                getShopOwners().forEach(owner -> {
-                    marketSystem.sendMessage(owner, user, String.format("store %s was closed by %s", name, user.getUserName()));
-                });
+                getShopOwners().forEach(owner -> marketSystem.sendMessage(owner, user, String.format("store %s was closed by %s", name, user.getUserName())));
             } else
                 throw new InvalidSequenceOperationsExc(String.format("attempt to Close Closed Shop userID: %s", userID));
         }
@@ -475,8 +489,7 @@ public class Shop {
     }
 
     public List<Product> getProductInfoOfShop() {
-        List<Product> info = inventory.getAllProductInfo();
-        return info;
+        return inventory.getAllProductInfo();
     }
 
     public Product getInfoOnProduct(int productId) throws ProductNotFoundException {
@@ -486,7 +499,15 @@ public class Shop {
         }
         p.setShopRank(rank);
         return p;
+    }
 
+    public Product getInfoOnBid(int bidId) throws BidNotFoundException {
+        Product p;
+        synchronized (inventory){
+            p = bidHandler.getBid(bidId);
+        }
+        p.setShopRank(rank);
+        return p;
     }
 
     public List<Order> getOrders() {
@@ -530,11 +551,7 @@ public class Shop {
     private static List<ShopManagersPermissions> getAllPermissionsList()
     {
         ShopManagersPermissions[] SMP = ShopManagersPermissions.values();
-        List<ShopManagersPermissions> list = new LinkedList<ShopManagersPermissions>();
-        for (ShopManagersPermissions permission: SMP) {
-            list.add(permission);
-        }
-        return list;
+        return new LinkedList<>(Arrays.asList(SMP));
     }
 
     public List<ShopManagersPermissions> requestInfoOnManagerPermissions(String managerUsername) throws IllegalArgumentException {
@@ -563,8 +580,7 @@ public class Shop {
     }
 
     public List<User> getShopOwners() {
-        List<User> output = new LinkedList<>();
-        ShopOwners.values().forEach((u)->output.add(u));
+        List<User> output = new LinkedList<>(ShopOwners.values());
         output.add(ShopFounder);
         return output;
     }
@@ -582,16 +598,14 @@ public class Shop {
     }
 
     private void sendCheckoutMessage(Order order){
-        MarketSystem  market = MarketSystem.getInstance();
+        MarketSystem  market = marketSystem;
         String message = order.checkoutMessage();
         User buyer = null;
         try {
             buyer = market.getUser(order.getUserID());
         }catch (Exception e){}
         User finalBuyer = buyer;
-        ShopOwners.values().forEach(owner -> {
-              market.sendMessage(owner, finalBuyer, message);
-        });
+        ShopOwners.values().forEach(owner -> market.sendMessage(owner, finalBuyer, message));
         market.sendMessage(ShopFounder, finalBuyer, message);
     }
     public boolean isProductAvailable(int prodID){
@@ -848,5 +862,22 @@ public class Shop {
 
     public void declineBid(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
         bidHandler.declineBid(bidID, decliner);
+    }
+
+    public void acceptAppoint(int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        appointHandler.acceptAppoint(bidID, approver);
+    }
+
+    public void declineAppoint(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
+        appointHandler.declineAppoint(bidID, decliner);
+        appointHandler.removeBid(bidID);
+    }
+
+    public void initManager(User userName){
+        shopManagersPermissionsController.initManager(userName.getUserName());
+    }
+
+    public void putIfAbsentManager(String userName, User appointUser) {
+        ShopManagers.putIfAbsent(userName, appointUser);
     }
 }

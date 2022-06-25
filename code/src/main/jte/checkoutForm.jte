@@ -34,7 +34,7 @@
             <div class="mb-3">
                 <label for="zip" class="form-label">zip</label>
                 <input type="text" inputmode="numeric" id="zip" name="zip" required class="form-control form-text"
-                       placeholder="Address">
+                       placeholder="Zip Code">
             </div>
 
             <div class="mb-4">
