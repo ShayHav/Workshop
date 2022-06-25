@@ -5,11 +5,12 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.CriticalInvariantException;
 import domain.Exceptions.DiscountNotFoundException;
 import domain.Exceptions.InvalidParamException;
-import domain.shop.Inventory;
 import domain.shop.ProductImp;
-import domain.shop.PurchasePolicys.PurchaseRule;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -19,10 +20,10 @@ public class DiscountPolicy {
     /**
      *
      */
-    private Map<Integer, List<Discount>> product_discounts;
-    private Map<String, List<Discount>> category_discounts; ///check if needed
-    private List<Discount> shopAllProducts_discounts; ///check if needed
-    private List<Integer> hasBundleDeal;
+    private final Map<Integer, List<Discount>> product_discounts;
+    private final Map<String, List<Discount>> category_discounts; ///check if needed
+    private final List<Discount> shopAllProducts_discounts; ///check if needed
+    private final List<Integer> hasBundleDeal;
     private int discountIDCounter;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
