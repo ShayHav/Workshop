@@ -65,6 +65,7 @@ public class Shop {
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
         bidHandler = new BidHandler();
+        appointHandler = new AppointHandler();
     }
 
     public Shop(String name,String description, User shopFounder, int shopID) {
@@ -411,11 +412,14 @@ public class Shop {
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
-                        managerUser.AppointedMeManager(this,usertarget);
-                        ShopManagers.putIfAbsent(usertarget, newManager);
-                        newManager.addRole(shopID,Role.ShopManager);
-                        shopManagersPermissionsController.initManager(newManager.getUserName());
-                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+//                        managerUser.AppointedMeManager(this,usertarget);
+//                        ShopManagers.putIfAbsent(usertarget, newManager);
+//                        newManager.addRole(shopID,Role.ShopManager);
+//                        shopManagersPermissionsController.initManager(newManager.getUserName());
+//                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
+                        List<User> toc = getShopOwners();
+                        toc.remove(managerUser);
+                        appointHandler.addNewAppoint(newManager,managerUser,this,toc);
                         return;
                     }
                 }
