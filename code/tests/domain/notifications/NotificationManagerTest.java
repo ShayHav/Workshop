@@ -108,7 +108,6 @@ class NotificationManagerTest {
         User user = new User("user3");
         List<Message> messages = new ArrayList<>();
 
-        //unregistered user
         assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
     }
 
