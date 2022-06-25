@@ -208,7 +208,9 @@ public class Shop {
 
     public Basket IDsToProducts(Map<Integer, Integer> productAmountList){
         ProductImp product;
+
         Basket basket = new Basket();
+        basket.setBasePrice(getCartTotalWithNoDiscounts(productAmountList));
         for(Map.Entry<Integer, Integer> set : productAmountList.entrySet()){
             //check purchase policy regarding the Product
             //Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
@@ -226,6 +228,7 @@ public class Shop {
     public Basket idsToBids(List<Integer> bidIDs){
         ProductImp product;
         Basket basket = new Basket();
+        double basketPrice = 0;
         for(Integer bidID : bidIDs){
             //check purchase policy regarding the Product
             //Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
@@ -235,7 +238,9 @@ public class Shop {
                 continue;
             }
             basket.put(product, product.getAmount());
+            basketPrice += product.getPrice();
         }
+        basket.setBasePrice(basketPrice);
         return basket;
     }
 
@@ -245,7 +250,9 @@ public class Shop {
 
     public Basket cartItemsPricesAfterDiscounts(Map<Integer, Integer> productAmountList, List<Integer> acceptedbidIDs){
         Basket basket = IDsToProducts(productAmountList);
-        basket.putAll(idsToBids(acceptedbidIDs));
+        Basket basketBids = idsToBids(acceptedbidIDs);
+        basket.putAll(basketBids);
+        basket.setBasePrice(basket.getBasePrice() + basketBids.getBasePrice());
         return discountPolicy.calcPricePerProductForCartTotal(basket);
     }
 
@@ -302,6 +309,7 @@ public class Shop {
     public boolean purchasePolicyLegal(Basket basket){
         if(purchasePolicy == null)
             return true;
+
         return purchasePolicy.checkCart_RulesAreMet(basket);
     }
 
@@ -314,7 +322,9 @@ public class Shop {
      */
     public ResponseT<Order> checkout(Map<Integer,Integer> products, List<Integer> acceptedBids, TransactionInfo transaction) throws BlankDataExc {
         Basket basket = IDsToProducts(products);
-        basket.putAll(idsToBids(acceptedBids));
+        Basket basketBids = idsToBids(acceptedBids);
+        basket.putAll(basketBids);
+        basket.setBasePrice(basket.getBasePrice() + basketBids.getBasePrice());
 
         if (!purchasePolicyLegal(basket)) {
             return new ResponseT("violates purchase policy");
