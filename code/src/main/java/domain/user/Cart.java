@@ -54,12 +54,12 @@ public class Cart {
     }
 
 
-    public ResponseT<Integer> addNewBidToCart(int shopID, int productID, int amount, User basketOwner) throws ShopNotFoundException {
+    public ResponseT<Integer> addNewBidToCart(int shopID, int productID, int amount, User basketOwner, double price) throws ShopNotFoundException {
         if (!baskets.containsKey(shopID)) {
             try {
                 Shop shop = ControllersBridge.getInstance().getShop(shopID);
                 ShoppingBasket newBasket = new ShoppingBasket(shop);
-                int bidID = newBasket.addBidToBasket(shopID, productID, amount, basketOwner);
+                int bidID = newBasket.addBidToBasket(productID, amount, price, basketOwner);
                 baskets.put(shopID, newBasket);
                 totalAmount = getTotalAmount();
                 eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
@@ -70,7 +70,7 @@ public class Cart {
             }
         } else {
             try {
-                int bidID = baskets.get(shopID).addBidToBasket(shopID, productID, amount, basketOwner);
+                int bidID = baskets.get(shopID).addBidToBasket(productID, amount, price, basketOwner);
                 totalAmount = getTotalAmount();
                 return new ResponseT<>(bidID);
             } catch (IllegalArgumentException | ProductNotFoundException e) {

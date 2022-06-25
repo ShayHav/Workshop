@@ -494,7 +494,15 @@ public class Shop {
         }
         p.setShopRank(rank);
         return p;
+    }
 
+    public Product getInfoOnBid(int bidId) throws BidNotFoundException {
+        Product p;
+        synchronized (inventory){
+            p = bidHandler.getBid(bidId);
+        }
+        p.setShopRank(rank);
+        return p;
     }
 
     public List<Order> getOrders() {

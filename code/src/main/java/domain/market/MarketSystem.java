@@ -566,6 +566,13 @@ public class MarketSystem {
         return userController.addProductToCart(username, shopID, productId, amount);
     }
 
+    public Response addBidToCart(String username, int shopID, int productId, int amount, double price) throws InvalidSequenceOperationsExc, ShopNotFoundException, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
+        if (username == null)
+            throw new BlankDataExc("parameter is null: username");
+        isEnter(username);
+        return userController.addBidToCart(username, shopID, productId, amount, price);
+    }
+
     public Response EditShoppingCart(String username, int shopId, int productId, int amount) throws InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, IncorrectIdentification {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");

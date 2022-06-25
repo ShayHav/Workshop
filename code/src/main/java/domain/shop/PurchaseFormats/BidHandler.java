@@ -1,8 +1,10 @@
-package domain.shop;
+package domain.shop.PurchaseFormats;
 
 import domain.Exceptions.BidNotFoundException;
 import domain.Exceptions.CriticalInvariantException;
+import domain.shop.ProductImp;
 import domain.shop.PurchaseFormats.BidFormat;
+import domain.shop.Shop;
 import domain.user.User;
 
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class BidHandler {
         getBid(bidID).approve(approver);
     }
 
-    public void declineBid(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
+    public void declineBid(int bidID, User decliner) throws BidNotFoundException {
         getBid(bidID).decline(decliner);
     }
 }

@@ -1,6 +1,8 @@
 package domain.shop;
 
 import domain.Exceptions.*;
+import domain.Responses.ResponseT;
+import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.user.User;
@@ -10,6 +12,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -211,48 +214,130 @@ public class ShopIntegrationTest {
 
 
 
-    /*@Test
-    void bidTest(){
-        String regUN = "Haim Nehmad";
+    @Test
+    void bidTest() {
+        String regbuyerUN = "Haim Nehmad";
+        String regshopOwnerUN = "Davidos";
         User buyer;
+        User shopOwner;
+        Shop shop;
+        MarketSystem ms = MarketSystem.getInstance();
         try {
-            MarketSystem.getInstance().
-                    MarketSystem.getInstance().register("haim", regUN, "123456");
-            buyer = MarketSystem.getInstance().getUser(regUN);
+            String guestId_1 = ms.EnterMarket().getUserName();
+            String davidos_1 = ms.EnterMarket().getUserName();
+            ms.register(guestId_1, regbuyerUN, "123456");
+            ms.register(davidos_1, regshopOwnerUN, "123");
+            buyer = ms.getUser(regbuyerUN);
+            shopOwner = ms.getUser(regshopOwnerUN);
+            ms.login(davidos_1, shopOwner.getUserName(), "123");
+            shop = ms.createShop("ahla davidos", "David's", null, null, shopOwner.getUserName());
+            ms.login(guestId_1, regbuyerUN, "123456");
         } catch (BlankDataExc blankDataExc) {
-            fail("params given are viable");
+            fail("params given are viable\n" + blankDataExc.getMessage());
             return;
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            fail("sequencing incorrect");
+            fail("sequencing incorrect\n" + invalidSequenceOperationsExc.getMessage());
             return;
         } catch (IncorrectIdentification incorrectIdentification) {
-            fail("id incorrect, should not happen");
+            fail("id incorrect, should not happen\n" + incorrectIdentification.getMessage());
             return;
         } catch (InvalidAuthorizationException e) {
-            fail("invalid authorization");
+            fail("invalid authorization\n" + e.getMessage());
             return;
         }
+
+        try {
+            orangeID = shop.addListing(1, "orange", "red orange", category1, 12.0, 7, "Davidos").getId();
+            appleID = shop.addListing(2, "apple", "red apple", category1, 5.0, 40, "Davidos").getId();
+            shoesID = shop.addListing(5, "black shoes", "black running shoes", category2, 20, 10, "Davidos").getId();
+        } catch (InvalidAuthorizationException invalidAuthorizationException) {
+            fail("founder can add product");
+            return;
+        } catch (InvalidProductInfoException InvProdInfoExc) {
+            fail("product info is legal");
+            return;
+        }
+
+
         int bidID;
         ResponseT<Integer> bidSucceed;
         try {
-            bidSucceed = buyer.addNewBid(shop.getShopID(), orangeID, 1);
+            bidSucceed = buyer.addNewBid(shop.getShopID(), orangeID, 1, 5);
         } catch (ShopNotFoundException shopNotFoundException) {
             fail("shop should exist");
             return;
         }
 
-        if(bidSucceed.isErrorOccurred()) {
+
+        if (bidSucceed.isErrorOccurred()) {
             fail("bid should succeed");
             return;
         }
 
         bidID = bidSucceed.getValue();
 
+        try {
+            ms.acceptBid(shop.getShopID(), bidID, shopOwner);
+        } catch (BidNotFoundException bidNotFoundException) {
+            fail("bid should exist\n" + bidNotFoundException.getMessage());
+            return;
+        } catch (CriticalInvariantException criticalInvariantException) {
+            fail(criticalInvariantException.getMessage());
+            return;
+        } catch (ShopNotFoundException shopNotFoundException) {
+            fail("shop should exist\n" + shopNotFoundException.getMessage());
+            return;
+        }
+
+        assertEquals(5, buyer.showCart().getTotalAmount());
+        try {
+            buyer.addProductToCart(shop.getShopID(), orangeID, 2);
+        } catch (ShopNotFoundException shopNotFoundException) {
+            fail("shop should exist\n" + shopNotFoundException.getMessage());
+            return;
+        }
+
+        assertEquals(29, buyer.showCart().getTotalAmount());
+
+        int bidID2;
+        ResponseT<Integer> bidSucceed2;
+        try {
+            bidSucceed2 = buyer.addNewBid(shop.getShopID(), orangeID, 2, 3);
+        } catch (ShopNotFoundException shopNotFoundException) {
+            fail("shop should exist");
+            return;
+        }
+
+
+        if (bidSucceed.isErrorOccurred()) {
+            fail("bid should succeed");
+            return;
+        }
+
+        bidID2 = bidSucceed2.getValue();
+
+        try {
+            ms.acceptBid(shop.getShopID(), bidID2, shopOwner);
+        } catch (BidNotFoundException bidNotFoundException) {
+            fail("bid should exist\n" + bidNotFoundException.getMessage());
+            return;
+        } catch (CriticalInvariantException criticalInvariantException) {
+            fail(criticalInvariantException.getMessage());
+            return;
+        } catch (ShopNotFoundException shopNotFoundException) {
+            fail("shop should exist\n" + shopNotFoundException.getMessage());
+            return;
+        }
+        buyer.removeProductFromCart(shop.getShopID(), orangeID);
+
+        assertEquals(11, buyer.showCart().getTotalAmount());
+        /*List<String> strings;
+        try {
+            strings = buyer.checkout("hadad", "japan", "012", "456", "123");
+        } catch (BlankDataExc blankDataExc) {
+            fail("shop should exist\n" + blankDataExc.getMessage());
+            return;
+        }
+        assertEquals(0, buyer.showCart().getTotalAmount());*/
     }
-*/
-
-
-
-
-
 }

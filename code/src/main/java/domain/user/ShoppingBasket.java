@@ -122,7 +122,7 @@ public class ShoppingBasket {
     }
 
 
-    public int addBidToBasket(int productID, int amountToAdd, int offerPrice, User basketOwner) throws IllegalArgumentException, ProductNotFoundException{
+    public int addBidToBasket(int productID, int amountToAdd, double offerPrice, User basketOwner) throws IllegalArgumentException, ProductNotFoundException{
         if (shop.isProductIsAvailable(productID, amountToAdd)) {
             if (amountToAdd <= 0) {
                 errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
@@ -157,9 +157,7 @@ public class ShoppingBasket {
         this.calculateTotalAmount();
     }
 
-    public void removeBid(int bidID) throws BidNotFoundException {
-        if(bidIDs_status.get(bidID) == null)
-            throw new BidNotFoundException("this bid does not exist, cannot resolve it");
+    public void removeBid(int bidID) {
         bidIDs_status.remove(bidID);
         this.calculateTotalAmount();
     }
@@ -205,6 +203,18 @@ public class ShoppingBasket {
                 continue;
             }
             int amount = productAmountList.get(product);
+            productWithAmount.put(p,amount);
+        }
+
+        for(Integer bidID: bidIDs_status.keySet()){
+            Product p;
+            try {
+                p = shop.getInfoOnBid(bidID);
+            }catch (BidNotFoundException bidNotFoundException){
+                removeBid(bidID);
+                continue;
+            }
+            int amount = p.getAmount();
             productWithAmount.put(p,amount);
         }
         basketAmount = calculateTotalAmount();
