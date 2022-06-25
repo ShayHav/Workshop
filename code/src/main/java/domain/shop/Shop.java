@@ -226,6 +226,7 @@ public class Shop {
         ProductImp product;
         Basket basket = new Basket();
         double basketPrice = 0;
+
         for(Integer bidID : bidIDs){
             //check purchase policy regarding the Product
             //Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
@@ -235,9 +236,11 @@ public class Shop {
                 continue;
             }
             basket.put(product, product.getAmount());
+
             basketPrice += product.getPrice();
         }
         basket.setBasePrice(basketPrice);
+
         return basket;
     }
 
@@ -247,9 +250,11 @@ public class Shop {
 
     public Basket cartItemsPricesAfterDiscounts(Map<Integer, Integer> productAmountList, List<Integer> acceptedbidIDs){
         Basket basket = IDsToProducts(productAmountList);
+
         Basket basketBids = idsToBids(acceptedbidIDs);
         basket.putAll(basketBids);
         basket.setBasePrice(basket.getBasePrice() + basketBids.getBasePrice());
+
         return discountPolicy.calcPricePerProductForCartTotal(basket);
     }
 
@@ -319,9 +324,11 @@ public class Shop {
      */
     public ResponseT<Order> checkout(Map<Integer,Integer> products, List<Integer> acceptedBids, TransactionInfo transaction) throws BlankDataExc {
         Basket basket = IDsToProducts(products);
+
         Basket basketBids = idsToBids(acceptedBids);
         basket.putAll(basketBids);
         basket.setBasePrice(basket.getBasePrice() + basketBids.getBasePrice());
+
 
         if (!purchasePolicyLegal(basket)) {
             return new ResponseT("violates purchase policy");

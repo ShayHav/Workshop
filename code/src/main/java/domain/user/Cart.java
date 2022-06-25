@@ -4,6 +4,8 @@ import domain.*;
 import domain.Exceptions.*;
 import domain.Responses.Response;
 import domain.Responses.ResponseT;
+
+import domain.Exceptions.*;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.ShoppingBasket.ServiceBasket;
@@ -96,6 +98,7 @@ public class Cart {
             basket.removeBid(bidID);
             if(basket.shouldBeRemovedFromCart())
                 baskets.remove(shopID);
+
         }
     }
 
