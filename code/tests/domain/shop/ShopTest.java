@@ -143,13 +143,9 @@ public class ShopTest {
         product_QuantityInBasket.put(appleID, 3);
         product_QuantityInBasket.put(orangeID, 7);
         MarketSystem ms = mock(MarketSystem.class);
-        /*try (MockedStatic utilities = (MarketSystem.class)) {
-            utilities.when(MarketSystem::getInstance).thenReturn(ms);
-        }*/
-
+        shop.setMarketSystem(ms);
 
         User mockUser = mock(User.class);
-        when(MarketSystem.getInstance()).thenReturn(ms);
         doNothing().when(ms).sendMessage(any(), any(), any());
         try {
             when(ms.getUser(any())).thenReturn(mockUser);
@@ -184,6 +180,7 @@ public class ShopTest {
         product_QuantityInBasket.put(appleID, 3);
         MarketSystem ms = mock(MarketSystem.class);
         when(ms.pay(trans)).thenReturn(true);
+        shop.setMarketSystem(ms);
         try {
             when(ms.supply(trans, product_QuantityInBasket)).thenReturn(true);
         } catch (BlankDataExc blankDataExc) {

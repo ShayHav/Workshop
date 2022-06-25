@@ -1,7 +1,6 @@
 {
   "functions": [
-    {
-      "function": "StartMarket",
+    {"function": "StartMarket",
       "args": [null, null]
     },
     {"function": "EnterMarket", "args": [] },
@@ -26,10 +25,12 @@
     {"function": "Login","args": ["-Guest5", "u5", "pass"]},
     {"function": "Login","args": ["-Guest6", "u6", "pass"]},
     {"function": "CreateShop","args": ["the store of u2", "u2", "s1"]},
-    {"function": "AddProductToShopInventory","args": [1, "Bamba", "snake", "snacks", 30.0, 20, "u2", 1]},
+    {"function": "AddProductToShopInventory","args": [1, "Bamba", "snake", "snacks", 26.0, 20, "u2", 1]},
     {"function": "AppointNewShopManager","args": [1, "u3", "u2"]},
     {"function": "AppointNewShopOwner","args": [1, "u4", "u2"]},
     {"function": "AppointNewShopOwner","args": [1, "u5", "u2"]},
-    {"function": "Logout","args": ["u5"]}
+    {"function": "Logout","args": ["u5"]},
+    {"function": "Logout","args": ["u4"]},
+    {"function": "Logout","args": ["Admin"]}
   ]
 }
