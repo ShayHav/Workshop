@@ -1,5 +1,6 @@
 package domain.shop;
 
+import domain.ControllersBridge;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
@@ -433,13 +434,26 @@ public class ShopController {
         }
     }
 
-    public void acceptBid(int shopID, int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public void acceptBid(int shopID, int bidID, String approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
+        User u = ControllersBridge.getInstance().getUser(approver);
         Shop shop = getShop(shopID);
-        shop.acceptBid(bidID, approver);
+        shop.acceptBid(bidID, u);
     }
 
-    public void declineBid(int shopID, int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public void declineBid(int shopID, int bidID, String decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
+        User u = ControllersBridge.getInstance().getUser(decliner);
         Shop shop = getShop(shopID);
-        shop.declineBid(bidID, decliner);
+        shop.declineBid(bidID, u);
+    }
+    public void acceptAppoint(int shopID, int bidID, String approver) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        User u = ControllersBridge.getInstance().getUser(approver);
+        Shop shop = getShop(shopID);
+        shop.acceptAppoint(bidID, u);
+    }
+
+    public void declineAppoint(int shopID, int bidID, String decliner) throws BidNotFoundException, CriticalInvariantException, ShopNotFoundException, IncorrectIdentification, BlankDataExc {
+        User u = ControllersBridge.getInstance().getUser(decliner);
+        Shop shop = getShop(shopID);
+        shop.declineAppoint(bidID, u);
     }
 }

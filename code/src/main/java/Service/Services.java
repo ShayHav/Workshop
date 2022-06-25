@@ -1129,21 +1129,51 @@ public class Services {
         }
     }
 
-    public Response acceptBid(int shopID, int bidID, User approver){
+    public Response acceptBid(int shopID, int bidID, String approver){
         try {
             marketSystem.acceptBid(shopID, bidID, approver);
             return new Response();
-        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc exception) {
             return new Response(exception.getMessage());
         }
     }
 
-    public Response declineBid(int shopID, int bidID, User decliner){
+    public Response declineBid(int shopID, int bidID, String decliner){
         try {
             marketSystem.declineBid(shopID, bidID, decliner);
             return new Response();
         } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
             return new Response(exception.getMessage());
+        } catch (IncorrectIdentification incorrectIdentification) {
+            return new Response(incorrectIdentification.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (BlankDataExc blankDataExc) {
+            return new Response(blankDataExc.getLocalizedMessage());
+        }
+    }
+
+    public Response acceptAppoint(int shopID, int bidID, String approver){
+        try {
+            marketSystem.acceptAppoint(shopID, bidID, approver);
+            return new Response();
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc exception) {
+            return new Response(exception.getMessage());
+        }
+    }
+
+    public Response declineAppoint(int shopID, int bidID, String decliner){
+        try {
+            marketSystem.declineAppoin(shopID, bidID, decliner);
+            return new Response();
+        } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
+            return new Response(exception.getMessage());
+        } catch (IncorrectIdentification incorrectIdentification) {
+            return new Response(incorrectIdentification.getLocalizedMessage());
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
+        } catch (BlankDataExc blankDataExc) {
+            return new Response(blankDataExc.getLocalizedMessage());
         }
     }
 

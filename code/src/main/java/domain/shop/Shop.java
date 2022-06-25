@@ -46,6 +46,7 @@ public class Shop {
     private final OrderHistory orders;
     private boolean isOpen;
     private BidHandler bidHandler;
+    private AppointHandler appointHandler;
     private MarketSystem marketSystem = MarketSystem.getInstance();
 
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
@@ -847,5 +848,22 @@ public class Shop {
 
     public void declineBid(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
         bidHandler.declineBid(bidID, decliner);
+    }
+
+    public void acceptAppoint(int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        appointHandler.acceptAppoint(bidID, approver);
+    }
+
+    public void declineAppoint(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
+        appointHandler.declineAppoint(bidID, decliner);
+        appointHandler.removeBid(bidID);
+    }
+
+    public void initManager(User userName){
+        shopManagersPermissionsController.initManager(userName.getUserName());
+    }
+
+    public void putIfAbsentManager(String userName, User appointUser) {
+        ShopManagers.putIfAbsent(userName, appointUser);
     }
 }
