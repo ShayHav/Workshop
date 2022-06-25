@@ -35,22 +35,7 @@ public class TransactionInfo {
         this.ccv = ccv;
     }
 
-    public TransactionInfo(String userID, String fullName, String address,String phoneNumber,String cardNumber, String expirationDate, LocalDate transactionDate){
-        this.userID = userID;
-        this.fullName = fullName;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.cardNumber = cardNumber;
-        this.expirationDate = expirationDate;
-        this.transactionDate = transactionDate;
-    }
 
-
-    public void setTotalAmount(double totalAmount) throws InvalidParamException {
-        if(totalAmount <= 0)
-            throw new InvalidParamException("total amount must be more than 0");
-        this.totalAmount = totalAmount;
-    }
 
     public TransactionInfo(String userID, String fullName, String address,String phoneNumber,String cardNumber, String expirationDate, LocalDate transactionDate){
         this.userID = userID;

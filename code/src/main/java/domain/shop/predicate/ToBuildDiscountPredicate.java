@@ -25,7 +25,7 @@ public class ToBuildDiscountPredicate {
 
 
     //price
-    public ToBuildDiscountPredicate(int price) throws InvalidParamException {
+    public ToBuildDiscountPredicate(double price) throws InvalidParamException {
         if(amount < 0)
             throw new InvalidParamException("invalid amount");
         this.price = price;
