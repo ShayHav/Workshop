@@ -48,7 +48,7 @@ class AppointManagerNotifications {
         try{
             int shppID;
             shppID = services.CreateShop("NBAstore",nitayNames[0],"Nitay's").getValue().getShopID();
-            services.AppointNewShopManager(shppID,nitayNames[1],nitayNames[0]);
+            services.AppointNewShopOwner(shppID,nitayNames[1],nitayNames[0]);
             assertTrue(shopController.getShop(shppID).isOwner(nitayNames[1]));
         }
         catch (Exception e){

@@ -5,15 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="change payment and supply to return transaction id from external service instead of boolean">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteindexGenerated.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteloginGenerated.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteshopFilterGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JteshopFilterGenerated.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CheckoutCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/CheckoutCaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/AccepanceTests/SupplyCaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ShopController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/AppointManagerNotifications.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/AppointManagerNotifications.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopIntegrationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/user/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/user/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,6 +78,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -89,7 +94,7 @@
       <recent name="domain" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.AppointManagerNotifications.OneOwnerAppoint">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
       <module name="workshop" />
@@ -110,6 +115,22 @@
           <ENTRY IS_ENABLED="true" PARSER="runconfig" />
         </ENTRIES>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AppointManagerNotifications.OneOwnerAppoint" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.shop.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.shop" />
+      <option name="MAIN_CLASS_NAME" value="domain.shop.AppointManagerNotifications" />
+      <option name="METHOD_NAME" value="OneOwnerAppoint" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -181,9 +202,11 @@
       <item itemvalue="JUnit.Testing_System in workshop" />
       <item itemvalue="JUnit.ExternalConnectorTest" />
       <item itemvalue="JUnit.ExternalConnectorTest.supplyWithInfiniteLoop" />
+      <item itemvalue="JUnit.AppointManagerNotifications.OneOwnerAppoint" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AppointManagerNotifications.OneOwnerAppoint" />
         <item itemvalue="JUnit.CheckoutCaseTest.NoConnectionPaymentTest" />
         <item itemvalue="JUnit.Testing_System in workshop" />
         <item itemvalue="JUnit.ExternalConnectorTest" />
@@ -216,6 +239,7 @@
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="6384000" />
       <workItem from="1656157361083" duration="6597000" />
+      <workItem from="1656260827938" duration="865000" />
     </task>
     <task id="LOCAL‎00017" summary="changed navbar">
       <created>1652793908596</created>

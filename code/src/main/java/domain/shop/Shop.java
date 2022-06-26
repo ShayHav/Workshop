@@ -393,7 +393,29 @@ public class Shop {
 
     //TODO: check it works
 
-    public void AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public void AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, BidNotFoundException, CriticalInvariantException {
+        if ( ShopOwners.containsKey(userId) ||ShopFounder.getUserName().equals(userId)) {
+            synchronized (this) {
+                User newManager = ControllersBridge.getInstance().getUser(usertarget);
+                User managerUser = ControllersBridge.getInstance().getUser(userId);
+                if (newManager != null) {
+                    if(managerUser.appointOwner(shopID)){
+//                        managerUser.AppointedMeOwner(this,usertarget);
+//                        ShopOwners.putIfAbsent(usertarget, newManager);
+//                        newManager.addRole(shopID,Role.ShopOwner);
+//                        eventLogger.logMsg(Level.INFO, String.format("Appoint New Shop Owner User: %s", usertarget));
+                        List<User> toc = getShopOwners();
+                        toc.remove(managerUser);
+                        appointHandler.addNewAppoint(newManager, managerUser, this, toc);
+                        return;
+                    }
+                }
+            }
+        }
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+        throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+    }
+    public void AppointNewShopOwnerInit(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, BidNotFoundException, CriticalInvariantException {
         if ( ShopOwners.containsKey(userId) ||ShopFounder.getUserName().equals(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
@@ -424,14 +446,11 @@ public class Shop {
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
-//                        managerUser.AppointedMeManager(this,usertarget);
-//                        ShopManagers.putIfAbsent(usertarget, newManager);
-//                        newManager.addRole(shopID,Role.ShopManager);
-//                        shopManagersPermissionsController.initManager(newManager.getUserName());
-//                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
-                        List<User> toc = getShopOwners();
-                        toc.remove(managerUser);
-                        appointHandler.addNewAppoint(newManager, managerUser, this, toc);
+                        managerUser.AppointedMeManager(this,usertarget);
+                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        newManager.addRole(shopID,Role.ShopManager);
+                        shopManagersPermissionsController.initManager(newManager.getUserName());
+                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                         return;
                     }
                 }
@@ -873,11 +892,8 @@ public class Shop {
         appointHandler.removeBid(bidID);
     }
 
-    public void initManager(User userName){
-        shopManagersPermissionsController.initManager(userName.getUserName());
-    }
 
-    public void putIfAbsentManager(String userName, User appointUser) {
+    public void putIfAbsentOwner(String userName, User appointUser) {
         ShopManagers.putIfAbsent(userName, appointUser);
     }
 }

@@ -28,17 +28,17 @@ public class AppointFormat {
         this.appointUser = appointUser;
         this.shop = shop;
         this.id = id;
-        NotificationManager notificationManager = NotificationManager.getInstance();
+        if(toConfirm.size()>0) {
+            NotificationManager notificationManager = NotificationManager.getInstance();
 
-        String offerMessage = String.format("Appoint message: Shop: %d Owner:%s start Appoint process userToAppoint : %s",shop.getShopID(),appointUser.getUserName(),userToAppoint.getUserName());
+            String offerMessage = String.format("Appoint message: Shop: %d Owner:%s start Appoint process userToAppoint : %s",shop.getShopID(),appointUser.getUserName(),userToAppoint.getUserName());
 
-        for(User user: toConfirm) {
-            this.toConfirm.put(user, false);
-            notificationManager.sendMessage(user, offerMessage, appointUser);
+            for (User user : toConfirm) {
+                this.toConfirm.put(user, false);
+                notificationManager.sendMessage(user, offerMessage, appointUser);
+            }
         }
-        if(toConfirm.size()==0){
-            resolve();
-        }
+        else resolve();
     }
 
     public synchronized void approve(User user) throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
@@ -56,18 +56,17 @@ public class AppointFormat {
         resolve();
     }
 
-    public void resolve() throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        appointUser.AppointedMeManager(shop,userToAppoint.getUserName());
-        shop.putIfAbsentManager(userToAppoint.getUserName(), userToAppoint);
-        userToAppoint.addRole(shop.getShopID(), Role.ShopManager);
-        shop.initManager(userToAppoint);
-        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", userToAppoint.getUserName()));
+    public void resolve() throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+        userToAppoint.AppointedMeOwner(shop, userToAppoint.getUserName());
+        shop.putIfAbsentOwner(userToAppoint.getUserName(), userToAppoint);
+        userToAppoint.addRole(shop.getShopID(), Role.ShopOwner);
+        eventLogger.logMsg(Level.INFO, String.format("Appoint New Shop Owner User: %s", userToAppoint.getUserName()));
         return;
     }
 
     public synchronized void decline(User decliner){
         NotificationManager notificationManager = NotificationManager.getInstance();
-        String declinedMessageBuyer = String.format("Dear Owner your request to appoint user: %s as ShopManager decline", userToAppoint.getUserName());
+        String declinedMessageBuyer = String.format("Dear Owner your request to appoint user: %s as ShopOwner decline", userToAppoint.getUserName());
         notificationManager.sendMessage(appointUser, declinedMessageBuyer, decliner);
 
         String declinedMessageOwners = String.format("Appoint message is not relevant anymore Appoint message: Shop: %d Owner:%s start Appoint process userToAppoint : %s",shop.getShopID(),appointUser.getUserName(),userToAppoint.getUserName());

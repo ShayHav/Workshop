@@ -13,7 +13,7 @@ public class AppointHandler {
 
     public AppointHandler(){
         bids = new ArrayList<>();
-        bidIDCounter = 1;
+        bidIDCounter = 0;
     }
 
     public int addNewAppoint(User userToAppoint, User appointUser, Shop shop , List<User> toConfirm) throws BidNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, CriticalInvariantException, BlankDataExc {

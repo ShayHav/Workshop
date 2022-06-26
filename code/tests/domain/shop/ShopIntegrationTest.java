@@ -277,7 +277,7 @@ public class ShopIntegrationTest {
         bidID = bidSucceed.getValue();
 
         try {
-            ms.acceptBid(shop.getShopID(), bidID, shopOwner);
+            ms.acceptBid(shop.getShopID(), bidID, shopOwner.getUserName());
         } catch (BidNotFoundException bidNotFoundException) {
             fail("bid should exist\n" + bidNotFoundException.getMessage());
             return;
@@ -287,6 +287,12 @@ public class ShopIntegrationTest {
         } catch (ShopNotFoundException shopNotFoundException) {
             fail("shop should exist\n" + shopNotFoundException.getMessage());
             return;
+        } catch (IncorrectIdentification incorrectIdentification) {
+            fail();
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            fail();
+        } catch (BlankDataExc blankDataExc) {
+            fail();
         }
 
         assertEquals(5, buyer.showCart().getTotalAmount());
@@ -317,7 +323,7 @@ public class ShopIntegrationTest {
         bidID2 = bidSucceed2.getValue();
 
         try {
-            ms.acceptBid(shop.getShopID(), bidID2, shopOwner);
+            ms.acceptBid(shop.getShopID(), bidID2, shopOwner.getUserName());
         } catch (BidNotFoundException bidNotFoundException) {
             fail("bid should exist\n" + bidNotFoundException.getMessage());
             return;
@@ -327,6 +333,12 @@ public class ShopIntegrationTest {
         } catch (ShopNotFoundException shopNotFoundException) {
             fail("shop should exist\n" + shopNotFoundException.getMessage());
             return;
+        } catch (IncorrectIdentification incorrectIdentification) {
+            fail();
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            fail();
+        } catch (BlankDataExc blankDataExc) {
+            fail();
         }
         buyer.removeProductFromCart(shop.getShopID(), orangeID);
 
