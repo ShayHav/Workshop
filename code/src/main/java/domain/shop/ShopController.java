@@ -229,7 +229,7 @@ public class ShopController {
         s.AppointNewShopManager(targetUser, userId);
     }
 
-    public void AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException {
+    public void AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException, BidNotFoundException, CriticalInvariantException {
         Shop s;
         try {
             s = getShop(key);

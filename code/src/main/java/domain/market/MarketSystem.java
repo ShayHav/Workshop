@@ -467,7 +467,7 @@ public class MarketSystem {
 
     }
 
-    public void AppointNewShopOwner(int shopID, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException, ShopNotFoundException {
+    public void AppointNewShopOwner(int shopID, String targetUser, String username) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, InvalidAuthorizationException, ShopNotFoundException, BidNotFoundException, CriticalInvariantException {
         if (targetUser == null) {
             errorLogger.logMsg(Level.WARNING, "BlankDataExc: targetUser");
             throw new BlankDataExc("parameter is null: username");
