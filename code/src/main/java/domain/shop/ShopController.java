@@ -456,4 +456,7 @@ public class ShopController {
         Shop shop = getShop(shopID);
         shop.declineAppoint(bidID, u);
     }
+    public List<Shop> getAllShops(){
+        return shopList.values().stream().collect(Collectors.toList());
+    }
 }
