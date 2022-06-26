@@ -1197,7 +1197,7 @@ public class Services {
 
     public void startFromInit() {
         Path p = Paths.get("");
-        String s = p.toAbsolutePath().toString() + "/src/main/resources/state_init.json";
+        String s = p.toAbsolutePath().toString() + "/code/src/main/resources/state_init.json";
         ObjectMapper objectMapper = new ObjectMapper();
         Method[] methods = this.getClass().getDeclaredMethods();
         try(FileReader file = new FileReader(s)){

@@ -14,11 +14,14 @@ import domain.shop.discount.DiscountPolicy;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
+import domain.user.EntranceLogger.Entrance;
+import domain.user.EntranceLogger.EntranceLogger;
 import domain.user.TransactionInfo;
 import domain.user.filter.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.net.ConnectException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -358,6 +361,7 @@ public class MarketSystem {
         }
         isEnter(guestUsername);
         output = UserController.getInstance().login(guestUsername, username, pw);
+        EntranceLogger.getInstance().logEntrance(new Entrance(output, LocalDate.now()));
         notificationManager.notifyAdmin();
         return output;
     }
@@ -564,7 +568,9 @@ public class MarketSystem {
     }
 
     public User EnterMarket() {
-        return userController.enterMarket();
+        User output =  userController.enterMarket();
+        EntranceLogger.getInstance().logEntrance(new Entrance(output, LocalDate.now()));
+        return output;
     }
 
     public Response AddProductToCart(String username, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
