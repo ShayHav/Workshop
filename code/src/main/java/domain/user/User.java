@@ -6,10 +6,13 @@ import domain.Exceptions.*;
 import domain.Responses.Response;
 import domain.Responses.ResponseT;
 import domain.shop.*;
+import domain.user.EntranceLogger.Entrance;
+import domain.user.EntranceLogger.EntranceLogger;
 import domain.user.filter.*;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -351,6 +354,15 @@ public class User {
         }
     }
 
+    public List<Entrance> getEntrances(LocalDate from, LocalDate to) throws InvalidAuthorizationException {
+        if(isSystemManager && us == UserState2.systemManager)
+            return EntranceLogger.getInstance().getEntrances(from,to);
+        else {
+            errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
+            throw new InvalidAuthorizationException("SystemManager", us.toString());
+        }
+    }
+
 
     private Map<Shop, List<Order>> systemManagerGetOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
         ControllersBridge cb = ControllersBridge.getInstance();
@@ -385,29 +397,7 @@ public class User {
         }
     }
 
-  /*  public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
-        synchronized (this) {
-            Shop shop1;
-            try{
-                shop1 = getShop(shop);
-            }catch (ShopNotFoundException snfe){
-                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-                return false;
-            }
-            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
-            return shop1.removePermissions(shopManagersPermissionsList, targetUser, userId);
-        }
-    }
 
-
-    public boolean saveCart(Cart cart) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
-    }
-
-    public void requestInfoOnOfficials(Filter f) {
-        throw new UnsupportedOperationException();
-    }
-    */
     /**
      * Checks whether the perpetrator may perform it and operate
      * @param targetUser
@@ -456,6 +446,8 @@ public class User {
     public UserState2 getUs() {
         return us;
     }
+
+
 }
 
 

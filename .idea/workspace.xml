@@ -4,13 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="merged with main for pull request">
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/Entrance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/EntranceLogger.java" afterDir="false" />
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationEntrance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/jte/adminEntrancesResult.jte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/adminManagingPage.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/adminManagingPage.jte" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,13 +208,7 @@
       <workItem from="1654343462330" duration="49005000" />
       <workItem from="1654628125317" duration="8155000" />
       <workItem from="1654694608746" duration="6384000" />
-      <workItem from="1656255839207" duration="2937000" />
-    </task>
-    <task id="LOCAL‎00017" summary="changed navbar">
-      <created>1652793908596</created>
-      <option name="number" value="LOCAL‎00017" />
-      <option name="presentableId" value="LOCAL‎00017" />
-      <updated>1652793908596</updated>
+      <workItem from="1656255839207" duration="7727000" />
     </task>
     <task id="LOCAL‎00018" summary="fixed add to cart">
       <created>1652797948608</created>
@@ -499,7 +498,13 @@
       <option name="presentableId" value="LOCAL‎00065" />
       <updated>1656182252568</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL‎00066" summary="added support for entrance logger in domain level">
+      <created>1656258856294</created>
+      <option name="number" value="LOCAL‎00066" />
+      <option name="presentableId" value="LOCAL‎00066" />
+      <updated>1656258856294</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -524,7 +529,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="changed register and login signatures &#10;added state to user presentation to support admin operations only" />
     <MESSAGE value="register fix in gui, &#10;started to impl admin page" />
     <MESSAGE value="Admin has a new page where he can see information about the market : active users, total registered, list of users and option to delete, etc." />
     <MESSAGE value="admin page for sales history, fixes in signatures - needed map instead of list of orders to identify orders per user/shop." />
@@ -549,7 +553,8 @@
     <MESSAGE value="delete discounts, started compose discounts" />
     <MESSAGE value="merged with external connector branch" />
     <MESSAGE value="merged with main for pull request" />
-    <option name="LAST_COMMIT_MESSAGE" value="merged with main for pull request" />
+    <MESSAGE value="added support for entrance logger in domain level" />
+    <option name="LAST_COMMIT_MESSAGE" value="added support for entrance logger in domain level" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -571,7 +576,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Service/Services.java</url>
-          <line>531</line>
+          <line>533</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>

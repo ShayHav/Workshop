@@ -70,7 +70,7 @@ public class Main {
                 path("{id}", () -> {
                     get("systemMonitor", userController::renderAdminPage);
                     ws("systemMonitor", userController::getSystemInfo);
-
+                    get("systemMonitor/pastEntrances", userController::renderAdminPageFilteredEntrances);
                     post("removeUser", userController::deleteUserPermanently);
 
                     get("sales", userController::renderAllHistorySales);

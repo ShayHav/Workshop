@@ -611,6 +611,20 @@ public class MarketSystem {
 
     }
 
+
+    public List<Entrance> getEntrances(String username, LocalDate from, LocalDate to) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
+        if(username == null)
+            throw new BlankDataExc("parameter is null: username");
+        if(from == null)
+            throw new BlankDataExc("parameter is null: from date");
+        if(to == null)
+            throw new BlankDataExc("parameter is null: to date");
+        isEnter(username);
+        isExist(username);
+        isLogin(username);
+        return userController.getEntrances(username,from,to);
+    }
+
     public List<Order> getOrderHistoryOfUser(String username, Filter<Order> filter) throws InvalidAuthorizationException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
         if (username == null)
             throw new BlankDataExc("parameter is null: username");

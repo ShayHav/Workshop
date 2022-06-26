@@ -9,6 +9,8 @@
 @param int activeGuests
 @param int totalRegistered
 
+
+
 @template.navBar(user = admin, title = "Admin Page")
 
 <main class="container mx-3 mt-3" style="align-content: center">
@@ -85,6 +87,38 @@
             </div>
         </div>
     </div>
+
+    <div class="my-4 mx-4 mb-5 small container">
+        <form method="get" id="filterUsers" class="form border rounded border-1 w-75" action="/admin/${admin.getUsername()}/systemMonitor/pastEntrances">
+            <div class="row mb-2">
+                <div class="col-4">
+                    <div class="mt-3 mx-3 mb-3">
+                        <label for="fromDate" class="form-label">From Date</label>
+                        <input type="date" name="fromDate" id="fromDate" class="form-control">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mt-3 mx-3 mb-3">
+                        <label for="toDate" class="form-label">From Date</label>
+                        <input type="date" name="toDate" id="toDate" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row col-4">
+                <div class="mb-2 mx-2 col">
+                    <button class="btn btn-primary" type="submit">Filter results</button>
+                </div>
+                <div class="mb-2 col">
+                    <button type="button" id="resetFilter" class="btn btn-primary">Reset Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const reset_button = document.getElementById('resetFilter');
+        reset_button.addEventListener('click',()=> window.location.reload());
+    </script>
 
     <div class="container-fluid">
         <p class="fs-3">Users</p>
