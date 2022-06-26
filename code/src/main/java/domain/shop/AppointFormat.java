@@ -21,7 +21,7 @@ public class AppointFormat {
     Shop shop;
     int id;
 
-    public AppointFormat(User userToAppoint, User appointUser, Shop shop , List<User> toConfirm,int id){
+    public AppointFormat(User userToAppoint, User appointUser, Shop shop , List<User> toConfirm,int id) throws BidNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, CriticalInvariantException, BlankDataExc {
         //super(product.getId(), product.getName(), product.getDescription(), product.getCategory(), product.getBasePrice(), product.getAmount());
         this.toConfirm = new HashMap<>();
         this.userToAppoint =  userToAppoint;
@@ -35,6 +35,9 @@ public class AppointFormat {
         for(User user: toConfirm) {
             this.toConfirm.put(user, false);
             notificationManager.sendMessage(user, offerMessage, appointUser);
+        }
+        if(toConfirm.size()==0){
+            resolve();
         }
     }
 

@@ -16,7 +16,7 @@ public class AppointHandler {
         bidIDCounter = 1;
     }
 
-    public int addNewAppoint(User userToAppoint, User appointUser, Shop shop , List<User> toConfirm){
+    public int addNewAppoint(User userToAppoint, User appointUser, Shop shop , List<User> toConfirm) throws BidNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, CriticalInvariantException, BlankDataExc {
         AppointFormat newBid = new AppointFormat(userToAppoint,appointUser,shop,toConfirm,bidIDCounter);
         bidIDCounter++;
         synchronized (bids) {

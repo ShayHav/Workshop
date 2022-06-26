@@ -417,7 +417,7 @@ public class Shop {
         return shopID;
     }
 
-    public void AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
+    public void AppointNewShopManager(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, BidNotFoundException, CriticalInvariantException {
         if (ShopFounder.getUserName().equals(userId) || ShopOwners.containsKey(userId) ||shopManagersPermissionsController.canAppointNewShopOwner(userId)) {
             synchronized (this) {
                 User newManager = ControllersBridge.getInstance().getUser(usertarget);
@@ -431,7 +431,7 @@ public class Shop {
 //                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                         List<User> toc = getShopOwners();
                         toc.remove(managerUser);
-                        appointHandler.addNewAppoint(newManager,managerUser,this,toc);
+                        appointHandler.addNewAppoint(newManager, managerUser, this, toc);
                         return;
                     }
                 }
