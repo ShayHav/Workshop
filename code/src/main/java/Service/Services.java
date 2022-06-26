@@ -516,6 +516,10 @@ public class Services {
             return new Response();
         } catch (IncorrectIdentification | BlankDataExc | ShopNotFoundException | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
             return new Response( e.getMessage());
+        } catch (BidNotFoundException e) {
+            return new Response(e.getMessage());
+        } catch (CriticalInvariantException e) {
+            return new Response( e.getMessage());
         }
     }
 

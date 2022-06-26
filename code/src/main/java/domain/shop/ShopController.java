@@ -215,7 +215,7 @@ public class ShopController {
             return null;
     }
 
-    public void AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException {
+    public void AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException, BidNotFoundException, CriticalInvariantException {
         Shop s;
         try {
             s = getShop(key);
