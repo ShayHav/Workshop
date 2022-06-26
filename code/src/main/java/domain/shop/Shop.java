@@ -19,7 +19,6 @@ import domain.user.filter.*;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.net.ConnectException;
 import java.util.*;
 
 import java.util.function.Predicate;
@@ -85,6 +84,7 @@ public class Shop {
         shopManagersPermissionsController = new ShopManagersPermissionsController();
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
         bidHandler = new BidHandler();
+        appointHandler = new AppointHandler();
     }
 
 
@@ -393,24 +393,21 @@ public class Shop {
 
     //TODO: check it works
 
-    public void AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        if ( ShopOwners.containsKey(userId) ||ShopFounder.getUserName().equals(userId)) {
+    public void AppointNewShopOwner(String toAppoint, String appointor) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, BidNotFoundException, CriticalInvariantException {
+        if ( ShopOwners.containsKey(appointor) ||ShopFounder.getUserName().equals(appointor)) {
             synchronized (this) {
-                User newManager = ControllersBridge.getInstance().getUser(usertarget);
-                User managerUser = ControllersBridge.getInstance().getUser(userId);
+                User newManager = ControllersBridge.getInstance().getUser(toAppoint);
+                User managerUser = ControllersBridge.getInstance().getUser(appointor);
                 if (newManager != null) {
                     if(managerUser.appointOwner(shopID)){
-                        managerUser.AppointedMeOwner(this,usertarget);
-                        ShopOwners.putIfAbsent(usertarget, newManager);
-                        newManager.addRole(shopID,Role.ShopOwner);
-                        eventLogger.logMsg(Level.INFO, String.format("Appoint New Shop Owner User: %s", usertarget));
+                        appointHandler.addNewAppoint(newManager, managerUser,this, getShopOwners());
                         return;
                     }
                 }
             }
         }
-        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
-        throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", toAppoint));
+        throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s filed", toAppoint));
     }
 
     public int getShopID() {
@@ -424,14 +421,11 @@ public class Shop {
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
-//                        managerUser.AppointedMeManager(this,usertarget);
-//                        ShopManagers.putIfAbsent(usertarget, newManager);
-//                        newManager.addRole(shopID,Role.ShopManager);
-//                        shopManagersPermissionsController.initManager(newManager.getUserName());
-//                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
-                        List<User> toc = getShopOwners();
-                        toc.remove(managerUser);
-                        appointHandler.addNewAppoint(newManager, managerUser, this, toc);
+                        managerUser.AppointedMeManager(this,usertarget);
+                        ShopManagers.putIfAbsent(usertarget, newManager);
+                        newManager.addRole(shopID,Role.ShopManager);
+                        shopManagersPermissionsController.initManager(newManager.getUserName());
+                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                         return;
                     }
                 }
@@ -864,17 +858,23 @@ public class Shop {
         bidHandler.declineBid(bidID, decliner);
     }
 
-    public void acceptAppoint(int bidID, User approver) throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
-        appointHandler.acceptAppoint(bidID, approver);
+    public void acceptAppoint(int appointmentNumber, User approver) throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
+        appointHandler.acceptAppoint(appointmentNumber, approver);
     }
 
-    public void declineAppoint(int bidID, User decliner) throws BidNotFoundException, CriticalInvariantException {
-        appointHandler.declineAppoint(bidID, decliner);
-        appointHandler.removeBid(bidID);
+    public void declineAppoint(int appointmentNumber, User decliner) throws BidNotFoundException, CriticalInvariantException {
+        appointHandler.declineAppoint(appointmentNumber, decliner);
+        appointHandler.removeAppointment(appointmentNumber);
     }
 
-    public void initManager(User userName){
-        shopManagersPermissionsController.initManager(userName.getUserName());
+    public void addUserAsOwner(User user){
+        ShopOwners.putIfAbsent(user.getUserName(), user);
+        try {
+            user.addRole(shopID,Role.ShopOwner);
+        } catch (InvalidSequenceOperationsExc e) {
+            
+        }
+        eventLogger.logMsg(Level.INFO, String.format("Appoint New Shop Owner User: %s", user.getUserName()));
     }
 
     public void putIfAbsentManager(String userName, User appointUser) {
