@@ -10,4 +10,7 @@ public interface Product {
     void setShopRank(int shopRank);
     int getShopRank();
     int getAmount();
+    Product merge(Product pi);
+
+
 }

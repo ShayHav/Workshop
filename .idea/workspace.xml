@@ -5,18 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="change payment and supply to return transaction id from external service instead of boolean">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/DB/HiberDB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/DAL/ControllerDAL.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/DAL/ControllerDAL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Inventory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductHistory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ServiceProduct.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ServiceProduct.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ShopController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/AppointManagerNotifications.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/AppointManagerNotifications.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopIntegrationTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/user/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/user/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/ShoppingBasket.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/ShoppingBasket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -67,26 +68,29 @@
       </map>
     </option>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2974Zwr79onHhRue6hzZoLuD64v" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/ariel/Desktop/GitHub/Workshop/code/src/main/java/DB",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)"
+  }
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ariel\Desktop\GitHub\Workshop\code\src\main\java\DB" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="domain.shop" />
       <recent name="domain.market" />
@@ -240,6 +244,7 @@
       <workItem from="1654694608746" duration="6384000" />
       <workItem from="1656157361083" duration="6597000" />
       <workItem from="1656260827938" duration="865000" />
+      <workItem from="1656352808333" duration="582000" />
     </task>
     <task id="LOCAL‎00017" summary="changed navbar">
       <created>1652793908596</created>
@@ -557,7 +562,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="changed register and login signatures &#10;added state to user presentation to support admin operations only" />
