@@ -31,7 +31,6 @@
                             <div class="row">
                                 <label class="form-label" for="quantity">quantity:</label>
                                 <div class="col-2">
-
                                     <input class="form-control mb-2" name="quantity" id="quantity" type="number"
                                            value="${basket.productWithAmount.get(product)}" min="0" step="1">
                                 </div>
@@ -39,9 +38,10 @@
                                     <button class="btn btn-warning mb-2" type="submit">update amount</button>
                                     <input class="visually-hidden" name="shopID" value="${basket.shopId}" readonly>
                                 </div>
+
                             </div>
                         </form>
-                        <form method="post" class="form" id="removeProduct" name="remove product"
+                        <form method="post" class="form mb-2" id="removeProduct" name="remove product"
                               action="/users/${user.getUsername()}/cart/${product.serialNumber}/remove">
                             <button class="btn btn-sm btn-danger" type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -53,6 +53,12 @@
                             </button>
                             <input class="visually-hidden" name="shopID" value="${basket.shopId}" readonly>
                         </form>
+                        <div class="col-2">
+                            <p class="mb-2" name="basePrice" id="basePrice"><b>Base Price:</b> ${product.price}$</p>
+                        </div>
+                        <div class="col-2">
+                            <p class="mb-2" name="discountPrice" id="discountPrice"><b>Price After Discount:</b> ${product.finalPrice}$</p>
+                        </div>
                         <div class="mb-2 mt-2"><b>Total Amount for product:</b> ${product.finalPrice * basket.productWithAmount.get(product)}</div>
                     </li>
                 </ul>

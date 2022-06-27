@@ -10,12 +10,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Basket extends HashMap<ProductImp, Integer> {
+
+    double basePrice;
+
     public Basket(){
         super();
+        this.basePrice = 0;
     }
 
-    public Basket(Map<ProductImp, Integer> existingBasket){
+    public Basket(Basket existingBasket){
         this.putAll(existingBasket);
+        this.basePrice = existingBasket.getBasePrice();
     }
 
     public double calculateTotal(){
@@ -34,11 +39,12 @@ public class Basket extends HashMap<ProductImp, Integer> {
     }
 
     public int findAmount(int prodID) {
+        int amount = 0;
         for (Map.Entry<ProductImp, Integer> product: this.entrySet()){
             if (product.getKey().getId() == prodID)
-                return product.getValue();
+                amount += product.getValue();
         }
-        return  0;
+        return  amount;
     }
 
     public List<String> findAllDistinctCategories(){
@@ -47,6 +53,14 @@ public class Basket extends HashMap<ProductImp, Integer> {
             distinctCategories.add(product.getCategory());
         }
         return distinctCategories.stream().distinct().collect(Collectors.toList());
+    }
+
+    public double getBasePrice(){
+        return basePrice;
+    }
+
+    public void setBasePrice(double basePrice){
+        this.basePrice = basePrice;
     }
 
 

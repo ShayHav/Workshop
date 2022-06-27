@@ -20,6 +20,7 @@ public class LogoutCaseTest extends Tester {
 
     @BeforeAll
     public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        DeleteUserTest(validUserNames);
         ug.InitTest();
 
     }

@@ -1,20 +1,19 @@
 package Testing_System;
 
 import Service.Services;
-import domain.Response;
-import domain.ResponseList;
-import domain.ResponseMap;
-import domain.ResponseT;
-import domain.market.PaymentService;
-import domain.market.SupplyService;
+import domain.Responses.Response;
+import domain.Responses.ResponseList;
+import domain.Responses.ResponseMap;
+import domain.Responses.ResponseT;
+import domain.ExternalConnectors.PaymentService;
+import domain.ExternalConnectors.SupplyService;
 import domain.shop.*;
-import domain.shop.user.User;
 import domain.user.*;
-import domain.shop.user.TransactionInfo;
-import domain.shop.user.filter.Filter;
-import domain.shop.user.filter.SearchOfficialsFilter;
-import domain.shop.user.filter.SearchOrderFilter;
-import domain.shop.user.filter.SearchUserFilter;
+import domain.user.TransactionInfo;
+import domain.user.filter.Filter;
+import domain.user.filter.SearchOfficialsFilter;
+import domain.user.filter.SearchOrderFilter;
+import domain.user.filter.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -129,8 +128,11 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) {
-       return (Result<Boolean, List<String>>) sv.Checkout(userID, fullName, address, phoneNumber, cardNumber, expirationDate).getValue();
+    public Result<Boolean, List<String>> Checkout(String userID,String fullName, String address, String city, String country,
+                                                  String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) {
+        List<String> response = sv.Checkout(userID, fullName, address, city, country,zip, phoneNumber, cardNumber,ccv,  expirationDate).getValue();
+
+       return new Result<>(response != null, response);
     }
 
     @Override

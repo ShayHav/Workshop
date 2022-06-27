@@ -4,11 +4,8 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.shop.user.filter.SearchUserFilter;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import domain.user.filter.SearchUserFilter;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,7 +20,7 @@ public class RequestUserInfoCaseTest extends Tester {
     private String[] PWs;
     private String[] badPWs;
 
-    @BeforeAll
+    @BeforeEach
     public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
@@ -75,6 +72,6 @@ public class RequestUserInfoCaseTest extends Tester {
     @Test
     public void MemberUser(){
         SearchUserFilter f = new SearchUserFilter("isMember");
-        assertTrue(RequestUserInfo(f, "Admin").getValue().size()==validUserNames.length);
+        assertTrue(RequestUserInfo(f, "Admin").getValue().size()==12);
     }
 }

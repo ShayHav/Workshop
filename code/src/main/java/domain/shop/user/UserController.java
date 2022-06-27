@@ -1,17 +1,17 @@
-package domain.shop.user;
+package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
-import domain.Response;
+import domain.Responses.Response;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.shop.ShopController;
-import domain.shop.user.filter.Filter;
-import domain.shop.user.filter.SearchUserFilter;
+import domain.user.EntranceLogger.Entrance;
+import domain.user.EntranceLogger.EntranceLogger;
 import domain.user.filter.*;
-import domain.DAL.*;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -26,9 +26,9 @@ public class UserController {
     private static UserController instance = null;
     private List<User> adminUser;
     private int guestCounter = 0;
-    private final String userPattern ="^[a-zA-Z][a-zA-Z0-9_]{4,16}$";
-    private final String pwPattern ="^[a-zA-Z][a-zA-Z0-9_]{4,16}$";
-    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
+    private final String userPattern ="^[a-z][a-z0-9_]$";
+    private final String pwPattern ="^[a-z][a-z0-9_]$";
+    private boolean createSystemManager;
 
     private UserController() {
         memberList = new HashMap<>();
@@ -73,11 +73,16 @@ public class UserController {
         return false;
     }
 
-    public boolean userExist(String userName) {
-        return memberList.containsKey(userName) | guestUser.containsKey(userName);
+    public boolean userExist(String userName) throws IncorrectIdentification {
+        return memberList.containsKey(userName) | guestUser.containsKey(userName) | isSM(userName);
     }
-
-
+    private boolean isSM(String userName){
+        for(User u : adminUser){
+            if(u.getUserName().equals(userName))
+                return true;
+        }
+        return false;
+    }
 
     private static class UserControllerHolder {
         private static final UserController uc = new UserController();
@@ -100,13 +105,7 @@ public class UserController {
         if (isUserisLog(username)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt of logIn for %s failed. user is already logged in", username));
             throw new InvalidSequenceOperationsExc("attempt of logIn for logged in user");
-        } else{
-            if(memberList.get(username)== null){
-                User u = controllerDAL.getUser(username);
-                if(u!=null)
-                    memberList.put(u.getUserName(),u);
-            }
-        } if (memberList.get(username) != null) {
+        } else if (memberList.get(username) != null) {
             if (securePasswordStorage.passwordCheck(username, pass)) {
                 synchronized (activeUser) {
                     activeUser.put(username, memberList.get(username));
@@ -119,6 +118,9 @@ public class UserController {
                         guestUser.remove(guestUsername);
                     }
                 }
+                //log entrance
+                EntranceLogger.getInstance().logEntrance(new Entrance(output, LocalDate.now()));
+
                 eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", username));
                 return output;
             } else {
@@ -179,23 +181,22 @@ public class UserController {
      * @param pass password given by the user
      */
     public boolean register(String id, String pass) throws InvalidSequenceOperationsExc {
-        if(!isValidUser(id))
-        {
-            errorLogger.logMsg(Level.WARNING, String.format("Invalid username: %s.", id));
-            throw new InvalidSequenceOperationsExc("Username is invalid, should contain only a-z | A-Z | 0-9 and size 4-16");
-        }
-        if(!isValidPassword(pass))
-        {
-            errorLogger.logMsg(Level.WARNING, String.format("Invalid password: %s.", pass));
-            throw new InvalidSequenceOperationsExc("Password is invalid, should be of with no spaces size 4-16");
+        if(!createSystemManager) {
+            if (!isValidUser(id)) {
+                errorLogger.logMsg(Level.WARNING, String.format("Invalid username: %s.", id));
+                throw new InvalidSequenceOperationsExc("Username is invalid, should contain only a-z | A-Z | 0-9 and size 4-16");
+            }
+            if (!isValidPassword(pass)) {
+                errorLogger.logMsg(Level.WARNING, String.format("Invalid password: %s.", pass));
+                throw new InvalidSequenceOperationsExc("Password is invalid, should be of with no spaces size 4-16");
+            }
         }
         if (!memberList.containsKey(id)) {
-            SecurePasswordStorage.getSecurePasswordStorage_singleton().inRole(id, pass);
             User user = new User(id);
             synchronized (memberList) {
                 memberList.put(id, user);
             }
-            controllerDAL.saveUser(user);
+            SecurePasswordStorage.getSecurePasswordStorage_singleton().inRole(id, pass);
             eventLogger.logMsg(Level.INFO, String.format("Registered for user: %s.", id));
             return true;
         } else {
@@ -214,6 +215,9 @@ public class UserController {
         activeUser.put(temp.getUserName(), temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
         guestUser.put(temp.getUserName(), temp);
+
+        //log entrance
+        EntranceLogger.getInstance().logEntrance(new Entrance(temp, LocalDate.now()));
         return temp;
     }
 
@@ -242,9 +246,17 @@ public class UserController {
         if (u == null) {
             u = guestUser.get(id);
         }
-        if(u == null)
-            u = controllerDAL.getUser(id);
+        if(u == null){
+            u = adminList(id);
+        }
         return u;
+    }
+    private User adminList(String userName){
+        for(User run: adminUser)
+            if(run.getUserName().equals(userName))
+                return run;
+
+        return null;
     }
 
     public boolean
@@ -255,7 +267,7 @@ public class UserController {
         return true;
     }
 
-    public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public boolean deleteUserName(String s) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         if (!memberList.containsKey(s)) {
             errorLogger.logMsg(Level.WARNING, String.format("attempt to delete not exist user: %s", s));
             throw new InvalidSequenceOperationsExc(String.format("attempt to delete not exist user: %s", s));
@@ -270,7 +282,7 @@ public class UserController {
      * @param useID
      * @throws InvalidSequenceOperationsExc
      */
-    private void deleteUser(String useID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    private void deleteUser(String useID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         User u = memberList.get(useID);
         if (u != null) {
             Map<Integer, List<Role>> useRoleList = u.getRoleList();
@@ -280,7 +292,6 @@ public class UserController {
                         ShopController.getInstance().closeShop(run.getKey(),useID);
             }
             memberList.remove(useID);
-            controllerDAL.deleteUser(useID);
         }
     }
     private void deleteUserTest(String useID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
@@ -298,10 +309,14 @@ public class UserController {
                 }
             }
             memberList.remove(useID);
-            adminUser.remove(useID);
             activeUser.remove(useID);
-            controllerDAL.deleteUser(useID);
         }
+        deleteAdminTest(useID);
+    }
+    private void deleteAdminTest(String userName) throws IncorrectIdentification {
+        for (User run: adminUser)
+            if(run.getUserName().equals(userName))
+                adminUser.remove(getUser(userName));
     }
 
 
@@ -309,12 +324,11 @@ public class UserController {
         adminUser = new ArrayList<>();
         guestUser = new HashMap<>();
         memberList = new HashMap<>();
-        controllerDAL.deleteAllUser();
     }
 
-    public List<String> checkout(String userName, String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws IncorrectIdentification, BlankDataExc {
+    public List<String> checkout(String userName, String fullName, String address, String city, String country, String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) throws IncorrectIdentification, BlankDataExc {
         User user = getUser(userName);
-        return user.checkout(fullName, address, phoneNumber, cardNumber, expirationDate);
+        return user.checkout(fullName, address, city, country,zip ,phoneNumber, cardNumber, ccv, expirationDate);
     }
 
     /**
@@ -326,16 +340,26 @@ public class UserController {
      * @throws InvalidSequenceOperationsExc
      */
     public boolean createSystemManager(String id, String pass) throws InvalidSequenceOperationsExc {
-        System.out.println("createSystemManager: "+id);
+        //System.out.println("createSystemManager: "+id);
+        createSystemManager = true;
         register(id,pass);
-        System.out.println("register: "+id);
+        createSystemManager = false;
+        //System.out.println("register: "+id);
         User u = memberList.get(id);
-        synchronized (adminUser) {
-            adminUser.add(u);
+        if(!isInAL(u)) {
+            synchronized (adminUser) {
+                adminUser.add(u);
+            }
+            //System.out.println("makeSystemManager: "+id);
+            u.makeSystemManager();
         }
-        System.out.println("makeSystemManager: "+id);
-        u.makeSystemManager();
         return true;
+    }
+    private boolean isInAL(User u) {
+        for (User run : adminUser)
+            if(run.getUserName().equals(u.getUserName()))
+                return true;
+        return false;
     }
 
     public Map<User, List<Order>> getOrderHistoryForUsers(Filter<Order> f) {
@@ -362,6 +386,16 @@ public class UserController {
         }
         User u = activeUser.get(userName);
         return u.addProductToCart(shopNumber, productId, amount);
+    }
+
+
+    public Response addBidToCart(String userName, int shopNumber, int productId, int amount, double price) throws InvalidSequenceOperationsExc, ShopNotFoundException {
+        if (!HasUserEnteredMarket(userName)) {
+            errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not entered Market");
+            throw new InvalidSequenceOperationsExc();
+        }
+        User u = activeUser.get(userName);
+        return u.addNewBid(shopNumber, productId, amount, price);
     }
 
     /**
@@ -430,6 +464,14 @@ public class UserController {
         }
         User u = activeUser.get(userName);
         return u.getOrderHistoryForUsers(f);
+    }
+
+    public List<Entrance> getEntrances(String username, LocalDate from, LocalDate to) throws InvalidAuthorizationException {
+        if (!activeUser.containsKey(username)) {
+            errorLogger.logMsg(Level.WARNING, "user %id tried to perform action when he is not logged in");
+        }
+        User u = activeUser.get(username);
+        return u.getEntrances(from,to);
     }
 
     public boolean isLogin(String userName) throws IncorrectIdentification {

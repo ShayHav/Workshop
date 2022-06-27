@@ -2,10 +2,6 @@ package Testing_System;
 
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.market.MarketSystem;
-import domain.market.PaymentService;
-import domain.market.PaymentServiceImp;
-import domain.market.SupplyServiceImp;
 
 public class UserGenerator extends Tester {
 

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DismissalUserBySystemManagerCaseTest extends Tester {
     private UserGenerator ug = new UserGenerator();
-    private String[] validUserNames;
+    private String[] validUserNames = ug.GetValidUsers();
     private String[] badUserName;
     private String[] sadUserNames;
     private String[] PWs;
@@ -25,6 +25,7 @@ public class DismissalUserBySystemManagerCaseTest extends Tester {
 
     @BeforeAll
     public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
+        DeleteUserTest(validUserNames);
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
         sadUserNames = ug.GetSadUsers();
@@ -47,11 +48,11 @@ public class DismissalUserBySystemManagerCaseTest extends Tester {
     public void DismissalAllUsers()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!DismissalUserBySystemManager("admin",validUserNames[i]).isErrorOccurred());
+            assertTrue(!DismissalUserBySystemManager("Admin",validUserNames[i]).isErrorOccurred());
         SearchUserFilter f = new SearchUserFilter();
         for (int i = 0; i<ug.getNumOfUser(); i++){
             f.setName(validUserNames[i]);
-            assertFalse(!(RequestUserInfo(f,"admin").getValue().size()==0));
+            assertFalse(!(RequestUserInfo(f,"Admin").getValue().size()==0));
         }
     }
 
