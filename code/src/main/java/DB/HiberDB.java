@@ -370,7 +370,6 @@ public class HiberDB {
         ProductImp p;
         try
         {
-            System.out.println("for mrg");
             et.begin();
             p = em.find(ProductImp.class,pID);
 //            if(p == null)

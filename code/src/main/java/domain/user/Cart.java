@@ -9,6 +9,9 @@ import domain.shop.Shop;
 import domain.user.ShoppingBasket.ServiceBasket;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,14 +20,57 @@ import java.util.Map;
 import java.util.logging.Level;
 @Entity
 public class Cart {
+    @Transient
     private Map<Integer, ShoppingBasket> baskets;
+    @OneToMany(mappedBy = "c")
+    private List<ShoppingBasket> basketLs;
     private double totalAmount;
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Id
+    private String username;
+
 
     public Cart() {
         baskets = new HashMap<>();
         totalAmount = 0;
+    }
+    public Cart merge(Cart c)
+    {
+        setTotalAmount(c.getTotalAmount());
+        setBaskets(c.getBaskets());
+        setBasketLs(c.getBasketLs());
+        return this;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Map<Integer, ShoppingBasket> getBaskets() {
+        return baskets;
+    }
+
+    public void setBaskets(Map<Integer, ShoppingBasket> baskets) {
+        this.baskets = baskets;
+    }
+
+    public List<ShoppingBasket> getBasketLs() {
+        return basketLs;
+    }
+
+    public void setBasketLs(List<ShoppingBasket> basketLs) {
+        this.basketLs = basketLs;
     }
 
     public Response addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {

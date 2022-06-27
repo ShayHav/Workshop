@@ -4,12 +4,12 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.market.MarketSystem;
 
+import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
 public class EntranceLogger {
 
     private List<Entrance> entrances;

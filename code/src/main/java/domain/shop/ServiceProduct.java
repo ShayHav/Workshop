@@ -71,4 +71,9 @@ public class ServiceProduct implements Product{
     public int getAmount() {
         return amount;
     }
+
+    @Override
+    public Product merge(Product pi) {
+        return null;
+    }
 }

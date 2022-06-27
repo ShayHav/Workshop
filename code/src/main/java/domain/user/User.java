@@ -42,6 +42,7 @@ public class User {
         loggedIn = false;
         us = UserState2.disconnected;
         userCart = new Cart();
+        userCart.setUsername(userName);
         isSystemManager = false;
         managerAppointeeList = new ArrayList<>();
         ownerAppointmentList = new ArrayList<>();

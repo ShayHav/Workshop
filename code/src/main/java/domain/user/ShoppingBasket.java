@@ -11,7 +11,7 @@ import domain.Exceptions.ProductNotFoundException;
 import domain.shop.ProductImp;
 import domain.shop.Shop;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.net.ConnectException;
 import java.util.ArrayList;
@@ -23,12 +23,34 @@ import java.util.logging.Level;
 @Entity
 public class ShoppingBasket {
 
+//    private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+//    private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+//    private final Shop shop;
+//    private final Map<Integer, Integer> productAmountList;
+//    private final Map<Integer, Boolean> bidIDs_status;
+//    private double basketAmount;
+
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Transient
     private final Shop shop;
+    @ElementCollection
+    @CollectionTable(name = "order_item_mapping",
+            joinColumns = {@JoinColumn(name = "shop_id", referencedColumnName = "shopID")})
+    @MapKeyColumn(name = "item_ID")
+    @Column(name = "amount")
     private final Map<Integer, Integer> productAmountList;
-    private final Map<Integer, Boolean> bidIDs_status;
     private double basketAmount;
+    @Id
+    private int shopID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usernameID")
+    private Cart c;
+    @Transient
+    private final Map<Integer, Boolean> bidIDs_status;
+
 
     public ShoppingBasket(Shop shop) {
         this.shop = shop;

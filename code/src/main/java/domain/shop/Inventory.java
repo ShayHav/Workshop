@@ -6,13 +6,20 @@ import domain.Exceptions.InvalidProductInfoException;
 import domain.Exceptions.ProductNotFoundException;
 import domain.shop.PurchaseFormats.BidFormat;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.*;
 import java.util.logging.Level;
-
+@Entity
 public class Inventory {
     private final Map<Integer, ProductImp> keyToProduct;
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Id
+    private int shopID;
 
     public Inventory(){
         keyToProduct = new HashMap<>();
