@@ -131,7 +131,7 @@ public class UserControllerTest {
 
     //TODO: Bar scenario
     @Test
-    void DismissalOwner() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, ShopNotFoundException {
+    void DismissalOwner() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException, ShopNotFoundException, BidNotFoundException, CriticalInvariantException {
         userController.login(String.format("-Guest%d",0),userName[0],userPass[0]);
         User u = userController.getUser(userName[0]);
         Shop s = shopController.createShop("","",null,null, u);

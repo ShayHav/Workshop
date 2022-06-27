@@ -21,6 +21,12 @@
             let counter = document.querySelector('#messageCount');
             counter.textContent = count === 0 || count === '0' ? '' : count;
         }
+        const activeUserSocket = new WebSocket('ws://localhost:${Presentation.Main.port}/users/${user.getUsername()}/active');
+
+        setInterval(()=>{
+            activeUserSocket.send("I am active");
+        }, 10000);
+
     </script>
 </head>
 <body>
