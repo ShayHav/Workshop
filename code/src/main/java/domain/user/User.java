@@ -2,55 +2,99 @@ package domain.user;
 
 
 import domain.*;
+import domain.DAL.ControllerDAL;
 import domain.Exceptions.*;
-import domain.Responses.Response;
-import domain.Responses.ResponseT;
+import domain.ResponseT;
 import domain.shop.*;
-import domain.user.EntranceLogger.Entrance;
-import domain.user.EntranceLogger.EntranceLogger;
-import domain.user.filter.*;
+import domain.shop.user.filter.Filter;
 
 import javax.persistence.*;
-
-import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 
+@Entity
 public class User {
+    @Id
     private String userName;
+    @Enumerated(EnumType.STRING)
     private UserState2 us;
+    @Transient
     private Map<Integer,List<Role>> roleList;
-    @OneToOne
+    @Transient
     private Cart userCart;
+    @Transient
     private boolean loggedIn;
+    @Transient
     private List<ManagerAppointment> managerAppointeeList;
+    @Transient
     private List<OwnerAppointment> ownerAppointmentList;
+    @OneToMany
     private List<Order> orderHistory;
     private boolean isSystemManager;
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Transient
     private boolean enteredMarket;
+    @Transient
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
+
+    public void setUs(UserState2 us) {
+        this.us = us;
+    }
+
+    public void setRoleList(Map<Integer, List<Role>> roleList) {
+        this.roleList = roleList;
+    }
+
+    public void setUserCart(Cart userCart) {
+        this.userCart = userCart;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setManagerAppointeeList(List<ManagerAppointment> managerAppointeeList) {
+        this.managerAppointeeList = managerAppointeeList;
+    }
+
+    public void setOwnerAppointmentList(List<OwnerAppointment> ownerAppointmentList) {
+        this.ownerAppointmentList = ownerAppointmentList;
+    }
+
+    public Cart getUserCart() {
+        return userCart;
+    }
 
     public User() {
         us = null;
     }
-
+    public User merge(User u)
+    {
+        setUs(u.getUs());
+        setRoleList(u.getRoleList());
+        setUserCart(u.getUserCart());
+        setManagerAppointeeList(u.getManagerAppointeeList());
+        setOwnerAppointmentList(u.getOwnerAppointmentList());
+        setOrderHistory(u.getOrderHistory());
+        setSystemManager(u.isSystemManager());
+        return this;
+    }
     public User(String userName) {
         this.userName = userName;
         loggedIn = false;
         us = UserState2.disconnected;
         userCart = new Cart();
+        userCart.setUsername(userName); //Ariel Added
         isSystemManager = false;
         managerAppointeeList = new ArrayList<>();
         ownerAppointmentList = new ArrayList<>();
         orderHistory = new ArrayList<>();
         roleList = new HashMap<>();
-    }
-
-    private UserState2 getUserState(){
-        return us;
     }
 
     public boolean isEnteredMarket() {
@@ -63,6 +107,7 @@ public class User {
 
     public void setSystemManager(boolean systemManager) {
         isSystemManager = systemManager;
+        controllerDAL.saveUser(this);
     }
 
     public boolean isSystemManager() {
@@ -104,7 +149,7 @@ public class User {
      * enter market - user state is now guest, with empty cart
      */
     public void enterMarket() {
-        us = UserState2.guest;
+        us = UserState2.disconnected;
         enteredMarket=true;
     }
 
@@ -129,9 +174,11 @@ public class User {
     //TODO: why there is a difference
     public void AppointedMeOwner(Shop s,String id) throws IncorrectIdentification, BlankDataExc {
         ownerAppointmentList.add(new OwnerAppointment(s,userName,ControllersBridge.getInstance().getUser(id)));
+        controllerDAL.updateUser(this);
     }
     public void AppointedMeManager(Shop s,String id) throws IncorrectIdentification, BlankDataExc {
         managerAppointeeList.add(new ManagerAppointment(s,this,ControllersBridge.getInstance().getUser(id)));
+        controllerDAL.updateUser(this);
     }
 
     public boolean appointManager(int shopName) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
@@ -245,8 +292,8 @@ public class User {
     }
 
 
-    public List<String> checkout(String fullName, String address, String city, String country, String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) throws BlankDataExc {
-        List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, city, country, zip, phoneNumber, cardNumber, ccv, expirationDate);
+    public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
+        List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
         List<String> errors = new ArrayList<>();
         for (ResponseT<Order> r : checkoutResult) {
             if (r.isErrorOccurred()) {
@@ -293,24 +340,6 @@ public class User {
         return userCart.addProductToCart(shopID, productID, amount);
     }
 
-
-    public ResponseT<Integer> addNewBid(int shopID, int productID, int amount, double price) throws ShopNotFoundException {
-        if(getUserState().equals(UserState2.guest))
-            return new ResponseT<>("guests may not submit bids");
-        return userCart.addNewBidToCart(shopID, productID, amount, this, price);
-    }
-
-    public void bidApproved(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {
-        userCart.bidApproved(shopID, bidID);
-    }
-
-    public void removeBid(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {
-        userCart.removeBid(shopID, bidID);
-        userCart.getTotalAmount();
-    }
-
-
-
     public Response updateAmountOfProduct(int shopID, int productID, int amount) {
         return userCart.updateAmountOfProduct(shopID, productID, amount);
     }
@@ -354,15 +383,6 @@ public class User {
         }
     }
 
-    public List<Entrance> getEntrances(LocalDate from, LocalDate to) throws InvalidAuthorizationException {
-        if(isSystemManager && us == UserState2.systemManager)
-            return EntranceLogger.getInstance().getEntrances(from,to);
-        else {
-            errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
-            throw new InvalidAuthorizationException("SystemManager", us.toString());
-        }
-    }
-
 
     private Map<Shop, List<Order>> systemManagerGetOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
         ControllersBridge cb = ControllersBridge.getInstance();
@@ -397,14 +417,36 @@ public class User {
         }
     }
 
+  /*  public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
+        synchronized (this) {
+            Shop shop1;
+            try{
+                shop1 = getShop(shop);
+            }catch (ShopNotFoundException snfe){
+                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
+                return false;
+            }
+            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
+            return shop1.removePermissions(shopManagersPermissionsList, targetUser, userId);
+        }
+    }
 
+
+    public boolean saveCart(Cart cart) {
+        throw new UnsupportedOperationException("guest is not allowed to perform this action");
+    }
+
+    public void requestInfoOnOfficials(Filter f) {
+        throw new UnsupportedOperationException();
+    }
+    */
     /**
      * Checks whether the perpetrator may perform it and operate
      * @param targetUser
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
@@ -441,13 +483,12 @@ public class User {
 
     public void removeRole(Role shopOwner, int shopID) {
         roleList.get(shopID).remove(shopOwner);
+        controllerDAL.updateUser(this);
     }
 
     public UserState2 getUs() {
         return us;
     }
-
-
 }
 
 
