@@ -147,29 +147,20 @@ public class ShopTest {
         doNothing().when(ms).sendMessage(any(), any(), any());
         try {
             when(ms.getUser(any())).thenReturn(mockUser);
+            when(ms.pay(any())).thenReturn(12000);
+            when(ms.supply(any(), any())).thenReturn(12000);
         } catch (IncorrectIdentification | BlankDataExc incorrectIdentification) {
             fail(incorrectIdentification.getMessage());
             return;
-        }
-        try {
-            when(ms.pay(trans)).thenReturn(2);
-        } catch (BlankDataExc blankDataExc) {
-            fail(blankDataExc.getMessage());
-            return;
         } catch (ConnectException e) {
             fail(e.getMessage());
             return;
         }
-        try {
-            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(2);
-        } catch (BlankDataExc blankDataExc) {
-            fail(blankDataExc.getMessage());
-            return;
-        } catch (ConnectException e) {
-            fail(e.getMessage());
-            return;
-        }
-        ResponseT<Order> checkoutRet = null;
+        
+
+        shop.setMarketSystem(ms);
+
+        ResponseT<Order> checkoutRet;
 
         try {
             checkoutRet = shop.checkout(product_QuantityInBasket, new ArrayList<>(), trans);
@@ -191,7 +182,8 @@ public class ShopTest {
         product_QuantityInBasket.put(appleID, 3);
         MarketSystem ms = mock(MarketSystem.class);
         try {
-            when(ms.pay(trans)).thenReturn(1);
+            when(ms.pay(any())).thenReturn(12000);
+            when(ms.supply(any(), any())).thenReturn(12000);
         } catch (BlankDataExc blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
@@ -200,16 +192,8 @@ public class ShopTest {
             return;
         }
         shop.setMarketSystem(ms);
-        try {
-            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(1);
-        } catch (BlankDataExc blankDataExc) {
-            fail(blankDataExc.getMessage());
-            return;
-        } catch (ConnectException e) {
-            fail(e.getMessage());
-            return;
-        }
-        ResponseT<Order> checkoutRet = null;
+
+        ResponseT<Order> checkoutRet;
         try {
             checkoutRet = shop.checkout(product_QuantityInBasket, new ArrayList<>(), trans);
         } catch (BlankDataExc blankDataExc) {
@@ -229,8 +213,8 @@ public class ShopTest {
         product_QuantityInBasket.put(appleID, 3);
         MarketSystem ms = mock(MarketSystem.class);
         try {
-            when(ms.pay(trans)).thenReturn(15000);
-            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(15000);
+            when(ms.pay(trans)).thenReturn(1);
+            when(ms.supply(trans, product_QuantityInBasket)).thenReturn(1);
         } catch (BlankDataExc | ConnectException blankDataExc) {
             fail(blankDataExc.getMessage());
             return;
@@ -242,7 +226,7 @@ public class ShopTest {
             fail(blankDataExc.getMessage());
             return;
         }
-        assertFalse(checkoutRet.isErrorOccurred());
+        assertTrue(checkoutRet.isErrorOccurred());
         assertFalse(shop.isProductAvailable(appleID));
         assertTrue(shop.isProductAvailable(orangeID));
     }

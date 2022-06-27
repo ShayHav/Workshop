@@ -90,7 +90,9 @@ public class PurchasePolicy {
             prod_pr = getAllPurchaseRulesForProd(prodID);
         else {
             prod_pr = new ArrayList<>();
-            product_purchaseRules.put(prodID, prod_pr);
+            synchronized (product_purchaseRules) {
+                product_purchaseRules.put(prodID, prod_pr);
+            }
         }
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == prodID;
@@ -111,7 +113,9 @@ public class PurchasePolicy {
             category_pr = getAllPurchaseRulesForCategory(category);
         else {
             category_pr = new ArrayList<>();
-            category_purchaseRules.put(category, category_pr);
+            synchronized (category_purchaseRules) {
+                category_purchaseRules.put(category, category_pr);
+            }
         }
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
@@ -127,7 +131,9 @@ public class PurchasePolicy {
         Predicate<ProductImp> relevantTo = (productImp)-> true;
         String purchaseRuleStringed = String.format("Any of the shop's products can only be purchased if %s", eligible.toString());
         PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++, purchaseRuleStringed);
-        general_PurchaseRules.add(newPurchaseRule);
+        synchronized (general_PurchaseRules) {
+            general_PurchaseRules.add(newPurchaseRule);
+        }
         return newPurchaseRule.getID();
     }
 
