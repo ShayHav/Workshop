@@ -3,7 +3,6 @@ package Presentation.Model;
 import Service.Services;
 import domain.Responses.ResponseT;
 import domain.shop.Order;
-import domain.shop.Shop;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

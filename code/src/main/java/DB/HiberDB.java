@@ -1,8 +1,6 @@
 package DB;
 import domain.shop.Product;
-import domain.shop.ProductHistory;
 import domain.shop.ProductImp;
-import domain.shop.Shop;
 import domain.user.*;
 import org.jetbrains.annotations.NotNull;
 

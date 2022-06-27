@@ -3,8 +3,6 @@ package domain.shop.PurchaseFormats;
 import domain.Exceptions.BidNotFoundException;
 import domain.Exceptions.CriticalInvariantException;
 import domain.shop.ProductImp;
-import domain.shop.PurchaseFormats.BidFormat;
-import domain.shop.Shop;
 import domain.user.User;
 
 import java.util.ArrayList;

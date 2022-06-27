@@ -3,25 +3,17 @@ package domain.user;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import domain.Exceptions.*;
 import domain.market.MarketSystem;
 import domain.ExternalConnectors.PaymentServiceImp;
 import domain.ExternalConnectors.SupplyServiceImp;
-import domain.shop.ProductInfo;
 import domain.shop.PurchasePolicys.PurchasePolicy;
-import domain.shop.Shop;
 import domain.shop.ShopController;
 import domain.shop.discount.DiscountPolicy;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.rmi.server.ServerCloneException;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ShoppingBasketTest {
 

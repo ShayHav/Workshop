@@ -3,7 +3,6 @@ package domain.user;
 import domain.Exceptions.InvalidAuthorizationException;
 import domain.Exceptions.ShopNotFoundException;
 import domain.shop.Order;
-import domain.shop.Shop;
 import domain.shop.ShopController;
 import domain.user.filter.Filter;
 

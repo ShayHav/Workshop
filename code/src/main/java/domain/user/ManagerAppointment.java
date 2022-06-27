@@ -1,7 +1,5 @@
 package domain.user;
 
-import domain.shop.Shop;
-
 public class ManagerAppointment {
     private Shop shop;
     private User appointee; // the user who decide to appoint the new manager

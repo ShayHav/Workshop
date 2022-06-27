@@ -2,7 +2,6 @@ package Presentation.Model;
 
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.PurchasePolicys.PurchaseRule;
-import domain.shop.Shop;
 import domain.shop.discount.DiscountPolicy;
 
 import java.util.ArrayList;

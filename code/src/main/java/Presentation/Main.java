@@ -8,7 +8,6 @@ import Service.Services;
 import domain.Responses.ResponseMap;
 import domain.Responses.ResponseT;
 import domain.shop.Product;
-import domain.shop.Shop;
 import domain.user.User;
 import domain.user.filter.SearchProductFilter;
 import io.javalin.Javalin;

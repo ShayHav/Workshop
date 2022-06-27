@@ -4,9 +4,7 @@ import domain.Exceptions.BidNotFoundException;
 import domain.Exceptions.CriticalInvariantException;
 import domain.notifications.NotificationManager;
 import domain.shop.ProductImp;
-import domain.shop.Shop;
 import domain.user.User;
-import org.mockito.internal.matchers.Not;
 
 import java.util.HashMap;
 import java.util.List;

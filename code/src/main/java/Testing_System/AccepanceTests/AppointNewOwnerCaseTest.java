@@ -4,7 +4,6 @@ import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.Responses.ResponseT;
-import domain.shop.Shop;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

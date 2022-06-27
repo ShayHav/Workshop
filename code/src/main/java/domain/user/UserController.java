@@ -5,7 +5,6 @@ import domain.EventLoggerSingleton;
 import domain.Exceptions.*;
 import domain.Responses.Response;
 import domain.shop.Order;
-import domain.shop.Shop;
 import domain.shop.ShopController;
 import domain.user.EntranceLogger.Entrance;
 import domain.user.EntranceLogger.EntranceLogger;

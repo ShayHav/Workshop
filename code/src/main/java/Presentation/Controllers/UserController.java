@@ -13,7 +13,6 @@ import domain.Responses.ResponseT;
 import domain.notifications.Message;
 import domain.notifications.SystemInfoMessage;
 import domain.shop.Order;
-import domain.shop.Shop;
 import domain.user.Cart;
 import domain.user.EntranceLogger.Entrance;
 import domain.user.User;
@@ -21,7 +20,6 @@ import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
-import io.javalin.websocket.WsConnectHandler;
 
 import javax.naming.AuthenticationException;
 import java.time.LocalDate;

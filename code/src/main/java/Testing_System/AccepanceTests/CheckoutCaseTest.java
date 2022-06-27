@@ -4,12 +4,9 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.ExternalConnectors.PaymentService;
 import domain.Responses.ResponseT;
 import domain.market.MarketSystem;
-import domain.shop.Shop;
 import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;

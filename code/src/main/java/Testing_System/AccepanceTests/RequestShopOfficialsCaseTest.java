@@ -5,7 +5,6 @@ import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.Responses.ResponseT;
-import domain.shop.Shop;
 import domain.user.Role;
 import domain.user.filter.SearchOfficialsFilter;
 import org.junit.jupiter.api.AfterAll;

@@ -1,7 +1,5 @@
 package domain.user;
 
-import domain.shop.Shop;
-
 public class OwnerAppointment {
     private Shop shop;
     private String appointeeId;

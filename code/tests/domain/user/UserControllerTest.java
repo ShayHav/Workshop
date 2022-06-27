@@ -2,7 +2,6 @@ package domain.user;
 
 import Testing_System.UserGenerator;
 import domain.Exceptions.*;
-import domain.shop.Shop;
 import domain.shop.ShopController;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
