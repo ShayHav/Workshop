@@ -72,21 +72,19 @@ public class CreateShopCaseTest extends Tester {
     @Test
     public void BadNameShopTest()
     {
-//        assertFalse(!CreateShop("Test_1",validUsers[0], "T#$hop").isErrorOccurred());
-//        assertFalse(!CreateShop("Test_2",validUsers[1], "Tes%&%p_2").isErrorOccurred());
-//        assertFalse(!CreateShop("Test_3",validUsers[2], "A").isErrorOccurred());
+        assertFalse(!CreateShop("Test_1",validUsers[0], "T#$hop").isErrorOccurred());
+        assertFalse(!CreateShop("Test_2",validUsers[1], "Tes%&%p_2").isErrorOccurred());
+        assertFalse(!CreateShop("Test_3",validUsers[2], "A").isErrorOccurred());
         assertFalse(!CreateShop("Test_4",validUsers[3], null).isErrorOccurred());
 
     }
 
-
-    //TODO: can be DuplicateNames?
-//    @Test
-//    public void DuplicateNames()
-//    {
-//        assertTrue(!CreateShop("Test_1",validUsers[0], "TestShop").isErrorOccurred());
-//        assertFalse(!CreateShop("Test_1",validUsers[1], "TestShop").isErrorOccurred());
-//    }
+    @Test
+    public void DuplicateNames()
+    {
+        assertTrue(!CreateShop("Test_1",validUsers[0], "TestShop").isErrorOccurred());
+        assertFalse(!CreateShop("Test_2",validUsers[1], "TestShop").isErrorOccurred());
+    }
 
     @Test
     public void NotRegisteredUser()

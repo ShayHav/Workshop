@@ -1,13 +1,16 @@
 package domain.shop;
 
-import domain.Exceptions.*;
+import domain.Exceptions.BlankDataExc;
+import domain.Exceptions.InvalidAuthorizationException;
+import domain.Exceptions.InvalidProductInfoException;
+import domain.Exceptions.ProductNotFoundException;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Basket;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.TransactionInfo;
-import domain.user.User;
+import domain.shop.user.TransactionInfo;
+import domain.shop.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +20,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.mockito.Mockito;
-import org.mockito.Mockito.*;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -312,7 +315,7 @@ public class ShopTest {
     }*/
 
     @Test
-    void PermissionsThreads() throws InterruptedException, InvalidSequenceOperationsExc {
+    void PermissionsThreads() throws InterruptedException {
         User davidos = setDavidos();
         List<ShopManagersPermissions> shopManagersPermissionsList = new LinkedList<>();
         shopManagersPermissionsList.add(ShopManagersPermissions.OpenShop);
@@ -330,11 +333,7 @@ public class ShopTest {
         Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    shop.removePermissions(shopManagersPermissionsListRemove,davidos.getUserName(),davidos.getUserName());
-                } catch (InvalidSequenceOperationsExc e) {
-                    e.printStackTrace();
-                }
+                shop.removePermissions(shopManagersPermissionsListRemove,davidos.getUserName(),davidos.getUserName());
             }
         });
         t1.start();

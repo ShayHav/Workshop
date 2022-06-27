@@ -22,7 +22,6 @@ public class CloseShopCaseTest extends Tester {
     private String[] validUsers;
     private String[] pws;
     private String user_1;
-    private String user_2;
     private String pw_1;
     private int shopID_1;
     private String owner;
@@ -33,7 +32,6 @@ public class CloseShopCaseTest extends Tester {
     private String guest1;
     private String guest2;
     private String guest3;
-    private String guest4;
 
     @BeforeAll
     public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
@@ -42,12 +40,10 @@ public class CloseShopCaseTest extends Tester {
         pws = ug.GetPW();
         ug.InitTest();
         user_1 = validUsers[0];
-        user_2 = validUsers[2];
         pw_1 = pws[0];
         guest1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
         guest2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
         guest3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
-        guest4 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
 
         Register(guest1, user_1, pw_1);
         Login(guest2, user_1, pw_1);
@@ -56,11 +52,11 @@ public class CloseShopCaseTest extends Tester {
             shopID_1 = shopResponseT.getValue().getShopID();
         owner = validUsers[1];
         owner_pw = pws[1];
-        Register(guest3,owner,owner_pw);
+        Register(guest2,owner,owner_pw);
         AppointNewShopOwner(shopID_1,owner,user_1);
         manager = validUsers[2];
         manager_pw = pws[2];
-        Register(guest4,manager,manager_pw);
+        Register(guest3,manager,manager_pw);
         AppointNewShopManager(shopID_1,manager,user_1);
         ls = new ArrayList<ShopManagersPermissions>();
         ls.add(ShopManagersPermissions.CloseShop);
@@ -72,7 +68,7 @@ public class CloseShopCaseTest extends Tester {
     {
         Login(guest2,owner,owner_pw);
         Login(guest3,manager,manager_pw);
-        //AddShopMangerPermissions(shopID_1,ls,manager,user_1);
+        AddShopMangerPermissions(shopID_1,ls,manager,user_1);
         /**
          * Not supported offline --> Online shop
          */
@@ -91,20 +87,19 @@ public class CloseShopCaseTest extends Tester {
     @Test
     public void FounderCloseShopGoodTest()
     {
-        assertTrue(!CloseShop(1,"u2").isErrorOccurred());
+        assertTrue(!CloseShop(shopID_1,user_1).isErrorOccurred());
     }
 
     @Test
     public void OwnerCloseShopGoodTest()
     {
-        Login(!EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "",owner,owner_pw);
         assertTrue(!CloseShop(shopID_1,owner).isErrorOccurred());
     }
 
     @Test
     public void ManagerCloseShopBadTest()
     {
-        assertFalse(!CloseShop(shopID_1,manager).isErrorOccurred());
+        assertTrue(!CloseShop(shopID_1,manager).isErrorOccurred());
     }
 
     @Test
@@ -118,7 +113,7 @@ public class CloseShopCaseTest extends Tester {
     @Test
     public void AlreadyClosedShopTest()
     {
-        assertFalse(!CloseShop(shopID_1,user_1).isErrorOccurred());
+        assertTrue(!CloseShop(shopID_1,user_1).isErrorOccurred());
         assertFalse(!CloseShop(shopID_1,user_1).isErrorOccurred());
         assertFalse(!CloseShop(shopID_1,owner).isErrorOccurred());
         assertFalse(!CloseShop(shopID_1,manager).isErrorOccurred());
@@ -142,7 +137,7 @@ public class CloseShopCaseTest extends Tester {
     @Test
     public void BadInputsTest()
     {
-        assertFalse(!CloseShop(shopID_1-1,user_2).isErrorOccurred());
+        assertFalse(!CloseShop(shopID_1-1,user_1).isErrorOccurred());
         assertFalse(!CloseShop(-1,user_1).isErrorOccurred());
         assertFalse(!CloseShop(shopID_1,null).isErrorOccurred());
 

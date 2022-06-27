@@ -1,11 +1,14 @@
-package domain.user;
+package domain.shop.user;
 
 import domain.shop.Shop;
+
+import javax.persistence.Id;
 
 public class ManagerAppointment {
     private Shop shop;
     private User appointee; // the user who decide to appoint the new manager
     private User appointed; // the user whe got appointed to be a new manager
+
 
     public ManagerAppointment(Shop shop,User appointee , User appointed){
         this.appointed=appointed;

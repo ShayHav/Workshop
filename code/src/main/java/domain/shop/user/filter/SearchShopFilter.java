@@ -1,11 +1,9 @@
-package domain.user.filter;
+package domain.shop.user.filter;
 
 import domain.EventLoggerSingleton;
 import domain.shop.Shop;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 

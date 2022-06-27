@@ -1,11 +1,11 @@
-package domain.user;
+package domain.shop.user;
 
 import domain.Exceptions.InvalidAuthorizationException;
 import domain.Exceptions.ShopNotFoundException;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.shop.ShopController;
-import domain.user.filter.Filter;
+import domain.shop.user.filter.Filter;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package domain.user;
+package domain.shop.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
@@ -7,10 +7,9 @@ import domain.ResponseT;
 import domain.shop.Order;
 import domain.shop.Product;
 import domain.Exceptions.ProductNotFoundException;
-import domain.shop.ProductImp;
 import domain.shop.Shop;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -18,16 +17,48 @@ import java.util.logging.Level;
 @Entity
 public class ShoppingBasket {
 
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Transient
     private final Shop shop;
+    @ElementCollection
+    @CollectionTable(name = "order_item_mapping",
+            joinColumns = {@JoinColumn(name = "shop_id", referencedColumnName = "shopID")})
+    @MapKeyColumn(name = "item_ID")
+    @Column(name = "amount")
     private final Map<Integer, Integer> productAmountList;
     private double basketAmount;
+    @Id
+    private int shopID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usernameID")
+    private Cart c;
 
     public ShoppingBasket(Shop shop) {
         this.shop = shop;
         productAmountList = new HashMap<>();
         basketAmount = 0;
+        shopID = shop.getShopID();
+//        c = new Cart();
+    }
+
+    public void setCart(Cart c)
+    {
+        this.c = c;
+    }
+    public ShoppingBasket() {
+        this.shop = null;
+        productAmountList = null;
+    }
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
     }
 
     /***

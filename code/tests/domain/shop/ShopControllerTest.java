@@ -1,18 +1,5 @@
 package domain.shop;
 
-import domain.Exceptions.*;
-import domain.user.Role;
-import domain.user.User;
-import domain.user.UserController;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class ShopControllerTest {
     /*private UserController userController = UserController.getInstance();;
     private ShopController shopController = ShopController.getInstance();

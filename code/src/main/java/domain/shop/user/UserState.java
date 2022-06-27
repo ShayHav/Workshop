@@ -1,4 +1,4 @@
-package domain.user;
+package domain.shop.user;
 
 import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
@@ -6,7 +6,7 @@ import domain.Exceptions.ShopNotFoundException;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.filter.Filter;
+import domain.shop.user.filter.Filter;
 
 import java.util.List;
 

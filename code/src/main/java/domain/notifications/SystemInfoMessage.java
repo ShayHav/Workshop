@@ -1,4 +1,5 @@
-/*package domain.notifications;
+package domain.notifications;
+
 import Presentation.Model.PresentationUser;
 import domain.notifications.Message;
 
@@ -43,5 +44,3 @@ public class SystemInfoMessage{
         return usersInMarket;
     }
 }
-
- */

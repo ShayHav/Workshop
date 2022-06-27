@@ -1,4 +1,4 @@
-package domain.user.filter;
+package domain.shop.user.filter;
 
 import java.util.List;
 
