@@ -15,14 +15,17 @@ import domain.notifications.SystemInfoMessage;
 import domain.shop.Order;
 import domain.shop.Shop;
 import domain.user.Cart;
+import domain.user.EntranceLogger.Entrance;
 import domain.user.User;
 import domain.user.filter.SearchOrderFilter;
 import domain.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
+import io.javalin.websocket.WsConnectHandler;
 
 import javax.naming.AuthenticationException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,10 +34,12 @@ public class UserController {
 
     private final Map<String, PresentationUser> requestedUsers;
     private final Services services;
+    private final Map<String, LocalDateTime> activeUsers;
 
     public UserController() {
         requestedUsers = new HashMap<>();
         services = Services.getInstance();
+        activeUsers = new HashMap<>();
     }
 
     public PresentationUser getUser(String username) {
@@ -57,6 +62,7 @@ public class UserController {
                 requestedUsers.put(user.getUsername(), user);
             }
 
+            activeUsers.remove(guest);
             ctx.cookieStore("uid", user.getUsername());
             ctx.redirect("/");
         }
@@ -233,6 +239,8 @@ public class UserController {
 
     }
 
+
+
     public void renderUserShops(Context ctx) {
         PresentationUser user = getUser(ctx);
 
@@ -288,6 +296,40 @@ public class UserController {
             }
             ctx.render("adminManagingPage.jte", Map.of("admin", user, "users", presentationUsers, "activeUsers", activeUsers.getValue(), "activeMembers", activeMembers.getValue(), "activeGuests", activeGuests.getValue(), "totalRegistered", totalRegistered.getValue()));
         }
+    }
+
+
+    public void renderAdminPageFilteredEntrances(Context ctx){
+        PresentationUser user = getUser(ctx);
+        String username = user.getUsername();
+
+        String from_date = ctx.queryParam("fromDate");
+        String to_date = ctx.queryParam("toDate");
+
+
+        LocalDate fromDate = from_date == null || from_date.isEmpty() ? null: LocalDate.parse(from_date);
+        LocalDate toDate = to_date == null || to_date.isEmpty() ? null: LocalDate.parse(to_date);
+
+        //reset filter
+        if(fromDate == null || to_date == null){
+            List<PresentationEntrance> empty = new ArrayList<>();
+            ctx.render("adminEntrancesResult", Map.of("admin", user, "from", "", "to", "", "guests", empty, "members", empty, "managers", empty, "owners", empty, "systemManagers", empty));
+        }
+
+        ResponseList<Entrance> entrances = services.getEntrances(username, fromDate, toDate);
+
+        if(entrances.isErrorOccurred()){
+            ctx.status(400).render("errorPage.jte", Map.of("errorMessage", entrances.errorMessage, "status", 400));
+        }
+
+        List<PresentationEntrance> p_entrances = entrances.getValue().stream().map(PresentationEntrance::new).collect(Collectors.toList());
+        List<PresentationEntrance> guests = p_entrances.stream().filter(p_entrance -> p_entrance.getEnteredUser().isGuest()).collect(Collectors.toList());
+        List<PresentationEntrance> members = p_entrances.stream().filter(p_entrance -> p_entrance.getEnteredUser().isMemberOnly()).collect(Collectors.toList());
+        List<PresentationEntrance> managers = p_entrances.stream().filter(p_entrance -> p_entrance.getEnteredUser().isManagerOnly()).collect(Collectors.toList());
+        List<PresentationEntrance> owners = p_entrances.stream().filter(p_entrance -> p_entrance.getEnteredUser().isOwnerOnly()).collect(Collectors.toList());
+        List<PresentationEntrance> admins = p_entrances.stream().filter(p_entrance -> p_entrance.getEnteredUser().isAdmin()).collect(Collectors.toList());
+
+        ctx.render("adminEntrancesResult.jte", Map.of("admin", user, "from", fromDate, "to", toDate, "guests", guests, "members", members, "managers", managers, "owners", owners, "systemManagers", admins));
     }
 
     public void messagesHandler(WsConfig wsConfig) {
@@ -428,5 +470,35 @@ public class UserController {
         shopName = shopName == null || shopName.isEmpty()? null : shopName;
         return new SearchShopFilter(shopName,null);
     }
+
+    public void activeUser(WsConfig wsConfig) {
+        wsConfig.onConnect(ctx -> {
+            String username = ctx.getUpgradeCtx$javalin().cookieStore("uid");
+            activeUsers.putIfAbsent(username, LocalDateTime.now());
+        });
+
+        wsConfig.onMessage(ctx ->{
+            String username = ctx.getUpgradeCtx$javalin().cookieStore("uid");
+            activeUsers.put(username, LocalDateTime.now());
+        });
+
+    }
+
+    public void manageActiveUsers(){
+        LocalDateTime minuteBefore = LocalDateTime.now().minusMinutes(1);
+        for(String username: activeUsers.keySet()){
+            if(activeUsers.get(username).isBefore(minuteBefore)){
+                ResponseT<User> user = services.GetUser(username);
+                if(user.getValue().isLoggedIn()){
+                    ResponseT<User> guest = services.Logout(username);
+                    services.LeaveMarket(guest.getValue().getUserName());
+                }
+                else
+                    services.LeaveMarket(username);
+            }
+
+        }
+    }
+
 
 }

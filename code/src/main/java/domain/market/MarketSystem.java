@@ -14,11 +14,14 @@ import domain.shop.discount.DiscountPolicy;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
+import domain.user.EntranceLogger.Entrance;
+import domain.user.EntranceLogger.EntranceLogger;
 import domain.user.TransactionInfo;
 import domain.user.filter.*;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.net.ConnectException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -143,6 +146,12 @@ public class MarketSystem {
         Dotenv dotenv = Dotenv.configure().filename(".env").load();
         String adminUsername = dotenv.get("Admin_username"), password = dotenv.get("Admin_password");
         String mod = dotenv.get("Mod");
+
+        if(adminUsername == null || password == null){
+            errorLogger.logMsg(Level.SEVERE,"User tried to start market with Admin username/password null");
+            throw new RuntimeException("Given Admin username or password is null");
+        }
+
         if(!userController.createSystemManager(adminUsername, password)) {
             return false;
         }
@@ -175,6 +184,8 @@ public class MarketSystem {
             throw new RuntimeException("Couldn't start market system: failed to connect to external service");
         }
     }
+
+
 
     /***
      *
@@ -595,6 +606,19 @@ public class MarketSystem {
         isLogin(username);
         return userController.getOrderHistoryForShops(username, f);
 
+    }
+
+
+    public List<Entrance> getEntrances(String username, LocalDate from, LocalDate to) throws BlankDataExc, InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException {
+        if(username == null)
+            throw new BlankDataExc("parameter is null: username");
+        if(from == null)
+            throw new BlankDataExc("parameter is null: from date");
+        if(to == null)
+            throw new BlankDataExc("parameter is null: to date");
+        isExist(username);
+        isLogin(username);
+        return userController.getEntrances(username,from,to);
     }
 
     public List<Order> getOrderHistoryOfUser(String username, Filter<Order> filter) throws InvalidAuthorizationException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {

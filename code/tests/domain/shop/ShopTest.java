@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.mockito.Mockito;
 
-
 import static org.mockito.Mockito.*;
 
 public class ShopTest {

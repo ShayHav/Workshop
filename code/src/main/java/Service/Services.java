@@ -17,6 +17,7 @@ import domain.shop.*;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
+import domain.user.EntranceLogger.Entrance;
 import domain.user.filter.*;
 
 import java.io.FileReader;
@@ -26,6 +27,7 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -514,7 +516,7 @@ public class Services {
         try {
             marketSystem.AppointNewShopOwner(key, targetUser, userName);
             return new Response();
-        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | ShopNotFoundException | InvalidAuthorizationException e) {
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | ShopNotFoundException | InvalidAuthorizationException | BidNotFoundException | CriticalInvariantException e) {
             return new Response(e.getMessage());
         } catch (BidNotFoundException e) {
             return new Response(e.getMessage());
@@ -1178,18 +1180,18 @@ public class Services {
         }
     }
 
-    public Response acceptAppoint(int shopID, int bidID, String approver){
+    public Response acceptAppoint(int shopID, int appointmentNumber, String approver){
         try {
-            marketSystem.acceptAppoint(shopID, bidID, approver);
+            marketSystem.acceptAppoint(shopID, appointmentNumber, approver);
             return new Response();
         } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc exception) {
             return new Response(exception.getMessage());
         }
     }
 
-    public Response declineAppoint(int shopID, int bidID, String decliner){
+    public Response declineAppoint(int shopID, int appointmentNumber, String decliner){
         try {
-            marketSystem.declineAppoin(shopID, bidID, decliner);
+            marketSystem.declineAppoin(shopID, appointmentNumber, decliner);
             return new Response();
         } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
             return new Response(exception.getMessage());
@@ -1199,6 +1201,15 @@ public class Services {
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
+        }
+    }
+
+    public ResponseList<Entrance> getEntrances(String username, LocalDate from, LocalDate to){
+        try{
+            List<Entrance> result = marketSystem.getEntrances(username,from,to);
+            return new ResponseList<>(result);
+        } catch (InvalidSequenceOperationsExc | IncorrectIdentification | InvalidAuthorizationException | BlankDataExc e) {
+            return new ResponseList<>(e.getMessage());
         }
     }
 

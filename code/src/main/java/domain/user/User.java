@@ -4,10 +4,16 @@ package domain.user;
 import domain.*;
 import domain.DAL.ControllerDAL;
 import domain.Exceptions.*;
+import domain.Responses.Response;
+import domain.Responses.ResponseT;
 import domain.shop.*;
-import domain.user.Role;
+import domain.user.EntranceLogger.Entrance;
+import domain.user.EntranceLogger.EntranceLogger;
+import domain.user.filter.*;
 
 import javax.persistence.*;
+
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -96,6 +102,10 @@ public class User {
         roleList = new HashMap<>();
     }
 
+    private UserState2 getUserState(){
+        return us;
+    }
+
     public boolean isEnteredMarket() {
         return enteredMarket;
     }
@@ -148,7 +158,7 @@ public class User {
      * enter market - user state is now guest, with empty cart
      */
     public void enterMarket() {
-        us = UserState2.disconnected;
+        us = UserState2.guest;
         enteredMarket=true;
     }
 
@@ -339,6 +349,24 @@ public class User {
         return userCart.addProductToCart(shopID, productID, amount);
     }
 
+
+    public ResponseT<Integer> addNewBid(int shopID, int productID, int amount, double price) throws ShopNotFoundException {
+        if(getUserState().equals(UserState2.guest))
+            return new ResponseT<>("guests may not submit bids");
+        return userCart.addNewBidToCart(shopID, productID, amount, this, price);
+    }
+
+    public void bidApproved(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {
+        userCart.bidApproved(shopID, bidID);
+    }
+
+    public void removeBid(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {
+        userCart.removeBid(shopID, bidID);
+        userCart.getTotalAmount();
+    }
+
+
+
     public Response updateAmountOfProduct(int shopID, int productID, int amount) {
         return userCart.updateAmountOfProduct(shopID, productID, amount);
     }
@@ -382,6 +410,15 @@ public class User {
         }
     }
 
+    public List<Entrance> getEntrances(LocalDate from, LocalDate to) throws InvalidAuthorizationException {
+        if(isSystemManager && us == UserState2.systemManager)
+            return EntranceLogger.getInstance().getEntrances(from,to);
+        else {
+            errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
+            throw new InvalidAuthorizationException("SystemManager", us.toString());
+        }
+    }
+
 
     private Map<Shop, List<Order>> systemManagerGetOrderHistoryForShops(Filter<Order> f) throws ShopNotFoundException {
         ControllersBridge cb = ControllersBridge.getInstance();
@@ -416,36 +453,14 @@ public class User {
         }
     }
 
-  /*  public boolean removeManagerPermissions(String targetUser, int shop, String userId, List<ShopManagersPermissions> shopManagersPermissionsList) throws IncorrectIdentification, BlankDataExc {
-        synchronized (this) {
-            Shop shop1;
-            try{
-                shop1 = getShop(shop);
-            }catch (ShopNotFoundException snfe){
-                errorLogger.logMsg(Level.WARNING ,String.format("Shop: %d does not exist", shop));
-                return false;
-            }
-            //User user = MarketSystem.getInstance().getUser(targetUser);  //TODO: new class
-            return shop1.removePermissions(shopManagersPermissionsList, targetUser, userId);
-        }
-    }
 
-
-    public boolean saveCart(Cart cart) {
-        throw new UnsupportedOperationException("guest is not allowed to perform this action");
-    }
-
-    public void requestInfoOnOfficials(Filter f) {
-        throw new UnsupportedOperationException();
-    }
-    */
     /**
      * Checks whether the perpetrator may perform it and operate
      * @param targetUser
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
