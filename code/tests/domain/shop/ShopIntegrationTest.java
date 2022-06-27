@@ -277,7 +277,7 @@ public class ShopIntegrationTest {
         bidID = bidSucceed.getValue();
 
         try {
-            ms.acceptBid(shop.getShopID(), bidID, shopOwner);
+            ms.acceptBid(shop.getShopID(), bidID, shopOwner.getUserName());
         } catch (BidNotFoundException bidNotFoundException) {
             fail("bid should exist\n" + bidNotFoundException.getMessage());
             return;
@@ -286,6 +286,15 @@ public class ShopIntegrationTest {
             return;
         } catch (ShopNotFoundException shopNotFoundException) {
             fail("shop should exist\n" + shopNotFoundException.getMessage());
+            return;
+        }catch (IncorrectIdentification incorrectIdentification) {
+            fail("shop should exist\n" + incorrectIdentification.getMessage());
+            return;
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            fail("shop should exist\n" + invalidSequenceOperationsExc.getMessage());
+            return;
+        } catch (BlankDataExc blankDataExc) {
+            fail("shop should exist\n" + blankDataExc.getMessage());
             return;
         }
 
@@ -317,7 +326,7 @@ public class ShopIntegrationTest {
         bidID2 = bidSucceed2.getValue();
 
         try {
-            ms.acceptBid(shop.getShopID(), bidID2, shopOwner);
+            ms.acceptBid(shop.getShopID(), bidID2, shopOwner.getUserName());
         } catch (BidNotFoundException bidNotFoundException) {
             fail("bid should exist\n" + bidNotFoundException.getMessage());
             return;
@@ -326,6 +335,15 @@ public class ShopIntegrationTest {
             return;
         } catch (ShopNotFoundException shopNotFoundException) {
             fail("shop should exist\n" + shopNotFoundException.getMessage());
+            return;
+        } catch (IncorrectIdentification incorrectIdentification) {
+            fail("shop should exist\n" + incorrectIdentification.getMessage());
+            return;
+        } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
+            fail("shop should exist\n" + invalidSequenceOperationsExc.getMessage());
+            return;
+        } catch (BlankDataExc blankDataExc) {
+            fail("shop should exist\n" + blankDataExc.getMessage());
             return;
         }
         buyer.removeProductFromCart(shop.getShopID(), orangeID);

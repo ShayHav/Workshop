@@ -162,8 +162,9 @@ public class Cart {
             ResponseT<Order> result = s.checkout(billingInfo);
             orders.add(result);
             if (!result.isErrorOccurred()) {
-                baskets.remove(shopId);
                 eventLogger.logMsg(Level.INFO, String.format("basket of shop %d checkout successfully.", shopId));
+                if (s.shouldBeRemovedFromCart())
+                    baskets.remove(shopId);
             } else {
                 errorLogger.logMsg(Level.WARNING, String.format("basket of shop %d failed in checkout.", shopId));
             }

@@ -26,8 +26,8 @@ public class ShoppingBasket {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     private final Shop shop;
-    private final Map<Integer, Integer> productAmountList;
-    private final Map<Integer, Boolean> bidIDs_status;
+    private Map<Integer, Integer> productAmountList;
+    private Map<Integer, Boolean> bidIDs_status;
     private double basketAmount;
 
     public ShoppingBasket(Shop shop) {
@@ -189,7 +189,15 @@ public class ShoppingBasket {
             if(bid_status.getValue() == true)
                 acceptedBids.add(bid_status.getKey());
         }
-        return shop.checkout(productAmountList, acceptedBids, billingInfo);
+        ResponseT<Order> order = shop.checkout(productAmountList, acceptedBids, billingInfo);
+        if(!order.isErrorOccurred()) {
+            productAmountList = new HashMap<>();
+            for (Map.Entry<Integer, Boolean> bid : bidIDs_status.entrySet()) {
+                if (bid.getValue().equals(true))
+                    bidIDs_status.remove(bid.getKey());
+            }
+        }
+        return order;
     }
 
     public ServiceBasket showBasket() {
