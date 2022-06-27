@@ -23,6 +23,13 @@
                         Product</a>
                 @endif
             </div>
+            <div class="col-2">
+                @if(shop.isOpen)
+                    <a href="/shops/${shop.id}/bids" class="btn btn-primary">Bids</a>
+                @else
+                    <a href="/shops/${shop.id}/bids" class="btn btn-primary disabled" aria-disabled="true">Bids</a>
+                @endif
+            </div>
         @endif
         @if(user.hasOrdersPermissions(Integer.parseInt(shop.id)))
             <div class="col-2">

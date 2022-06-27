@@ -880,4 +880,19 @@ public class Shop {
     public void putIfAbsentManager(String userName, User appointUser) {
         ShopManagers.putIfAbsent(userName, appointUser);
     }
+
+    public List<BidFormat> getBids() {
+        return Collections.unmodifiableList(bidHandler.getBids());
+    }
+
+    public List<OwnerAppointment> getAppointment(){
+        return Collections.unmodifiableList(appointHandler.getAppointments());
+    }
+
+    public void removeManager(User toRemove, User remover){
+        if(isFounder(remover.getUserName()) || isOwner(remover.getUserName())) {
+            ShopManagers.remove(toRemove.getUserName());
+            toRemove.removeRole(Role.ShopManager, this.shopID);
+        }
+    }
 }

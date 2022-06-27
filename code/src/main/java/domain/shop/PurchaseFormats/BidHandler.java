@@ -59,4 +59,8 @@ public class BidHandler {
     public void declineBid(int bidID, User decliner) throws BidNotFoundException {
         getBid(bidID).decline(decliner);
     }
+
+    public List<BidFormat> getBids() {
+        return bids;
+    }
 }

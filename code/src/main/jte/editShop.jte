@@ -1,4 +1,5 @@
 @import Presentation.Main
+@import Presentation.Model.PresentationAppointment
 @import Presentation.Model.PresentationShop
 @import Presentation.Model.PresentationUser
 @import domain.shop.PurchasePolicys.PurchaseRule
@@ -16,14 +17,14 @@
         <div class="col-6">
             <h2 class="fs-4">Shop Owners</h2>
             <ul id="ownerList" class="list-group">
-                @for(PresentationUser owner: shop.managers)
+                @for(PresentationUser owner: shop.owners)
                     <li id="${owner.getUsername()}" class="list-group-item">
                         <h3 class="fs-5">${owner.getUsername()}</h3>
-                        @if(user.isMyAppointed(shop.getID(), owner) || shop.isFounder(user))
+                        @if((user.isMyAppointed(shop.getID(), owner) || shop.isFounder(user)) && !owner.equals(user))
                             <form class="remove-owner">
-                                <input class="visually-hidden" name="ownerID" type="text" value="${owner.getUsername()}"
+                                <input class="visually-hidden" name="ownerID" type="hidden" value="${owner.getUsername()}"
                                        readonly>
-                                <button class="btn btn-danger remove-owner-btn">
+                                <button type="button" class="btn btn-danger remove-owner-btn">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                          class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
@@ -34,7 +35,7 @@
                     </li>
                 @endfor
                 <li class="list-group-item">
-                    <form>
+                    <form method="post" action="/shops/${shop.id}/appointOwner">
                         <div class="row align-items-end">
                             <div class="col-8">
                                 <label for="ownerID">Owner's Username</label>
@@ -42,7 +43,7 @@
                                        class="form-text form-control" type="text" required>
                             </div>
                             <div class="col-4 mb-0">
-                                <button type="button" id="add-owner-btn" class="btn btn-success">Add Owner</button>
+                                <button id="add-owner-btn" class="btn btn-success">Add Owner</button>
                             </div>
                         </div>
                     </form>
@@ -261,6 +262,47 @@
             </li>
         </ul>
     </div>
+    <div class="mb-5">
+        <h3>Owners Appointments</h3>
+        <ul id="appointmentList" class="list-group list-group-flush">
+            @if(shop.getAppointments().isEmpty())
+                <li class="list-group-item">
+                    <h4 class="fs-5">There are no owners appointments currently</h4>
+                </li>
+            @endif
+        @for(PresentationAppointment appointment: shop.getAppointments())
+            <li class="list-group-item">
+                <div>
+                    <h4>${appointment.getToAppoint().getUsername()} Appointment</h4>
+                    <p><b>Opened By:</b> ${appointment.getAppointer().getUsername()}</p>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: ${appointment.getStatus()}%" aria-valuenow="${appointment.getStatus()}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                @if(!appointment.isCompleted())
+                    <div class="row my-3">
+                        <div class="col-2">
+                            <form method="post" action="/shops/${appointment.getShopID()}/approveAppointment">
+                                <input type="hidden" name="appointmentNumber" value="${appointment.getAppointmentNumber()}">
+                                @if(!appointment.didApporoved(user))
+                                    <button class="btn btn-success">Approve</button>
+                                @else
+                                    <button class="btn btn-success" disabled>Approve</button>
+                                @endif
+                            </form>
+                        </div>
+                        <div class="col-2">
+                            <form method="post" action="/shops/${appointment.getShopID()}/declineAppointment">
+                                <input type="hidden" name="appointmentNumber" value="${appointment.getAppointmentNumber()}">
+                                <button class="btn btn-danger">Decline</button>
+                            </form>
+                        </div>
+                    </div>
+                @endif
+            </li>
+        @endfor
+        </ul>
+    </div>
 </main>
 
 </body>
@@ -273,7 +315,7 @@
         const message = {
             type: 'removeManager',
             requestingUser: '${user.getUsername()}',
-            subject: this.managerID
+            subject: this.parentNode.childNodes[1].value
         }
         socket.send(JSON.stringify(message));
     }
@@ -281,7 +323,7 @@
         const message = {
             type: 'removeOwner',
             requestingUser: '${user.getUsername()}',
-            subject: this.managerID
+            subject: this.parentNode.childNodes[1].value
         }
         socket.send(JSON.stringify(message));
     }
@@ -329,41 +371,15 @@
         document.getElementById('managersList').prepend(node);
     }
 
-    function addOwnerNode(message) {
-        console.log(message)
-        let node = document.createElement('li');
-        node.id = message.addedOwner;
-        node.classList.add('list-group-item');
-        let headline = document.createElement('h3');
-        headline.classList.add('fs-5');
-        headline.textContent = message.addedOwner;
-        let removeform = document.createElement('form');
-        removeform.classList.add('remove-owner');
-        let input = document.createElement('input');
-        input.classList.add('visually-hidden');
-        input.value = message.addedOwner;
-        input.type = 'text';
-        input.readOnly = true;
-        input.name = 'ownerID';
-        let button = document.createElement('button');
-        button.classList.add('btn', 'btn-danger');
-        button.textContent = 'Remove';
-        button.onclick = removeOwner;
-        node.append(headline, removeform);
-        removeform.append(input, button);
-        document.getElementById('ownerList').prepend(node);
-    }
-
 
     document.querySelector("#add-manager-btn").onclick = addManager;
-    document.querySelector('#add-owner-btn').onclick = addOwner;
     socket.onmessage = async (e) => {
         const message = JSON.parse(e.data);
         if (!message.errorMessage)
-            message.type === 'removeManager' ? document.getElementById(message.removedUser).remove() :
-                message.type === 'removeOwner' ? document.getElementById(message.removedUser).remove() :
+            message.type === 'removeManager' ? document.getElementById(message.removedManager).remove() :
+                message.type === 'removeOwner' ? document.getElementById(message.removedOwner).remove() :
                     message.type === 'addManager' ? addManagerNode(message) :
-                        message.type === 'addOwner' ? addOwnerNode(message) : undefined
+                        undefined
         else
             document.getElementById(message.removedUser).classList.add('border', 'border-red');
     }

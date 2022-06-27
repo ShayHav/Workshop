@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="correct appointment of owner in shops">
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/RemoveManagerMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/RemoveOwnerMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationAppointment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/OwnerAppointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/OwnerAppointment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/navBar.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/navBar.jte" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/code/src/main/java/Service/Services.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="false" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="false" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectId" id="2974Zwr79onHhRue6hzZoLuD64v" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="domain.shop" />
+      <recent name="domain.market" />
+      <recent name="domain.user" />
+      <recent name="domain" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
+      <module name="workshop" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Presentation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CheckoutCaseTest.NoConnectionPaymentTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Testing_System.AccepanceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="Testing_System.AccepanceTests" />
+      <option name="MAIN_CLASS_NAME" value="Testing_System.AccepanceTests.CheckoutCaseTest" />
+      <option name="METHOD_NAME" value="NoConnectionPaymentTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExternalConnectorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.ExternalServicesTest.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.ExternalServicesTest" />
+      <option name="MAIN_CLASS_NAME" value="domain.ExternalServicesTest.ExternalConnectorTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExternalConnectorTest.supplyWithInfiniteLoop" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.ExternalServicesTest.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.ExternalServicesTest" />
+      <option name="MAIN_CLASS_NAME" value="domain.ExternalServicesTest.ExternalConnectorTest" />
+      <option name="METHOD_NAME" value="supplyWithInfiniteLoop" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Testing_System in workshop" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Testing_System.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="Testing_System" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Main" />
+      <item itemvalue="JUnit.CheckoutCaseTest.NoConnectionPaymentTest" />
+      <item itemvalue="JUnit.Testing_System in workshop" />
+      <item itemvalue="JUnit.ExternalConnectorTest" />
+      <item itemvalue="JUnit.ExternalConnectorTest.supplyWithInfiniteLoop" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.CheckoutCaseTest.NoConnectionPaymentTest" />
+        <item itemvalue="JUnit.Testing_System in workshop" />
+        <item itemvalue="JUnit.ExternalConnectorTest" />
+        <item itemvalue="JUnit.ExternalConnectorTest.supplyWithInfiniteLoop" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="" />
+      <created>1652450853804</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1652450853804</updated>
+      <workItem from="1652450856379" duration="9297000" />
+      <workItem from="1652531817350" duration="35420000" />
+      <workItem from="1652789475693" duration="18965000" />
+      <workItem from="1652812824910" duration="593000" />
+      <workItem from="1652860495633" duration="4674000" />
+      <workItem from="1652875535922" duration="2377000" />
+      <workItem from="1652882526596" duration="5836000" />
+      <workItem from="1653230463411" duration="508000" />
+      <workItem from="1653231170086" duration="10575000" />
+      <workItem from="1653309189791" duration="35881000" />
+      <workItem from="1653554092280" duration="45121000" />
+      <workItem from="1653906343354" duration="9092000" />
+      <workItem from="1654000947394" duration="308000" />
+      <workItem from="1654343462330" duration="49005000" />
+      <workItem from="1654628125317" duration="8155000" />
+      <workItem from="1654694608746" duration="6384000" />
+      <workItem from="1656157361083" duration="6597000" />
+      <workItem from="1656329846026" duration="10143000" />
+    </task>
+    <task id="LOCAL‎00018" summary="fixed add to cart">
+      <created>1652797948608</created>
+      <option name="number" value="LOCAL‎00018" />
+      <option name="presentableId" value="LOCAL‎00018" />
+      <updated>1652797948608</updated>
+    </task>
+    <task id="LOCAL‎00019" summary="added cart impl, remove from cart, update cart - still need checkout">
+      <created>1652801697956</created>
+      <option name="number" value="LOCAL‎00019" />
+      <option name="presentableId" value="LOCAL‎00019" />
+      <updated>1652801697956</updated>
+    </task>
+    <task id="LOCAL‎00020" summary="added cart impl, remove from cart, update cart - still need checkout">
+      <created>1652801993917</created>
+      <option name="number" value="LOCAL‎00020" />
+      <option name="presentableId" value="LOCAL‎00020" />
+      <updated>1652801993917</updated>
+    </task>
+    <task id="LOCAL‎00021" summary="fix in cart and product page">
+      <created>1652812612062</created>
+      <option name="number" value="LOCAL‎00021" />
+      <option name="presentableId" value="LOCAL‎00021" />
+      <updated>1652812612062</updated>
+    </task>
+    <task id="LOCAL‎00022" summary="checkout proccess - unchecked">
+      <created>1652880024654</created>
+      <option name="number" value="LOCAL‎00022" />
+      <option name="presentableId" value="LOCAL‎00022" />
+      <updated>1652880024654</updated>
+    </task>
+    <task id="LOCAL‎00023" summary="final fixes">
+      <created>1652882856109</created>
+      <option name="number" value="LOCAL‎00023" />
+      <option name="presentableId" value="LOCAL‎00023" />
+      <updated>1652882856109</updated>
+    </task>
+    <task id="LOCAL‎00024" summary="cart fix">
+      <created>1652888095946</created>
+      <option name="number" value="LOCAL‎00024" />
+      <option name="presentableId" value="LOCAL‎00024" />
+      <updated>1652888095946</updated>
+    </task>
+    <task id="LOCAL‎00025" summary="permissions in shop regarding gui - fixes">
+      <created>1653230587540</created>
+      <option name="number" value="LOCAL‎00025" />
+      <option name="presentableId" value="LOCAL‎00025" />
+      <updated>1653230587540</updated>
+    </task>
+    <task id="LOCAL‎00026" summary="remove + update amount in cart -works&#10;responsive login - not available at the moment&#10;checkoutForm - looks nice">
+      <created>1653241728973</created>
+      <option name="number" value="LOCAL‎00026" />
+      <option name="presentableId" value="LOCAL‎00026" />
+      <updated>1653241728973</updated>
+    </task>
+    <task id="LOCAL‎00027" summary="checkout works - positive scenario&#10;fix in searchByKeyword&#10;fix in checkoutForm&#10;fix in shop parameters - init market system and check if purchasePolicy != null in checkout">
+      <created>1653314011315</created>
+      <option name="number" value="LOCAL‎00027" />
+      <option name="presentableId" value="LOCAL‎00027" />
+      <updated>1653314011315</updated>
+    </task>
+    <task id="LOCAL‎00028" summary="while adding product to cart - maximum inits to add is the current maximum units in stock">
+      <created>1653314135712</created>
+      <option name="number" value="LOCAL‎00028" />
+      <option name="presentableId" value="LOCAL‎00028" />
+      <updated>1653314135712</updated>
+    </task>
+    <task id="LOCAL‎00029" summary="sales history page in shop +&#10;bug fix in search order filter">
+      <created>1653330902366</created>
+      <option name="number" value="LOCAL‎00029" />
+      <option name="presentableId" value="LOCAL‎00029" />
+      <updated>1653330902366</updated>
+    </task>
+    <task id="LOCAL‎00030" summary="merged the contents in shop.jte">
+      <created>1653331373103</created>
+      <option name="number" value="LOCAL‎00030" />
+      <option name="presentableId" value="LOCAL‎00030" />
+      <updated>1653331373103</updated>
+    </task>
+    <task id="LOCAL‎00031" summary="relocated 2 classes">
+      <created>1653331426949</created>
+      <option name="number" value="LOCAL‎00031" />
+      <option name="presentableId" value="LOCAL‎00031" />
+      <updated>1653331426949</updated>
+    </task>
+    <task id="LOCAL‎00032" summary="added new user-personal dropdown in nav-bar">
+      <created>1653406586754</created>
+      <option name="number" value="LOCAL‎00032" />
+      <option name="presentableId" value="LOCAL‎00032" />
+      <updated>1653406586754</updated>
+    </task>
+    <task id="LOCAL‎00033" summary="collapse animation works&#10;changed product page - if product out of stock we notify in shop page + in product shop there is no option of adding it to cart.">
+      <created>1653409544190</created>
+      <option name="number" value="LOCAL‎00033" />
+      <option name="presentableId" value="LOCAL‎00033" />
+      <updated>1653409544190</updated>
+    </task>
+    <task id="LOCAL‎00034" summary="when system manager requests history of sales - returns all shops or all users (2 different methods)">
+      <created>1653411299729</created>
+      <option name="number" value="LOCAL‎00034" />
+      <option name="presentableId" value="LOCAL‎00034" />
+      <updated>1653411299729</updated>
+    </task>
+    <task id="LOCAL‎00035" summary="user can now access his orders - only if member&#10;fixed many return statements in system market- returned null if user isn't logged in instead of throwing an exception&#10;fixed some errors in services - method returns Response, in mistake returned ResponseT">
+      <created>1653414630886</created>
+      <option name="number" value="LOCAL‎00035" />
+      <option name="presentableId" value="LOCAL‎00035" />
+      <updated>1653414630886</updated>
+    </task>
+    <task id="LOCAL‎00036" summary="solved conflicts">
+      <created>1653415248505</created>
+      <option name="number" value="LOCAL‎00036" />
+      <option name="presentableId" value="LOCAL‎00036" />
+      <updated>1653415248505</updated>
+    </task>
+    <task id="LOCAL‎00037" summary="users now have access to old orders and all their shops (if they are the shop founders)&#10;fixed bug i created in mistake - checked login for actions that could be performed by guests">
+      <created>1653417632871</created>
+      <option name="number" value="LOCAL‎00037" />
+      <option name="presentableId" value="LOCAL‎00037" />
+      <updated>1653417632871</updated>
+    </task>
+    <task id="LOCAL‎00038" summary="bug fix in user - reset order history in every entrance in mistake&#10;appearance changes in addProduct.jte, editProduct.jte etc.">
+      <created>1653560142030</created>
+      <option name="number" value="LOCAL‎00038" />
+      <option name="presentableId" value="LOCAL‎00038" />
+      <updated>1653560142030</updated>
+    </task>
+    <task id="LOCAL‎00039" summary="changed register and login signatures &#10;added state to user presentation to support admin operations only">
+      <created>1653570282136</created>
+      <option name="number" value="LOCAL‎00039" />
+      <option name="presentableId" value="LOCAL‎00039" />
+      <updated>1653570282136</updated>
+    </task>
+    <task id="LOCAL‎00040" summary="register fix in gui, &#10;started to impl admin page">
+      <created>1653581447190</created>
+      <option name="number" value="LOCAL‎00040" />
+      <option name="presentableId" value="LOCAL‎00040" />
+      <updated>1653581447190</updated>
+    </task>
+    <task id="LOCAL‎00041" summary="Admin has a new page where he can see information about the market : active users, total registered, list of users and option to delete, etc.">
+      <created>1653662841049</created>
+      <option name="number" value="LOCAL‎00041" />
+      <option name="presentableId" value="LOCAL‎00041" />
+      <updated>1653662841049</updated>
+    </task>
+    <task id="LOCAL‎00042" summary="admin page for sales history, fixes in signatures - needed map instead of list of orders to identify orders per user/shop.">
+      <created>1653761278118</created>
+      <option name="number" value="LOCAL‎00042" />
+      <option name="presentableId" value="LOCAL‎00042" />
+      <updated>1653761278118</updated>
+    </task>
+    <task id="LOCAL‎00043" summary="minor changes">
+      <created>1654001202347</created>
+      <option name="number" value="LOCAL‎00043" />
+      <option name="presentableId" value="LOCAL‎00043" />
+      <updated>1654001202347</updated>
+    </task>
+    <task id="LOCAL‎00044" summary="filter works &#10;filter orders in - shops sales history, user sales history&#10;filter shops in - user shops, main homepage&#10;filter products in - search products, shop homepage">
+      <created>1654435216862</created>
+      <option name="number" value="LOCAL‎00044" />
+      <option name="presentableId" value="LOCAL‎00044" />
+      <updated>1654435216862</updated>
+    </task>
+    <task id="LOCAL‎00045" summary="deleted unnecessary">
+      <created>1654437916850</created>
+      <option name="number" value="LOCAL‎00045" />
+      <option name="presentableId" value="LOCAL‎00045" />
+      <updated>1654437916850</updated>
+    </task>
+    <task id="LOCAL‎00046" summary="all commited">
+      <created>1654515925582</created>
+      <option name="number" value="LOCAL‎00046" />
+      <option name="presentableId" value="LOCAL‎00046" />
+      <updated>1654515925583</updated>
+    </task>
+    <task id="LOCAL‎00047" summary="merged presentation-cont into main">
+      <created>1654518242153</created>
+      <option name="number" value="LOCAL‎00047" />
+      <option name="presentableId" value="LOCAL‎00047" />
+      <updated>1654518242153</updated>
+    </task>
+    <task id="LOCAL‎00048" summary="merged presentation-cont into main and refactored classes">
+      <created>1654519380470</created>
+      <option name="number" value="LOCAL‎00048" />
+      <option name="presentableId" value="LOCAL‎00048" />
+      <updated>1654519380470</updated>
+    </task>
+    <task id="LOCAL‎00049" summary="build works with tests + testing system on exclusion">
+      <created>1654520059671</created>
+      <option name="number" value="LOCAL‎00049" />
+      <option name="presentableId" value="LOCAL‎00049" />
+      <updated>1654520059671</updated>
+    </task>
+    <task id="LOCAL‎00050" summary="returned entity for user">
+      <created>1654520556228</created>
+      <option name="number" value="LOCAL‎00050" />
+      <option name="presentableId" value="LOCAL‎00050" />
+      <updated>1654520556231</updated>
+    </task>
+    <task id="LOCAL‎00051" summary="login signature fixed">
+      <created>1654521048259</created>
+      <option name="number" value="LOCAL‎00051" />
+      <option name="presentableId" value="LOCAL‎00051" />
+      <updated>1654521048259</updated>
+    </task>
+    <task id="LOCAL‎00052" summary="minor fix - added price per product in gui cart">
+      <created>1654602955133</created>
+      <option name="number" value="LOCAL‎00052" />
+      <option name="presentableId" value="LOCAL‎00052" />
+      <updated>1654602955133</updated>
+    </task>
+    <task id="LOCAL‎00053" summary="started impl of policies in gui">
+      <created>1654605469068</created>
+      <option name="number" value="LOCAL‎00053" />
+      <option name="presentableId" value="LOCAL‎00053" />
+      <updated>1654605469068</updated>
+    </task>
+    <task id="LOCAL‎00054" summary="started impl of policies in gui">
+      <created>1654608261237</created>
+      <option name="number" value="LOCAL‎00054" />
+      <option name="presentableId" value="LOCAL‎00054" />
+      <updated>1654608261237</updated>
+    </task>
+    <task id="LOCAL‎00055" summary="started impl of policies in gui">
+      <created>1654628182784</created>
+      <option name="number" value="LOCAL‎00055" />
+      <option name="presentableId" value="LOCAL‎00055" />
+      <updated>1654628182784</updated>
+    </task>
+    <task id="LOCAL‎00056" summary="design of discount add + compose">
+      <created>1654632320262</created>
+      <option name="number" value="LOCAL‎00056" />
+      <option name="presentableId" value="LOCAL‎00056" />
+      <updated>1654632320262</updated>
+    </task>
+    <task id="LOCAL‎00057" summary="design of discount add + compose">
+      <created>1654632355734</created>
+      <option name="number" value="LOCAL‎00057" />
+      <option name="presentableId" value="LOCAL‎00057" />
+      <updated>1654632355734</updated>
+    </task>
+    <task id="LOCAL‎00058" summary="started impl discount from gui to domain">
+      <created>1654633586760</created>
+      <option name="number" value="LOCAL‎00058" />
+      <option name="presentableId" value="LOCAL‎00058" />
+      <updated>1654633586760</updated>
+    </task>
+    <task id="LOCAL‎00059" summary="add discount impl">
+      <created>1654634380676</created>
+      <option name="number" value="LOCAL‎00059" />
+      <option name="presentableId" value="LOCAL‎00059" />
+      <updated>1654634380676</updated>
+    </task>
+    <task id="LOCAL‎00060" summary="fix notification tests">
+      <created>1654696317218</created>
+      <option name="number" value="LOCAL‎00060" />
+      <option name="presentableId" value="LOCAL‎00060" />
+      <updated>1654696317219</updated>
+    </task>
+    <task id="LOCAL‎00061" summary="merged with main">
+      <created>1655995769060</created>
+      <option name="number" value="LOCAL‎00061" />
+      <option name="presentableId" value="LOCAL‎00061" />
+      <updated>1655995769061</updated>
+    </task>
+    <task id="LOCAL‎00062" summary="remove discounts">
+      <created>1656000476924</created>
+      <option name="number" value="LOCAL‎00062" />
+      <option name="presentableId" value="LOCAL‎00062" />
+      <updated>1656000476924</updated>
+    </task>
+    <task id="LOCAL‎00063" summary="delete discounts, started compose discounts">
+      <created>1656005876234</created>
+      <option name="number" value="LOCAL‎00063" />
+      <option name="presentableId" value="LOCAL‎00063" />
+      <updated>1656005876234</updated>
+    </task>
+    <task id="LOCAL‎00064" summary="Add tests to delayed notification and add field to TransactionInfo to support new demand of external services">
+      <created>1656074756278</created>
+      <option name="number" value="LOCAL‎00064" />
+      <option name="presentableId" value="LOCAL‎00064" />
+      <updated>1656074756278</updated>
+    </task>
+    <task id="LOCAL‎00065" summary="change payment and supply to return transaction id from external service instead of boolean">
+      <created>1656161599683</created>
+      <option name="number" value="LOCAL‎00065" />
+      <option name="presentableId" value="LOCAL‎00065" />
+      <updated>1656161599683</updated>
+    </task>
+    <task id="LOCAL‎00066" summary="correct appointment of owner in shops">
+      <created>1656261958457</created>
+      <option name="number" value="LOCAL‎00066" />
+      <option name="presentableId" value="LOCAL‎00066" />
+      <updated>1656261958457</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="register fix in gui, &#10;started to impl admin page" />
+    <MESSAGE value="Admin has a new page where he can see information about the market : active users, total registered, list of users and option to delete, etc." />
+    <MESSAGE value="admin page for sales history, fixes in signatures - needed map instead of list of orders to identify orders per user/shop." />
+    <MESSAGE value="minor changes" />
+    <MESSAGE value="filter works &#10;filter orders in - shops sales history, user sales history&#10;filter shops in - user shops, main homepage&#10;filter products in - search products, shop homepage" />
+    <MESSAGE value="started filter for &quot;allSalesHistory&quot;" />
+    <MESSAGE value="deleted unnecessary" />
+    <MESSAGE value="all commited" />
+    <MESSAGE value="merged presentation-cont into main" />
+    <MESSAGE value="merged presentation-cont into main and refactored classes" />
+    <MESSAGE value="build works with tests + testing system on exclusion" />
+    <MESSAGE value="returned entity for user" />
+    <MESSAGE value="login signature fixed" />
+    <MESSAGE value="minor fix - added price per product in gui cart" />
+    <MESSAGE value="started impl of policies in gui" />
+    <MESSAGE value="design of discount add + compose" />
+    <MESSAGE value="started impl discount from gui to domain" />
+    <MESSAGE value="add discount impl" />
+    <MESSAGE value="fix notification tests" />
+    <MESSAGE value="merged with main" />
+    <MESSAGE value="remove discounts" />
+    <MESSAGE value="delete discounts, started compose discounts" />
+    <MESSAGE value="Add tests to delayed notification and add field to TransactionInfo to support new demand of external services" />
+    <MESSAGE value="change payment and supply to return transaction id from external service instead of boolean" />
+    <MESSAGE value="correct appointment of owner in shops" />
+    <option name="LAST_COMMIT_MESSAGE" value="correct appointment of owner in shops" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
+          <line>134</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
+          <line>150</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/tests/domain/ExternalServicesTest/ExternalConnectorTest.java</url>
+          <line>113</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Testing_System/RealBridge.java</url>
+          <line>131</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
+          <line>714</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
+          <line>245</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="Service.Services" memberName="marketSystem" />
+        <PinnedItemInfo parentTag="domain.ResponseList" memberName="value" />
+      </pinned-members>
+    </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="function" language="JAVA" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Workshop$Main.ic" NAME="Main Coverage Results" MODIFIED="1653325610497" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>Presentation.*</FILTER>
+    </SUITE>
+  </component>
+</project>

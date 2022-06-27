@@ -55,14 +55,33 @@
                     </div>
                 @endif
             </form>
-            @if(user.hasInventoryPermission(shopId))
-                <div class="mb-2">
-                <a href="/shops/${shopId}/${product.serialNumber}/edit" class="btn btn-warning">Edit Product</a>
-                </div>
-                <div>
-                <form method="post" name="removeProductForm" action="/shops/${shopId}/${product.serialNumber}/remove">
-                    <button id="removeProduct" name="removeProduct" type="submit" class="btn btn-danger">Remove Product</button>
+        </div>
+        <div class="container card-body">
+            @if(product.amount > 0)
+                <form method="post">
+                    <div class="col-6 mb-3">
+                        <label class="form-label" for="bidQuantity">Quantity</label>
+                        <input class="form-control" type="number" name="quantity" id="bidQuantity" min="1" max="${product.amount}" required>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label" for="bidPrice">Price</label>
+                        <input class="form-control" type="number" name="price" id="bidPrice" min="0" step="0.1" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="submitBidBtn">Offer Bid</button>
                 </form>
+            @endif
+        </div>
+        <div class="container card-body">
+            @if(user.hasInventoryPermission(shopId))
+                <div class="row">
+                    <div class="mb-2">
+                        <a href="/shops/${shopId}/${product.serialNumber}/edit" class="btn btn-warning">Edit Product</a>
+                    </div>
+                    <div>
+                    <form method="post" name="removeProductForm" action="/shops/${shopId}/${product.serialNumber}/remove">
+                        <button id="removeProduct" name="removeProduct" type="submit" class="btn btn-danger">Remove Product</button>
+                    </form>
+                    </div>
                 </div>
             @endif
         </div>
@@ -85,11 +104,19 @@
     const add_button = document.querySelector('#addProduct');
     const add = function () {
         const form = document.amountForm;
-        const message = {username: username, shopID: shopID, serialNumber: serial, quantity: form.amount.value};
+        const message = {type:"buyRequest", username: username, shopID: shopID, serialNumber: serial, quantity: form.amount.value};
         socket.send(JSON.stringify(message));
     }
 
     add_button.addEventListener('click', add);
+
+    document.querySelector('#submitBidBtn').addEventListener('click', () =>{
+        const price = document.querySelector('#bidPrice').value;
+        const quantity = document.querySelector('#bidQuantity').value;
+        const message = {type: "bidRequest" ,username: username, shopID: shopID, serialNumber: serial, quantity: quantity, price:price}
+        socket.send(JSON.stringify(message))
+    })
+
     socket.onmessage = async function (event) {
         const response = JSON.parse(event.data);
         if (!response.errorMessage) {

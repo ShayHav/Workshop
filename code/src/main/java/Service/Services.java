@@ -14,6 +14,7 @@ import domain.ExternalConnectors.SupplyService;
 import domain.notifications.AdminObserver;
 import domain.notifications.UserObserver;
 import domain.shop.*;
+import domain.shop.PurchaseFormats.BidFormat;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
@@ -1245,5 +1246,14 @@ public class Services {
         }
         errorLogger.logMsg(Level.SEVERE,"method not found in service's methods");
         throw new RuntimeException(String.format("method %s not found in service methods list", function.getName()));
+    }
+
+    public ResponseList<BidFormat> getBidRequestForShop(String username, int shopID){
+        try{
+            Shop shop = marketSystem.getShop(shopID);
+            return new ResponseList<BidFormat>(shop.getBids());
+        }catch (Exception e){
+            return new ResponseList<BidFormat>(e.getMessage());
+        }
     }
 }

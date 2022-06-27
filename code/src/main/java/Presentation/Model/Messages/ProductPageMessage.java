@@ -1,12 +1,14 @@
 package Presentation.Model.Messages;
 
-public class AddToCartMessage {
+public class ProductPageMessage {
+    private String type;
     private String username;
     private int shopID;
     private int serialNumber;
     private int quantity;
+    private double price;
 
-    public AddToCartMessage(){
+    public ProductPageMessage(){
 
     }
 
@@ -40,5 +42,21 @@ public class AddToCartMessage {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getPrice() {
+        return price;
     }
 }
