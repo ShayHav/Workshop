@@ -4,24 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="entranc">
-      <change afterPath="$PROJECT_DIR$/code/tests/domain/user/EntranceLogger/EntranceLoggerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/EntranceLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/EntranceLogger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/jte/adminEntrancesResult.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/adminEntrancesResult.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/jte/adminManagingPage.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/adminManagingPage.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/target/classes/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/state_init.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/SystemManager/SystemManagerPageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/SystemManager/SystemManagerPageTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/tests/domain/user/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/user/UserControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
-    </list>
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="entranc" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,6 +18,9 @@
         <option value="JUnit5 Test Class" />
       </list>
     </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="main" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -541,7 +527,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="register fix in gui, &#10;started to impl admin page" />
@@ -576,18 +561,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>138</line>
+          <line>139</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>154</line>
+          <line>155</line>
           <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>629</line>
-          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
