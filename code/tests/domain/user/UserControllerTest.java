@@ -1,8 +1,7 @@
 package domain.user;
 
-
+import Testing_System.UserGenerator;
 import domain.Exceptions.*;
-import domain.UserGeneratorTemp;
 import domain.shop.Shop;
 import domain.shop.ShopController;
 import org.junit.jupiter.api.AfterEach;
@@ -17,14 +16,14 @@ import java.util.function.BooleanSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
-    private UserController userController = UserController.getInstance();;
+    /*private UserController userController = UserController.getInstance();;
     private ShopController shopController = ShopController.getInstance();
-    private UserGeneratorTemp userGenerator = new UserGeneratorTemp();
+    private UserGenerator userGenerator = new UserGenerator();
     private String[] userName = userGenerator.GetValidUsers();
     private String admin = userGenerator.GetAdminID();
     private String adminPass = userGenerator.GetAdminPW();
-    private String[] userPass = userGenerator.getPw();
-    private String[] badPass = userGenerator.getBadPW();
+    private String[] userPass = userGenerator.GetPW();
+    private String[] badPass = userGenerator.GetBadPW();
     private String[] nitayName = userGenerator.getNitayNames();
     private String[] nitayPass = userGenerator.getNitayPassword();
 
@@ -327,5 +326,5 @@ public class UserControllerTest {
         for(int i =0;i<nitayName.length;i++){
             assertTrue(userController.getUser(nitayName[i]).isLoggedIn());
         }
-    }
+    }*/
 }

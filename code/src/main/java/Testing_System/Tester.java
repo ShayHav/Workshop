@@ -1,25 +1,19 @@
 package Testing_System;
 
-import Presentation.Model.PresentationShop;
-import Presentation.Model.PresentationUser;
-import domain.Exceptions.BlankDataExc;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Exceptions.ShopNotFoundException;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
-import domain.notifications.UserObserver;
 import domain.shop.*;
+import domain.shop.user.User;
 import domain.user.*;
-import domain.user.TransactionInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchOfficialsFilter;
-import domain.user.filter.SearchOrderFilter;
-import domain.user.filter.SearchUserFilter;
+import domain.shop.user.TransactionInfo;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchOfficialsFilter;
+import domain.shop.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -40,13 +34,13 @@ public class Tester {
 
     //Guest-Visitor General
     //done
-    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
-        return br.Login(username, pw,uo);
+    public ResponseT<User> Login(String guest, String username, String pw) {
+        return br.Login(guest, username, pw);
     }
 
     //done
-    public Response Register(String username, String pw) {
-        return br.Register(username, pw);
+    public Response Register(String guest, String username, String pw) {
+        return br.Register(guest, username, pw);
     }
 
     //done - not needed
@@ -143,7 +137,7 @@ public class Tester {
         return br.AppointNewShopManager(key, targetUser, userId);
     }
 
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID)
     {
         return br.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
@@ -199,8 +193,8 @@ public class Tester {
     }
 
     //done
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
-        return br.StartMarket(payment, supply, userID, password);
+    public Response StartMarket(PaymentService payment, SupplyService supply) {
+        return br.StartMarket(payment, supply);
     }
 
     public Result<Boolean, String> AddSupplyService(String path) {
@@ -219,7 +213,7 @@ public class Tester {
         return br.RemovePaymentService(path);
     }
 
-    public Result<Boolean, String> DeleteUserTest(String[] usernames)
+    public Response DeleteUserTest(String[] usernames)
     {
         return br.DeleteUserTest(usernames);
     }

@@ -1,7 +1,13 @@
 package domain.shop;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+
+@Entity
 public class ProductImp implements Product{
 
+    @Id
     private final int id;
     private String name;
     private String description;
@@ -11,6 +17,21 @@ public class ProductImp implements Product{
     private int shopRank;
     private int quantity;
 
+    public Product merge(ProductImp pi)
+    {
+        setName(pi.getName());
+        setDescription(pi.getDescription());
+        setCategory(pi.getCategory());
+        setBasePrice(pi.getBasePrice());
+        setShopRank(pi.getShopRank());
+        setRank(pi.getRank());
+        setQuantity(pi.getAmount());
+        return this;
+    }
+    public void setRank(int rank)
+    {
+        this.rank = rank;
+    }
     public ProductImp(int id, String name, String description, String category, double basePrice, int quantity){
         this.id = id;
         this.name = name;
@@ -27,6 +48,10 @@ public class ProductImp implements Product{
         this.description = p.getDescription();
         this.name = p.getName();
         this.category = p.getCategory();
+    }
+
+    public ProductImp() {
+        id = -1;
     }
 
     public int getRank() {
@@ -84,6 +109,19 @@ public class ProductImp implements Product{
 
     public int getAmount(){
         return this.quantity;
+    }
+
+    @Override
+    public Product merge(Product pi) {
+        setName(pi.getName());
+        setDescription(pi.getDescription());
+        setCategory(pi.getCategory());
+        if (pi instanceof  ProductImp)
+            setBasePrice(((ProductImp)pi).getBasePrice());
+        setShopRank(pi.getShopRank());
+        setRank(pi.getRank());
+        setQuantity(pi.getAmount());
+        return this;
     }
 
     public void setQuantity(int newQuantity) {

@@ -1,10 +1,9 @@
 package Presentation.Model;
 
-import domain.user.Cart;
-import domain.user.ShoppingBasket;
+import domain.shop.user.Cart;
+import domain.shop.user.ShoppingBasket;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PresentationCart {

@@ -2,9 +2,11 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.Shop;
-import domain.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchOrderFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -41,11 +43,12 @@ public class GetOrderHistoryInShopCaseTest extends Tester {
     private double price_2;
     private int amountToAdd_2;
     private String Guest_Id;
+    private String guest_1;
+    private String guest_2;
 
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUsers = ug.GetValidUsers();
         pws = ug.GetPW();
@@ -58,10 +61,10 @@ public class GetOrderHistoryInShopCaseTest extends Tester {
         pw_1 = pws[1];
         pw_2 = pws[2];
         Guest_Id = EnterMarket().getValue().getUserName();
-        Register(user_1,pw_1);
-        Register(user_2,pw_2);
-        Login(user_1,pw_1,null);
-        Login(user_2,pw_2,null);
+        Register(guest_1,user_1,pw_1);
+        Register(guest_2,user_2,pw_2);
+        Login(guest_1,user_1,pw_1);
+        Login(guest_2,user_2,pw_2);
 
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";

@@ -1,6 +1,9 @@
 package Testing_System;
 
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.market.MarketSystem;
+import domain.market.PaymentService;
 import domain.market.PaymentServiceImp;
 import domain.market.SupplyServiceImp;
 
@@ -44,12 +47,13 @@ public class UserGenerator extends Tester {
     public String[] GetBadPW() { return this.badPW; }
     public String GetAdminID() { return this.adminID;}
     public String GetAdminPW() { return this.adminPW;}
-    public void InitTest() {
-        StartMarket(new PaymentServiceImp(),new SupplyServiceImp(),adminID,adminPW);
-    }
     public void DeleteAdmin(){
         String[] arr = {adminID};
         DeleteUserTest(arr);
+    }
+
+    public void InitTest() throws InvalidSequenceOperationsExc, IncorrectIdentification {
+//        MarketSystem.getInstance().start(new PaymentServiceImp(),new SupplyServiceImp());
     }
 
     public String[] getNitayNames() {

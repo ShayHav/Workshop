@@ -2,6 +2,8 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
@@ -24,8 +26,7 @@ public class CreateSystemManagerCaseTest extends Tester {
     private String[] badPWs;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug.InitTest();
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
@@ -44,37 +45,37 @@ public class CreateSystemManagerCaseTest extends Tester {
     public void GoodCreateSystemManagerTest()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!CreateSystemManager("admin",validUserNames[i],PWs[i]).isErrorOccurred());
+            assertTrue(!CreateSystemManager("Admin",validUserNames[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void UserExistTest()
     {
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!CreateSystemManager("admin",validUserNames[i],PWs[i]).isErrorOccurred());
+            assertTrue(!CreateSystemManager("Admin",validUserNames[i],PWs[i]).isErrorOccurred());
         for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertFalse(!CreateSystemManager("admin",validUserNames[i],PWs[i]).isErrorOccurred());
+            assertFalse(!CreateSystemManager("Admin",validUserNames[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void BadUserNameTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!CreateSystemManager("admin",badUserName[i],PWs[i]).isErrorOccurred());
+            assertFalse(!CreateSystemManager("Admin",badUserName[i],PWs[i]).isErrorOccurred());
     }
 
     @Test
     public void BadPWTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!CreateSystemManager("admin",validUserNames[i],badPWs[i]).isErrorOccurred());
+            assertFalse(!CreateSystemManager("Admin",validUserNames[i],badPWs[i]).isErrorOccurred());
     }
 
     @Test
     public void SadUsersTest()
     {
         for(int i =0; i<ug.getNumOfUser(); i++)
-            assertFalse(!CreateSystemManager("admin",sadUserNames[i],PWs[i]).isErrorOccurred());
+            assertFalse(!CreateSystemManager("Admin",sadUserNames[i],PWs[i]).isErrorOccurred());
     }
 
 

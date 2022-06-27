@@ -2,7 +2,9 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
-import domain.user.filter.SearchUserFilter;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.shop.user.filter.SearchUserFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,15 +24,17 @@ public class DismissalUserBySystemManagerCaseTest extends Tester {
     private String[] badPWs;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         validUserNames = ug.GetValidUsers();
         badUserName = ug.GetBadUsers();
         sadUserNames = ug.GetSadUsers();
         PWs = ug.GetPW();
         badPWs = ug.GetBadPW();
-        for(int i = 0; i<ug.getNumOfUser(); i++)
-            assertTrue(!Register(validUserNames[i],PWs[i]).isErrorOccurred());
+        ug.InitTest();
+        for(int i = 0; i<ug.getNumOfUser(); i++) {
+            String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            assertTrue(!Register(g,validUserNames[i], PWs[i]).isErrorOccurred());
+        }
     }
 
     @AfterEach

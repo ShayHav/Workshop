@@ -2,11 +2,12 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.Shop;
-import domain.shop.ShopInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchShopFilter;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchShopFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,18 +29,18 @@ public class GetShopsInfoCaseTest extends Tester {
     private Filter<Shop> f_4;
     private String user;
     private int shopID;
+    private String guest;
 
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         ug = new UserGenerator();
         validUsers = ug.GetValidUsers();
         user = validUsers[0];
         pws = ug.GetPW();
         ug.InitTest();
-        Register(validUsers[0],pws[0]);
-        Login(validUsers[0],pws[0],null);
+        Register(guest, validUsers[0],pws[0]);
+        Login(guest,validUsers[0],pws[0]);
         ResponseT<Shop> shopResponseT = CreateShop("Test_1",validUsers[0],"TestShop");
         if(!shopResponseT.isErrorOccurred())
             shopID = shopResponseT.getValue().getShopID();
