@@ -1,4 +1,4 @@
-package domain.user;
+package domain.shop.user;
 
 import domain.*;
 import domain.Exceptions.ProductNotFoundException;
@@ -6,9 +6,8 @@ import domain.shop.Order;
 import domain.shop.Shop;
 import domain.Exceptions.ShopNotFoundException;
 import domain.Exceptions.BlankDataExc;
-import domain.user.ShoppingBasket.ServiceBasket;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,23 +16,71 @@ import java.util.Map;
 import java.util.logging.Level;
 @Entity
 public class Cart {
+    @Transient
     private Map<Integer, ShoppingBasket> baskets;
+    @OneToMany(mappedBy = "c")
+    private List<ShoppingBasket> basketLs;
     private double totalAmount;
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Id
+    private String username;
 
     public Cart() {
         baskets = new HashMap<>();
+        basketLs = new ArrayList<>();
         totalAmount = 0;
+
     }
+
+    public List<ShoppingBasket> getBasketLs() {
+        return basketLs;
+    }
+
+    public void setBasketLs(List<ShoppingBasket> basketLs) {
+        this.basketLs = basketLs;
+    }
+
+    public Cart merge(Cart c)
+    {
+        setTotalAmount(c.getTotalAmount());
+        setBaskets(c.getBaskets());
+        setBasketLs(c.getBasketLs());
+        return this;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Map<Integer, ShoppingBasket> getBaskets() {
+        return baskets;
+    }
+
+    public void setBaskets(Map<Integer, ShoppingBasket> baskets) {
+        this.baskets = baskets;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
 
     public Response addProductToCart(int shopID, int productID, int amount) throws ShopNotFoundException {
         if (!baskets.containsKey(shopID)) {
             try {
                 Shop shop = ControllersBridge.getInstance().getShop(shopID);
                 ShoppingBasket newBasket = new ShoppingBasket(shop);
+                newBasket.setCart(this);//Ariel added
                 newBasket.addProductToBasket(productID, amount);
                 baskets.put(shopID, newBasket);
+                basketLs.add(newBasket);//Ariel added
                 totalAmount = getTotalAmount();
                 eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
                 return new Response();
@@ -95,9 +142,9 @@ public class Cart {
 
 
     public ServiceCart showCart() {
-        Map<Integer,ServiceBasket> basketMap = new HashMap<>();
+        Map<Integer, ShoppingBasket.ServiceBasket> basketMap = new HashMap<>();
         for (Integer shopID : baskets.keySet()) {
-            ServiceBasket basket = baskets.get(shopID).showBasket();
+            ShoppingBasket.ServiceBasket basket = baskets.get(shopID).showBasket();
             basketMap.put(shopID,basket);
         }
         totalAmount = getTotalAmount();
@@ -127,9 +174,9 @@ public class Cart {
     public class ServiceCart {
 
         private double totalAmount;
-        private Map<Integer,ServiceBasket> baskets;
+        private Map<Integer, ShoppingBasket.ServiceBasket> baskets;
 
-        public ServiceCart(double totalAmount, Map<Integer,ServiceBasket> baskets) {
+        public ServiceCart(double totalAmount, Map<Integer, ShoppingBasket.ServiceBasket> baskets) {
             this.totalAmount = totalAmount;
             this.baskets = baskets;
         }
@@ -138,7 +185,7 @@ public class Cart {
             return totalAmount;
         }
 
-        public Map<Integer,ServiceBasket>getBaskets() {
+        public Map<Integer, ShoppingBasket.ServiceBasket>getBaskets() {
             return baskets;
         }
     }

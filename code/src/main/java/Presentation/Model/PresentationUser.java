@@ -1,10 +1,10 @@
 package Presentation.Model;
 
 import domain.shop.ShopManagersPermissions;
-import domain.user.ManagerAppointment;
-import domain.user.Role;
-import domain.user.User;
-import domain.user.UserState2;
+import domain.shop.user.ManagerAppointment;
+import domain.shop.user.Role;
+import domain.shop.user.User;
+import domain.shop.user.UserState2;
 
 import java.util.*;
 

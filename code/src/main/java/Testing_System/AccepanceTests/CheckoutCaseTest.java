@@ -7,7 +7,6 @@ import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.market.MarketSystem;
 import domain.shop.Shop;
-import domain.user.Guest;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

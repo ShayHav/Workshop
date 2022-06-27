@@ -7,9 +7,9 @@ import domain.shop.ShopController;
 import domain.Exceptions.ShopNotFoundException;
 import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
-import domain.user.User;
-import domain.user.UserController;
-import domain.user.filter.Filter;
+import domain.shop.user.User;
+import domain.shop.user.UserController;
+import domain.shop.user.filter.Filter;
 
 import java.util.List;
 import java.util.Map;
@@ -66,10 +66,10 @@ public class ControllersBridge {
      * @param targetUser
      * @throws InvalidSequenceOperationsExc
      */
-    public void DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
+    public void DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if(ShopController.getInstance().canBeDismiss(targetUser))
             UserController.getInstance().deleteUserName(targetUser);
-        else throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s",targetUser));
+        throw new InvalidSequenceOperationsExc(String.format("user can't be dismiss: %s",targetUser));
     }
 
     /**

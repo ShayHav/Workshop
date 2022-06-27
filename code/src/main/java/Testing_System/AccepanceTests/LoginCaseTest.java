@@ -3,7 +3,6 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.user.User;
 import org.junit.jupiter.api.*;
 
 import org.junit.jupiter.api.Test;

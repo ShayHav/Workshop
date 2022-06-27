@@ -13,11 +13,10 @@ import domain.ResponseList;
 import domain.ResponseT;
 import domain.shop.*;
 import domain.shop.predicate.PRPredType;
-import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
-import domain.user.filter.SearchOrderFilter;
-import domain.user.filter.SearchProductFilter;
-import domain.user.filter.SearchShopFilter;
+import domain.shop.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchProductFilter;
+import domain.shop.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
 

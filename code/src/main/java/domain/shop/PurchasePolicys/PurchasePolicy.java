@@ -1,6 +1,7 @@
 package domain.shop.PurchasePolicys;
 
 
+import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.CriticalInvariantException;
@@ -9,6 +10,9 @@ import domain.Exceptions.PurchaseRuleNotFoundException;
 import domain.shop.ProductImp;
 import domain.shop.discount.Basket;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,15 +20,19 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-
+@Entity
 public class PurchasePolicy {
 
+    @Id
+    private int shopID;
     private final Map<Integer, List<PurchaseRule>> product_purchaseRules;
     private final Map<String, List<PurchaseRule>> category_purchaseRules;
     private final List<PurchaseRule> general_PurchaseRules;
     private int purchaseRuleIDCounter;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Transient
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
 
     public PurchasePolicy(){
@@ -97,6 +105,7 @@ public class PurchasePolicy {
         String purchaseRuleStringed = String.format("product %s can only be purchased if %s", productName, eligible.toString());
         PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++, purchaseRuleStringed);
         prod_pr.add(newPurchaseRule);
+        controllerDAL.upDatePurchasePolicy(this);
 
         return newPurchaseRule.getID();
     }
@@ -118,6 +127,7 @@ public class PurchasePolicy {
         String purchaseRuleStringed = String.format("product from category %s can only be purchased if %s", category, eligible.toString());
         PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++, purchaseRuleStringed);
         category_pr.add(newPurchaseRule);
+        controllerDAL.upDatePurchasePolicy(this);
 
         return newPurchaseRule.getID();
     }
@@ -127,6 +137,9 @@ public class PurchasePolicy {
         String purchaseRuleStringed = String.format("Any of the shop's products can only be purchased if %s", eligible.toString());
         PurchaseRule newPurchaseRule = new PurchaseRuleIMPL(eligible, relevantTo, purchaseRuleIDCounter++, purchaseRuleStringed);
         general_PurchaseRules.add(newPurchaseRule);
+        controllerDAL.upDatePurchasePolicy(this);
+
+
         return newPurchaseRule.getID();
     }
 
@@ -138,6 +151,9 @@ public class PurchasePolicy {
         }catch (InvalidParamException invalidParamException){
             throw new CriticalInvariantException("fundamental error, the complex type sent here is Invalid");
         }
+
+        controllerDAL.upDatePurchasePolicy(this);
+
         return prID;
     }
 
@@ -148,6 +164,9 @@ public class PurchasePolicy {
         }catch (InvalidParamException invalidParamException){
             throw new CriticalInvariantException("fundamental error, the complex type sent here is Invalid");
         }
+
+        controllerDAL.upDatePurchasePolicy(this);
+
         return prID;
     }
 
@@ -218,18 +237,19 @@ public class PurchasePolicy {
         if(listOfPurchaseRule1 != listOfPurchaseRule2)
             listOfPurchaseRule2.add(newPurchaseRule);
 
+        controllerDAL.upDatePurchasePolicy(this);
+
         return newPurchaseRule.getID();
     }
 
 
-    public void removePurchaseRule(int purchaseRuleID){
+    public boolean removePurchaseRule(int purchaseRuleID){
         for(Map.Entry<Integer, List<PurchaseRule>> set : product_purchaseRules.entrySet()){
             List<PurchaseRule> prod_pr = set.getValue();
             for(PurchaseRule pr: prod_pr) {
                 if (pr.getID() == purchaseRuleID) {
                     prod_pr.remove(pr);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
-                    break;
                 }
             }
         }
@@ -240,7 +260,6 @@ public class PurchasePolicy {
                 if (pr.getID() == purchaseRuleID) {
                     prod_pr.remove(pr);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
-                    break;
                 }
             }
         }
@@ -249,10 +268,12 @@ public class PurchasePolicy {
             if (pr.getID() == purchaseRuleID) {
                 general_PurchaseRules.remove(pr);
                 eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
-                break;
+                controllerDAL.upDatePurchasePolicy(this);
+                return true;
             }
         }
         eventLogger.logMsg(Level.INFO, String.format("no such discount in the shop: %d", purchaseRuleID));
+        return false;
     }
 
     public List<PurchaseRule> getAllDistinctPurchaseRules(){

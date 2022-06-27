@@ -1,14 +1,11 @@
 package domain.notifications;
 
-
 import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidAuthorizationException;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.market.MarketSystem;
-import domain.user.User;
-import domain.user.UserController;
-import org.junit.jupiter.api.AfterEach;
+import domain.shop.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

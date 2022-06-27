@@ -1,6 +1,6 @@
 package domain.notifications;
 
-import domain.user.User;
+import domain.shop.user.User;
 
 import java.util.*;
 
