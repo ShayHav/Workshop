@@ -1,14 +1,11 @@
 package domain.notifications;
 
-
 import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidAuthorizationException;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.market.MarketSystem;
-import domain.user.User;
-import domain.user.UserController;
-import org.junit.jupiter.api.AfterEach;
+import domain.shop.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,17 +30,12 @@ class NotificationManagerTest {
     void removeFromObserversList() {
         Map<String, List<UserObserver>> observerMap = notificationManager.getObservers();
         String username = "user3";
-
+        // case 1 no such user registered
         assertNull(observerMap.get(username));
         notificationManager.removeFromObserversList(username);
         assertNull(observerMap.get(username));
-    }
 
-    @Test
-    void removeFromObserversListUserRegistered() {
-        Map<String, List<UserObserver>> observerMap = notificationManager.getObservers();
-        String username = "user3";
-
+        // case 2 user is registered to the observer
         User user = new User(username);
         notificationManager.registerObserver(user, msg -> {});
         assertNotNull(observerMap.get(username));
@@ -90,7 +82,7 @@ class NotificationManagerTest {
     }
 
     @Test
-    void notifyAdminWhenLoggedIn() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc {
+    void notifyAdmin() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc {
         boolean[] notified = new boolean[1];
         User admin = new User("admin2");
         notificationManager.registerAdminObserver(admin, () -> notified[0] = true);
@@ -104,70 +96,26 @@ class NotificationManagerTest {
     }
 
     @Test
-    void getNumberOfUnreadMessageUnregisteredUser() {
+    void getNumberOfUnreadMessage() {
         User user = new User("user3");
         List<Message> messages = new ArrayList<>();
 
+        // case 1 unregistered user
         assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
-    }
 
-    @Test
-    void getNumberOfUnreadMessageRegisteredWithoutMessage() {
-        User user = new User("user3");
-        List<Message> messages = new ArrayList<>();
-
+        // case 2 registered without messages
         notificationManager.registerObserver(user, messages::add);
         assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
-    }
 
-    @Test
-    void getNumberOfUnreadMessageRegisteredWithUnreadMessage() {
-        User user = new User("user3");
-        List<Message> messages = new ArrayList<>();
-
-        notificationManager.registerObserver(user, messages::add);
+        // case 3 registered with messages unread sent
         notificationManager.sendMessage(user, "testing messages", user);
         assertEquals(1, notificationManager.getNumberOfUnreadMessage(user));
-    }
 
-    @Test
-    void getNumberOfUnreadMessageRegisteredAfterReadMessage() {
-        User user = new User("user3");
-        List<Message> messages = new ArrayList<>();
-
-        notificationManager.registerObserver(user, messages::add);
-        notificationManager.sendMessage(user, "testing messages", user);
-        messages.get(0).markAsRead();
-        assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
-    }
-
-    @Test
-    void getNumberOfUnreadMessageRegisteredAfterReadTwiceMessage() {
-        User user = new User("user3");
-        List<Message> messages = new ArrayList<>();
-
-        notificationManager.registerObserver(user, messages::add);
-        notificationManager.sendMessage(user, "testing messages", user);
+        // case 4 after reading the message
         messages.get(0).markAsRead();
         assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
         messages.get(0).markAsRead();
-        //reading message twice don't change the counter
+        // case 5 reading message twice don't change the counter
         assertEquals(0, notificationManager.getNumberOfUnreadMessage(user));
-    }
-
-    @Test
-    void delayedNotificationTest(){
-        User sender = new User("user1");
-        User addressee = new User("user2");
-        Message[] messages = {null};
-        sender.login();
-        addressee.login();
-        addressee.logout();
-        String messageContent = "message content";
-        notificationManager.sendMessage(addressee, messageContent, sender);
-        notificationManager.registerObserver(addressee, message -> messages[0] = message);
-        assertNotNull(messages[0]);
-        assertEquals(messageContent, messages[0].getContent());
-        assertEquals(addressee, messages[0].getAddressee());
     }
 }

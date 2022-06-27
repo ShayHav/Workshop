@@ -79,12 +79,4 @@ public class NotificationManager {
     public Map<User, List<Message>> getUserMessages() {
         return userMessages;
     }
-
-    public List<Message> getUserMessages(String username){
-        for (User u: userMessages.keySet()) {
-            if(u.getUserName().equals(username))
-                return userMessages.get(u);
-        }
-        return null;
-    }
 }

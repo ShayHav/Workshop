@@ -3,16 +3,18 @@ package Service;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+import java.util.List;
+
 class Function {
-    public String name;
+    public String function;
     public Object[] args;
 
     public Function() {
     }
 
     @JsonGetter("function")
-    public String getName() {
-        return name;
+    public String getFunction() {
+        return function;
     }
 
     @JsonGetter("args")
@@ -21,8 +23,8 @@ class Function {
     }
 
     @JsonSetter("function")
-    public void setName(String name) {
-        this.name = name;
+    public void setFunction(String function) {
+        this.function = function;
     }
 
     @JsonSetter("args")

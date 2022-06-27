@@ -3,7 +3,7 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Responses.ResponseT;
+import domain.ResponseT;
 import domain.shop.Shop;
 import org.junit.jupiter.api.*;
 
@@ -111,20 +111,16 @@ public class AppointNewOwnerCaseTest extends Tester {
         if(!shopResponseT.isErrorOccurred())
             shopID_2 = shopResponseT.getValue().getShopID();
         String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
-        String g1 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
-        String g2 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
-        String g3 = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
         Register(g,validUsers[1], pws[1]);
         Login(g,validUsers[1], pws[1]);
-        Register(g1,validUsers[2],pws[2]);
-        Register(g2,validUsers[3],pws[3]);
-        Register(g3,validUsers[4],pws[4]);
         shopResponseT = CreateShop("Test_3",validUsers[1], "TestShop_3");
         if(!shopResponseT.isErrorOccurred())
             shopID_3 = shopResponseT.getValue().getShopID();
-        for (int i = 2; i < 5; i++) {
+        if(!shopResponseT.isErrorOccurred())
+            shopID_2 = shopResponseT.getValue().getShopID();
+        for (int i = 2; i < ug.getNumOfUser(); i++) {
             assertTrue(!AppointNewShopOwner(shopID_3, validUsers[i], validUsers[1]).isErrorOccurred());
-            assertTrue(!AppointNewShopOwner(shopID_2, validUsers[i], validUsers[0]).isErrorOccurred());
+            assertTrue(!AppointNewShopOwner(shopID_2, validUsers[i], validUsers[1]).isErrorOccurred());
             assertTrue(!AppointNewShopOwner(shopID_1, validUsers[i], user_1).isErrorOccurred());
         }
     }

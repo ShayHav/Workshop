@@ -2,7 +2,7 @@ package domain.user;
 
 import Testing_System.UserGenerator;
 import domain.Exceptions.*;
-import domain.ExternalConnectors.ExternalConnector;
+import domain.market.ExternalConnector;
 import domain.shop.Product;
 import domain.shop.ProductImp;
 import domain.shop.PurchasePolicys.PurchasePolicy;
@@ -14,6 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

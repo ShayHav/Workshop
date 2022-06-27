@@ -28,9 +28,6 @@ public class AndDiscount implements Discount {
             Basket productToAmounts1 = new Basket();
             Basket productToAmounts2 = new Basket();
 
-            productToAmounts1.setBasePrice(productToAmounts.getBasePrice());
-            productToAmounts2.setBasePrice(productToAmounts.getBasePrice());
-
             for (Map.Entry<ProductImp, Integer> productInCart : productToAmounts.entrySet()) {
                 productToAmounts1.put(new ProductImp(productInCart.getKey()), productInCart.getValue());
                 productToAmounts2.put(new ProductImp(productInCart.getKey()), productInCart.getValue());

@@ -2,13 +2,14 @@ package domain.user;
 
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import domain.Exceptions.*;
 import domain.market.MarketSystem;
-import domain.ExternalConnectors.PaymentServiceImp;
-import domain.ExternalConnectors.SupplyServiceImp;
+import domain.market.PaymentServiceImp;
+import domain.market.SupplyServiceImp;
 import domain.shop.ProductInfo;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.Shop;
@@ -40,7 +41,7 @@ class ShoppingBasketTest {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
-        marketSystem.login(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));
@@ -70,7 +71,7 @@ class ShoppingBasketTest {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
-        marketSystem.login(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));
@@ -85,7 +86,7 @@ class ShoppingBasketTest {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
-        marketSystem.login(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));
@@ -108,7 +109,7 @@ class ShoppingBasketTest {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
-        marketSystem.login(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));
@@ -123,7 +124,7 @@ class ShoppingBasketTest {
         marketSystem.start(new PaymentServiceImp(),new SupplyServiceImp());
         marketSystem.EnterMarket();
         marketSystem.register(String.format("-Guest%d",0),"nitay","Password");
-        marketSystem.login(String.format("-Guest%d",0),"nitay","Password");
+        marketSystem.login(String.format("-Guest%d",0),"nitay","Password",null);
         marketSystem.createShop("book shop","nitay's",new DiscountPolicy(),new PurchasePolicy(),"nitay");
         marketSystem.AddProductToShopInventory(1,"Dune","Best Thing ever","books",90.0,50,"nitay",1);
         basket = new ShoppingBasket(marketSystem.getShop(1));

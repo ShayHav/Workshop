@@ -110,16 +110,16 @@ public class PresentationUser {
         return false;
     }
 
-    public boolean isMyAppointed(int shopID, PresentationUser user) {
-        for (ManagerAppointment appointment : myAppointments) {
-            if (appointment.getShop().getShopID() == shopID && user.equals(appointment.getAppointed()))
+    public boolean isMyAppointed(int shopID, PresentationUser user){
+        for(ManagerAppointment appointment: myAppointments){
+            if(appointment.getShop().getShopID() == shopID && user.equals(appointment.getAppointed()))
                 return true;
         }
         return false;
     }
 
-    public boolean hasRoleInShop(int shopID) {
-        if (roleList.containsKey(shopID)) {
+    public boolean hasRoleInShop(int shopID){
+        if(roleList.containsKey(shopID)){
             return roleList.get(shopID).stream().anyMatch(role -> role.equals(Role.ShopFounder) || role.equals(Role.ShopOwner) || role.equals(Role.ShopManager));
         }
         return false;
@@ -129,11 +129,11 @@ public class PresentationUser {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        if (o.getClass() == PresentationUser.class) {
+        if(o.getClass() == PresentationUser.class) {
             PresentationUser that = (PresentationUser) o;
             return username.equals(that.username);
         }
-        if (o.getClass() == User.class) {
+        if(o.getClass() == User.class){
             return username.equals(((User) o).getUserName());
         }
         return false;
@@ -144,43 +144,13 @@ public class PresentationUser {
         return Objects.hash(username);
     }
 
-    public boolean isAdmin() {
+    public boolean isAdmin(){
         return state == UserState2.systemManager;
     }
 
-    public boolean isGuest() {
-        return state == UserState2.guest || this.username.contains("-Guest");
-    }
-
-    public boolean isMemberOnly() {
-        boolean member = (state == UserState2.member || state == UserState2.disconnected);
-        boolean only_member = roleList.isEmpty();
-
-        return member & only_member;
+    public boolean isGuest(){
+        return state == UserState2.guest;
     }
 
 
-    public boolean isManagerOnly() {
-        boolean member = (state == UserState2.member || state == UserState2.disconnected);
-        boolean only_manager = !roleList.isEmpty();
-
-        for (Integer shop : roleList.keySet()) {
-            if (roleList.get(shop).contains(Role.ShopOwner) || roleList.get(shop).contains(Role.ShopFounder))
-                only_manager = false;
-        }
-
-        return member & only_manager;
-    }
-
-    public boolean isOwnerOnly() {
-        boolean member = (state == UserState2.member || state == UserState2.disconnected);
-        boolean only_owner = !roleList.isEmpty();
-
-        for (Integer shop : roleList.keySet()) {
-            if (roleList.get(shop).contains(Role.ShopManager))
-                only_owner = false;
-        }
-
-        return member & only_owner;
-    }
 }

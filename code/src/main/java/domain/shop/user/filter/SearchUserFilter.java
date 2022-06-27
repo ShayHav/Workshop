@@ -1,17 +1,8 @@
-package domain.user.filter;
+package domain.shop.user.filter;
 
-import domain.EventLoggerSingleton;
-import domain.shop.Order;
-import domain.user.User;
-import domain.user.UserState2;
-import jdk.jshell.spi.ExecutionControl;
+import domain.shop.user.User;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class SearchUserFilter implements Filter<User> {
     private boolean isMember;
@@ -20,8 +11,6 @@ public class SearchUserFilter implements Filter<User> {
 
 
     public SearchUserFilter() {
-        isMember = false;
-        isGuest = false;
     }
     public SearchUserFilter(String b) {
         switch (b){
@@ -29,7 +18,6 @@ public class SearchUserFilter implements Filter<User> {
                 isMember=true;
             case "isGuest":
                 isGuest=true;
-            default: Name =b;
         }
     }
 
@@ -38,13 +26,6 @@ public class SearchUserFilter implements Filter<User> {
     }
 
     public List<User> applyFilter(List<User> orders) {
-        EventLoggerSingleton.getInstance().logMsg(Level.INFO,"Operate filter for shops");
-        if( Name != null || !Name.equals(""))
-            orders = orders.stream().filter(user -> user.getUserName().equals(Name)).collect(Collectors.toList());
-        if(isMember)
-            orders = orders.stream().filter(user -> user.getUs()== UserState2.member).collect(Collectors.toList());
-        if(isGuest)
-            orders = orders.stream().filter(user -> user.getUs()== UserState2.guest).collect(Collectors.toList());
-        return orders;
+        throw new UnsupportedOperationException();
     }
 }

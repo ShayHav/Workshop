@@ -3,7 +3,7 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Responses.ResponseT;
+import domain.ResponseT;
 import domain.shop.Shop;
 import org.junit.jupiter.api.*;
 
@@ -79,12 +79,13 @@ public class AppointManagerCaseTest extends Tester{
     public void NewOwnerAppointsManagerTest() {
         String g = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
         Register(g,validUsers[1], pws[1]);
-        Login(g,validUsers[0], pws[0]);
+        Login(g,validUsers[1], pws[1]);
         AppointNewShopOwner(shopID_1, validUsers[1], user_1);
         for (int i = 2; i < ug.getNumOfUser(); i++) {
             String gt = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
             Register(gt,validUsers[i], pws[i]);
-            assertTrue(!(AppointNewShopManager(shopID_1, validUsers[i], user_1).isErrorOccurred()));
+            Login(gt,validUsers[i], pws[i]);
+            assertFalse(!(AppointNewShopManager(shopID_1, validUsers[i], validUsers[1]).isErrorOccurred()));
         }
     }
 

@@ -88,7 +88,6 @@
         const message = {username: username, shopID: shopID, serialNumber: serial, quantity: form.amount.value};
         socket.send(JSON.stringify(message));
     }
-
     add_button.addEventListener('click', add);
     socket.onmessage = async function (event) {
         const response = JSON.parse(event.data);

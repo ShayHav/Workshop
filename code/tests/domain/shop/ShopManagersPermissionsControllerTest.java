@@ -1,6 +1,5 @@
 package domain.shop;
 
-import domain.Exceptions.InvalidSequenceOperationsExc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +28,7 @@ class ShopManagersPermissionsControllerTest {
 
 
     @Test
-    void removePermissions() throws InvalidSequenceOperationsExc {
+    void removePermissions() {
         shopManagersPermissionsList.add(ShopManagersPermissions.AppointNewShopManager);
         shopManagersPermissionsController.removePermissions(shopManagersPermissionsList,systemManager);
         assertFalse(shopManagersPermissionsController.canAppointNewShopManager(systemManager));

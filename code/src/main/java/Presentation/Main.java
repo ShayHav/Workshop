@@ -5,8 +5,8 @@ import Presentation.Controllers.UserController;
 import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationUser;
 import Service.Services;
-import domain.Responses.ResponseMap;
-import domain.Responses.ResponseT;
+import domain.ResponseMap;
+import domain.ResponseT;
 import domain.shop.Product;
 import domain.shop.Shop;
 import domain.shop.user.User;
@@ -47,33 +47,18 @@ public class Main {
         }
         app = Javalin.create(JavalinConfig::enableWebjars).start(port);
 
-
-        Thread activeUsers = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(1000 * 60);
-                    userController.manageActiveUsers();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-
-        activeUsers.start();
-
         app.routes(() -> {
             before(userController::validateUser);
             get(shopController::renderHomepage);
             //admin interface
-            path("admin", () -> {
-                path("{id}", () -> {
-                    get("systemMonitor", userController::renderAdminPage);
-                    ws("systemMonitor", userController::getSystemInfo);
-                    get("systemMonitor/pastEntrances", userController::renderAdminPageFilteredEntrances);
-                    post("removeUser", userController::deleteUserPermanently);
+            path("admin",() -> {
+                path("{id}", ()->{
+                    get("systemMonitor",userController::renderAdminPage);
+                    ws("systemMonitor",userController::getSystemInfo);
 
-                    get("sales", userController::renderAllHistorySales);
+                    post("removeUser",userController::deleteUserPermanently);
+
+                    get("sales",userController::renderAllHistorySales);
                 });
 
             });
@@ -95,7 +80,6 @@ public class Main {
                     ws("/addToCart", userController::addToCart);
                     get("/orders", userController::renderUserOrderHistory);
                     get("/shops", userController::renderUserShops);
-                    ws("/active", userController::activeUser);
 
                     path("messages", () -> {
                         get(userController::renderInbox);
@@ -130,8 +114,6 @@ public class Main {
                     post("/combineRules", shopController::combineRules);
                     post("/deleteRule", shopController::deleteRule);
                     post("/addDiscount", shopController::addDiscount);
-                    post("/deleteDiscount", shopController::deleteDiscount);
-                    post("/composeDiscounts", shopController::composeDiscounts);
 
 
                     path("{serialNumber}", () -> {
@@ -167,25 +149,24 @@ public class Main {
 
             Double minPrice = filter.getMinPrice();
             Double maxPrice = filter.getMaxPrice();
-            String category = filter.getCategory() == null ? "" : filter.getCategory();
+            String category = filter.getCategory() == null? "" : filter.getCategory();
 
             ctx.render("searchProducts.jte", Map.of("user", user, "products", searchResult, "minPrice", minPrice, "maxPrice", maxPrice, "category", category, "searchBy", searchBy, "query", query));
         });
 
         app.exception(AuthenticationException.class, ((e, ctx) ->
                 ctx.status(400).render("errorPage.jte", Map.of("errorMessage", e.getExplanation(), "status", 400))));
-
     }
 
-    public static void fillData() {
+    public static void fillData(){
         Services services = Services.getInstance();
         ResponseT<User> r = services.EnterMarket();
         String shay_guest = r.getValue().getUserName();
-        services.Register(shay_guest, "shay", "123");
+        services.Register(shay_guest,"shay", "123");
 
         r = services.EnterMarket();
         String shahar_guest = r.getValue().getUserName();
-        services.Register(shahar_guest, "shahar", "123");
+        services.Register(shahar_guest,"shahar", "123");
 
         services.Login(shay_guest,"shay","123");
         Shop shop = services.CreateShop("testing shop","shay","shop").getValue();
@@ -193,7 +174,7 @@ public class Main {
         services.AddProductToShopInventory(2, "Product2", "testing product", "test",20,5, "shay", shop.getShopID());
         services.AddProductToShopInventory(3, "Product3", "testing product", "test",20,0, "shay", shop.getShopID());
         services.AddToShoppingCart("shay",shop.getShopID(),1,5);
-        services.Checkout("shay","shay havivyan","patish","patish", "israel", "1" ,"0506874838", "12345","121", "02/24");
+        services.Checkout("shay","shay havivyan","patish", "0506874838", "12345", "02/24");
         r = services.Logout("shay");
         shay_guest = r.getValue().getUserName();
         services.LeaveMarket(shay_guest);

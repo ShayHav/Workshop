@@ -2,8 +2,6 @@ package domain.market;
 
 import Testing_System.UserGenerator;
 import domain.Exceptions.*;
-import domain.market.ExternalConnectors.PaymentService;
-import domain.market.ExternalConnectors.SupplyService;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
@@ -20,7 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

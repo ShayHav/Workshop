@@ -48,7 +48,6 @@ public class ProductImp implements Product{
         this.description = p.getDescription();
         this.name = p.getName();
         this.category = p.getCategory();
-        this.basePrice = p.getPrice();
     }
 
     public ProductImp() {

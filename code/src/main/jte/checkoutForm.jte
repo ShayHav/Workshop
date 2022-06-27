@@ -17,24 +17,8 @@
             </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Address</label>
-                <input type="text" inputmode="text" id="address" name="address" required class="form-control form-text"
+                <input type="text" inputmode="tel" id="address" name="address" required class="form-control form-text"
                        placeholder="Address">
-            </div>
-            <div class="mb-3">
-                <label for="city" class="form-label">city</label>
-                <input type="text" inputmode="text" id="city" name="city" required class="form-control form-text"
-                       placeholder="City">
-            </div>
-            <div class="mb-3">
-                <label for="country" class="form-label">country</label>
-                <input type="text" inputmode="text" id="country" name="country" required class="form-control form-text"
-                       placeholder="Country">
-            </div>
-
-            <div class="mb-3">
-                <label for="zip" class="form-label">zip</label>
-                <input type="text" inputmode="numeric" id="zip" name="zip" required class="form-control form-text"
-                       placeholder="Zip Code">
             </div>
 
             <div class="mb-4">
@@ -49,11 +33,6 @@
                 <label for="cardNumber" class="form-label">Card Number</label>
                 <input type="text" inputmode="numeric" id="cardNumber" name="cardNumber" required
                        class="form-control form-text" placeholder="Card Number">
-            </div>
-            <div class="mb-3">
-                <label for="ccv" class="form-label">CCV</label>
-                <input type="text" inputmode="numeric" id="ccv" name="ccv" required
-                       class="form-control form-text" placeholder="ccv">
             </div>
             <p class="form-label">Expiration Date</p>
             <div class="row mb-3">

@@ -1,19 +1,14 @@
-package domain.user;
+package domain.shop.user;
 
 
 import domain.*;
 import domain.DAL.ControllerDAL;
 import domain.Exceptions.*;
-import domain.Responses.Response;
-import domain.Responses.ResponseT;
+import domain.ResponseT;
 import domain.shop.*;
-import domain.user.EntranceLogger.Entrance;
-import domain.user.EntranceLogger.EntranceLogger;
-import domain.user.filter.*;
+import domain.shop.user.filter.Filter;
 
 import javax.persistence.*;
-
-import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -102,10 +97,6 @@ public class User {
         roleList = new HashMap<>();
     }
 
-    private UserState2 getUserState(){
-        return us;
-    }
-
     public boolean isEnteredMarket() {
         return enteredMarket;
     }
@@ -116,6 +107,7 @@ public class User {
 
     public void setSystemManager(boolean systemManager) {
         isSystemManager = systemManager;
+        controllerDAL.saveUser(this);
     }
 
     public boolean isSystemManager() {
@@ -157,7 +149,7 @@ public class User {
      * enter market - user state is now guest, with empty cart
      */
     public void enterMarket() {
-        us = UserState2.guest;
+        us = UserState2.disconnected;
         enteredMarket=true;
     }
 
@@ -300,8 +292,8 @@ public class User {
     }
 
 
-    public List<String> checkout(String fullName, String address, String city, String country, String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) throws BlankDataExc {
-        List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, city, country, zip, phoneNumber, cardNumber, ccv, expirationDate);
+    public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
+        List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
         List<String> errors = new ArrayList<>();
         for (ResponseT<Order> r : checkoutResult) {
             if (r.isErrorOccurred()) {
@@ -348,24 +340,6 @@ public class User {
         return userCart.addProductToCart(shopID, productID, amount);
     }
 
-
-    public ResponseT<Integer> addNewBid(int shopID, int productID, int amount, double price) throws ShopNotFoundException {
-        if(getUserState().equals(UserState2.guest))
-            return new ResponseT<>("guests may not submit bids");
-        return userCart.addNewBidToCart(shopID, productID, amount, this, price);
-    }
-
-    public void bidApproved(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {
-        userCart.bidApproved(shopID, bidID);
-    }
-
-    public void removeBid(int shopID, int bidID) throws BidNotFoundException, CriticalInvariantException {
-        userCart.removeBid(shopID, bidID);
-        userCart.getTotalAmount();
-    }
-
-
-
     public Response updateAmountOfProduct(int shopID, int productID, int amount) {
         return userCart.updateAmountOfProduct(shopID, productID, amount);
     }
@@ -403,15 +377,6 @@ public class User {
     public Map<User, List<Order>> getOrderHistoryForUsers(Filter<Order> f) throws InvalidAuthorizationException {
         if(isSystemManager && us == UserState2.systemManager)
             return systemManagerGetOrderHistoryForUsers(f);
-        else {
-            errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
-            throw new InvalidAuthorizationException("SystemManager", us.toString());
-        }
-    }
-
-    public List<Entrance> getEntrances(LocalDate from, LocalDate to) throws InvalidAuthorizationException {
-        if(isSystemManager && us == UserState2.systemManager)
-            return EntranceLogger.getInstance().getEntrances(from,to);
         else {
             errorLogger.logMsg(Level.WARNING,"only system manager is allowed to perform this action");
             throw new InvalidAuthorizationException("SystemManager", us.toString());
@@ -481,7 +446,7 @@ public class User {
      * @return
      * @throws InvalidSequenceOperationsExc
      */
-    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc, ShopNotFoundException {
+    public boolean DismissalUser(String targetUser) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if(isSystemManager & loggedIn){
             ControllersBridge.getInstance().DismissalUser(targetUser);
             eventLogger.logMsg(Level.INFO,String.format("user has been dismiss: %s",targetUser));
@@ -524,8 +489,6 @@ public class User {
     public UserState2 getUs() {
         return us;
     }
-
-
 }
 
 

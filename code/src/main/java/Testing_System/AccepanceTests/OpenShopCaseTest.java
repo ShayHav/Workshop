@@ -4,7 +4,7 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Responses.ResponseT;
+import domain.ResponseT;
 import domain.shop.Shop;
 import domain.shop.ShopManagersPermissions;
 import org.junit.jupiter.api.*;
@@ -60,7 +60,6 @@ public class OpenShopCaseTest extends Tester {
         ls = new ArrayList<ShopManagersPermissions>();
         ls.add(ShopManagersPermissions.CloseShop);
         ls.add(ShopManagersPermissions.OpenShop);
-        AddShopMangerPermissions(shopID_1,ls,owner,user_1);
         CloseShop(shopID_1,user_1);
     }
 
@@ -96,13 +95,13 @@ public class OpenShopCaseTest extends Tester {
     @Test
     public void OwnerCloseShopGoodTest()
     {
-        assertTrue(!CloseShop(shopID_1,owner).isErrorOccurred());
+        assertTrue(!OpenShop(shopID_1,owner).isErrorOccurred());
     }
 
     @Test
     public void ManagerCloseShopBadTest()
     {
-        assertFalse(!OpenShop(shopID_1,validUsers[3]).isErrorOccurred());
+        assertTrue(!OpenShop(shopID_1,manager).isErrorOccurred());
     }
 
     @Test

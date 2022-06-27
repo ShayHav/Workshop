@@ -36,14 +36,13 @@ public class ConditionalDiscount implements Discount {
 
     @Override
     public Basket applyDiscountCalculator(Basket productToAmounts) {
-        if(!eligible(productToAmounts))
-            return productToAmounts;
-
         ProductImp product;
         for(Map.Entry<ProductImp, Integer> productInCart: productToAmounts.entrySet()){
             product = productInCart.getKey();
-            if (relevant(product))
-                product.setBasePrice(discountCalc.applyDiscount(product.getBasePrice()));
+            if (relevant(product)) {
+                if(eligible(productToAmounts))
+                    product.setBasePrice(discountCalc.applyDiscount(product.getBasePrice()));
+            }
         }
         return productToAmounts;
     }

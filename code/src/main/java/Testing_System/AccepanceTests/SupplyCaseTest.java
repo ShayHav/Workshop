@@ -5,14 +5,10 @@ import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.market.*;
-import domain.ExternalConnectors.PaymentService;
-import domain.ExternalConnectors.PaymentServiceImp;
-import domain.ExternalConnectors.SupplyService;
-import domain.ExternalConnectors.SupplyServiceImp;
 import domain.shop.Order;
 import domain.shop.Product;
 import domain.shop.ProductImp;
-import domain.user.TransactionInfo;
+import domain.shop.user.TransactionInfo;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -78,20 +74,20 @@ public class SupplyCaseTest extends Tester {
         products = new HashMap<Integer,Integer>();
         pws = ug.GetPW();
         LocalDate t_date = LocalDate.of(2022, 4, 26);
-        ti_good_1 = new TransactionInfo(validUserNames[0],"Ariel Ronen","Ragar&1&-1&-1","Beer Sheva", "Israel" , "1","0546840084", "4580000000000000","12/22","123",t_date, 200.2 );
-        ti_good_2 = new TransactionInfo(validUserNames[1],"Nitay Vitkin","Ragar&2&1&-1","Beer Sheva", "Israel" , "1", "0546840080", "4580000000000000","12/22","123",t_date, 5 );
-        ti_good_3 = new TransactionInfo(validUserNames[2],"Omry Arviv","Ragar&3&-1&1","Beer Sheva", "Israel" , "1","0546840081", "4580000000000000","12/22","123",t_date, 10 );
-        ti_good_4 = new TransactionInfo(validUserNames[3],"Shay Hav","Ragar&3&2&1","Beer Sheva", "Israel" , "1", "0546840082", "4580000000000000","12/22","123",t_date, 400 );
-        ti_good_5 = new TransactionInfo(validUserNames[4],"Shahar Lenkry","Ragar&50&11&-1","Beer Sheva", "Israel" , "1","0546840083", "4580000000000000","12/22","123",t_date, 313.1 );
-        ti_good_guest = new TransactionInfo(guest_id,"Oren Ronen","Ragar&1&1&1","Tel Aviv", "Israel" , "1","0546810080", "4580000000000000","12/22","123",t_date, 290 );
+        ti_good_1 = new TransactionInfo(validUserNames[0],"Ariel Ronen","Israel&Baer-Sheva&Ragar&1&-1&-1","0546840084", "4580000000000000","12/22",t_date, 200.2 );
+        ti_good_2 = new TransactionInfo(validUserNames[1],"Nitay Vitkin","Israel&Baer-Sheva&Ragar&2&1&-1","0546840080", "4580000000000000","12/22",t_date, 5 );
+        ti_good_3 = new TransactionInfo(validUserNames[2],"Omry Arviv","Israel&Baer-Sheva&Ragar&3&-1&1","0546840081", "4580000000000000","12/22",t_date, 10 );
+        ti_good_4 = new TransactionInfo(validUserNames[3],"Shay Hav","Israel&Baer-Sheva&Ragar&3&2&1","0546840082", "4580000000000000","12/22",t_date, 400 );
+        ti_good_5 = new TransactionInfo(validUserNames[4],"Shahar Lenkry","Israel&Baer-Sheva&Ragar&50&11&-1","0546840083", "4580000000000000","12/22",t_date, 313.1 );
+        ti_good_guest = new TransactionInfo(guest_id,"Oren Ronen","Israel&Tel-Aviv&Ragar&1&1&1","0546810080", "4580000000000000","12/22",t_date, 290 );
 
-        ti_good_same_address_3 = new TransactionInfo(validUserNames[3],"Shay Hav","Ragar&3&2&1","Beer Sheva", "Israel" , "1","0546840082", "4580000000000000","12/22", "123", t_date, 700.0 );
-        ti_good_same_user_different_location_1 = new TransactionInfo(validUserNames[0],"Ariel Ronen","Rotchild&100&2&-1","Tel Aviv", "Israel" , "1", "0546840084", "4580000000000000","12/22","123",t_date, 370.99 );
+        ti_good_same_address_3 = new TransactionInfo(validUserNames[3],"Shay Hav","Israel&Baer-Sheva&Ragar&3&2&1","0546840082", "4580000000000000","12/22",t_date, 700.0 );
+        ti_good_same_user_different_location_1 = new TransactionInfo(validUserNames[0],"Ariel Ronen","Israel&TelAviv&Rotchild&100&2&-1","0546840084", "4580000000000000","12/22",t_date, 370.99 );
 
-        ti_bad_1 = new TransactionInfo("","Ariel Ronen","Ragar&1&-1&-1","Beer Sheva", "Israel" , "1","0546840084", "4580000000000000","12/22","123", t_date, 200.2 );
-        ti_bad_2 = new TransactionInfo(validUserNames[1],"","Ragar&2&1&-1","Beer Sheva", "Israel" , "1","0546840080", "4580000000000000","12/22", "123", t_date, 5 );
-        ti_bad_3 = new TransactionInfo(validUserNames[2],"Omry Arviv","Ragar&3&-1&1","", "Israel" , "1","0546840081", "4580000000000000","12/22", "123", t_date, 10 );
-        ti_bad_4 = new TransactionInfo(validUserNames[3],"Shay Hav","Ragar&3&2&1","Beer Sheva", "Israel" , "1","054684008k", "4580000000000000","12/22", "123", t_date, 400 );
+        ti_bad_1 = new TransactionInfo("","Ariel Ronen","Israel&Baer-Sheva&Ragar&1&-1&-1","0546840084", "4580000000000000","12/22",t_date, 200.2 );
+        ti_bad_2 = new TransactionInfo(validUserNames[1],"","Israel&Baer-Sheva&Ragar&2&1&-1","0546840080", "4580000000000000","12/22",t_date, 5 );
+        ti_bad_3 = new TransactionInfo(validUserNames[2],"Omry Arviv","Israel&Ragar&3&-1&1","0546840081", "4580000000000000","12/22",t_date, 10 );
+        ti_bad_4 = new TransactionInfo(validUserNames[3],"Shay Hav","Israel&Baer-Sheva&Ragar&3&2&1","054684008k", "4580000000000000","12/22",t_date, 400 );
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
         pCat_1 = "Sex";
@@ -151,6 +147,7 @@ public class SupplyCaseTest extends Tester {
         assertFalse(!PurchaseDelivery(ti_good_4,products).isErrorOccurred());
         assertFalse(!PurchaseDelivery(ti_good_5,products).isErrorOccurred());
         assertFalse(!PurchaseDelivery(ti_good_guest,products).isErrorOccurred());
+        MarketSystem.getInstance().setSupplierConnection(true);
 
     }
 

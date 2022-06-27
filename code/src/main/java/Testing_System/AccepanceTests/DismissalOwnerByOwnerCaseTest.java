@@ -4,7 +4,7 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Responses.ResponseT;
+import domain.ResponseT;
 import domain.shop.Shop;
 import org.junit.jupiter.api.*;
 
@@ -31,7 +31,6 @@ public class DismissalOwnerByOwnerCaseTest extends Tester {
         shopID_1 = -1;
         ug = new UserGenerator();
         validUserNames = ug.GetValidUsers();
-        badUserName = ug.GetBadUsers();
         pws = ug.GetPW();
         ug.InitTest();
         user_1 = validUserNames[0];
@@ -68,9 +67,9 @@ public class DismissalOwnerByOwnerCaseTest extends Tester {
     @Test
     public void NotExistUserTest()
     {
-           for (int i = 1; i < ug.getNumOfUser(); i++) {
-               assertFalse(!DismissalOwnerByOwner(user_1, badUserName[0], shopID_1).isErrorOccurred());
-           }
+        for (int i = 1; i < ug.getNumOfUser(); i++) {
+            assertFalse(!DismissalOwnerByOwner(user_1,badUserName[i],shopID_1).isErrorOccurred());
+        }
     }
 
     @Test
