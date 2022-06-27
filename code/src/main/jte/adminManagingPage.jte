@@ -88,7 +88,10 @@
         </div>
     </div>
 
-    <div class="my-4 mx-4 mb-5 small container">
+
+
+    <div class="mb-5 py-4 small container-fluid">
+        <div class="mb-3 fs-4">Get Filtered List of Entrances:</div>
         <form method="get" id="filterUsers" class="form border rounded border-1 w-75" action="/admin/${admin.getUsername()}/systemMonitor/pastEntrances">
             <div class="row mb-2">
                 <div class="col-4">
@@ -138,13 +141,13 @@
                     <th scope="row">${i}</th>
                     <td colspan="2">${users.get(i).getUsername()}</td>
                     @if(users.get(i).isGuest())
-                        <td colspan="2">guest</td>
+                        <td colspan="1">guest</td>
                     @elseif(users.get(i).isAdmin())
                         <td colspan="2">Admin</td>
                     @else
                         <td colspan="2">member</td>
                     @endif
-                    @if(users.get(i).isLoggedIn() || users.get(i).getUsername().contains("Guest"))
+                    @if(users.get(i).isLoggedIn() || users.get(i).isGuest())
                         <td colspan="2" class="table-success">active</td>
                     @else
                         <td colspan="2">disconnected</td>

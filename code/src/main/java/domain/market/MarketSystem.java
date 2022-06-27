@@ -361,7 +361,6 @@ public class MarketSystem {
         }
         isEnter(guestUsername);
         output = UserController.getInstance().login(guestUsername, username, pw);
-        EntranceLogger.getInstance().logEntrance(new Entrance(output, LocalDate.now()));
         notificationManager.notifyAdmin();
         return output;
     }
@@ -568,9 +567,7 @@ public class MarketSystem {
     }
 
     public User EnterMarket() {
-        User output =  userController.enterMarket();
-        EntranceLogger.getInstance().logEntrance(new Entrance(output, LocalDate.now()));
-        return output;
+        return userController.enterMarket();
     }
 
     public Response AddProductToCart(String username, int shopID, int productId, int amount) throws InvalidSequenceOperationsExc, ShopNotFoundException, BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {
@@ -619,7 +616,6 @@ public class MarketSystem {
             throw new BlankDataExc("parameter is null: from date");
         if(to == null)
             throw new BlankDataExc("parameter is null: to date");
-        isEnter(username);
         isExist(username);
         isLogin(username);
         return userController.getEntrances(username,from,to);

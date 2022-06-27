@@ -104,7 +104,7 @@ public class User {
      * enter market - user state is now guest, with empty cart
      */
     public void enterMarket() {
-        us = UserState2.disconnected;
+        us = UserState2.guest;
         enteredMarket=true;
     }
 

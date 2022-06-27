@@ -329,7 +329,7 @@ public class UserController {
         List<PresentationEntrance> owners = p_entrances.stream().filter(p_entrance -> p_entrance.getEnteredUser().isOwnerOnly()).collect(Collectors.toList());
         List<PresentationEntrance> admins = p_entrances.stream().filter(p_entrance -> p_entrance.getEnteredUser().isAdmin()).collect(Collectors.toList());
 
-        ctx.render("adminEntrancesResult", Map.of("admin", user, "from", fromDate, "to", toDate, "guests", guests, "members", members, "managers", managers, "owners", owners, "systemManagers", admins));
+        ctx.render("adminEntrancesResult.jte", Map.of("admin", user, "from", fromDate, "to", toDate, "guests", guests, "members", members, "managers", managers, "owners", owners, "systemManagers", admins));
     }
 
     public void messagesHandler(WsConfig wsConfig) {

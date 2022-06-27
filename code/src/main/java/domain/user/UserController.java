@@ -8,6 +8,7 @@ import domain.shop.Order;
 import domain.shop.Shop;
 import domain.shop.ShopController;
 import domain.user.EntranceLogger.Entrance;
+import domain.user.EntranceLogger.EntranceLogger;
 import domain.user.filter.*;
 
 import java.time.LocalDate;
@@ -117,6 +118,9 @@ public class UserController {
                         guestUser.remove(guestUsername);
                     }
                 }
+                //log entrance
+                EntranceLogger.getInstance().logEntrance(new Entrance(output, LocalDate.now()));
+
                 eventLogger.logMsg(Level.INFO, String.format("logIn for user: %s.", username));
                 return output;
             } else {
@@ -211,6 +215,9 @@ public class UserController {
         activeUser.put(temp.getUserName(), temp);
         eventLogger.logMsg(Level.INFO, "User entered Market.");
         guestUser.put(temp.getUserName(), temp);
+
+        //log entrance
+        EntranceLogger.getInstance().logEntrance(new Entrance(temp, LocalDate.now()));
         return temp;
     }
 

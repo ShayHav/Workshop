@@ -16,14 +16,21 @@ public class SystemManagerPageTest {
 
     private final MarketSystem market = MarketSystem.getInstance();
 
-    public SystemManagerPageTest() {
+    @BeforeAll
+    public static void beforeAll(){
         try {
-            market.start(null, null);
-            User adminGuest = market.EnterMarket();
-            market.login(adminGuest.getUserName(), "Admin", "Admin");
+            MarketSystem.getInstance().start(null, null);
+            User adminGuest = MarketSystem.getInstance().EnterMarket();
+            MarketSystem.getInstance().login(adminGuest.getUserName(), "Admin", "Admin");
         } catch (InvalidSequenceOperationsExc | IncorrectIdentification | BlankDataExc | InvalidAuthorizationException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterAll
+    public static void afterAll() throws IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc, InvalidAuthorizationException {
+        User guest = MarketSystem.getInstance().logout("Admin");
+        MarketSystem.getInstance().LeaveMarket(guest.getUserName());
     }
 
 

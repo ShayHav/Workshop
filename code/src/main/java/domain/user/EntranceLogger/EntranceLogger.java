@@ -43,4 +43,7 @@ public class EntranceLogger {
         return result;
     }
 
+    public List<Entrance> getEntrances() {
+        return entrances;
+    }
 }

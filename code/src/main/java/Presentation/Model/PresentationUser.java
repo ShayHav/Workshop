@@ -149,11 +149,11 @@ public class PresentationUser {
     }
 
     public boolean isGuest() {
-        return state == UserState2.guest;
+        return state == UserState2.guest || this.username.contains("-Guest");
     }
 
     public boolean isMemberOnly() {
-        boolean member = (state == UserState2.member);
+        boolean member = (state == UserState2.member || state == UserState2.disconnected);
         boolean only_member = roleList.isEmpty();
 
         return member & only_member;
@@ -161,8 +161,8 @@ public class PresentationUser {
 
 
     public boolean isManagerOnly() {
-        boolean member = (state == UserState2.member);
-        boolean only_manager = true;
+        boolean member = (state == UserState2.member || state == UserState2.disconnected);
+        boolean only_manager = !roleList.isEmpty();
 
         for (Integer shop : roleList.keySet()) {
             if (roleList.get(shop).contains(Role.ShopOwner) || roleList.get(shop).contains(Role.ShopFounder))
@@ -173,8 +173,8 @@ public class PresentationUser {
     }
 
     public boolean isOwnerOnly() {
-        boolean member = (state == UserState2.member);
-        boolean only_owner = true;
+        boolean member = (state == UserState2.member || state == UserState2.disconnected);
+        boolean only_owner = !roleList.isEmpty();
 
         for (Integer shop : roleList.keySet()) {
             if (roleList.get(shop).contains(Role.ShopManager))

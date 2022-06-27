@@ -4,18 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationEntrance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/jte/adminEntrancesResult.jte" afterDir="false" />
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="entranc">
+      <change afterPath="$PROJECT_DIR$/code/tests/domain/user/EntranceLogger/EntranceLoggerTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/EntranceLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/EntranceLogger.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/adminEntrancesResult.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/adminEntrancesResult.jte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/jte/adminManagingPage.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/adminManagingPage.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/target/classes/state_init.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/target/classes/state_init.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/SystemManager/SystemManagerPageTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/SystemManager/SystemManagerPageTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/user/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/user/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +32,7 @@
       <list>
         <option value="Interface" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -72,10 +78,13 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -83,23 +92,45 @@
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="domain.shop" />
       <recent name="domain.market" />
       <recent name="domain.user" />
       <recent name="domain" />
     </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="domain.user.EntranceLogger" />
+    </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.EntranceLoggerTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
       <module name="workshop" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="Presentation.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EntranceLoggerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="workshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="domain.user.EntranceLogger.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="domain.user.EntranceLogger" />
+      <option name="MAIN_CLASS_NAME" value="domain.user.EntranceLogger.EntranceLoggerTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -135,22 +166,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SystemManagerPageTest.testTotalRegistered" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="workshop" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="SystemManager.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="SystemManager" />
-      <option name="MAIN_CLASS_NAME" value="SystemManager.SystemManagerPageTest" />
-      <option name="METHOD_NAME" value="testTotalRegistered" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="SystemManagerPageTest.testUsers" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="workshop" />
       <extension name="coverage">
@@ -168,19 +183,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Main" />
       <item itemvalue="JUnit.SystemManagerPageTest" />
       <item itemvalue="JUnit.SystemManagerPageTest.testUsers" />
       <item itemvalue="JUnit.SystemManagerPageTest.testActiveUsers" />
-      <item itemvalue="JUnit.SystemManagerPageTest.testTotalRegistered" />
-      <item itemvalue="Application.Main" />
+      <item itemvalue="JUnit.EntranceLoggerTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.EntranceLoggerTest" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.SystemManagerPageTest" />
         <item itemvalue="JUnit.SystemManagerPageTest.testUsers" />
         <item itemvalue="JUnit.SystemManagerPageTest.testActiveUsers" />
-        <item itemvalue="JUnit.SystemManagerPageTest.testTotalRegistered" />
       </list>
     </recent_temporary>
   </component>
@@ -573,11 +588,6 @@
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
           <line>629</line>
           <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/code/src/main/java/Service/Services.java</url>
-          <line>533</line>
-          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
