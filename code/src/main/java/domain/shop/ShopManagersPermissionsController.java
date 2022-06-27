@@ -1,5 +1,6 @@
 package domain.shop;
 
+import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
 
 import java.util.HashMap;
@@ -9,12 +10,15 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class ShopManagersPermissionsController {
+    private int shopId;
     private List<ShopManagersPermissions> managerinit = List.of(new ShopManagersPermissions[]{ShopManagersPermissions.AddProductToInventory, ShopManagersPermissions.RemoveProductFromInventory});
     private Map<String, List<ShopManagersPermissions>> shopManagersPermissionsMap;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
 
-    public ShopManagersPermissionsController(){
+    public ShopManagersPermissionsController(int shopId){
+        this.shopId = shopId;
         shopManagersPermissionsMap = new HashMap<>();
     }
 
@@ -80,7 +84,10 @@ public class ShopManagersPermissionsController {
             } else synchronized (shopManagersPermissionsMap) {
                 shopManagersPermissionsMap.put(targetUser, shopManagersPermissionsList);
             }
-            return PermissionNotExist(shopManagersPermissionsList, targetUser);
+            if(PermissionNotExist(shopManagersPermissionsList, targetUser))
+                controllerDAL.saveShopManagersPermissionsController(this);
+            else return false;
+            return true;
         } else return false;
     }
 
@@ -104,7 +111,10 @@ public class ShopManagersPermissionsController {
                         userShopManagersPermissionsList.add(run);
                 }
             } else synchronized (shopManagersPermissionsMap){shopManagersPermissionsMap.put(targetUser, shopManagersPermissionsList);}
-            return PermissionExist(shopManagersPermissionsList, targetUser);
+            if(PermissionExist(shopManagersPermissionsList, targetUser))
+                controllerDAL.saveShopManagersPermissionsController(this);
+            else return false;
+            return true;
         } else return false;
     }
     public boolean addPermissions(ShopManagersPermissions shopManagersPermissionsList, String targetUser) {
@@ -117,7 +127,10 @@ public class ShopManagersPermissionsController {
                 shopManagersPermissions.add(shopManagersPermissionsList);
                 shopManagersPermissionsMap.put(targetUser, shopManagersPermissions);
             }
-            return PermissionExist(shopManagersPermissions, targetUser);
+            if(PermissionExist(shopManagersPermissions, targetUser))
+                controllerDAL.saveShopManagersPermissionsController(this);
+            else return false;
+            return true;
         } else return false;
     }
 

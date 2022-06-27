@@ -1,20 +1,19 @@
 package Testing_System;
 
-import Presentation.Model.PresentationShop;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
-import domain.notifications.UserObserver;
 import domain.shop.*;
+import domain.shop.user.User;
 import domain.user.*;
-import domain.user.TransactionInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchOfficialsFilter;
-import domain.user.filter.SearchOrderFilter;
-import domain.user.filter.SearchUserFilter;
+import domain.shop.user.TransactionInfo;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchOfficialsFilter;
+import domain.shop.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -22,12 +21,12 @@ import java.util.Map;
 public class ProxyBridge implements  Bridge {
 
     @Override
-    public ResponseT<User> Login(String username, String pw, UserObserver uo) {
+    public ResponseT<User> Login(String guest, String username, String pw) {
         return null;
     }
 
     @Override
-    public Response Register(String username, String pw) {
+    public Response Register(String guest, String username, String pw) {
         return null;
     }
 
@@ -67,7 +66,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
+    public Response StartMarket(PaymentService payment, SupplyService supply) {
         return null;
     }
 
@@ -172,7 +171,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
         return null;
     }
 
@@ -202,7 +201,7 @@ public class ProxyBridge implements  Bridge {
     }
 
     @Override
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
+    public Response DeleteUserTest(String[] usernames) {
         return null;
     }
 

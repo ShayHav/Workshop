@@ -20,10 +20,10 @@ class CartTest {
 
     @BeforeAll
     void setUp() {
-//        Cart cart = new Cart();
-//        user = new User("admin");
-//        shop = new Shop("shop",null,null,user,1);
-//        ShoppingBasket basket = new ShoppingBasket(shop);
+        Cart cart = new Cart();
+        user = new User("admin");
+        shop = new Shop("shop",null,null,user,1);
+        ShoppingBasket basket = new ShoppingBasket(shop);
     }
 
     @Test

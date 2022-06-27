@@ -1,7 +1,7 @@
 package Presentation.Model;
 
 import domain.shop.Product;
-import domain.user.ShoppingBasket;
+import domain.shop.user.ShoppingBasket;
 
 import java.util.HashMap;
 import java.util.Map;

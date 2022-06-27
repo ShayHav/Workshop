@@ -1,25 +1,19 @@
 package Testing_System;
 
-import Presentation.Model.PresentationShop;
-import Presentation.Model.PresentationUser;
-import domain.Exceptions.BlankDataExc;
-import domain.Exceptions.IncorrectIdentification;
-import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.Exceptions.ShopNotFoundException;
 import domain.Response;
 import domain.ResponseList;
 import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
-import domain.notifications.UserObserver;
 import domain.shop.*;
+import domain.shop.user.User;
 import domain.user.*;
-import domain.user.TransactionInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchOfficialsFilter;
-import domain.user.filter.SearchOrderFilter;
-import domain.user.filter.SearchUserFilter;
+import domain.shop.user.TransactionInfo;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchOfficialsFilter;
+import domain.shop.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -27,9 +21,9 @@ import java.util.Map;
 public interface Bridge {
 
     //General Guest-Visitor
-    ResponseT<User> Login(String username, String pw,UserObserver uo); //done
+    ResponseT<User> Login(String guest, String username, String pw); //done
 
-    Response Register(String username, String pw); //done
+    Response Register(String guest, String username, String pw); //done
 
     ResponseT<User> EnterMarket();
 
@@ -48,7 +42,7 @@ public interface Bridge {
 
     ResponseT<Boolean> Payment(TransactionInfo ti);
 
-    Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password); //done
+    Response StartMarket(PaymentService payment, SupplyService supply); //done
 
     Result<Boolean, String> AddSupplyService(String path);
 
@@ -105,7 +99,7 @@ public interface Bridge {
 
     Response AppointNewShopManager(int key, String targetUser, String userId);//done
 
-    Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);//done
+    Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser , String ownerID);//done
 
     Response RemoveShopManagerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String managerUser, String ownerID); //done
 
@@ -117,7 +111,7 @@ public interface Bridge {
 
     ResponseList<User> RequestShopOfficialsInfo(int shopName, SearchOfficialsFilter f, String userName);
 
-    Result<Boolean, String> DeleteUserTest(String[] usernames);
+    Response DeleteUserTest(String[] usernames);
 
     ResponseList<Order> RequestInformationOfShopsSalesHistory(int shopName, SearchOrderFilter f, String userName);
 

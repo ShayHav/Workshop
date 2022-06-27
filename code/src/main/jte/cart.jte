@@ -53,6 +53,7 @@
                             </button>
                             <input class="visually-hidden" name="shopID" value="${basket.shopId}" readonly>
                         </form>
+                        <div class="mb-2 mt-2"><b>Total Amount for product:</b> ${product.finalPrice * basket.productWithAmount.get(product)}</div>
                     </li>
                 </ul>
             @endfor

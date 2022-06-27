@@ -2,11 +2,13 @@ package Testing_System.AccepanceTests;
 
 import Testing_System.Tester;
 import Testing_System.UserGenerator;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.*;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchProductFilter;
-import domain.user.User;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchProductFilter;
+import domain.shop.user.User;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -34,13 +36,12 @@ public class SearchProductCaseTest extends Tester {
     private String pCat_2;
     private double price_2;
     private int amountToAdd_2;
-    Product p_1;
-    Product p_2;
-
+    private Product p_1;
+    private Product p_2;
+    private String[] guestArr;
 
     @BeforeAll
-    public void SetUp()
-    {
+    public void SetUp() throws InvalidSequenceOperationsExc, IncorrectIdentification {
         badUser = ug.GetBadUsers();
         pName_1 = "Durex";
         pDis_1 = "Protection rubber item. Single item.";
@@ -58,11 +59,14 @@ public class SearchProductCaseTest extends Tester {
         ug.InitTest();
         user_1 = validUsers[0];
         pw_1 = pws[0];
-        Register(user_1, pw_1);
-        Login(user_1, pw_1,null);
+        guestArr = new String[ug.getNumOfUser()];
+        guestArr[0] = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guestArr[0],user_1, pw_1);
+        Login(guestArr[0],user_1, pw_1);
         for(int i = 1; i<ug.getNumOfUser()-1; i++) {
-            Register(validUsers[i], pws[i]);
-            Login(validUsers[i],pws[i],null);
+            guestArr[i] = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+            Register(guestArr[i],validUsers[i], pws[i]);
+            Login(guestArr[i],validUsers[i],pws[i]);
         }
         ResponseT<Shop> shopResponseT = CreateShop("Test_1",user_1, "TestShop");
         if(!shopResponseT.isErrorOccurred())
@@ -156,7 +160,8 @@ public class SearchProductCaseTest extends Tester {
     public void NotLoggedUser()
     {
         Filter<Product> f_1 = new SearchProductFilter(null,null,null,null,null);
-        Register(validUsers[ug.getNumOfUser()-1],pws[ug.getNumOfUser()-1]);
+        guestArr[ug.getNumOfUser()-1] = !EnterMarket().isErrorOccurred() ? EnterMarket().getValue().getUserName() : "";
+        Register(guestArr[ug.getNumOfUser()-1],validUsers[ug.getNumOfUser()-1],pws[ug.getNumOfUser()-1]);
         assertFalse(!SearchProductByKeyword(validUsers[ug.getNumOfUser()-1],"",f_1).isErrorOccurred());
 
     }

@@ -1,9 +1,8 @@
 package domain.shop.PurchasePolicys;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlackListPolicy implements PurchaseRule {
+public class BlackListPolicy {
     private final List<String> userBlackList;
     private int purchaseRuleID;
 
@@ -12,7 +11,6 @@ public class BlackListPolicy implements PurchaseRule {
         this.purchaseRuleID = purchaseRuleID;
     }
 
-    @Override
     public boolean purchaseAllowed(String userID, int amount) {
         return !(userBlackList.contains(userID));
     }

@@ -7,14 +7,14 @@ import domain.ResponseMap;
 import domain.ResponseT;
 import domain.market.PaymentService;
 import domain.market.SupplyService;
-import domain.notifications.UserObserver;
 import domain.shop.*;
+import domain.shop.user.User;
 import domain.user.*;
-import domain.user.TransactionInfo;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchOfficialsFilter;
-import domain.user.filter.SearchOrderFilter;
-import domain.user.filter.SearchUserFilter;
+import domain.shop.user.TransactionInfo;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchOfficialsFilter;
+import domain.shop.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchUserFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -28,13 +28,13 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public ResponseT<User> Login(String username, String pw,UserObserver uo) {
-        return sv.Login(username, pw,uo);
+    public ResponseT<User> Login(String guest, String username, String pw) {
+        return sv.Login(guest, username, pw);
     }
 
     @Override
-    public Response Register(String username, String pw) {
-        return sv.Register(username, pw);
+    public Response Register(String guest, String username, String pw) {
+        return sv.Register(guest,username, pw);
     }
 
     @Override
@@ -73,8 +73,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Response StartMarket(PaymentService payment, SupplyService supply, String userID, String password) {
-        return sv.StartMarket(payment, supply, userID, password);
+    public Response StartMarket(PaymentService payment, SupplyService supply) {
+        return sv.StartMarket(payment, supply);
     }
 
     @Override
@@ -180,8 +180,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, String> AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
-        return AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
+    public Response AddShopMangerPermissions(int key, List<ShopManagersPermissions> shopManagersPermissionsList, String targetUser, String ownerID) {
+        return sv.AddShopMangerPermissions(key, shopManagersPermissionsList, targetUser, ownerID);
     }
 
     @Override
@@ -210,8 +210,8 @@ public class RealBridge implements Bridge{
     }
 
     @Override
-    public Result<Boolean, String> DeleteUserTest(String[] usernames) {
-        return null;
+    public Response DeleteUserTest(String[] usernames) {
+        return sv.DeleteUserTest(usernames);
     }
 
     @Override

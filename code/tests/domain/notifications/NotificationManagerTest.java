@@ -1,8 +1,11 @@
 package domain.notifications;
 
-import Presentation.Model.Messages.NotificationMessage;
-import domain.user.User;
-import org.junit.jupiter.api.AfterEach;
+import domain.Exceptions.BlankDataExc;
+import domain.Exceptions.IncorrectIdentification;
+import domain.Exceptions.InvalidAuthorizationException;
+import domain.Exceptions.InvalidSequenceOperationsExc;
+import domain.market.MarketSystem;
+import domain.shop.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class NotificationManagerTest {
 
     private final NotificationManager notificationManager = NotificationManager.getInstance();
+
+    @BeforeEach
+    void cleanUp(){
+        for(String username : notificationManager.getObservers().keySet()){
+            notificationManager.removeFromObserversList(username);
+        }
+    }
 
     @Test
     void removeFromObserversList() {
@@ -46,7 +56,7 @@ class NotificationManagerTest {
         Message m = userMessages.get(user).get(0);
         assertEquals(user, m.getAddressee());
         assertEquals(user.getUserName(), m.getSender());
-        assertEquals("testing message", m.getContent());
+        assertEquals("test message", m.getContent());
         assertFalse(m.isRead());
     }
 
@@ -72,13 +82,16 @@ class NotificationManagerTest {
     }
 
     @Test
-    void notifyAdmin() {
+    void notifyAdmin() throws InvalidSequenceOperationsExc, IncorrectIdentification, InvalidAuthorizationException, BlankDataExc {
         boolean[] notified = new boolean[1];
         User admin = new User("admin2");
         notificationManager.registerAdminObserver(admin, () -> notified[0] = true);
         notificationManager.notifyAdmin();
+        User guest = MarketSystem.getInstance().EnterMarket();
+        MarketSystem.getInstance().register(guest.getUserName(), "testUser", "pass");
         assertFalse(notified[0]);
         admin.login();
+        MarketSystem.getInstance().login(guest.getUserName(), "testUser", "pass");
         assertTrue(notified[0]);
     }
 
