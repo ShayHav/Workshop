@@ -17,6 +17,7 @@ import domain.shop.*;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
 import domain.user.*;
+import domain.user.EntranceLogger.Entrance;
 import domain.user.filter.*;
 
 import java.io.FileReader;
@@ -26,6 +27,7 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -1195,6 +1197,15 @@ public class Services {
             return new Response(invalidSequenceOperationsExc.getLocalizedMessage());
         } catch (BlankDataExc blankDataExc) {
             return new Response(blankDataExc.getLocalizedMessage());
+        }
+    }
+
+    public ResponseList<Entrance> getEntrances(String username, LocalDate from, LocalDate to){
+        try{
+            List<Entrance> result = marketSystem.getEntrances(username,from,to);
+            return new ResponseList<>(result);
+        } catch (InvalidSequenceOperationsExc | IncorrectIdentification | InvalidAuthorizationException | BlankDataExc e) {
+            return new ResponseList<>(e.getMessage());
         }
     }
 
