@@ -1,9 +1,7 @@
 package Presentation.Controllers;
 
 import Presentation.Model.*;
-import Presentation.Model.Messages.AppointMangerMessage;
-import Presentation.Model.Messages.AppointOwnerMessage;
-import Presentation.Model.Messages.EditShopMessage;
+import Presentation.Model.Messages.*;
 import Service.Services;
 import domain.Exceptions.InvalidParamException;
 import domain.Responses.Response;
@@ -250,7 +248,8 @@ public class ShopController {
             switch (message.type) {
                 case "removeManager" -> {
                     Response r = services.removeManager(shopID, message.requestingUser, message.subject);
-                    ctx.send(r);
+                    RemoveManagerMessage returnMessage = new RemoveManagerMessage(r.errorMessage, message.subject);
+                    ctx.send(returnMessage);
                 }
                 case "addManager" -> {
                     Response response = services.AppointNewShopManager(shopID, message.subject, message.getRequestingUser());
@@ -264,7 +263,8 @@ public class ShopController {
                 }
                 case "removeOwner" -> {
                     Response response = services.DismissalOwnerByOwner(message.requestingUser, message.subject, shopID);
-                    ctx.send(response);
+                    RemoveOwnerMessage returnMessage = new RemoveOwnerMessage(response.errorMessage ,message.subject);
+                    ctx.send(returnMessage);
                 }
             }
         });
@@ -685,5 +685,41 @@ public class ShopController {
             return;
         }
         context.redirect("/shops/" + shopID + "/bids");
+    }
+
+    public void approveAppointment(Context context) {
+        PresentationUser user = userController.getUser(context);
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int appointmentNumber = context.formParamAsClass("appointmentNumber", int.class).get();
+        Response response = services.declineAppoint(shopID, appointmentNumber, user.getUsername());
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/" + shopID + "/edit");
+    }
+
+    public void declineAppointment(Context context) {
+        PresentationUser user = userController.getUser(context);
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int appointmentNumber = context.formParamAsClass("appointmentNumber", int.class).get();
+        Response response = services.acceptAppoint(shopID, appointmentNumber, user.getUsername());
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/" + shopID + "/edit");
+    }
+
+    public void appointOwner(Context context) {
+        PresentationUser user = userController.getUser(context);
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        String toAppoint = context.formParam("ownerID");
+        Response response = services.AppointNewShopOwner(shopID, toAppoint, user.getUsername());
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/" + shopID + "/edit");
     }
 }

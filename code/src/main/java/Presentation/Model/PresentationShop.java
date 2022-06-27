@@ -18,8 +18,10 @@ public class PresentationShop {
     public PresentationUser founder;
     public boolean isOpen;
     public List<PresentationUser> managers;
+    public List<PresentationUser> owners;
     public PurchasePolicy purchasePolicy;
     public DiscountPolicy discountPolicy;
+    public List<PresentationAppointment> appointments;
 
     public PresentationShop(String id, String name, String description, List<PresentationProduct> products, PurchasePolicy policy){
         this.id = id;
@@ -39,7 +41,8 @@ public class PresentationShop {
         managers = shop.getShopsManagers().stream().map(PresentationUser::new).collect(Collectors.toList());
         purchasePolicy = shop.getPurchasePolicy();
         discountPolicy = shop.getDiscountPolicy();
-
+        owners = shop.getShopOwners().stream().map(PresentationUser::new).collect(Collectors.toList());
+        appointments = shop.getAppointment().stream().map(ownerAppointment -> new PresentationAppointment(ownerAppointment, shop.getShopID())).collect(Collectors.toList());
     }
 
     public boolean isFounder(PresentationUser user){
@@ -60,5 +63,9 @@ public class PresentationShop {
 
     public List<PurchaseRule> getAllRules(){
         return purchasePolicy.getAllDistinctPurchaseRules();
+    }
+
+    public List<PresentationAppointment> getAppointments() {
+        return appointments;
     }
 }

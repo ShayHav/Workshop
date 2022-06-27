@@ -720,7 +720,7 @@ public class MarketSystem {
         return false;
     }
 
-    public void removeManger(int shopID, String remover, String managerToRemove) throws IncorrectIdentification, BlankDataExc, InvalidAuthorizationException, InvalidSequenceOperationsExc {
+    public void removeManger(int shopID, String remover, String managerToRemove) throws IncorrectIdentification, BlankDataExc, InvalidAuthorizationException, InvalidSequenceOperationsExc, ShopNotFoundException {
         if (remover == null || managerToRemove == null)
             throw new BlankDataExc("parameters cannot be null");
         User user = userController.getUser(remover);
@@ -729,7 +729,7 @@ public class MarketSystem {
         isExist(managerToRemove);
         isLogin(remover);
         User manager = userController.getUser(managerToRemove);
-        //TODO remove the manager
+        shopController.getShop(shopID).removeManager(manager,  user);
     }
 
     public List<Shop> GetAllUserShops(String username, Filter<Shop> filter) throws BlankDataExc, IncorrectIdentification, InvalidAuthorizationException {

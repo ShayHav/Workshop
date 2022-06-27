@@ -5,21 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="correct appointment of owner in shops">
-      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationBid.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/src/main/jte/openBidsPage.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/RemoveManagerMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/RemoveOwnerMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationAppointment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/AddToCartMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/ProductPageMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchaseFormats/BidFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchaseFormats/BidFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchaseFormats/BidHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchaseFormats/BidHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/OwnerAppointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/OwnerAppointment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/jte/product.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/product.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/jte/shop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/shop.jte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/navBar.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/navBar.jte" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -575,12 +574,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>136</line>
+          <line>134</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>152</line>
+          <line>150</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -595,8 +594,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
-          <line>651</line>
-          <option name="timeStamp" value="34" />
+          <line>714</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java</url>
+          <line>245</line>
+          <option name="timeStamp" value="37" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

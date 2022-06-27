@@ -7,6 +7,7 @@ import domain.notifications.NotificationManager;
 import domain.user.Role;
 import domain.user.User;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class OwnerAppointment {
     User appointUser;
     Shop shop;
     int id;
+    boolean completed;
 
     public OwnerAppointment(User userToAppoint, User appointUser, Shop shop , List<User> toConfirm, int id) throws BidNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, CriticalInvariantException, BlankDataExc {
         //super(product.getId(), product.getName(), product.getDescription(), product.getCategory(), product.getBasePrice(), product.getAmount());
@@ -31,7 +33,7 @@ public class OwnerAppointment {
         NotificationManager notificationManager = NotificationManager.getInstance();
 
         String offerMessage = String.format("Appoint message: Shop: %d Owner:%s start Appoint process userToAppoint : %s",shop.getShopID(),appointUser.getUserName(),userToAppoint.getUserName());
-
+        completed = false;
         for(User user: toConfirm) {
             if(!user.equals(appointUser)) {
                 this.OwnersToApprove.put(user, false);
@@ -61,6 +63,7 @@ public class OwnerAppointment {
     public void resolve() throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         appointUser.AppointedMeOwner(shop,userToAppoint.getUserName());
         shop.addUserAsOwner(userToAppoint);
+        completed = true;
         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", userToAppoint.getUserName()));
     }
 
@@ -82,5 +85,21 @@ public class OwnerAppointment {
 
     public int getId() {
         return id;
+    }
+
+    public User getUserToAppoint() {
+        return userToAppoint;
+    }
+
+    public User getAppointUser() {
+        return appointUser;
+    }
+
+    public Map<User, Boolean> getOwnersToApprove() {
+        return Collections.unmodifiableMap(OwnersToApprove);
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 }

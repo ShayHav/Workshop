@@ -1,7 +1,7 @@
 package gg.jte.generated.ondemand;
 public final class JtenavBarGenerated {
 	public static final String JTE_NAME = "navBar.jte";
-	public static final int[] JTE_LINE_INFO = {0,0,0,0,12,12,12,12,16,16,16,16,16,16,23,23,23,23,23,23,50,50,57,57,59,59,77,77,77,93,93,96,96,97,97,97,99,99,101,101,101,102,102,102,103,103,105,105,105,106,106,106,108,108,108,111,111,117,117,117,132,132,145,145,146};
+	public static final int[] JTE_LINE_INFO = {0,0,0,0,12,12,12,12,16,16,16,16,16,16,22,22,22,22,22,22,49,49,56,56,58,58,76,76,76,92,92,95,95,96,96,96,98,98,100,100,100,101,101,101,102,102,104,104,104,105,105,105,107,107,107,110,110,116,116,116,131,131,144,144,145};
 	public static void render(gg.jte.html.HtmlTemplateOutput jteOutput, gg.jte.html.HtmlInterceptor jteHtmlInterceptor, Presentation.Model.PresentationUser user, String title) {
 		jteOutput.writeContent("<!doctype html>\r\n<html lang=\"en\" xmlns=\"http://www.w3.org/1999/html\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\"\r\n          content=\"width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0\">\r\n    <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">\r\n    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js\"\r\n            integrity=\"sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT\"\r\n            crossorigin=\"anonymous\"></script>\r\n    <title>");
 		jteOutput.setContext("title", null);
@@ -12,7 +12,7 @@ public final class JtenavBarGenerated {
 		jteOutput.writeContent("/users/");
 		jteOutput.setContext("script", null);
 		jteOutput.writeUserContent(user.getUsername());
-		jteOutput.writeContent("/messages/getCount');\r\n        messagesSocket.onmessage = (event) => {\r\n            console.log(event.data);\r\n            let count = event.data;\r\n            let counter = document.querySelector('#messageCount');\r\n            counter.textContent = count === 0 || count === '0' ? '' : count;\r\n        }\r\n        const activeUserSocket = new WebSocket('ws://localhost:");
+		jteOutput.writeContent("/messages/getCount');\r\n        messagesSocket.onmessage = (event) => {\r\n            let count = event.data;\r\n            let counter = document.querySelector('#messageCount');\r\n            counter.textContent = count === 0 || count === '0' ? '' : count;\r\n        }\r\n        const activeUserSocket = new WebSocket('ws://localhost:");
 		jteOutput.setContext("script", null);
 		jteOutput.writeUserContent(Presentation.Main.port);
 		jteOutput.writeContent("/users/");
