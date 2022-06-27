@@ -1,18 +1,16 @@
 package Presentation.Controllers;
 
+import Presentation.Model.*;
 import Presentation.Model.Messages.AppointMangerMessage;
 import Presentation.Model.Messages.AppointOwnerMessage;
 import Presentation.Model.Messages.EditShopMessage;
-import Presentation.Model.PresentationOrder;
-import Presentation.Model.PresentationProduct;
-import Presentation.Model.PresentationShop;
-import Presentation.Model.PresentationUser;
 import Service.Services;
 import domain.Exceptions.InvalidParamException;
 import domain.Responses.Response;
 import domain.Responses.ResponseList;
 import domain.Responses.ResponseT;
 import domain.shop.*;
+import domain.shop.PurchaseFormats.BidFormat;
 import domain.shop.predicate.PRPredType;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
@@ -648,5 +646,44 @@ public class ShopController {
             return;
         }
         context.redirect("/shops/"+ shopID+"/edit");
+    }
+
+    public void renderBidsPage(Context context) {
+        PresentationUser user = userController.getUser(context);
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        ResponseList<BidFormat> response = services.getBidRequestForShop(user.getUsername(), shopID);
+
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+
+        List<PresentationBid> bids = response.getValue().stream().map(PresentationBid::new).collect(Collectors.toList());
+
+        context.render("openBidsPage.jte", Map.of("user", user, "bids", bids));
+    }
+
+    public void approveBid(Context context) {
+        PresentationUser user = userController.getUser(context);
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int bidID = context.formParamAsClass("bidID", int.class).get();
+        Response response = services.acceptBid(shopID,bidID, user.getUsername());
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/" + shopID + "/bids");
+    }
+
+    public void declineBid(Context context) {
+        PresentationUser user = userController.getUser(context);
+        int shopID = context.pathParamAsClass("shopID", int.class).get();
+        int bidID = context.formParamAsClass("bidID", int.class).get();
+        Response response = services.declineBid(shopID,bidID, user.getUsername());
+        if(response.isErrorOccurred()){
+            context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
+            return;
+        }
+        context.redirect("/shops/" + shopID + "/bids");
     }
 }

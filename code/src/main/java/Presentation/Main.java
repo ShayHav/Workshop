@@ -117,6 +117,9 @@ public class Main {
                     post("/deleteDiscount", shopController::deleteDiscount);
                     post("/composeDiscounts", shopController::composeDiscounts);
 
+                    get("/bids", shopController::renderBidsPage);
+                    post("/approveBid", shopController::approveBid);
+                    post("/declineBid", shopController::declineBid);
 
                     path("{serialNumber}", () -> {
                         get(shopController::renderProductPage);

@@ -1,7 +1,7 @@
 package Presentation.Controllers;
 
 import Presentation.Model.*;
-import Presentation.Model.Messages.AddToCartMessage;
+import Presentation.Model.Messages.ProductPageMessage;
 import Presentation.Model.Messages.CheckoutFormMessage;
 import Presentation.Model.Messages.NotificationMessage;
 import Presentation.Model.Messages.RegisterMessage;
@@ -115,12 +115,20 @@ public class UserController {
     }
 
     public void addToCart(WsConfig wsConfig) {
-        wsConfig.onConnect(ctx -> {
-            System.out.println("product page connected via websocket");
-        });
+        wsConfig.onConnect(ctx -> {});
         wsConfig.onMessage(ctx -> {
-            AddToCartMessage message = ctx.messageAsClass(AddToCartMessage.class);
-            Response response = services.AddToShoppingCart(message.getUsername(), message.getShopID(), message.getSerialNumber(), message.getQuantity());
+            ProductPageMessage message = ctx.messageAsClass(ProductPageMessage.class);
+            Response response;
+            if(message.getType().equals("buyRequest")) {
+                response = services.AddToShoppingCart(message.getUsername(), message.getShopID(),
+                        message.getSerialNumber(), message.getQuantity());
+            }
+            else{
+                response = services.addBidToShoppingCart(message.getUsername(), message.getShopID(),
+                        message.getSerialNumber(), message.getQuantity(), message.getQuantity());
+                if(!response.isErrorOccurred())
+                    response = new Response("your request was sent to the store owners and when approve you will be able to complete the purchase in your cart");
+            }
             ctx.send(response);
         });
     }

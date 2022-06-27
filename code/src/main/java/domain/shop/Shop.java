@@ -880,4 +880,8 @@ public class Shop {
     public void putIfAbsentManager(String userName, User appointUser) {
         ShopManagers.putIfAbsent(userName, appointUser);
     }
+
+    public List<BidFormat> getBids() {
+        return Collections.unmodifiableList(bidHandler.getBids());
+    }
 }
