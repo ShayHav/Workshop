@@ -9,8 +9,8 @@ import domain.market.MarketSystem;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.Basket;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.TransactionInfo;
-import domain.user.User;
+import domain.shop.user.TransactionInfo;
+import domain.shop.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +20,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.mockito.Mockito;
-import org.mockito.Mockito.*;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

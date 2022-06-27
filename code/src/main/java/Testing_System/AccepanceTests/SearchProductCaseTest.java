@@ -6,9 +6,9 @@ import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.*;
-import domain.user.filter.Filter;
-import domain.user.filter.SearchProductFilter;
-import domain.user.User;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchProductFilter;
+import domain.shop.user.User;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

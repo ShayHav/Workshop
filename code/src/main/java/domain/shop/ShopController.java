@@ -7,8 +7,11 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
+import domain.shop.user.Role;
+import domain.shop.user.User;
+import domain.shop.user.UserController;
+import domain.shop.user.filter.Filter;
 import domain.user.*;
-import domain.user.filter.*;
 import domain.DAL.*;
 
 import java.util.*;
@@ -46,7 +49,7 @@ public class ShopController {
             newShop = new Shop(name, description,discountPolicy,purchasePolicy, shopFounder, shopCounter);
             shopList.put(shopCounter, newShop);
         }
-        shopFounder.addRole(shopCounter,Role.ShopFounder);
+        shopFounder.addRole(shopCounter, Role.ShopFounder);
         eventLogger.logMsg(Level.INFO, String.format("create new shop. FounderId: %s , ShopName: %s", shopFounder.getUserName(), name));
         controllerDAL.saveShop(newShop);
         return newShop;

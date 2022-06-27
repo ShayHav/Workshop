@@ -1,14 +1,12 @@
-package domain.user;
+package domain.shop.user;
 
 
 import domain.*;
 import domain.DAL.ControllerDAL;
 import domain.Exceptions.*;
-import domain.Exceptions.IllegalStateException;
 import domain.ResponseT;
-import domain.market.MarketSystem;
 import domain.shop.*;
-import domain.user.filter.*;
+import domain.shop.user.filter.Filter;
 
 import javax.persistence.*;
 import java.util.*;
@@ -18,16 +16,17 @@ import java.util.logging.Level;
 public class User {
     @Id
     private String userName;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private UserState2 us;
+    @Transient
     private Map<Integer,List<Role>> roleList;
-    @OneToOne
+    @Transient
     private Cart userCart;
     @Transient
     private boolean loggedIn;
-    @ManyToMany
+    @Transient
     private List<ManagerAppointment> managerAppointeeList;
-    @ManyToMany
+    @Transient
     private List<OwnerAppointment> ownerAppointmentList;
     @OneToMany
     private List<Order> orderHistory;
@@ -38,19 +37,59 @@ public class User {
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     @Transient
     private boolean enteredMarket;
+    @Transient
     private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
     //TODO: all methods in user, delegate to state. if only methods of member: impl in guest and throw exception/log as error.
 
+    public void setUs(UserState2 us) {
+        this.us = us;
+    }
+
+    public void setRoleList(Map<Integer, List<Role>> roleList) {
+        this.roleList = roleList;
+    }
+
+    public void setUserCart(Cart userCart) {
+        this.userCart = userCart;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setManagerAppointeeList(List<ManagerAppointment> managerAppointeeList) {
+        this.managerAppointeeList = managerAppointeeList;
+    }
+
+    public void setOwnerAppointmentList(List<OwnerAppointment> ownerAppointmentList) {
+        this.ownerAppointmentList = ownerAppointmentList;
+    }
+
+    public Cart getUserCart() {
+        return userCart;
+    }
+
     public User() {
         us = null;
     }
-
+    public User merge(User u)
+    {
+        setUs(u.getUs());
+        setRoleList(u.getRoleList());
+        setUserCart(u.getUserCart());
+        setManagerAppointeeList(u.getManagerAppointeeList());
+        setOwnerAppointmentList(u.getOwnerAppointmentList());
+        setOrderHistory(u.getOrderHistory());
+        setSystemManager(u.isSystemManager());
+        return this;
+    }
     public User(String userName) {
         this.userName = userName;
         loggedIn = false;
         us = UserState2.disconnected;
         userCart = new Cart();
+        userCart.setUsername(userName); //Ariel Added
         isSystemManager = false;
         managerAppointeeList = new ArrayList<>();
         ownerAppointmentList = new ArrayList<>();

@@ -14,10 +14,10 @@ import domain.notifications.Message;
 import domain.notifications.SystemInfoMessage;
 import domain.shop.Order;
 import domain.shop.Shop;
-import domain.user.Cart;
-import domain.user.User;
-import domain.user.filter.SearchOrderFilter;
-import domain.user.filter.SearchShopFilter;
+import domain.shop.user.Cart;
+import domain.shop.user.User;
+import domain.shop.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchShopFilter;
 import io.javalin.http.Context;
 import io.javalin.websocket.WsConfig;
 

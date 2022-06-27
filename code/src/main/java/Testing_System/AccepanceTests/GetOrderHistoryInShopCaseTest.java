@@ -6,7 +6,7 @@ import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 import domain.ResponseT;
 import domain.shop.Shop;
-import domain.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchOrderFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

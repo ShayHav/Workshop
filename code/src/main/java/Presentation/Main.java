@@ -9,8 +9,8 @@ import domain.ResponseMap;
 import domain.ResponseT;
 import domain.shop.Product;
 import domain.shop.Shop;
-import domain.user.User;
-import domain.user.filter.SearchProductFilter;
+import domain.shop.user.User;
+import domain.shop.user.filter.SearchProductFilter;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 

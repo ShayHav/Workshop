@@ -12,11 +12,14 @@ import domain.shop.discount.Basket;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
 import domain.shop.predicate.*;
+import domain.shop.user.Role;
+import domain.shop.user.TransactionInfo;
+import domain.shop.user.User;
+import domain.shop.user.filter.SearchOfficialsFilter;
+import domain.shop.user.filter.SearchOrderFilter;
 import domain.user.*;
-import domain.user.filter.*;
 
 import javax.persistence.*;
-import java.security.Provider;
 import java.util.*;
 
 import java.util.function.Predicate;
@@ -41,20 +44,89 @@ public class Shop {
     @ManyToMany
     private List<User> ShopManagers;
     private ShopManagersPermissionsController shopManagersPermissionsController;
-    @Embedded
-    private final Inventory inventory;
+    @OneToOne
+    private Inventory inventory;
     @OneToOne
     private DiscountPolicy discountPolicy;
     @OneToOne
     private PurchasePolicy purchasePolicy;
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
-    private final OrderHistory orders;
+    private OrderHistory orders;
     private boolean isOpen;
+    @Transient
     private MarketSystem marketSystem = MarketSystem.getInstance();
     @Transient
     private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
+    public Shop() {
+
+    }
+
+
+    public OrderHistory getOH()
+    {
+        return this.orders;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public void setShopOwners(List<User> shopOwners) {
+        ShopOwners = shopOwners;
+    }
+
+    public List<User> getShopManagers() {
+        return ShopManagers;
+    }
+
+    public void setShopManagers(List<User> shopManagers) {
+        ShopManagers = shopManagers;
+    }
+
+    public ShopManagersPermissionsController getShopManagersPermissionsController() {
+        return shopManagersPermissionsController;
+    }
+
+    public void setShopManagersPermissionsController(ShopManagersPermissionsController shopManagersPermissionsController) {
+        this.shopManagersPermissionsController = shopManagersPermissionsController;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public void setOrders(OrderHistory orders) {
+        this.orders = orders;
+    }
+
+    public Shop merge(Shop shop)
+    {
+        setName(shop.getName());
+        setRank(shop.getRank());
+        setDescription(shop.getDescription());
+        setShopManagers(shop.getShopManagers());
+        setShopOwners(shop.getShopOwners());
+        setShopManagersPermissionsController(shop.getShopManagersPermissionsController());
+        setInventory(shop.getInventory());
+        setDiscountPolicy(shop.getDiscountPolicy());
+        setPurchasePolicy(shop.getPurchasePolicy());
+        setOrders(shop.getOH());
+        setOpen(shop.isOpen());
+        return this;
+
+    }
     private boolean isShopOwner(String username){
         for(User user: ShopOwners) {
             if(user.getUserName().equals(username))
@@ -381,7 +453,7 @@ public class Shop {
                     if(managerUser.appointOwner(shopID)){
                         managerUser.AppointedMeOwner(this,usertarget);
                         ShopOwners.add(newManager);
-                        newManager.addRole(shopID,Role.ShopOwner);
+                        newManager.addRole(shopID, Role.ShopOwner);
                         eventLogger.logMsg(Level.INFO, String.format("Appoint New Shop Owner User: %s", usertarget));
                         return;
                     }

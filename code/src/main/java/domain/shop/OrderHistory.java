@@ -2,12 +2,10 @@ package domain.shop;
 
 import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
-import domain.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchOrderFilter;
 
 import javax.persistence.Transient;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

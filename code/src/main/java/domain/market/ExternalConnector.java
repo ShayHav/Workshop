@@ -1,8 +1,7 @@
 package domain.market;
 
-import domain.user.TransactionInfo;
+import domain.shop.user.TransactionInfo;
 
-import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

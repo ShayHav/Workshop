@@ -1,11 +1,9 @@
-package domain.user.filter;
+package domain.shop.user.filter;
 
 import domain.EventLoggerSingleton;
-import domain.shop.Order;
-import domain.user.Role;
-import domain.user.User;
-import domain.user.UserSearchInfo;
-import domain.user.filter.Filter;
+import domain.shop.user.Role;
+import domain.shop.user.User;
+import domain.shop.user.UserSearchInfo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

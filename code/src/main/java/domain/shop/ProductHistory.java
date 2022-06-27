@@ -7,12 +7,12 @@ import javax.persistence.Id;
 public class ProductHistory implements Product{
 
     @Id
-    private final int serialNumber;
-    private final String name;
-    private final String description;
-    private final double price;
-    private final int numSold;
-    private final String category;
+    private int serialNumber;
+    private String name;
+    private String description;
+    private double price;
+    private int numSold;
+    private String category;
 
     public ProductHistory(Product p, double price, int amount){
         this.name = p.getName();
@@ -21,6 +21,38 @@ public class ProductHistory implements Product{
         this.price = price;
         this.numSold = amount;
         this.serialNumber = p.getId();
+    }
+
+    public ProductHistory() {
+
+    }
+
+    public int getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(int serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setNumSold(int numSold) {
+        this.numSold = numSold;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override
@@ -61,6 +93,16 @@ public class ProductHistory implements Product{
     @Override
     public int getAmount() {
         return numSold;
+    }
+
+    @Override
+    public Product merge(Product pi) {
+        setName(pi.getName());
+        setDescription(pi.getDescription());
+        setPrice(pi.getPrice());
+        setNumSold(pi.getAmount());
+        setCategory(pi.getCategory());
+        return this;
     }
 
     public int getId() {

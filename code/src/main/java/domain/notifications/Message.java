@@ -1,11 +1,10 @@
 package domain.notifications;
 
-import domain.user.User;
+import domain.shop.user.User;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.Objects;
 @Entity

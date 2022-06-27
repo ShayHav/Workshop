@@ -12,8 +12,14 @@ import domain.notifications.UserObserver;
 import domain.shop.*;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
+import domain.shop.user.Cart;
+import domain.shop.user.TransactionInfo;
+import domain.shop.user.User;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchOfficialsFilter;
+import domain.shop.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchUserFilter;
 import domain.user.*;
-import domain.user.filter.*;
 
 import java.io.FileReader;
 import java.io.IOException;

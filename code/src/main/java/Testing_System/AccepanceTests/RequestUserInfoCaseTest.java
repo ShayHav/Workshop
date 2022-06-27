@@ -4,7 +4,7 @@ import Testing_System.Tester;
 import Testing_System.UserGenerator;
 import domain.Exceptions.IncorrectIdentification;
 import domain.Exceptions.InvalidSequenceOperationsExc;
-import domain.user.filter.SearchUserFilter;
+import domain.shop.user.filter.SearchUserFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

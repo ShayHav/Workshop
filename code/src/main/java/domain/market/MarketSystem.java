@@ -10,9 +10,15 @@ import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.shop.predicate.ToBuildDiscountPredicate;
 import domain.shop.predicate.ToBuildPRPredicateFrom;
+import domain.shop.user.Cart;
+import domain.shop.user.User;
+import domain.shop.user.UserController;
+import domain.shop.user.filter.Filter;
+import domain.shop.user.filter.SearchOfficialsFilter;
+import domain.shop.user.filter.SearchOrderFilter;
+import domain.shop.user.filter.SearchUserFilter;
 import domain.user.*;
-import domain.user.TransactionInfo;
-import domain.user.filter.*;
+import domain.shop.user.TransactionInfo;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.List;

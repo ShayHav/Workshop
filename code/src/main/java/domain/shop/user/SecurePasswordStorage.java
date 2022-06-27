@@ -1,4 +1,4 @@
-package domain.user;
+package domain.shop.user;
 
 import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.persistence.Entity;
 import javax.persistence.Transient;
 
 
@@ -23,7 +24,6 @@ public class SecurePasswordStorage {
     //private final Map<String, UserInfo> userDatabase = new HashMap<>();
     private List<UserInfo> userDatabase = new LinkedList<>();
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
-    @Transient
     private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
     private SecurePasswordStorage(){}

@@ -1,19 +1,18 @@
 package domain.DAL;
 
 import DB.HiberDB;
-import domain.market.MarketSystem;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.Cart;
-import domain.user.SecurePasswordStorage;
-import domain.user.User;
-import domain.user.UserController;
+import domain.shop.user.Cart;
+import domain.shop.user.Role;
+import domain.shop.user.SecurePasswordStorage;
+import domain.shop.user.User;
 import org.hibernate.cfg.NotYetImplementedException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ControllerDAL {
     private static ControllerDAL instance = null;
@@ -25,11 +24,33 @@ public class ControllerDAL {
     }
 
     public void updateUser(User user) {
-        throw new NotYetImplementedException();
+        db.updateUser(user);
     }
 
     public void deleteUser(String useID) {
-        throw new NotYetImplementedException();
+        User u = getUser(useID);
+        Map<Integer,List<Role>> map = u.getRoleList();
+        db.deleteUser(u);
+        db.deleteCart(u.getUserCart());
+        for (Map.Entry<Integer, List<Role>> entry : map.entrySet()) {
+            for(Role r : entry.getValue()) {
+                if (r == Role.ShopFounder){
+                    List<Role> ls = new ArrayList<>();
+                    ls.add(Role.ShopManager);
+                    ls.add(Role.ShopFounder);
+                    ls.add(Role.ShopOwner);
+                    ls.add(Role.Shopper);
+                    Shop shop = db.getShop(entry.getKey());
+                    removeShopRoles(shop,ls);
+                    db.deleteShop(shop);
+            }
+
+            }
+        }
+    }
+
+    private void removeShopRoles(Shop shop, List<Role> ls) {
+        db.removeShopRoles(shop,ls);
     }
 
     public void deleteAllUser() {
@@ -62,9 +83,12 @@ public class ControllerDAL {
 
     public void updateCart(Cart c)
     {
-        throw new NotYetImplementedException();
+        db.updateCart(c);
     }
 
+    public void deleteCart(Cart c){
+        db.deleteCart(c);
+    }
     public Cart getCart(String username)
     {
        return db.getCart(username);
@@ -75,21 +99,36 @@ public class ControllerDAL {
         db.saveShop(shop);
     }
 
-    public void upDateShop(Shop shop){throw new NotYetImplementedException();}
+    public void upDateShop(Shop shop){db.updateShop(shop);}
 
     public Shop getShop(int shopID)
     {
         return db.getShop(shopID);
     }
 
+    public void deleteShop(Shop shop)
+    {
+        db.deleteShop(shop);
+    }
+
     public void saveProduct(Product p)
     {
-        saveProduct(p);
+        db.saveProduct(p);
     }
 
     public ProductImp getProduct(int pID)
     {
-        return getProduct(pID);
+        return db.getProduct(pID);
+    }
+
+    public void updateProduct(Product pi)
+    {
+        db.updateProduct(pi);
+    }
+
+    public void deleteProduct(ProductImp pi)
+    {
+        db.deleteProduct(pi);
     }
 
     public Order getOrderByUser(String username)
