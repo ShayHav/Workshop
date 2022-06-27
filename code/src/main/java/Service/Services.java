@@ -516,7 +516,7 @@ public class Services {
         try {
             marketSystem.AppointNewShopOwner(key, targetUser, userName);
             return new Response();
-        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | ShopNotFoundException | InvalidAuthorizationException e) {
+        } catch (IncorrectIdentification | BlankDataExc | InvalidSequenceOperationsExc | ShopNotFoundException | InvalidAuthorizationException | BidNotFoundException | CriticalInvariantException e) {
             return new Response(e.getMessage());
         }
     }
@@ -534,6 +534,10 @@ public class Services {
             marketSystem.AppointNewShopManager(key, targetUser, userName);
             return new Response();
         } catch (IncorrectIdentification | BlankDataExc | ShopNotFoundException | InvalidSequenceOperationsExc | InvalidAuthorizationException e) {
+            return new Response( e.getMessage());
+        } catch (BidNotFoundException e) {
+            return new Response(e.getMessage());
+        } catch (CriticalInvariantException e) {
             return new Response( e.getMessage());
         }
     }
@@ -1172,18 +1176,18 @@ public class Services {
         }
     }
 
-    public Response acceptAppoint(int shopID, int bidID, String approver){
+    public Response acceptAppoint(int shopID, int appointmentNumber, String approver){
         try {
-            marketSystem.acceptAppoint(shopID, bidID, approver);
+            marketSystem.acceptAppoint(shopID, appointmentNumber, approver);
             return new Response();
         } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException | IncorrectIdentification | InvalidSequenceOperationsExc | BlankDataExc exception) {
             return new Response(exception.getMessage());
         }
     }
 
-    public Response declineAppoint(int shopID, int bidID, String decliner){
+    public Response declineAppoint(int shopID, int appointmentNumber, String decliner){
         try {
-            marketSystem.declineAppoin(shopID, bidID, decliner);
+            marketSystem.declineAppoin(shopID, appointmentNumber, decliner);
             return new Response();
         } catch (BidNotFoundException | CriticalInvariantException | ShopNotFoundException exception) {
             return new Response(exception.getMessage());

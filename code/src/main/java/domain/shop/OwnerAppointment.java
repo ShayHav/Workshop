@@ -12,18 +12,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class AppointFormat {
+public class OwnerAppointment {
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
-    Map<User, Boolean> toConfirm;
+    Map<User, Boolean> OwnersToApprove;
     User userToAppoint;
     User appointUser;
     Shop shop;
     int id;
 
-    public AppointFormat(User userToAppoint, User appointUser, Shop shop , List<User> toConfirm,int id){
+    public OwnerAppointment(User userToAppoint, User appointUser, Shop shop , List<User> toConfirm, int id) throws BidNotFoundException, IncorrectIdentification, InvalidSequenceOperationsExc, CriticalInvariantException, BlankDataExc {
         //super(product.getId(), product.getName(), product.getDescription(), product.getCategory(), product.getBasePrice(), product.getAmount());
-        this.toConfirm = new HashMap<>();
+        this.OwnersToApprove = new HashMap<>();
         this.userToAppoint =  userToAppoint;
         this.appointUser = appointUser;
         this.shop = shop;
@@ -33,20 +33,25 @@ public class AppointFormat {
         String offerMessage = String.format("Appoint message: Shop: %d Owner:%s start Appoint process userToAppoint : %s",shop.getShopID(),appointUser.getUserName(),userToAppoint.getUserName());
 
         for(User user: toConfirm) {
-            this.toConfirm.put(user, false);
-            notificationManager.sendMessage(user, offerMessage, appointUser);
+            if(!user.equals(appointUser)) {
+                this.OwnersToApprove.put(user, false);
+                notificationManager.sendMessage(user, offerMessage, appointUser);
+            }
+        }
+        if(toConfirm.size() == 1){
+            resolve();
         }
     }
 
     public synchronized void approve(User user) throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
         if(!checkIfUserOnConfirmList(user))
             return;
-        toConfirm.put(user, true);
+        OwnersToApprove.put(user, true);
         attemptToResolveBid(user);
     }
 
     public synchronized void attemptToResolveBid(User approver) throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, InvalidSequenceOperationsExc, BlankDataExc {
-        for (Boolean confirmed: toConfirm.values()){
+        for (Boolean confirmed: OwnersToApprove.values()){
             if(!confirmed)
                 return;
         }
@@ -54,12 +59,9 @@ public class AppointFormat {
     }
 
     public void resolve() throws BidNotFoundException, CriticalInvariantException, IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
-        appointUser.AppointedMeManager(shop,userToAppoint.getUserName());
-        shop.putIfAbsentManager(userToAppoint.getUserName(), userToAppoint);
-        userToAppoint.addRole(shop.getShopID(), Role.ShopManager);
-        shop.initManager(userToAppoint);
+        appointUser.AppointedMeOwner(shop,userToAppoint.getUserName());
+        shop.addUserAsOwner(userToAppoint);
         eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", userToAppoint.getUserName()));
-        return;
     }
 
     public synchronized void decline(User decliner){
@@ -69,13 +71,13 @@ public class AppointFormat {
 
         String declinedMessageOwners = String.format("Appoint message is not relevant anymore Appoint message: Shop: %d Owner:%s start Appoint process userToAppoint : %s",shop.getShopID(),appointUser.getUserName(),userToAppoint.getUserName());
         //String declinedMessageOwners = String.format();
-        for(User user: toConfirm.keySet()) {
+        for(User user: OwnersToApprove.keySet()) {
             notificationManager.sendMessage(user, declinedMessageOwners, appointUser);
         }
     }
 
     public boolean checkIfUserOnConfirmList(User user){
-        return toConfirm.get(user) != null;
+        return OwnersToApprove.get(user) != null;
     }
 
     public int getId() {

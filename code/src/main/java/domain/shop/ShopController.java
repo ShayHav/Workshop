@@ -218,7 +218,7 @@ public class ShopController {
             return null;
     }
 
-    public void AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException {
+    public void AppointNewShopManager(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException, BidNotFoundException, CriticalInvariantException {
         Shop s;
         try {
             s = getShop(key);
@@ -229,7 +229,7 @@ public class ShopController {
         s.AppointNewShopManager(targetUser, userId);
     }
 
-    public void AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException {
+    public void AppointNewShopOwner(int key, String targetUser, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc, ShopNotFoundException, BidNotFoundException, CriticalInvariantException {
         Shop s;
         try {
             s = getShop(key);
@@ -458,5 +458,8 @@ public class ShopController {
         User u = ControllersBridge.getInstance().getUser(decliner);
         Shop shop = getShop(shopID);
         shop.declineAppoint(bidID, u);
+    }
+    public List<Shop> getAllShops(){
+        return shopList.values().stream().collect(Collectors.toList());
     }
 }
