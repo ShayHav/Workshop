@@ -4,20 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="change payment and supply to return transaction id from external service instead of boolean">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="restart db">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/DB/HiberDB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/DAL/ControllerDAL.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/DAL/ControllerDAL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Inventory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductImp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ServiceProduct.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ServiceProduct.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/ShoppingBasket.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/ShoppingBasket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,6 +20,9 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="main" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -244,19 +235,7 @@
       <workItem from="1654694608746" duration="6384000" />
       <workItem from="1656157361083" duration="6597000" />
       <workItem from="1656260827938" duration="865000" />
-      <workItem from="1656352808333" duration="582000" />
-    </task>
-    <task id="LOCAL‎00017" summary="changed navbar">
-      <created>1652793908596</created>
-      <option name="number" value="LOCAL‎00017" />
-      <option name="presentableId" value="LOCAL‎00017" />
-      <updated>1652793908596</updated>
-    </task>
-    <task id="LOCAL‎00018" summary="fixed add to cart">
-      <created>1652797948608</created>
-      <option name="number" value="LOCAL‎00018" />
-      <option name="presentableId" value="LOCAL‎00018" />
-      <updated>1652797948608</updated>
+      <workItem from="1656352808333" duration="1596000" />
     </task>
     <task id="LOCAL‎00019" summary="added cart impl, remove from cart, update cart - still need checkout">
       <created>1652801697956</created>
@@ -540,7 +519,21 @@
       <option name="presentableId" value="LOCAL‎00065" />
       <updated>1656161599683</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="restart db">
+      <created>1656353429358</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1656353429358</updated>
+    </task>
+    <task id="LOCAL-00067" summary="restart db">
+      <created>1656353452719</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1656353452719</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -564,7 +557,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="changed register and login signatures &#10;added state to user presentation to support admin operations only" />
     <MESSAGE value="register fix in gui, &#10;started to impl admin page" />
     <MESSAGE value="Admin has a new page where he can see information about the market : active users, total registered, list of users and option to delete, etc." />
     <MESSAGE value="admin page for sales history, fixes in signatures - needed map instead of list of orders to identify orders per user/shop." />
@@ -589,7 +581,8 @@
     <MESSAGE value="delete discounts, started compose discounts" />
     <MESSAGE value="Add tests to delayed notification and add field to TransactionInfo to support new demand of external services" />
     <MESSAGE value="change payment and supply to return transaction id from external service instead of boolean" />
-    <option name="LAST_COMMIT_MESSAGE" value="change payment and supply to return transaction id from external service instead of boolean" />
+    <MESSAGE value="restart db" />
+    <option name="LAST_COMMIT_MESSAGE" value="restart db" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
