@@ -24,20 +24,9 @@ public class HiberDB {
 
     private void initDB() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
-        EntityTransaction txn = null;
-        try {
-            EntityManager entityManager = emf.createEntityManager();
-            txn = entityManager.getTransaction();
-            txn.begin();
-            entityManager.createNativeQuery("create table shop_owners_managers (id varchar(255) not null, primary key (id)) engine=InnoDB").executeUpdate();
-
-            txn.commit();
-        } catch (Throwable e) {
-            if (txn != null && txn.isActive()) {
-                txn.rollback();
-            }
-            throw e;
-        }
+        EntityManager em = emf.createEntityManager();
+        Cache cache = emf.getCache();
+//        cache.evict(User.class, id);
     }
 
     public void saveUser(User u) {
