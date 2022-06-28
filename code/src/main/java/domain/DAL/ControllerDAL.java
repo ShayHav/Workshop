@@ -1,12 +1,14 @@
 package domain.DAL;
 
 import DB.HiberDB;
+import domain.notifications.Message;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
 import org.hibernate.cfg.NotYetImplementedException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +41,17 @@ public class ControllerDAL {
         for (Map.Entry<Integer, List<Role>> entry : map.entrySet()) {
             for(Role r : entry.getValue()) {
                 if (r == Role.ShopFounder){
-                    List<Role> ls = new ArrayList<>();
-                    ls.add(Role.ShopManager);
-                    ls.add(Role.ShopFounder);
-                    ls.add(Role.ShopOwner);
-                    ls.add(Role.Shopper);
+//                    List<Role> ls = new ArrayList<>();
+//                    ls.add(Role.ShopManager);
+//                    ls.add(Role.ShopFounder);
+//                    ls.add(Role.ShopOwner);
+//                    ls.add(Role.Shopper);
                     Shop shop = db.getShop(entry.getKey());
-                    removeShopRoles(shop,ls);
-                    db.deleteShop(shop);
+//                    db.deleteShopRoles(shop.getShopID(),Role.Shopper);
+//                    db.deleteShopRoles(shop.getShopID(),Role.ShopManager);
+//                    db.deleteShopRoles(shop.getShopID(),Role.ShopOwner);
+//                    db.deleteShop(shop);
+                    deleteShop(shop);
                 }
 
             }
@@ -111,43 +116,102 @@ public class ControllerDAL {
     public void saveShop(Shop shop)
     {
         db.saveShop(shop);
+        db.saveShopRoles(shop.getShopID(),shop.getShopOwners(), Role.ShopOwner);
+        db.saveShopRoles(shop.getShopID(),shop.getShopManagers(),Role.ShopManager);
+        List<User> ls = new ArrayList<>();
+        ls.add(shop.getShopFounder());
+        db.saveShopRoles(shop.getShopID(),ls,Role.ShopFounder);
+        db.saveManagerPermissions(shop.getShopManagersPermissionsController());
+        db.saveInventoy(shop.getInventory());
+        for(Map.Entry<Integer,ProductImp> entry : shop.getInventory().getKeyToProduct().entrySet() ) {
+            entry.getValue().setShopID(shop.getShopID());
+            db.saveProduct(entry.getValue());
+        }
+        for(Order o :shop.getOrders())
+            o.initLs();
+        db.saveOrders(shop.getOrders());
+        for(Order o :shop.getOrders())
+            o.cleanLs();
+
     }
 
-    public void upDateShop(Shop shop){db.updateShop(shop);}
+    public void upDateShop(Shop shop){
+        db.updateShop(shop);
+        db.updateShopRoles(shop.getShopID(),shop.getShopOwners(), Role.ShopOwner);
+        db.updateShopRoles(shop.getShopID(),shop.getShopManagers(),Role.ShopManager);
+        db.updateManagerPermissions(shop.getShopManagersPermissionsController());
+        db.updateInventory(shop.getInventory());
+        for(Map.Entry<Integer,ProductImp> entry : shop.getInventory().getKeyToProduct().entrySet() )
+            db.updateProduct(entry.getValue());
+        for(Order o :shop.getOrders())
+          o.initLs();
+        db.updateOrdersForUser(shop.getOrders());
+        for(Order o :shop.getOrders()) {
+            o.convertLs();
+            o.cleanLs();
+        }
+            }
 
     public Shop getShop(int shopID)
     {
-        return db.getShop(shopID);
+        Shop shop = db.getShop(shopID);
+        shop.setShopManagers(db.getShopRoles(shopID,Role.ShopManager));
+        shop.setShopOwners(db.getShopRoles(shopID,Role.ShopOwner));
+        shop.setShopManagersPermissionsController(db.getShopMangersPermissionsController(shopID));
+        shop.setInventory(db.getInventory(shopID));
+        OrderHistory oh = db.getOrderForShop(shopID);
+        for(Order o : oh.getOrders())
+        {
+            o.convertLs();
+            o.cleanLs();
+        }
+        shop.setOrders(oh);
+        return shop;
     }
 
     public void deleteShop(Shop shop)
     {
+        db.deleteShopRoles(shop.getShopID(),Role.ShopOwner);
+        db.deleteShopRoles(shop.getShopID(),Role.ShopManager);
+        db.deleteShopRoles(shop.getShopID(),Role.ShopFounder);
+        db.deleteShopManagersPermissions(shop.getShopID());
+        db.deleteInventory(shop.getShopID());
+        db.deleteProductShopId(shop.getShopID());
         db.deleteShop(shop);
     }
 
-    public void saveProduct(Product p)
+    public void deleteProductShopId(int shopID)
+    {        db.deleteProductShopId(shopID);
+    }
+
+
+    public void saveProduct(ProductImp p,int shopID)
     {
+        p.setShopID(shopID);
         db.saveProduct(p);
     }
 
-    public ProductImp getProduct(int pID)
+    public ProductImp getProduct(int pID,int shopID)
     {
-        return db.getProduct(pID);
+
+        return db.getProduct(pID,shopID);
     }
 
-    public void updateProduct(Product pi)
+    public void updateProduct(ProductImp pi,int shopID)
     {
+        pi.setShopID(shopID);
         db.updateProduct(pi);
     }
 
-    public void deleteProduct(ProductImp pi)
+    public void deleteProduct(ProductImp pi,int shopID)
     {
+        pi.setId(shopID);
         db.deleteProduct(pi);
     }
 
-    public Order getOrderByUser(String username)
+    public List<Order> getOrderByUser(String username)
     {
-        throw new NotYetImplementedException();
+        return db.getOrderHistoryForUser(username);
     }
 
     public void saveShopManagersPermissionsController(ShopManagersPermissionsController shopManagersPermissionsController){throw new NotYetImplementedException();}
@@ -168,26 +232,45 @@ public class ControllerDAL {
         throw new NotYetImplementedException();
     }
     public void saveInventory(Inventory inventory){
-        throw new NotYetImplementedException();
+        db.saveInventoy(inventory);
     }
 
     public void upDateInventory(Inventory inventory){
-        throw new NotYetImplementedException();
+        db.updateInventory(inventory);
     }
 
     public void saveOrderHistory(OrderHistory order){
-        throw new NotYetImplementedException();
+        for(Order o : order.getOrders())
+            o.initLs();
+        db.saveOrders(order.getOrders());
+        for(Order o : order.getOrders())
+            o.cleanLs();
     }
 
-    public void upDateOrderHistory(OrderHistory order){
-        throw new NotYetImplementedException();
+    public void upDateOrderHistory(OrderHistory order) {
+        for (Order o : order.getOrders())
+            o.initLs();
+        db.updateOrdersForUser(order.getOrders());
+        for (Order o : order.getOrders()){
+            o.convertLs();
+            o.cleanLs();
+    }
     }
     public void saveOrder(Order order){
-        throw new NotYetImplementedException();
+        List<Order>ls = new ArrayList<>();
+        order.initLs();
+        ls.add(order);
+        db.updateOrdersForUser(ls);
+        order.cleanLs();
     }
 
     public void upDateOrder(Order order){
-        throw new NotYetImplementedException();
+        List<Order>ls = new ArrayList<>();
+        ls.add(order);
+        order.initLs();
+        db.updateOrdersForUser(ls);
+        order.convertLs();
+        order.cleanLs();
     }
 
     public void saveSecurePasswordStorage(SecurePasswordStorage securePasswordStorage) {
@@ -201,8 +284,24 @@ public class ControllerDAL {
         return db.getSecurePasswordStorage();
     }
 
+    public void saveMessage(Message m){db.saveMessage(m);}
 
+    public Message getMessage(String sender, String reciver, LocalDateTime time)
+    {return db.getMessage(sender,reciver,time);}
 
+    public List<Message> getAllMessageBySender(String sender){
+        return db.getAllMessageBySender(sender);
+    }
+
+    public List<Message> getAllMessageByReciver(String reciver)
+    {
+       return db.getAllMessageByReciver(reciver);
+    }
+
+    public void updateMessage(Message m)
+    {
+        db.updateMessage(m);
+    }
 
 
 }

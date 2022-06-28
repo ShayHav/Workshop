@@ -5,18 +5,50 @@ import domain.user.User;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import java.time.LocalDateTime;
 import java.util.Objects;
 @Entity
 public class Message {
 
-    private String sender;
-    @OneToMany(mappedBy = "msgs")
-    private User addressee;
     @Id
+    private String sender;
+    @Id
+    private String reciver;
+    @Transient
+    private User addressee;
     private String content;
     private boolean read;
+    @Id
     private LocalDateTime sentDate;
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getReciver() {
+        return reciver;
+    }
+
+    public void setReciver(String reciver) {
+        this.reciver = reciver;
+    }
+
+    public void setAddressee(User addressee) {
+        this.addressee = addressee;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
+    public void setSentDate(LocalDateTime sentDate) {
+        this.sentDate = sentDate;
+    }
 
     public Message(User sender, User addressee, String content){
         this.sender = sender.getUserName();
@@ -24,6 +56,16 @@ public class Message {
         this.content = content;
         read = false;
         sentDate = LocalDateTime.now();
+    }
+
+    public Message merge(Message m)
+    {
+        setContent(m.getContent());
+        setRead(m.isRead());
+        setReciver(m.getReciver());
+        setSender(m.getSender());
+        setSentDate(m.getSentDate());
+        return this;
     }
 
     public Message(){}
@@ -34,6 +76,7 @@ public class Message {
         this.content = content;
         read = false;
         sentDate = LocalDateTime.now();
+        this.reciver = addressee.getUserName();
     }
 
     public String getContent() {

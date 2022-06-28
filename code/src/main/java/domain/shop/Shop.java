@@ -34,18 +34,17 @@ public class Shop {
     private int rank;
     @Transient
     private final User ShopFounder;
-    private String username;
     private String description;
     //private Map<String,User> ShopOwners;
 
     //private Map<String,User> ShopManagers;
-    @ManyToMany
+    @Transient
     private List<User> ShopOwners;
-    @ManyToMany
+    @Transient
     private List<User> ShopManagers;
     @Transient
     private ShopManagersPermissionsController shopManagersPermissionsController;
-    @OneToOne
+    @Transient
     private Inventory inventory;
     @Transient
     private DiscountPolicy discountPolicy;
@@ -73,6 +72,8 @@ public class Shop {
 
         ShopFounder = null;
         shopID = -1;
+        bidHandler = new BidHandler();
+        appointHandler = new AppointHandler();
     }
 
     public int getNumOfVisits() {
@@ -170,6 +171,7 @@ public class Shop {
         this.purchasePolicy.setShopID(shopID);
         controllerDAL.savePurchasePolicy(purchasePolicy);
         inventory = new Inventory();
+        inventory.setShopID(shopID);
         controllerDAL.saveInventory(inventory);
         orders = new OrderHistory();
         controllerDAL.saveOrderHistory(orders);
@@ -185,6 +187,8 @@ public class Shop {
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
         controllerDAL.saveShopManagersPermissionsController(shopManagersPermissionsController);
         this.shopID = shopID;
+        bidHandler = new BidHandler();
+        appointHandler = new AppointHandler();
     }
 
     public Shop(String name,String description, User shopFounder, int shopID) {
@@ -194,6 +198,7 @@ public class Shop {
         this.discountPolicy.setShopID(shopID);
         this.purchasePolicy.setShopID(shopID);
         inventory = new Inventory();
+        inventory.setShopID(shopID);
         orders = new OrderHistory();
         ShopOwners = new LinkedList<>();
         ShopManagers = new LinkedList<>();

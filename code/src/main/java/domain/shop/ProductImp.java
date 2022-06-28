@@ -8,7 +8,9 @@ import javax.persistence.IdClass;
 public class ProductImp implements Product{
 
     @Id
-    private final int id;
+    private int shopID;
+    @Id
+    private int id;
     private String name;
     private String description;
     private String category;
@@ -26,8 +28,29 @@ public class ProductImp implements Product{
         setShopRank(pi.getShopRank());
         setRank(pi.getRank());
         setQuantity(pi.getAmount());
+        setProdId(pi.getId());
+        setShopID(pi.getShopID());
         return this;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
+    }
+
+    public void setProdId(int id)
+    {this.id = id;}
     public void setRank(int rank)
     {
         this.rank = rank;

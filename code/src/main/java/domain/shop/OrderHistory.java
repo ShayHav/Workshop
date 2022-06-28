@@ -30,6 +30,16 @@ public class OrderHistory {
         orderIdGen++;
     }
 
+    public void addOrderDB(Order o)
+    {
+        orders.add(o);
+    }
+
+    public void setOrderGen(long i)
+    {
+        orderIdGen = i;
+    }
+
     /**
      * search all the order filtered by dates
      * @param from the beginning  of the filter

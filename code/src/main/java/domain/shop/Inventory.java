@@ -11,19 +11,29 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.*;
 import java.util.logging.Level;
-@Entity
 public class Inventory {
-    @Id
-    private String shopID;
-    @Transient
-    private final Map<Integer, ProductImp> keyToProduct;
-    @
-    @Transient
+    private int shopID;
+    private Map<Integer, ProductImp> keyToProduct;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
-    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
-    @Transient
     private ControllerDAL controllerDAL = ControllerDAL.getInstance();
+
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
+    }
+
+    public Map<Integer, ProductImp> getKeyToProduct() {
+        return keyToProduct;
+    }
+
+    public void setKeyToProduct(Map<Integer, ProductImp> keyToProduct) {
+        this.keyToProduct = keyToProduct;
+    }
 
     public Inventory(){
         keyToProduct = new HashMap<>();
@@ -168,7 +178,7 @@ public class Inventory {
     public ProductImp findProduct(int productID) throws ProductNotFoundException {
         ProductImp product = keyToProduct.get(productID);
         if(product == null)
-            product = controllerDAL.getProduct(productID);
+            product = controllerDAL.getProduct(productID,shopID);
         if(product == null)
             throw new ProductNotFoundException(String.format("product:%d was not found in inventory", productID));
         return product;
@@ -177,7 +187,7 @@ public class Inventory {
     public boolean setDescription(int productID, String newDesc){
         ProductImp productImp;
         if(!keyToProduct.containsKey(productID)){
-            productImp = controllerDAL.getProduct(productID);
+            productImp = controllerDAL.getProduct(productID,shopID);
             if(productImp ==null) {
                 errorLogger.logMsg(Level.WARNING, String.format("product with id  %d is not in the store inventory", productID));
                 return false;
@@ -278,7 +288,7 @@ public class Inventory {
     }
 
     private ProductImp checkInDBForPI(int p){
-        return controllerDAL.getProduct(p);
+        return controllerDAL.getProduct(p,shopID);
     }
 
     public void initLs()
