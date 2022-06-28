@@ -971,7 +971,10 @@ public class Shop {
     }
 
     public int addNewBid(ProductImp product, User buyer) throws ProductNotFoundException {
-        return bidHandler.addNewBid(product, getShopOwners(), buyer, inventory.getPrice(product.getId()), this);
+        List<User> approveList = new ArrayList<>();
+        approveList.addAll(getShopOwners());
+        approveList.add(getShopFounder());
+        return bidHandler.addNewBid(product, approveList, buyer, inventory.getPrice(product.getId()), this);
     }
 
     public double calculateBid(int bidID){
