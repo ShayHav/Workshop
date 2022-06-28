@@ -6,6 +6,7 @@ import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
 import domain.user.*;
+import domain.user.EntranceLogger.Entrance;
 import org.hibernate.cfg.NotYetImplementedException;
 
 import java.time.LocalDateTime;
@@ -303,5 +304,32 @@ public class ControllerDAL {
         db.updateMessage(m);
     }
 
+    public void saveEntarnce(Entrance e)
+    {
+        db.saveEntrance(e);
+    }
 
+    public List<Entrance> getEntarenceByUser(String username)
+    {
+        List<Entrance> ls = db.getEntarenceByUser(username);
+        for(Entrance e : ls)
+        {
+            User u = db.getUser(e.getUsername());
+            e.setEnteredUser(u);
+        }
+
+        return ls;
+    }
+
+    public List<Entrance> getEntarenceByDate(LocalDateTime time)
+    {
+        List<Entrance> ls = db.getEntarenceByDate(time);
+        for(Entrance e : ls)
+        {
+            User u = db.getUser(e.getUsername());
+            e.setEnteredUser(u);
+        }
+
+        return ls;
+    }
 }

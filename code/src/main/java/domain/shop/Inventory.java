@@ -5,6 +5,7 @@ import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.InvalidProductInfoException;
 import domain.Exceptions.ProductNotFoundException;
+import domain.shop.PurchaseFormats.BidFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -55,36 +56,44 @@ public class Inventory {
     }
 
     public double getPrice(int prodID) throws ProductNotFoundException {
-        if(keyToProduct.containsKey(prodID)) {
-            eventLogger.logMsg(Level.INFO, String.format("return the price of product with id: %d", prodID));
-            return keyToProduct.get(prodID).getBasePrice();
+        synchronized (keyToProduct) {
+            if (keyToProduct.containsKey(prodID)) {
+                eventLogger.logMsg(Level.INFO, String.format("return the price of product with id: %d", prodID));
+                return keyToProduct.get(prodID).getBasePrice();
+            }
         }
         errorLogger.logMsg(Level.WARNING, String.format("product: %d does not exist", prodID));
         throw new ProductNotFoundException(String.format("product: %d does not exist", prodID));
     }
 
     public String getName(int productId) throws ProductNotFoundException {
-        if(!keyToProduct.containsKey(productId)){
-            errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d",productId));
-            throw new ProductNotFoundException("this product does not exist");
+        synchronized (keyToProduct) {
+            if (!keyToProduct.containsKey(productId)) {
+                errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d", productId));
+                throw new ProductNotFoundException("this product does not exist");
+            }
         }
         return keyToProduct.get(productId).getName();
     }
 
     public String getCategory(int productId) throws ProductNotFoundException {
-        if(!keyToProduct.containsKey(productId)){
-            errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d",productId));
-            throw new ProductNotFoundException("this product does not exist");
+        synchronized (keyToProduct) {
+            if (!keyToProduct.containsKey(productId)) {
+                errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d", productId));
+                throw new ProductNotFoundException("this product does not exist");
+            }
+            return keyToProduct.get(productId).getCategory();
         }
-        return keyToProduct.get(productId).getCategory();
     }
 
     public int getQuantity(int product)  throws ProductNotFoundException{
-        if(!keyToProduct.containsKey(product)) {
-            errorLogger.logMsg(Level.WARNING, String.format("No product with the id %d in the store", product));
-            throw new ProductNotFoundException();
+        synchronized (keyToProduct) {
+            if (!keyToProduct.containsKey(product)) {
+                errorLogger.logMsg(Level.WARNING, String.format("No product with the id %d in the store", product));
+                throw new ProductNotFoundException();
+            }
+            return keyToProduct.get(product).getAmount();
         }
-        return keyToProduct.get(product).getAmount();
     }
 
     /**
@@ -96,8 +105,11 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("Non positive price or quantity at adding a product with product id %d", serialNumber));
             throw new InvalidProductInfoException();
         }
-        ProductImp p = new ProductImp(serialNumber, productName, productDesc, productCategory, price, quantity);
+        ProductImp p;
         synchronized (keyToProduct) {
+            if(keyToProduct.containsKey(serialNumber))
+            throw new InvalidProductInfoException(String.format("serialNumber is already in use: %d", serialNumber));
+            p = new ProductImp(serialNumber, productName, productDesc, productCategory, price, quantity);
             keyToProduct.put(serialNumber, p);
         }
         eventLogger.logMsg(Level.INFO, String.format("product with id %d added to the store inventory", serialNumber));
@@ -112,11 +124,11 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("illegal argument at set price to product %d", product));
             throw new InvalidProductInfoException("illegal argument at set price to product");
         }
-        if(!keyToProduct.containsKey(product)){
-            errorLogger.logMsg(Level.WARNING, String.format("product: %d does not exist", product));
-            throw new ProductNotFoundException("product does not exist");
-        }
         synchronized (keyToProduct) {
+            if(!keyToProduct.containsKey(product)){
+                errorLogger.logMsg(Level.WARNING, String.format("product: %d does not exist", product));
+                throw new ProductNotFoundException("product does not exist");
+            }
             ProductImp p = keyToProduct.get(product);
             p.setBasePrice(newPrice);
         }
@@ -128,11 +140,13 @@ public class Inventory {
             errorLogger.logMsg(Level.WARNING, String.format("illegal argument at set price to product %d", product));
             throw new InvalidProductInfoException("invalid new amount");
         }
-        if(!keyToProduct.containsKey(product)){
-            errorLogger.logMsg(Level.WARNING, String.format("product:%d does not exist", product));
-            throw new ProductNotFoundException("this product does not exist in the inventory");
-        }
         synchronized (keyToProduct) {
+
+            if(!keyToProduct.containsKey(product)){
+                errorLogger.logMsg(Level.WARNING, String.format("product:%d does not exist", product));
+                throw new ProductNotFoundException("this product does not exist in the inventory");
+            }
+
             keyToProduct.get(product).setQuantity(newAmount);
         }
         controllerDAL.upDateInventory(this);
@@ -145,30 +159,35 @@ public class Inventory {
      * @return true if successfully reduce the quantity in the inventory false otherwise
      */
     public void reduceAmount(int product, int amount) throws ProductNotFoundException {
-        if(!keyToProduct.containsKey(product))
-            throw new ProductNotFoundException("product not found");
-        ProductImp p = keyToProduct.get(product);
-        int currentAmount = keyToProduct.get(product).getAmount();
-        currentAmount -= amount;
-        keyToProduct.get(product).setQuantity(currentAmount);
-        controllerDAL.upDateInventory(this);
+        synchronized (keyToProduct) {
+            if (!keyToProduct.containsKey(product))
+                throw new ProductNotFoundException("product not found");
+            ProductImp p = keyToProduct.get(product);
+            int currentAmount = keyToProduct.get(product).getAmount();
+            currentAmount -= amount;
+            keyToProduct.get(product).setQuantity(currentAmount);
+            controllerDAL.upDateInventory(this);
+        }
     }
 
-    public void removeProduct(int product) {
-        Product p;
-        if(keyToProduct.containsKey(product)){
-            synchronized (keyToProduct) {
+    public void removeProduct(int product) throws InvalidProductInfoException {
+        synchronized (keyToProduct) {
+
+            if (keyToProduct.containsKey(product)) {
+                Product p = keyToProduct.get(product);
                 keyToProduct.remove(product);
-            }
+            } else throw new InvalidProductInfoException(String.format("product is not exist id: %d", product));
         }
         controllerDAL.upDateInventory(this);
     }
 
     public List<Product> getItemsInStock() {
         List<Product> products = new ArrayList<>();
-        for(ProductImp p : keyToProduct.values()){
-            if(p.getAmount() > 0){
-                products.add(p);
+        synchronized (keyToProduct) {
+            for (ProductImp p : keyToProduct.values()) {
+                if (p.getAmount() > 0) {
+                    products.add(p);
+                }
             }
         }
         eventLogger.logMsg(Level.INFO, "return all the items in stock");
@@ -176,25 +195,29 @@ public class Inventory {
     }
 
     public ProductImp findProduct(int productID) throws ProductNotFoundException {
-        ProductImp product = keyToProduct.get(productID);
-        if(product == null)
-            product = controllerDAL.getProduct(productID,shopID);
+        ProductImp product;
+        synchronized (keyToProduct) {
+            product = keyToProduct.get(productID);
+        }
         if(product == null)
             throw new ProductNotFoundException(String.format("product:%d was not found in inventory", productID));
         return product;
     }
 
     public boolean setDescription(int productID, String newDesc){
-        ProductImp productImp;
-        if(!keyToProduct.containsKey(productID)){
-            productImp = controllerDAL.getProduct(productID,shopID);
-            if(productImp ==null) {
-                errorLogger.logMsg(Level.WARNING, String.format("product with id  %d is not in the store inventory", productID));
-                return false;
+        synchronized (keyToProduct) {
+
+            ProductImp productImp;
+            if (!keyToProduct.containsKey(productID)) {
+                productImp = controllerDAL.getProduct(productID, shopID);
+                if (productImp == null) {
+                    errorLogger.logMsg(Level.WARNING, String.format("product with id  %d is not in the store inventory", productID));
+                    return false;
+                }
+                keyToProduct.put(productID, productImp);
             }
-            keyToProduct.put(productID,productImp);
+            keyToProduct.get(productID).setDescription(newDesc);
         }
-        keyToProduct.get(productID).setDescription(newDesc);
         return true;
     }
 
@@ -243,13 +266,15 @@ public class Inventory {
 
     public Product setProduct(int product, String name, String description, String category) throws ProductNotFoundException {
         ProductImp p;
-        if(!keyToProduct.containsKey(product)){
-            p = checkInDBForPI(product);
-            if(p==null) {
-                errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d", product));
-                throw new ProductNotFoundException("this product does not exist");
-            }else {
-                keyToProduct.put(product, p);
+        synchronized (keyToProduct) {
+            if(!keyToProduct.containsKey(product)){
+                p = checkInDBForPI(product);
+                if(p==null) {
+                    errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d", product));
+                    throw new ProductNotFoundException("this product does not exist");
+                }else {
+                    keyToProduct.put(product, p);
+                }
             }
         }
         p = keyToProduct.get(product);
@@ -271,20 +296,23 @@ public class Inventory {
     }*/
 
     public ServiceProduct getProductInfo(int productId) throws ProductNotFoundException {
-        ProductImp p;
-        if(!keyToProduct.containsKey(productId)){
-            p = checkInDBForPI(productId);
-            if(p==null) {
-                errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d", productId));
-                throw new ProductNotFoundException("this product does not exist");
+        synchronized (keyToProduct) {
+            if(!keyToProduct.containsKey(productId)){
+                ProductImp p = checkInDBForPI(productId);
+                if(p==null) {
+                    errorLogger.logMsg(Level.SEVERE, String.format("this product does not exist: %d", productId));
+                    throw new ProductNotFoundException("this product does not exist");
+                }
+                keyToProduct.put(productId,p);
             }
-            keyToProduct.put(productId,p);
+            return new ServiceProduct(keyToProduct.get(productId));
         }
-        return new ServiceProduct(keyToProduct.get(productId));
     }
 
-    public synchronized List<Product> getAllProductInfo(){
-        return new ArrayList<>(keyToProduct.values());
+    public List<Product> getAllProductInfo(){
+        synchronized (keyToProduct) {
+            return new ArrayList<>(keyToProduct.values());
+        }
     }
 
     private ProductImp checkInDBForPI(int p){

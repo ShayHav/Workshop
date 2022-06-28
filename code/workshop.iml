@@ -26,7 +26,6 @@
       <excludeFolder url="file://$MODULE_DIR$/jte-classes" />
       <excludeFolder url="file://$MODULE_DIR$/lib" />
       <excludeFolder url="file://$MODULE_DIR$/tests/domain/market" />
-      <excludeFolder url="file://$MODULE_DIR$/tests/domain/shop" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

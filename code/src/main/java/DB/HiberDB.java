@@ -4,6 +4,7 @@ import domain.Exceptions.ProductNotFoundException;
 import domain.notifications.Message;
 import domain.shop.*;
 import domain.user.*;
+import domain.user.EntranceLogger.Entrance;
 import domain.user.OwnerAppointment;
 import org.jetbrains.annotations.NotNull;
 
@@ -920,5 +921,59 @@ public class HiberDB {
             em.close();
             emf.close();
         }
+    }
+
+    public void saveEntrance(Entrance e) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        try {
+            et.begin();
+            em.persist(e);
+            et.commit();
+        } finally {
+            if (et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
+    }
+
+    public List<Entrance> getEntarenceByUser(String username) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        List<Entrance> ls = new ArrayList<>();
+        try {
+            et.begin();
+            ls = em.createQuery("select e from Entrance e where e.username = :status",
+                    Entrance.class).setParameter("status", username).getResultList();
+            et.commit();
+        } finally {
+            if (et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
+        return ls;
+    }
+
+    public List<Entrance> getEntarenceByDate(LocalDateTime time) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        List<Entrance> ls = new ArrayList<>();
+        try {
+            et.begin();
+            ls = em.createQuery("select e from Entrance e where e.dateOfEntrance >= :status",
+                    Entrance.class).setParameter("status", time).getResultList();
+            et.commit();
+        } finally {
+            if (et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
+        return ls;
     }
 }

@@ -21,6 +21,7 @@ import java.util.logging.Level;
 @Entity
 public class ShoppingBasket {
 
+
     @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     @Transient
@@ -32,7 +33,7 @@ public class ShoppingBasket {
             joinColumns = {@JoinColumn(name = "shop_id", referencedColumnName = "shopID")})
     @MapKeyColumn(name = "item_ID")
     @Column(name = "amount")
-    private final Map<Integer, Integer> productAmountList;
+    private Map<Integer, Integer> productAmountList;
     private double basketAmount;
     @Id
     private int shopID;
@@ -40,11 +41,13 @@ public class ShoppingBasket {
     @JoinColumn(name = "usernameID")
     private Cart c;
     @Transient
-    private final Map<Integer, Boolean> bidIDs_status;
+    private Map<Integer, Boolean> bidIDs_status;
+
 
     public ShoppingBasket(Shop shop) {
         this.shop = shop;
         productAmountList = new HashMap<>();
+        bidIDs_status = new HashMap<>();
         basketAmount = 0;
         shopID = shop.getShopID();
         bidIDs_status = new HashMap<>();
@@ -149,58 +152,11 @@ public class ShoppingBasket {
             }
         } else {
             errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - product is not available.", productID, shop.getShopID()));
-            throw new ProductNotFoundException(String.format("product %d is unavailable in shop %d", productID,shop.getShopID()));
+           throw new ProductNotFoundException(String.format("product %d is unavailable in shop %d", productID,shop.getShopID()));
         }
     }
 
-    /***
-     * calculate total amount of the products in the basket
-     * @return total amount.
-     */
-    public double calculateTotalAmount() {
-        synchronized (this) {
-            basketAmount = shop.calculateTotalAmountOfOrder(productAmountList);
-        }
-        return basketAmount;
-    }
 
-    /***
-     * complete the purchase by performing checkout via the relevant shop of the basket.
-     * @param billingInfo all the relevant information to complete the transaction.
-     */
-    public ResponseT<Order> checkout(TransactionInfo billingInfo) throws BlankDataExc {
-        List<Integer> acceptedBids = new ArrayList<>();
-        for(Map.Entry<Integer, Boolean> bid_status: bidIDs_status.entrySet()){
-            if(bid_status.getValue() == true)
-                acceptedBids.add(bid_status.getKey());
-        }
-        return shop.checkout(productAmountList, acceptedBids, billingInfo);
-    }
-
-    public ServiceBasket showBasket() {
-        Map<Product,Integer> productWithAmount = new HashMap<>();
-        for(Integer product: productAmountList.keySet()){
-            Product p;
-            try {
-                p = shop.getInfoOnProduct(product);
-            }catch (ProductNotFoundException pnfe){
-                productAmountList.remove(product);
-                continue;
-            }
-            int amount = productAmountList.get(product);
-            productWithAmount.put(p,amount);
-        }
-        basketAmount = calculateTotalAmount();
-        return new ServiceBasket(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
-    }
-
-    public boolean shouldBeRemovedFromCart(){
-        return productAmountList.size() == 0 && bidIDs_status.size() == 0;
-    }
-
-    public Map<Integer, Integer> getProductAmountList() {
-        return productAmountList;
-    }
     public int addBidToBasket(int productID, int amountToAdd, double offerPrice, User basketOwner) throws IllegalArgumentException, ProductNotFoundException{
         if (shop.isProductIsAvailable(productID, amountToAdd)) {
             if (amountToAdd <= 0) {
@@ -214,7 +170,7 @@ public class ShoppingBasket {
             }
             ProductImp product;
             try {
-                product = shop.getProduct(productID);
+                 product = shop.getProduct(productID);
             }catch (ProductNotFoundException productNotFoundException){
                 errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - product is not available.", productID, shop.getShopID()));
                 throw new ProductNotFoundException(String.format("product %d is unavailable in shop %d", productID,shop.getShopID()));
@@ -235,9 +191,84 @@ public class ShoppingBasket {
         bidIDs_status.put(bidID, true);
         this.calculateTotalAmount();
     }
+
     public void removeBid(int bidID) {
         bidIDs_status.remove(bidID);
         this.calculateTotalAmount();
+    }
+
+    /***
+     * calculate total amount of the products in the basket
+     * @return total amount.
+     */
+    public double calculateTotalAmount() {
+        synchronized (this) {
+            List<Integer> acceptedBids = new ArrayList<>();
+            for(Map.Entry<Integer, Boolean> bid_status: bidIDs_status.entrySet()){
+                if(bid_status.getValue() == true)
+                    acceptedBids.add(bid_status.getKey());
+            }
+            basketAmount = shop.calculateTotalAmountOfOrder(productAmountList, acceptedBids);
+        }
+        return basketAmount;
+    }
+
+    /***
+     * complete the purchase by performing checkout via the relevant shop of the basket.
+     * @param billingInfo all the relevant information to complete the transaction.
+     */
+    public ResponseT<Order> checkout(TransactionInfo billingInfo) throws BlankDataExc {
+        List<Integer> acceptedBids = new ArrayList<>();
+        for(Map.Entry<Integer, Boolean> bid_status: bidIDs_status.entrySet()){
+            if(bid_status.getValue() == true)
+                acceptedBids.add(bid_status.getKey());
+        }
+        ResponseT<Order> order = shop.checkout(productAmountList, acceptedBids, billingInfo);
+        if(!order.isErrorOccurred()) {
+            productAmountList = new HashMap<>();
+            for (Map.Entry<Integer, Boolean> bid : bidIDs_status.entrySet()) {
+                if (bid.getValue().equals(true))
+                    bidIDs_status.remove(bid.getKey());
+            }
+        }
+        return order;
+    }
+
+    public ServiceBasket showBasket() {
+        Map<Product,Integer> productWithAmount = new HashMap<>();
+        for(Integer product: productAmountList.keySet()){
+            Product p;
+            try {
+                p = shop.getInfoOnProduct(product);
+            }catch (ProductNotFoundException pnfe){
+                productAmountList.remove(product);
+                continue;
+            }
+            int amount = productAmountList.get(product);
+            productWithAmount.put(p,amount);
+        }
+
+        for(Integer bidID: bidIDs_status.keySet()){
+            Product p;
+            try {
+                p = shop.getInfoOnBid(bidID);
+            }catch (BidNotFoundException bidNotFoundException){
+                removeBid(bidID);
+                continue;
+            }
+            int amount = p.getAmount();
+            productWithAmount.put(p,amount);
+        }
+        basketAmount = calculateTotalAmount();
+        return new ServiceBasket(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
+    }
+
+    public Map<Integer, Integer> getProductAmountList() {
+        return productAmountList;
+    }
+
+    public boolean shouldBeRemovedFromCart(){
+        return productAmountList.size() == 0 && bidIDs_status.size() == 0;
     }
 
     public class ServiceBasket {

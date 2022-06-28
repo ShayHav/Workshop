@@ -50,4 +50,8 @@ public class AppointHandler {
     public void declineAppoint(int appointmentNumber, User decliner) throws BidNotFoundException, CriticalInvariantException {
         getAppointment(appointmentNumber).decline(decliner);
     }
+
+    public List<OwnerAppointment> getAppointments() {
+        return ownerAppointments;
+    }
 }

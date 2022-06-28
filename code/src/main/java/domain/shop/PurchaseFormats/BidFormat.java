@@ -17,6 +17,7 @@ public class BidFormat extends ProductImp{
     User buyer;
     Shop shop;
     int bidID;
+    boolean completed;
 
     //public ProductImp(int id, String name, String description, String category, double basePrice, int quantity){
 
@@ -34,6 +35,7 @@ public class BidFormat extends ProductImp{
             this.toConfirm.put(user, false);
             notificationManager.sendMessage(user, offerMessage, buyer);
         }
+        completed = false;
     }
 
     public synchronized void approve(User user) throws BidNotFoundException, CriticalInvariantException {
@@ -55,6 +57,7 @@ public class BidFormat extends ProductImp{
         NotificationManager notificationManager = NotificationManager.getInstance();
         String acceptedMessage = String.format("Dear customer, your offer of %f for (each), %d of product %s (serial number: %d) has been accepted", getPrice(), getAmount(), getName(), getId());
         notificationManager.sendMessage(buyer, acceptedMessage, approver);
+        completed = true;
         buyer.bidApproved(shop.getShopID(), bidID);
     }
 
@@ -85,4 +88,20 @@ public class BidFormat extends ProductImp{
     }
 
     public int getBidID(){return bidID;}
+
+    public User getBuyer() {
+        return buyer;
+    }
+
+    public Map<User, Boolean> getToConfirm() {
+        return toConfirm;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
 }

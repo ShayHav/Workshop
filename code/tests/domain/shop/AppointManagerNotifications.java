@@ -61,8 +61,8 @@ class AppointManagerNotifications {
         try{
             int shppID;
             shppID = services.CreateShop("NBAstore",nitayNames[0],"Nitay's").getValue().getShopID();
-            services.AppointNewShopManager(shppID,nitayNames[1],nitayNames[0]);
-            services.AppointNewShopManager(shppID,nitayNames[2],nitayNames[0]);
+            services.AppointNewShopOwner(shppID,nitayNames[1],nitayNames[0]);
+            services.AppointNewShopOwner(shppID,nitayNames[2],nitayNames[0]);
             services.acceptAppoint(shppID,2,nitayNames[1]);
             assertTrue(shopController.getShop(shppID).isOwner(nitayNames[2]));
         } catch (Exception e){
@@ -74,8 +74,8 @@ class AppointManagerNotifications {
         try{
             int shppID;
             shppID = services.CreateShop("NBAstore",nitayNames[0],"Nitay's").getValue().getShopID();
-            services.AppointNewShopManager(shppID,nitayNames[1],nitayNames[0]);
-            services.AppointNewShopManager(shppID,nitayNames[3],nitayNames[0]);
+            services.AppointNewShopOwner(shppID,nitayNames[1],nitayNames[0]);
+            services.AppointNewShopOwner(shppID,nitayNames[3],nitayNames[0]);
             services.declineAppoint(shppID,2,nitayNames[1]);
             assertFalse(shopController.getShop(shppID).isOwner(nitayNames[3]));
         } catch (Exception e){

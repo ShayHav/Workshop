@@ -74,10 +74,12 @@ public class DiscountPolicy {
 
 
     public List<Discount> getAllDiscountsForProd(int prodID){
-        for(Map.Entry<Integer, List<Discount>> set : product_discounts.entrySet()){
-            if(set.getKey() == prodID){
-                eventLogger.logMsg(Level.INFO, String.format("returned a list of discounts applicable to product: %d ", prodID));
-                return set.getValue();
+        synchronized (product_discounts) {
+            for (Map.Entry<Integer, List<Discount>> set : product_discounts.entrySet()) {
+                if (set.getKey() == prodID) {
+                    eventLogger.logMsg(Level.INFO, String.format("returned a list of discounts applicable to product: %d ", prodID));
+                    return set.getValue();
+                }
             }
         }
         eventLogger.logMsg(Level.INFO, String.format("product: %d has no discounts", prodID));
@@ -143,11 +145,13 @@ public class DiscountPolicy {
     public int addSimpleProductDiscount(int prodID, String productName, double percentage) throws InvalidParamException {
         DiscountCalculatorType discountCalc = new PercentageDiscount(percentage);
         List<Discount> prod_disc;
-        if(product_discounts.containsKey(prodID))
-            prod_disc = getAllDiscountsForProd(prodID);
-        else {
-            prod_disc = new ArrayList<>();
-            product_discounts.put(prodID, prod_disc);
+        synchronized (product_discounts) {
+            if (product_discounts.containsKey(prodID))
+                prod_disc = getAllDiscountsForProd(prodID);
+            else {
+                prod_disc = new ArrayList<>();
+                product_discounts.put(prodID, prod_disc);
+            }
         }
         eventLogger.logMsg(Level.INFO, String.format("added percentage discount to product: %d ", prodID));
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getId() == prodID;
@@ -166,7 +170,9 @@ public class DiscountPolicy {
             category_discount = getAllDiscountsForCategory(category);
         else {
             category_discount = new ArrayList<>();
-            category_discounts.put(category, category_discount);
+            synchronized (category_discounts) {
+                category_discounts.put(category, category_discount);
+            }
         }
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
 
@@ -184,7 +190,9 @@ public class DiscountPolicy {
         Predicate<ProductImp> relevantTo = (productImp)-> true;
         String discountStringed = String.format("discount of %f on all of shop's products can be applied", percentage);
         Discount newDiscount = new SimpleDiscount(discountCalc, discountIDCounter++, relevantTo, discountStringed);
-        shopAllProducts_discounts.add(newDiscount);
+        synchronized (shopAllProducts_discounts) {
+            shopAllProducts_discounts.add(newDiscount);
+        }
         return newDiscount.getID();
     }
 
@@ -192,11 +200,13 @@ public class DiscountPolicy {
     public int addConditionalProductDiscount(int prodID, double percentage, Predicate<Basket> pred, String productName) throws InvalidParamException {
         DiscountCalculatorType discountCalc = new PercentageDiscount(percentage);
         List<Discount> prod_disc;
-        if(product_discounts.containsKey(prodID))
-            prod_disc = getAllDiscountsForProd(prodID);
-        else {
-            prod_disc = new ArrayList<>();
-            product_discounts.put(prodID, prod_disc);
+        synchronized (product_discounts) {
+            if (product_discounts.containsKey(prodID))
+                prod_disc = getAllDiscountsForProd(prodID);
+            else {
+                prod_disc = new ArrayList<>();
+                product_discounts.put(prodID, prod_disc);
+            }
         }
 
 
@@ -221,7 +231,9 @@ public class DiscountPolicy {
             category_discount = getAllDiscountsForCategory(category);
         else {
             category_discount = new ArrayList<>();
-            category_discounts.put(category, category_discount);
+            synchronized (category_discounts) {
+                category_discounts.put(category, category_discount);
+            }
         }
 
         Predicate<ProductImp> relevantTo = (productImp)-> productImp.getCategory().equals(category);
@@ -239,24 +251,27 @@ public class DiscountPolicy {
         Predicate<ProductImp> relevantTo = (productImp)-> true;
         String discountStringed = String.format("discount of %f on any of the stores products can be applied %s", percentage, pred.toString());
         Discount newDiscount = new ConditionalDiscount(pred, discountCalc, discountIDCounter++, relevantTo, discountStringed);
-        shopAllProducts_discounts.add(newDiscount);
-
+        synchronized (shopAllProducts_discounts) {
+            shopAllProducts_discounts.add(newDiscount);
+        }
         return newDiscount.getID();
     }
 
 
 
     public boolean removeDiscount(int discountID){
-        for(Map.Entry<Integer, List<Discount>> set : product_discounts.entrySet()){
-            List<Discount> prod_discounts = set.getValue();
-            for(Discount dis: prod_discounts) {
-                if (dis.getID() == discountID) {
-                    prod_discounts.remove(dis);
-                    eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
-                    break;
+        synchronized (product_discounts) {
+            for (Map.Entry<Integer, List<Discount>> set : product_discounts.entrySet()) {
+                List<Discount> prod_discounts = set.getValue();
+                for (Discount dis : prod_discounts) {
+                    if (dis.getID() == discountID) {
+                        prod_discounts.remove(dis);
+                        eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
+                        break;
                     /*if(dis instanceof BundleDiscount){
                         hasBundleDeal.remove(set.getKey());
                     }*/
+                    }
                 }
             }
         }
@@ -274,7 +289,9 @@ public class DiscountPolicy {
 
         for(Discount dis: shopAllProducts_discounts) {
             if (dis.getID() == discountID) {
-                shopAllProducts_discounts.remove(dis);
+                synchronized (shopAllProducts_discounts) {
+                    shopAllProducts_discounts.remove(dis);
+                }
                 eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", discountID));
                 break;
             }
@@ -418,26 +435,38 @@ public class DiscountPolicy {
             default -> throw new InvalidParamException("Complex type given is illegal.");
         };
 
-        for (List<Discount> listDiscount1: listOfDiscount1)
-            listDiscount1.remove(discount1);
+        for (List<Discount> listDiscount1: listOfDiscount1) {
+            synchronized (listDiscount1) {
+                listDiscount1.remove(discount1);
+            }
+        }
 
-
-        for (List<Discount> listDiscount2: listOfDiscount2)
-            listDiscount2.remove(discount2);
+        for (List<Discount> listDiscount2: listOfDiscount2){
+            synchronized (listDiscount2) {
+                listDiscount2.remove(discount2);
+            }
+        }
 
 /*        removeDiscount(discountID1);
         removeDiscount(discountID2);*/
-        listOfDiscount1.addAll(listOfDiscount2);
-        listOfDiscount1.stream().distinct().collect(Collectors.toList());
+        synchronized (listOfDiscount1) {
+            listOfDiscount1.addAll(listOfDiscount2);
+            listOfDiscount1.stream().distinct().collect(Collectors.toList());
+            for (List<Discount> listDiscount1: listOfDiscount1) {
+                synchronized (listDiscount1) {
+                    listDiscount1.add(newDiscount);
+                }
+            }
+        }
 
-        for (List<Discount> listDiscount1: listOfDiscount1)
-            listDiscount1.add(newDiscount);
+
 
         return newDiscount.getID();
     }
 
     public List<Discount> getAllDistinctDiscounts(){
         List<Discount> prodPR = new ArrayList<>();
+
         for(List<Discount> valueSet : product_discounts.values())
             prodPR.addAll(valueSet);
 

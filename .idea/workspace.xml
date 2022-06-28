@@ -4,15 +4,57 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="restart db">
+    <list default="true" id="b8a62c01-6159-48f2-b10f-481b68ae5657" name="Changes" comment="missing policies and bundles">
+      <change afterPath="$PROJECT_DIR$/code/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_12_10.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/.idea/libraries/Maven__net_bytebuddy_byte_buddy_agent_1_12_10.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/.idea/libraries/Maven__org_mockito_mockito_core_4_6_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/.idea/libraries/Maven__org_objenesis_objenesis_3_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/src/main/jte/openBidsPage.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/jte-classes/gg/jte/generated/ondemand/JtenavBarGenerated.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/DB/HiberDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/DB/HiberDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/ShopController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Controllers/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Presentation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/AddToCartMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/AppointMangerMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/AppointOwnerMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/CheckoutFormMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/EditShopMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/NotificationMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/Messages/RegisterMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationBasket.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationCart.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationEntrance.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationOrder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationProduct.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationShop.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Presentation/Model/PresentationUser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/Service/Services.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/DAL/ControllerDAL.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/DAL/ControllerDAL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/notifications/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/notifications/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/market/MarketSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/AppointHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Inventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Inventory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/OrderHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/OrderHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ProductImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/OwnerAppointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/OwnerAppointment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchaseFormats/BidFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchaseFormats/BidFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchaseFormats/BidHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchaseFormats/BidHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchasePolicys/PurchasePolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/PurchasePolicys/PurchasePolicy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/Shop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/ShopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/ShopController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/shop/discount/DiscountPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/shop/discount/DiscountPolicy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/Cart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/Entrance.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/Entrance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/EntranceLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/EntranceLogger/EntranceLogger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/java/domain/user/ShoppingBasket.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/java/domain/user/ShoppingBasket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/editShop.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/navBar.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/navBar.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/product.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/product.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/src/main/jte/shop.jte" beforeDir="false" afterPath="$PROJECT_DIR$/code/src/main/jte/shop.jte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/AppointManagerNotifications.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/AppointManagerNotifications.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopIntegrationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/code/tests/domain/shop/ShopTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/workshop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/code/workshop.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +119,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/ariel/Desktop/GitHub/Workshop",
+    "last_opened_file_path": "C:/Users/ariel/Desktop/GitHub/Workshop/code/src/main/java/Presentation",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -87,6 +129,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ariel\Desktop\GitHub\Workshop\code\src\main\java\Presentation" />
       <recent name="C:\Users\ariel\Desktop\GitHub\Workshop\code\src\main\java\DB" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -96,7 +139,7 @@
       <recent name="domain" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.AppointManagerNotifications.OneOwnerAppoint">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Presentation.Main" />
       <module name="workshop" />
@@ -243,13 +286,7 @@
       <workItem from="1656157361083" duration="6597000" />
       <workItem from="1656260827938" duration="865000" />
       <workItem from="1656352808333" duration="22338000" />
-      <workItem from="1656389337709" duration="10446000" />
-    </task>
-    <task id="LOCAL‎00020" summary="added cart impl, remove from cart, update cart - still need checkout">
-      <created>1652801993917</created>
-      <option name="number" value="LOCAL‎00020" />
-      <option name="presentableId" value="LOCAL‎00020" />
-      <updated>1652801993917</updated>
+      <workItem from="1656389337709" duration="15219000" />
     </task>
     <task id="LOCAL‎00021" summary="fix in cart and product page">
       <created>1652812612062</created>
@@ -542,7 +579,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656354425618</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="missing policies and bundles">
+      <created>1656399923849</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1656399923849</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -566,7 +610,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="register fix in gui, &#10;started to impl admin page" />
     <MESSAGE value="Admin has a new page where he can see information about the market : active users, total registered, list of users and option to delete, etc." />
     <MESSAGE value="admin page for sales history, fixes in signatures - needed map instead of list of orders to identify orders per user/shop." />
     <MESSAGE value="minor changes" />
@@ -591,7 +634,8 @@
     <MESSAGE value="Add tests to delayed notification and add field to TransactionInfo to support new demand of external services" />
     <MESSAGE value="change payment and supply to return transaction id from external service instead of boolean" />
     <MESSAGE value="restart db" />
-    <option name="LAST_COMMIT_MESSAGE" value="restart db" />
+    <MESSAGE value="missing policies and bundles" />
+    <option name="LAST_COMMIT_MESSAGE" value="missing policies and bundles" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

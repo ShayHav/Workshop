@@ -287,12 +287,15 @@ public class ShopIntegrationTest {
         } catch (ShopNotFoundException shopNotFoundException) {
             fail("shop should exist\n" + shopNotFoundException.getMessage());
             return;
-        } catch (IncorrectIdentification incorrectIdentification) {
-            fail();
+        }catch (IncorrectIdentification incorrectIdentification) {
+            fail("shop should exist\n" + incorrectIdentification.getMessage());
+            return;
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            fail();
+            fail("shop should exist\n" + invalidSequenceOperationsExc.getMessage());
+            return;
         } catch (BlankDataExc blankDataExc) {
-            fail();
+            fail("shop should exist\n" + blankDataExc.getMessage());
+            return;
         }
 
         assertEquals(5, buyer.showCart().getTotalAmount());
@@ -334,11 +337,14 @@ public class ShopIntegrationTest {
             fail("shop should exist\n" + shopNotFoundException.getMessage());
             return;
         } catch (IncorrectIdentification incorrectIdentification) {
-            fail();
+            fail("shop should exist\n" + incorrectIdentification.getMessage());
+            return;
         } catch (InvalidSequenceOperationsExc invalidSequenceOperationsExc) {
-            fail();
+            fail("shop should exist\n" + invalidSequenceOperationsExc.getMessage());
+            return;
         } catch (BlankDataExc blankDataExc) {
-            fail();
+            fail("shop should exist\n" + blankDataExc.getMessage());
+            return;
         }
         buyer.removeProductFromCart(shop.getShopID(), orangeID);
 
