@@ -33,7 +33,7 @@ public class User {
     private List<ManagerAppointment> managerAppointeeList;
     @Transient
     private List<OwnerAppointment> ownerAppointmentList;
-    @OneToMany
+    @Transient
     private List<Order> orderHistory;
     private boolean isSystemManager;
     @Transient
@@ -301,8 +301,9 @@ public class User {
     }
 
 
-    public List<String> checkout(String fullName, String address, String phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
-        List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, phoneNumber, cardNumber, expirationDate);
+
+    public List<String> checkout(String fullName, String address, String city, String country, String zip, String phoneNumber, String cardNumber, String ccv, String expirationDate) throws BlankDataExc {
+        List<ResponseT<Order>> checkoutResult = userCart.checkout(userName, fullName, address, city, country, zip, phoneNumber, cardNumber, ccv, expirationDate);
         List<String> errors = new ArrayList<>();
         for (ResponseT<Order> r : checkoutResult) {
             if (r.isErrorOccurred()) {

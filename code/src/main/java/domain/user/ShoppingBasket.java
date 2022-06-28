@@ -2,14 +2,19 @@ package domain.user;
 
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
+import domain.Exceptions.BidNotFoundException;
 import domain.Exceptions.BlankDataExc;
+import domain.Responses.ResponseT;
 import domain.shop.Order;
 import domain.shop.Product;
 import domain.Exceptions.ProductNotFoundException;
+import domain.shop.ProductImp;
 import domain.shop.Shop;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -34,12 +39,15 @@ public class ShoppingBasket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usernameID")
     private Cart c;
+    @Transient
+    private final Map<Integer, Boolean> bidIDs_status;
 
     public ShoppingBasket(Shop shop) {
         this.shop = shop;
         productAmountList = new HashMap<>();
         basketAmount = 0;
         shopID = shop.getShopID();
+        bidIDs_status = new HashMap<>();
 //        c = new Cart();
     }
 
@@ -50,6 +58,7 @@ public class ShoppingBasket {
     public ShoppingBasket() {
         this.shop = null;
         productAmountList = null;
+        bidIDs_status = new HashMap<>();
     }
 
     public int getShopID() {
@@ -160,7 +169,12 @@ public class ShoppingBasket {
      * @param billingInfo all the relevant information to complete the transaction.
      */
     public ResponseT<Order> checkout(TransactionInfo billingInfo) throws BlankDataExc {
-        return shop.checkout(productAmountList, billingInfo);
+        List<Integer> acceptedBids = new ArrayList<>();
+        for(Map.Entry<Integer, Boolean> bid_status: bidIDs_status.entrySet()){
+            if(bid_status.getValue() == true)
+                acceptedBids.add(bid_status.getKey());
+        }
+        return shop.checkout(productAmountList, acceptedBids, billingInfo);
     }
 
     public ServiceBasket showBasket() {
@@ -180,8 +194,50 @@ public class ShoppingBasket {
         return new ServiceBasket(shop.getShopID(),shop.getName(),productWithAmount,basketAmount);
     }
 
+    public boolean shouldBeRemovedFromCart(){
+        return productAmountList.size() == 0 && bidIDs_status.size() == 0;
+    }
+
     public Map<Integer, Integer> getProductAmountList() {
         return productAmountList;
+    }
+    public int addBidToBasket(int productID, int amountToAdd, double offerPrice, User basketOwner) throws IllegalArgumentException, ProductNotFoundException{
+        if (shop.isProductIsAvailable(productID, amountToAdd)) {
+            if (amountToAdd <= 0) {
+                errorLogger.logMsg(Level.WARNING, String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
+                throw new IllegalArgumentException(String.format("add product of product %d in basket of shop %d failed - tried to add with non-positive amount.", productID, shop.getShopID()));
+            }
+
+            if (offerPrice <= 0) {
+                errorLogger.logMsg(Level.WARNING, String.format("offering price given: %d must give a positive number price.", offerPrice));
+                throw new IllegalArgumentException(String.format("offering price given: %d must give a positive number price.", offerPrice));
+            }
+            ProductImp product;
+            try {
+                product = shop.getProduct(productID);
+            }catch (ProductNotFoundException productNotFoundException){
+                errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - product is not available.", productID, shop.getShopID()));
+                throw new ProductNotFoundException(String.format("product %d is unavailable in shop %d", productID,shop.getShopID()));
+            }
+            ProductImp newBidProduct = new ProductImp(product.getId(), product.getName(), product.getDescription(), product.getCategory(), offerPrice, amountToAdd);
+            int bidID = shop.addNewBid(newBidProduct, basketOwner);
+            bidIDs_status.put(bidID, false);
+            return bidID;
+        } else {
+            errorLogger.logMsg(Level.WARNING, String.format("update amount of product %d in basket of shop %d failed - product is not available.", productID, shop.getShopID()));
+            throw new ProductNotFoundException(String.format("product %d is unavailable in shop %d", productID,shop.getShopID()));
+        }
+    }
+
+    public void acceptBid(int bidID) throws BidNotFoundException {
+        if(bidIDs_status.get(bidID) == null)
+            throw new BidNotFoundException("this bid does not exist, cannot resolve it");
+        bidIDs_status.put(bidID, true);
+        this.calculateTotalAmount();
+    }
+    public void removeBid(int bidID) {
+        bidIDs_status.remove(bidID);
+        this.calculateTotalAmount();
     }
 
     public class ServiceBasket {

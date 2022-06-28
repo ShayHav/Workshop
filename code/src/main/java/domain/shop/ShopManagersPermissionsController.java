@@ -3,6 +3,7 @@ package domain.shop;
 import domain.ErrorLoggerSingleton;
 import domain.Exceptions.InvalidSequenceOperationsExc;
 
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,10 +11,35 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class ShopManagersPermissionsController {
+
     private List<ShopManagersPermissions> managerinit = List.of(new ShopManagersPermissions[]{ShopManagersPermissions.AddProductToInventory, ShopManagersPermissions.RemoveProductFromInventory});
     private Map<String, List<ShopManagersPermissions>> shopManagersPermissionsMap;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    private int shopID;
 
+    public List<ShopManagersPermissions> getManagerinit() {
+        return managerinit;
+    }
+
+    public void setManagerinit(List<ShopManagersPermissions> managerinit) {
+        this.managerinit = managerinit;
+    }
+
+    public Map<String, List<ShopManagersPermissions>> getShopManagersPermissionsMap() {
+        return shopManagersPermissionsMap;
+    }
+
+    public void setShopManagersPermissionsMap(Map<String, List<ShopManagersPermissions>> shopManagersPermissionsMap) {
+        this.shopManagersPermissionsMap = shopManagersPermissionsMap;
+    }
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
+    }
 
     public ShopManagersPermissionsController() {
         shopManagersPermissionsMap = new HashMap<>();

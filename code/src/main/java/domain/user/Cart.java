@@ -1,11 +1,11 @@
 package domain.user;
 
 import domain.*;
-import domain.Exceptions.ProductNotFoundException;
+import domain.Exceptions.*;
+import domain.Responses.Response;
+import domain.Responses.ResponseT;
 import domain.shop.Order;
 import domain.shop.Shop;
-import domain.Exceptions.ShopNotFoundException;
-import domain.Exceptions.BlankDataExc;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -46,8 +46,8 @@ public class Cart {
     public Cart merge(Cart c)
     {
         setTotalAmount(c.getTotalAmount());
-        setBaskets(c.getBaskets());
         setBasketLs(c.getBasketLs());
+        setUsername(c.getUsername());
         return this;
     }
 
@@ -151,11 +151,12 @@ public class Cart {
         return new ServiceCart(totalAmount, basketMap);
     }
 
-    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String
-            phoneNumber, String cardNumber, String expirationDate) throws BlankDataExc {
+    public List<ResponseT<Order>> checkout(String userId, String fullName, String address, String city, String country, String zip,
+                                           String phoneNumber, String cardNumber, String ccv, String expirationDate) throws BlankDataExc {
         LocalDate transaction_date = LocalDate.now();
         totalAmount = getTotalAmount();
-        TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, phoneNumber, cardNumber, expirationDate, transaction_date, totalAmount);
+        TransactionInfo billingInfo = new TransactionInfo(userId, fullName, address, city, country, zip, phoneNumber, cardNumber,ccv, expirationDate, transaction_date, totalAmount);
+
         List<ResponseT<Order>> orders = new ArrayList<>();
         for (Integer shopId : baskets.keySet()) {
             ShoppingBasket s = baskets.get(shopId);
@@ -169,6 +170,51 @@ public class Cart {
             }
         }
         return orders;
+    }
+
+    public void removeBid(int shopID, int bidID) throws CriticalInvariantException, BidNotFoundException {
+        synchronized (baskets) {
+            if (!baskets.containsKey(shopID))
+                throw new CriticalInvariantException("tried to remove bid from a shop that isn't in user's cart");
+            ShoppingBasket basket = baskets.get(shopID);
+            basket.removeBid(bidID);
+            if(basket.shouldBeRemovedFromCart())
+                baskets.remove(shopID);
+        }
+    }
+
+    public ResponseT<Integer> addNewBidToCart(int shopID, int productID, int amount, User basketOwner, double price) throws ShopNotFoundException {
+        if (!baskets.containsKey(shopID)) {
+            try {
+                Shop shop = ControllersBridge.getInstance().getShop(shopID);
+                ShoppingBasket newBasket = new ShoppingBasket(shop);
+                int bidID = newBasket.addBidToBasket(productID, amount, price, basketOwner);
+                baskets.put(shopID, newBasket);
+                totalAmount = getTotalAmount();
+                eventLogger.logMsg(Level.INFO, String.format("add product %d in shop %d to cart succeeded", productID, shopID));
+                return new ResponseT<>(bidID);
+            } catch (IllegalArgumentException | ProductNotFoundException e) {
+                errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
+                return new ResponseT<>(e.getMessage());
+            }
+        } else {
+            try {
+                int bidID = baskets.get(shopID).addBidToBasket(productID, amount, price, basketOwner);
+                totalAmount = getTotalAmount();
+                return new ResponseT<>(bidID);
+            } catch (IllegalArgumentException | ProductNotFoundException e) {
+                errorLogger.logMsg(Level.WARNING, String.format("add product %d in shop %d to cart failed", productID, shopID));
+                return new ResponseT<>(e.getMessage());
+            }
+        }
+    }
+
+    public void bidApproved(int shopID, int bidID) throws CriticalInvariantException, BidNotFoundException {
+        synchronized (baskets) {
+            if (!baskets.containsKey(shopID))
+                throw new CriticalInvariantException();
+            baskets.get(shopID).acceptBid(bidID);
+        }
     }
 
     public class ServiceCart {

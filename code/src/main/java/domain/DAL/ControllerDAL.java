@@ -4,10 +4,7 @@ import DB.HiberDB;
 import domain.shop.*;
 import domain.shop.PurchasePolicys.PurchasePolicy;
 import domain.shop.discount.DiscountPolicy;
-import domain.user.Cart;
-import domain.user.Role;
-import domain.user.SecurePasswordStorage;
-import domain.user.User;
+import domain.user.*;
 import org.hibernate.cfg.NotYetImplementedException;
 
 import java.util.ArrayList;
@@ -25,8 +22,15 @@ public class ControllerDAL {
 
     public void updateUser(User user) {
         db.updateUser(user);
+        List<Order> ls = user.getOrderHistory();
+        for (Order o : ls)
+            o.initLs();
+        db.updateOrdersForUser(ls);
+        for (Order o : ls) {
+            o.convertLs();
+            o.cleanLs();
+        }
     }
-
     public void deleteUser(String useID) {
         User u = getUser(useID);
         Map<Integer,List<Role>> map = u.getRoleList();
@@ -53,9 +57,9 @@ public class ControllerDAL {
         db.removeShopRoles(shop,ls);
     }
 
-    public void deleteAllUser() {
-        throw new NotYetImplementedException();
-    }
+//    public void deleteAllUser() {
+//        throw new NotYetImplementedException();
+//    }
 
     private static class DALHolder {
         private static final ControllerDAL dal = new ControllerDAL();
@@ -68,12 +72,22 @@ public class ControllerDAL {
 
     public void saveUser(User u) {
         db.saveUser(u);
+        db.saveOrders(u.getOrderHistory());
+        for(Order o : u.getOrderHistory())
+            o.cleanLs();
 
     }
 
     public User getUser(String username)
     {
-        return db.getUser(username);
+        User u = db.getUser(username);
+        List<Order> ls = db.getOrderHistoryForUser(u.getUserName());
+        for(Order o: ls) {
+            o.convertLs();
+            o.cleanLs();
+        }
+        u.setOrderHistory(ls);
+        return u;
     }
 
     public void saveCart(Cart c)
@@ -177,15 +191,18 @@ public class ControllerDAL {
     }
 
     public void saveSecurePasswordStorage(SecurePasswordStorage securePasswordStorage) {
-        throw new NotYetImplementedException();
+        db.saveSecurePasswordStorage(securePasswordStorage);
     }
     public void updateSecurePasswordStorage(SecurePasswordStorage securePasswordStorage){
-        throw new NotYetImplementedException();
+        db.updateSecurePasswordStorage(securePasswordStorage);
     }
 
-    public SecurePasswordStorage getSecurePasswordStorage(){
-        throw new NotYetImplementedException();
+    public SecurePasswordInt getSecurePasswordStorage(){
+        return db.getSecurePasswordStorage();
     }
+
+
+
 
 
 }

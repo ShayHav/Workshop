@@ -327,90 +327,89 @@ public class ShopController {
 
 
 
-    public int addSimpleProductDiscount(String userName, int shopID, int prodID, double percentage) throws InvalidParamException, ShopNotFoundException, ProductNotFoundException {
+    public int addSimpleProductDiscount(int shopID, int prodID, double percentage) throws InvalidParamException, ShopNotFoundException, ProductNotFoundException {
         Shop shop;
         shop = getShop(shopID);
-        return shop.addSimpleProductDiscount(userName,prodID, percentage);
+        return shop.addSimpleProductDiscount(prodID, percentage);
     }
 
-    public int addSimpleCategoryDiscount(String userName, int shopID, String category, double percentage) throws InvalidParamException, ShopNotFoundException {
+    public int addSimpleCategoryDiscount(int shopID, String category, double percentage) throws InvalidParamException, ShopNotFoundException {
         Shop shop;
         shop = getShop(shopID);
-        return shop.addSimpleCategoryDiscount(userName,category, percentage);
+        return shop.addSimpleCategoryDiscount(category, percentage);
     }
 
-    public int addSimpleShopAllProductsDiscount(String userName, int shopID, double percentage) throws InvalidParamException, ShopNotFoundException {
+    public int addSimpleShopAllProductsDiscount(int shopID, double percentage) throws InvalidParamException, ShopNotFoundException {
         Shop shop;
         shop = getShop(shopID);
-        return shop.addSimpleShopAllProductsDiscount(userName,percentage);
+        return shop.addSimpleShopAllProductsDiscount(percentage);
     }
 
-    public int addConditionalProductDiscount(String userName, int shopID, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException, ProductNotFoundException {
+    public int addConditionalProductDiscount(int shopID, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException, ProductNotFoundException {
         Shop shop = getShop(shopID);
-        return shop.addConditionalProductDiscount(userName,prodID, percentage, toBuildPredicatesFrom);
+        return shop.addConditionalProductDiscount(prodID, percentage, toBuildPredicatesFrom);
     }
 
-    public int addConditionalCategoryDiscount(String userName, int shopID, String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException {
+    public int addConditionalCategoryDiscount(int shopID, String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException {
         Shop shop = getShop(shopID);
-        return shop.addConditionalCategoryDiscount(userName,category, percentage, toBuildPredicatesFrom);
+        return shop.addConditionalCategoryDiscount(category, percentage, toBuildPredicatesFrom);
     }
 
-    public int addConditionalShopAllProductsDiscount(String userName, int shopID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException {
+    public int addConditionalShopAllProductsDiscount(int shopID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws ShopNotFoundException, InvalidParamException, CriticalInvariantException, AccessDeniedException {
         Shop shop = getShop(shopID);
-        return shop.addConditionalShopAllProductsDiscount(userName,percentage, toBuildPredicatesFrom);
+        return shop.addConditionalShopAllProductsDiscount(percentage, toBuildPredicatesFrom);
     }
 
-    public int addProductPurchasePolicy(String userName, int shopID, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException, ProductNotFoundException {
+    public int addProductPurchasePolicy(int shopID, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException, ProductNotFoundException {
         Shop shop = getShop(shopID);
-        return shop.addProductPurchasePolicy(userName,prodID, toBuildPredicatesFrom);
+        return shop.addProductPurchasePolicy(prodID, toBuildPredicatesFrom);
     }
 
-    public int addCategoryPurchasePolicy(String userName, int shopID, String category, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
+    public int addCategoryPurchasePolicy(int shopID, String category, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
         Shop shop = getShop(shopID);
-        return shop.addCategoryPurchasePolicy(userName,category, toBuildPredicatesFrom);
+        return shop.addCategoryPurchasePolicy(category, toBuildPredicatesFrom);
     }
 
 
-    public int addShopAllProductsPurchasePolicy(String userName, int shopID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
+    public int addShopAllProductsPurchasePolicy(int shopID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, ShopNotFoundException, AccessDeniedException {
         Shop shop = getShop(shopID);
-        return shop.addShopAllProductsPurchasePolicy(userName,toBuildPredicatesFrom);
+        return shop.addShopAllProductsPurchasePolicy(toBuildPredicatesFrom);
     }
 
 
-    public int addOrDiscount(String userName, int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public int addOrDiscount(int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
         Shop shop = getShop(shopID);
-        return shop.addOrDiscount(userName,dis1ID, dis2ID);
+        return shop.addOrDiscount(dis1ID, dis2ID);
     }
 
-    public int addAndDiscount(String userName, int dis1ID, int dis2ID, int shopID) throws ShopNotFoundException, DiscountNotFoundException, CriticalInvariantException {
+    public int addAndDiscount(int dis1ID, int dis2ID, int shopID) throws ShopNotFoundException, DiscountNotFoundException, CriticalInvariantException {
         Shop shop = getShop(shopID);
-        return shop.addAndDiscount(userName,dis1ID, dis2ID);
+        return shop.addAndDiscount(dis1ID, dis2ID);
     }
 
-    public int addXorDiscount(String userName, int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public int addXorDiscount(int dis1ID, int dis2ID, int shopID) throws DiscountNotFoundException, CriticalInvariantException, ShopNotFoundException {
         Shop shop = getShop(shopID);
-        return shop.addXorDiscount(userName,dis1ID, dis2ID);
+        return shop.addXorDiscount(dis1ID, dis2ID);
     }
 
-    public int addOrPurchaseRule(String userName, int pr1ID, int pr2ID, int shopID) throws PurchaseRuleNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public int addOrPurchaseRule(int pr1ID, int pr2ID, int shopID) throws PurchaseRuleNotFoundException, CriticalInvariantException, ShopNotFoundException {
         Shop shop = getShop(shopID);
-        return shop.addOrPurchaseRule(userName,pr1ID, pr2ID);
+        return shop.addOrPurchaseRule(pr1ID, pr2ID);
     }
 
-    public int addAndPurchaseRule(String userName, int pr1ID, int pr2ID, int shopID) throws PurchaseRuleNotFoundException, CriticalInvariantException, ShopNotFoundException {
+    public int addAndPurchaseRule(int pr1ID, int pr2ID, int shopID) throws PurchaseRuleNotFoundException, CriticalInvariantException, ShopNotFoundException {
         Shop shop = getShop(shopID);
-        return shop.addAndPurchaseRule(userName,pr1ID, pr2ID);
+        return shop.addAndPurchaseRule(pr1ID, pr2ID);
     }
+
+//    public boolean removeDiscount(int discountID, int shopID) throws ShopNotFoundException {
+//        Shop shop = getShop(shopID);
+//        return shop.removeDiscount(discountID);
+//    }
 
     public boolean removeDiscount(String userName, int discountID, int shopID) throws ShopNotFoundException {
         Shop shop = getShop(shopID);
         return shop.removeDiscount(userName,discountID);
-    }
-
-
-    public void removePurchaseRule(String userName, int purchaseRuleID, int shopID) throws ShopNotFoundException {
-        Shop shop = getShop(shopID);
-        shop.removePurchaseRule(userName,purchaseRuleID);
     }
 
     public void deleteShopTest(Integer key) {
@@ -461,5 +460,9 @@ public class ShopController {
     }
     public List<Shop> getAllShops(){
         return shopList.values().stream().collect(Collectors.toList());
+    }
+
+    public boolean removePurchaseRule(int purchaseRuleID, int shopID) {
+        return true;
     }
 }

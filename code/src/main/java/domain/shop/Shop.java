@@ -14,12 +14,9 @@ import domain.shop.discount.Basket;
 import domain.shop.discount.Discount;
 import domain.shop.discount.DiscountPolicy;
 import domain.shop.predicate.*;
-import domain.shop.user.Role;
-import domain.shop.user.TransactionInfo;
-import domain.shop.user.User;
-import domain.shop.user.filter.SearchOfficialsFilter;
-import domain.shop.user.filter.SearchOrderFilter;
 import domain.user.*;
+import domain.user.filter.SearchOfficialsFilter;
+import domain.user.filter.SearchOrderFilter;
 
 import javax.persistence.*;
 import java.util.*;
@@ -33,10 +30,11 @@ import java.util.stream.Stream;
 public class Shop {
     private String name;
     @Id
-    private final int shopID;
+    private int shopID;
     private int rank;
-    @ManyToOne
+    @Transient
     private final User ShopFounder;
+    private String username;
     private String description;
     //private Map<String,User> ShopOwners;
 
@@ -45,17 +43,19 @@ public class Shop {
     private List<User> ShopOwners;
     @ManyToMany
     private List<User> ShopManagers;
+    @Transient
     private ShopManagersPermissionsController shopManagersPermissionsController;
     @OneToOne
     private Inventory inventory;
-    @OneToOne
+    @Transient
     private DiscountPolicy discountPolicy;
-    @OneToOne
+    @Transient
     private PurchasePolicy purchasePolicy;
     @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Transient
     private OrderHistory orders;
     private boolean isOpen;
     @Transient
@@ -67,10 +67,21 @@ public class Shop {
     @Transient
     private AppointHandler appointHandler;
 
+    private int numOfVisits;
+
     public Shop() {
 
+        ShopFounder = null;
+        shopID = -1;
     }
 
+    public int getNumOfVisits() {
+        return numOfVisits;
+    }
+
+    public void setNumOfVisits(int numOfVisits) {
+        this.numOfVisits = numOfVisits;
+    }
 
     public OrderHistory getOH()
     {
@@ -149,10 +160,14 @@ public class Shop {
         return false;
     }
 
+
     public Shop(String name,String description, DiscountPolicy discountPolicy, PurchasePolicy purchasePolicy, User shopFounder, int shopID) {
         this.discountPolicy = discountPolicy;
+        this.discountPolicy.setShopID(shopID);
+        numOfVisits =0;
         controllerDAL.saveDiscountPolicy(discountPolicy);
         this.purchasePolicy = purchasePolicy;
+        this.purchasePolicy.setShopID(shopID);
         controllerDAL.savePurchasePolicy(purchasePolicy);
         inventory = new Inventory();
         controllerDAL.saveInventory(inventory);
@@ -165,19 +180,23 @@ public class Shop {
         isOpen = true;
         this.description = description;
         this.ShopFounder = shopFounder;
-        this.shopID = shopID;
-        shopManagersPermissionsController = new ShopManagersPermissionsController(shopID);
+        shopManagersPermissionsController = new ShopManagersPermissionsController();
+        shopManagersPermissionsController.setShopID(shopID);
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
         controllerDAL.saveShopManagersPermissionsController(shopManagersPermissionsController);
+        this.shopID = shopID;
     }
 
     public Shop(String name,String description, User shopFounder, int shopID) {
+        numOfVisits = 0;
         this.discountPolicy = new DiscountPolicy();
         this.purchasePolicy = new PurchasePolicy();
+        this.discountPolicy.setShopID(shopID);
+        this.purchasePolicy.setShopID(shopID);
         inventory = new Inventory();
         orders = new OrderHistory();
-        ShopOwners = new HashMap<>();
-        ShopManagers = new HashMap<>();
+        ShopOwners = new LinkedList<>();
+        ShopManagers = new LinkedList<>();
         rank = -1;
         this.name = name;
         isOpen = true;
@@ -185,6 +204,7 @@ public class Shop {
         this.ShopFounder = shopFounder;
         this.shopID = shopID;
         shopManagersPermissionsController = new ShopManagersPermissionsController();
+        shopManagersPermissionsController.setShopID(shopID);
         shopManagersPermissionsController.addPermissions(getAllPermissionsList(), shopFounder.getUserName());
         bidHandler = new BidHandler();
         appointHandler = new AppointHandler();
@@ -216,7 +236,7 @@ public class Shop {
         }
     }
 
-    public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) {
+    public synchronized boolean removePermissions(List<ShopManagersPermissions> shopManagersPermissionsList, String tragetUser , String id) throws InvalidSequenceOperationsExc {
         if (isShopOwner(id) || shopManagersPermissionsController.canChangeShopManagersPermissions(id)) {
             return shopManagersPermissionsController.removePermissions(shopManagersPermissionsList, tragetUser);
         } else {
@@ -246,8 +266,8 @@ public class Shop {
         return inventory.getItemsInStock();
     }
 
-    public Product getProduct(int prodID) throws ProductNotFoundException {
-        Product product = inventory.findProduct(prodID);
+    public ProductImp getProduct(int prodID) throws ProductNotFoundException {
+        ProductImp product = inventory.findProduct(prodID);
         if(product != null) {
             eventLogger.logMsg(Level.INFO, String.format("returned product: %d", prodID));
             return product;
@@ -302,7 +322,7 @@ public class Shop {
             return 0;
 
         try {
-            newPrice = cartItemsPricesAfterDiscounts(productAmountList).findProduct(prodID).getBasePrice();
+            newPrice = cartItemsPricesAfterDiscounts(productAmountList, new ArrayList<>()).findProduct(prodID).getBasePrice();
         }catch (ProductNotFoundException productNotFoundException){
             return 0;
         }
@@ -340,6 +360,11 @@ public class Shop {
         Basket basketBids = idsToBids(acceptedbidIDs);
         basket.putAll(basketBids);
         basket.setBasePrice(basket.getBasePrice() + basketBids.getBasePrice());
+        return discountPolicy.calcPricePerProductForCartTotal(basket);
+    }
+
+    public Basket cartItemsPricesAfterDiscounts(Map<Integer, Integer> productAmountList){
+        Basket basket = IDsToProducts(productAmountList);
         return discountPolicy.calcPricePerProductForCartTotal(basket);
     }
 
@@ -456,7 +481,24 @@ public class Shop {
         sendCheckoutMessage(o);
         return new ResponseT<>(o);
     }
-
+    public Basket idsToBids(List<Integer> bidIDs){
+        ProductImp product;
+        Basket basket = new Basket();
+        double basketPrice = 0;
+        for(Integer bidID : bidIDs){
+            //check purchase policy regarding the Product
+            //Product_price_single = productPriceAfterDiscounts(set.getKey(), set.getValue());
+            try {
+                product = bidHandler.getBid(bidID);
+            }catch (BidNotFoundException bidNotFoundException){
+                continue;
+            }
+            basket.put(product, product.getAmount());
+            basketPrice += product.getPrice();
+        }
+        basket.setBasePrice(basketPrice);
+        return basket;
+    }
     private Order createOrder(Basket products, TransactionInfo transaction) {
         List<Product> boughtProducts = new ArrayList<>();
         for(Map.Entry<ProductImp, Integer> product_amounts: products.entrySet()){
@@ -473,7 +515,7 @@ public class Shop {
     }
 
     public boolean isOwner(String id) {
-        return ShopOwners.containsKey(id);
+        return isShopOwner(id);
     }
 
     //TODO: check it works
@@ -481,18 +523,21 @@ public class Shop {
     public void AppointNewShopOwner(String usertarget, String userId) throws IncorrectIdentification, BlankDataExc, InvalidSequenceOperationsExc {
         if ( isShopOwner(userId) ||ShopFounder.getUserName().equals(userId)) {
             synchronized (this) {
-                User newManager = ControllersBridge.getInstance().getUser(toAppoint);
-                User managerUser = ControllersBridge.getInstance().getUser(appointor);
+                User newManager = ControllersBridge.getInstance().getUser(usertarget);
+                User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointOwner(shopID)){
-                        appointHandler.addNewAppoint(newManager, managerUser,this, getShopOwners());
+                        managerUser.AppointedMeOwner(this,usertarget);
+                        ShopOwners.add(newManager);
+                        newManager.addRole(shopID, Role.ShopOwner);
+                        eventLogger.logMsg(Level.INFO, String.format("Appoint New Shop Owner User: %s", usertarget));
                         return;
                     }
                 }
             }
         }
-        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", toAppoint));
-        throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s filed", toAppoint));
+        errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
+        throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s filed", usertarget));
     }
 
     public int getShopID() {
@@ -506,14 +551,11 @@ public class Shop {
                 User managerUser = ControllersBridge.getInstance().getUser(userId);
                 if (newManager != null) {
                     if(managerUser.appointManager(shopID)){
-//                        managerUser.AppointedMeManager(this,usertarget);
-//                        ShopManagers.putIfAbsent(usertarget, newManager);
-//                        newManager.addRole(shopID,Role.ShopManager);
-//                        shopManagersPermissionsController.initManager(newManager.getUserName());
-//                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
-                        List<User> toc = getShopOwners();
-                        toc.remove(managerUser);
-                        appointHandler.addNewAppoint(newManager, managerUser, this, toc);
+                        managerUser.AppointedMeManager(this,usertarget);
+                        ShopManagers.add(newManager);
+                        newManager.addRole(shopID,Role.ShopManager);
+                        shopManagersPermissionsController.initManager(newManager.getUserName());
+                        eventLogger.logMsg(Level.INFO, String.format("Appoint New ShopManager User: %s", usertarget));
                         return;
                     }
                 }
@@ -522,6 +564,7 @@ public class Shop {
         errorLogger.logMsg(Level.WARNING, String.format("attempt to appoint New ShopManager User: %s failed", usertarget));
         throw new InvalidSequenceOperationsExc(String.format("attempt to appoint New ShopManager User: %s failed", usertarget));
     }
+
 
     public synchronized void closeShop(String userID) throws InvalidSequenceOperationsExc, IncorrectIdentification, BlankDataExc {
         if (ShopFounder.getUserName().equals(userID) || shopManagersPermissionsController.canCloseShop(userID)) {
@@ -708,23 +751,17 @@ public class Shop {
     }
 
 
-    public int addSimpleProductDiscount(String userName, int prodID, double percentage) throws InvalidParamException, ProductNotFoundException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeProductsDiscountShopPolicy(userName)) {
-            String productName = inventory.getName(prodID);
-            return discountPolicy.addSimpleProductDiscount(prodID, productName, percentage);
-        } else return -1;
+    public int addSimpleProductDiscount(int prodID, double percentage) throws InvalidParamException, ProductNotFoundException {
+        String productName = inventory.getName(prodID);
+        return discountPolicy.addSimpleProductDiscount(prodID, productName, percentage);
     }
 
-    public int addSimpleCategoryDiscount(String userName, String category, double percentage) throws InvalidParamException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeDiscountShopPolicy(userName))
-            return discountPolicy.addSimpleCategoryDiscount(category, percentage);
-        return -1;
+    public int addSimpleCategoryDiscount(String category, double percentage) throws InvalidParamException {
+        return discountPolicy.addSimpleCategoryDiscount(category, percentage);
     }
 
-    public int addSimpleShopAllProductsDiscount(String userName, double percentage) throws InvalidParamException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeDiscountShopPolicy(userName))
-            return discountPolicy.addSimpleShopAllProductsDiscount(percentage);
-        return -1;
+    public int addSimpleShopAllProductsDiscount(double percentage) throws InvalidParamException {
+        return discountPolicy.addSimpleShopAllProductsDiscount(percentage);
     }
 
     public Predicate<Basket> makePredDiscount(ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
@@ -766,57 +803,40 @@ public class Shop {
 
 
 
-    public int addConditionalProductDiscount(String userName, int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException, ProductNotFoundException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeProductsDiscountShopPolicy(userName)) {
-            Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
-            String productName = inventory.getName(prodID);
-            return discountPolicy.addConditionalProductDiscount(prodID, percentage, pred, productName);
-        }
-        return -1;
+    public int addConditionalProductDiscount(int prodID, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException, ProductNotFoundException {
+        Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
+        String productName = inventory.getName(prodID);
+        return discountPolicy.addConditionalProductDiscount(prodID, percentage, pred, productName);
     }
 
-    public int addConditionalCategoryDiscount(String userName, String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeDiscountShopPolicy(userName)) {
-            Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
-            return discountPolicy.addConditionalCategoryDiscount(category, percentage, pred);
-        }
-        return -1;
+    public int addConditionalCategoryDiscount(String category, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
+        Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
+        return discountPolicy.addConditionalCategoryDiscount(category, percentage, pred);
     }
 
 
-    public int addConditionalShopAllProductsDiscount(String userName, double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeDiscountShopPolicy(userName)) {
-            Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
-            return discountPolicy.addConditionalShopAllProductsDiscount(percentage, pred);
-        }
-        return -1;
+    public int addConditionalShopAllProductsDiscount(double percentage, ToBuildDiscountPredicate toBuildPredicatesFrom) throws CriticalInvariantException, InvalidParamException, AccessDeniedException {
+        Predicate<Basket> pred = makePredDiscount(toBuildPredicatesFrom);
+        return discountPolicy.addConditionalShopAllProductsDiscount(percentage, pred);
     }
 
-    public int addProductPurchasePolicy(String userName, int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException, ProductNotFoundException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeProductsBuyingShopPolicy(userName)) {
-            Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
-            String productName = inventory.getName(prodID);
-            return purchasePolicy.addProductPurchaseRule(prodID, pred, productName);
-        }
-        return -1;
+    public int addProductPurchasePolicy(int prodID, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException, ProductNotFoundException {
+        Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
+        String productName = inventory.getName(prodID);
+        return purchasePolicy.addProductPurchaseRule(prodID, pred, productName);
     }
 
-    public int addCategoryPurchasePolicy(String userName, String category, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeBuyingShopPolicy(userName)) {
-            Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
-            return purchasePolicy.addCategoryPurchaseRule(category, pred);
-        }
-        return -1;
+    public int addCategoryPurchasePolicy(String category, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
+        Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
+        return purchasePolicy.addCategoryPurchaseRule(category, pred);
     }
 
 
-    public int addShopAllProductsPurchasePolicy(String userName, ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeBuyingShopPolicy(userName)) {
-            Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
-            return purchasePolicy.addGeneralShopPurchaseRule(pred);
-        }
-        return -1;
+    public int addShopAllProductsPurchasePolicy(ToBuildPRPredicateFrom toBuildPredicatesFrom) throws CriticalInvariantException, AccessDeniedException {
+        Predicate<Basket> pred = makePredPurchaseRule(toBuildPredicatesFrom);
+        return purchasePolicy.addGeneralShopPurchaseRule(pred);
     }
+
 
     /*public Predicate<Tuple<Map<Integer, Integer>, Double>> makePred(List<Integer> logicalGatesList, List<Integer> predTypeOpCode, List<Tuple<Tuple<Integer, Integer>, Double>> toBuildPredicatesFrom) throws Exception {
         checkPredMakerParameters(logicalGatesList, predTypeOpCode, toBuildPredicatesFrom);
@@ -865,38 +885,28 @@ public class Shop {
         return PredicateManager.createMinimumProductsPredicate(productID, productName, amount);
     }
 
-    public int addOrDiscount(String userName, int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeDiscountShopPolicy(userName))
-            return discountPolicy.addOrDiscount(dis1ID, dis2ID);
-        return -1;
+    public int addOrDiscount(int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
+        return discountPolicy.addOrDiscount(dis1ID, dis2ID);
     }
 
-    public int addAndDiscount(String userName, int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeDiscountShopPolicy(userName))
-            return discountPolicy.addAndDiscount(dis1ID, dis2ID);
-        return -1;
+    public int addAndDiscount(int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
+        return discountPolicy.addAndDiscount(dis1ID, dis2ID);
     }
 
-    public int addXorDiscount(String userName, int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeDiscountShopPolicy(userName))
-            return discountPolicy.addXorDiscount(dis1ID, dis2ID);
-        return -1;
+    public int addXorDiscount(int dis1ID, int dis2ID) throws DiscountNotFoundException, CriticalInvariantException {
+        return discountPolicy.addXorDiscount(dis1ID, dis2ID);
     }
 
-    public int addOrPurchaseRule(String userName, int pr1ID, int pr2ID) throws PurchaseRuleNotFoundException, CriticalInvariantException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeProductsBuyingShopPolicy(userName))
-            return purchasePolicy.addOrPR(pr1ID, pr2ID);
-        return -1;
+    public int addOrPurchaseRule(int pr1ID, int pr2ID) throws PurchaseRuleNotFoundException, CriticalInvariantException {
+        return purchasePolicy.addOrPR(pr1ID, pr2ID);
     }
 
-    public int addAndPurchaseRule(String userName, int pr1ID, int pr2ID) throws PurchaseRuleNotFoundException, CriticalInvariantException {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeProductsBuyingShopPolicy(userName))
-            return purchasePolicy.addAndPR(pr1ID, pr2ID);
-        return -1;
+    public int addAndPurchaseRule(int pr1ID, int pr2ID) throws PurchaseRuleNotFoundException, CriticalInvariantException {
+        return purchasePolicy.addAndPR(pr1ID, pr2ID);
     }
 
     public boolean removeDiscount(String userName, int discountID) {
-        if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeDiscountShopPolicy(userName))
+        if (ShopFounder.getUserName().equals(userName) || isShopOwner(userName)  || (isShopManager(userName) && shopManagersPermissionsController.canChangeDiscountShopPolicy(userName)))
             return discountPolicy.removeDiscount(discountID);
         else return false;
     }
@@ -906,10 +916,7 @@ public class Shop {
 //        else return false;
 //    }
 
-    public void removePurchaseRule(String userName, int purchaseRuleID){ 
-      if (ShopFounder.getUserName().equals(userName) || ShopOwners.containsKey(userName) || shopManagersPermissionsController.canChangeBuyingShopPolicy(userName))
-        purchasePolicy.removePurchaseRule(purchaseRuleID); 
-    }
+    public boolean removePurchaseRule(int purchaseRuleID){ return purchasePolicy.removePurchaseRule(purchaseRuleID); }
 
     public PurchasePolicy getPurchasePolicy() {
         return purchasePolicy;
@@ -965,7 +972,8 @@ public class Shop {
     }
 
     public void addUserAsOwner(User user){
-        ShopOwners.putIfAbsent(user.getUserName(), user);
+        if(!isShopOwner(user.getUserName()))
+            ShopOwners.add(user);
         try {
             user.addRole(shopID,Role.ShopOwner);
         } catch (InvalidSequenceOperationsExc e) {
@@ -974,7 +982,7 @@ public class Shop {
         eventLogger.logMsg(Level.INFO, String.format("Appoint New Shop Owner User: %s", user.getUserName()));
     }
 
-    public void putIfAbsentManager(String userName, User appointUser) {
-        ShopManagers.putIfAbsent(userName, appointUser);
-    }
+//    public void putIfAbsentManager(String userName, User appointUser) {
+//        ShopManagers.putIfAbsent(userName, appointUser);
+//    }
 }

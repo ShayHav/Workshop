@@ -32,6 +32,9 @@ public class Appointments {
     public Appointments merge(Appointments a)
     {
         setMyappointee(a.getMyappointee());
+        setMyrole(a.getMyrole());
+        setUsername(a.getUsername());
+        setShopID(a.getShopID());
         return this;
     }
 

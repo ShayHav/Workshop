@@ -1,9 +1,7 @@
 package DB;
-import domain.shop.Product;
-import domain.shop.ProductHistory;
-import domain.shop.ProductImp;
-import domain.shop.Shop;
+import domain.shop.*;
 import domain.user.*;
+import domain.user.OwnerAppointment;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -427,5 +425,134 @@ public class HiberDB {
     }
 
     public void removeShopRoles(Shop shop, List<Role> ls) {
+    }
+
+    public void saveSecurePasswordStorage(SecurePasswordStorage securePasswordStorage) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        try
+        {
+            et.begin();
+            for(UserInfo ui : securePasswordStorage.getUserDatabase())
+                em.persist(ui);
+            et.commit();
+        }
+        finally
+        {
+            if(et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
+    }
+
+    public void updateSecurePasswordStorage(SecurePasswordStorage securePasswordStorage) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        try
+        {
+            et.begin();
+            for(UserInfo ui : securePasswordStorage.getUserDatabase()) {
+                UserInfo toUpdate = em.find(UserInfo.class,ui.getUserid());
+                toUpdate.merge(ui);
+            }
+                et.commit();
+        }
+        finally
+        {
+            if(et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
+    }
+
+    public SecurePasswordInt getSecurePasswordStorage() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        SecurePasswordInt sps = new SecurePasswordInt();
+        try
+        {
+            et.begin();
+            List<UserInfo> uiLs = em.createQuery("select e from UserInfo e").getResultList();
+            Map<String,UserInfo> uiMap = new HashMap<>();
+            for(UserInfo ui : uiLs)
+                uiMap.putIfAbsent(ui.getUserid(),ui);
+            sps.setMap(uiMap);
+            et.commit();
+        }
+        finally
+        {
+            if(et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
+        return sps;
+    }
+
+    public void saveOrders(List<Order> orderHistory) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        try
+        {
+            et.begin();
+            for(Order o : orderHistory) {
+                o.initLs();
+                em.persist(o);
+            }
+            et.commit();
+        }
+        finally
+        {
+            if(et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
+    }
+
+    public List<Order> getOrderHistoryForUser(String userName) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        List<Order> ls = new ArrayList<>();
+        try {
+            et.begin();
+            ls = em.createQuery("select e from Order e where e.userID = :status",
+                    Order.class).setParameter("status", userName).getResultList();
+
+            et.commit();
+        } finally {
+            if (et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
+        return ls;
+    }
+
+    public void updateOrdersForUser(List<Order> ls) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+        try {
+            et.begin();
+            for(Order o : ls)
+            {
+                Order toUpdate = em.find(Order.class, o.getOrderId());
+                toUpdate.merge(o);
+            }
+            et.commit();
+        } finally {
+            if (et.isActive())
+                et.rollback();
+            em.close();
+            emf.close();
+        }
     }
 }

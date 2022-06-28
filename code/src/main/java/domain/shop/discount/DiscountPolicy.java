@@ -27,7 +27,15 @@ public class DiscountPolicy {
     private int discountIDCounter;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    private int shopID;
 
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
+    }
 
     public DiscountPolicy(){
         product_discounts = new HashMap<>();

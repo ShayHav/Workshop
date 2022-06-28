@@ -15,8 +15,12 @@ import java.util.logging.Level;
 public class Inventory {
     @Id
     private String shopID;
+    @Transient
     private final Map<Integer, ProductImp> keyToProduct;
+    @
+    @Transient
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
+    @Transient
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
     @Transient
     private ControllerDAL controllerDAL = ControllerDAL.getInstance();
@@ -275,6 +279,16 @@ public class Inventory {
 
     private ProductImp checkInDBForPI(int p){
         return controllerDAL.getProduct(p);
+    }
+
+    public void initLs()
+    {
+
+    }
+
+    public void cleanLs()
+    {
+
     }
 
 }

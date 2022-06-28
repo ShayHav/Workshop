@@ -1,12 +1,12 @@
 package domain.shop;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
+@Embeddable
 public class ProductHistory implements Product{
 
-    @Id
     private int serialNumber;
     private String name;
     private String description;

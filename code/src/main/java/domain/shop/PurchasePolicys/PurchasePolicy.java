@@ -1,6 +1,7 @@
 package domain.shop.PurchasePolicys;
 
 
+import domain.DAL.ControllerDAL;
 import domain.ErrorLoggerSingleton;
 import domain.EventLoggerSingleton;
 import domain.Exceptions.CriticalInvariantException;
@@ -9,6 +10,7 @@ import domain.Exceptions.PurchaseRuleNotFoundException;
 import domain.shop.ProductImp;
 import domain.shop.discount.Basket;
 
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +27,18 @@ public class PurchasePolicy {
     private int purchaseRuleIDCounter;
     private static final ErrorLoggerSingleton errorLogger = ErrorLoggerSingleton.getInstance();
     private static final EventLoggerSingleton eventLogger = EventLoggerSingleton.getInstance();
+    @Transient
+    private ControllerDAL controllerDAL = ControllerDAL.getInstance();
 
+    private int shopID;
+
+    public int getShopID() {
+        return shopID;
+    }
+
+    public void setShopID(int shopID) {
+        this.shopID = shopID;
+    }
 
     public PurchasePolicy(){
         product_purchaseRules = new HashMap<>();
@@ -223,14 +236,13 @@ public class PurchasePolicy {
     }
 
 
-    public void removePurchaseRule(int purchaseRuleID){
+    public boolean removePurchaseRule(int purchaseRuleID){
         for(Map.Entry<Integer, List<PurchaseRule>> set : product_purchaseRules.entrySet()){
             List<PurchaseRule> prod_pr = set.getValue();
             for(PurchaseRule pr: prod_pr) {
                 if (pr.getID() == purchaseRuleID) {
                     prod_pr.remove(pr);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
-                    break;
                 }
             }
         }
@@ -241,7 +253,6 @@ public class PurchasePolicy {
                 if (pr.getID() == purchaseRuleID) {
                     prod_pr.remove(pr);
                     eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
-                    break;
                 }
             }
         }
@@ -250,10 +261,12 @@ public class PurchasePolicy {
             if (pr.getID() == purchaseRuleID) {
                 general_PurchaseRules.remove(pr);
                 eventLogger.logMsg(Level.INFO, String.format("removed discount: %d ", purchaseRuleID));
-                break;
+                controllerDAL.upDatePurchasePolicy(this);
+                return true;
             }
         }
         eventLogger.logMsg(Level.INFO, String.format("no such discount in the shop: %d", purchaseRuleID));
+        return false;
     }
 
     public List<PurchaseRule> getAllDistinctPurchaseRules(){

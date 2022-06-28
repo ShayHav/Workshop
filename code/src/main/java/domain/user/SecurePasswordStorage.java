@@ -6,9 +6,7 @@ import domain.EventLoggerSingleton;
 
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 
@@ -18,7 +16,7 @@ import javax.crypto.spec.PBEKeySpec;
 
 
 //TODO: https://www.quickprogrammingtips.com/java/how-to-securely-store-passwords-in-java.html
-public class SecurePasswordStorage {
+public class SecurePasswordStorage extends SecurePasswordInt {
     private static SecurePasswordStorage securePasswordStorage_singleton = null;
     // Simulates database of users!
     private final Map<String, UserInfo> userDatabase = new HashMap<>();
@@ -30,6 +28,14 @@ public class SecurePasswordStorage {
         if(securePasswordStorage_singleton==null)
             securePasswordStorage_singleton = new SecurePasswordStorage();
         return securePasswordStorage_singleton;
+    }
+
+    public List<UserInfo> getUserDatabase() {
+        List<UserInfo> res = new ArrayList<>();
+        for (Map.Entry<String,UserInfo> entry : userDatabase.entrySet()) {
+            res.add(entry.getValue());
+        }
+        return res;
     }
 
     public boolean passwordCheck(String inputUser, String inputPass){
@@ -100,6 +106,11 @@ public class SecurePasswordStorage {
 
     public boolean isUserRole(String userName) {
         return userDatabase.get(userName)!=null;
+    }
+
+    @Override
+    public Map<String, UserInfo> getMap() {
+        return userDatabase;
     }
 }
 

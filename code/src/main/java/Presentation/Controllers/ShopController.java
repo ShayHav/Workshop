@@ -8,6 +8,7 @@ import Presentation.Model.PresentationProduct;
 import Presentation.Model.PresentationShop;
 import Presentation.Model.PresentationUser;
 import Service.Services;
+import domain.Exceptions.BlankDataExc;
 import domain.Exceptions.InvalidParamException;
 import domain.Responses.Response;
 import domain.Responses.ResponseList;
@@ -156,7 +157,7 @@ public class ShopController {
         }
     }
 
-    public void addProduct(Context ctx) {
+    public void addProduct(Context ctx) throws BlankDataExc {
         PresentationUser user = userController.getUser(ctx);
         int shopID = ctx.pathParamAsClass("shopID",Integer.class ).get();
         int serialNumber = ctx.formParamAsClass("serialNumber", Integer.class).get();
@@ -323,11 +324,10 @@ public class ShopController {
             return;
         }
         Response response;
-        String username = context.cookieStore("uid");
         switch (ruleType){
-            case "ProhibitPurchaseHour" -> response = addProhibitedTimeRule(context, username);
-            case "minimumQuantity" -> response = addMinimumRule(context, username);
-            case "maximusQuantity" -> response = addMaximumRule(context, username);
+            case "ProhibitPurchaseHour" -> response = addProhibitedTimeRule(context);
+            case "minimumQuantity" -> response = addMinimumRule(context);
+            case "maximusQuantity" -> response = addMaximumRule(context);
             default -> response = new Response("unsupported option in rule type");
         }
         if(response.isErrorOccurred()){
@@ -339,7 +339,8 @@ public class ShopController {
 
     }
 
-    private Response addProhibitedTimeRule(Context context, String username){
+
+    private Response addProhibitedTimeRule(Context context){
         String ruleBase = context.formParam("ruleBase");
         if(ruleBase == null){
             return new Response("the basis of the rule is null");
@@ -351,14 +352,14 @@ public class ShopController {
         switch (ruleBase){
             case "category" -> {
                 String category = context.formParam("productOrCategory");
-                return services.addCategoryPurchasePolicy(username, shopID, category, builder);
+                return services.addCategoryPurchasePolicy(shopID, category, builder);
             }
             case "allProduct" -> {
-                return services.addShopAllProductsPurchasePolicy(username, shopID,builder);
+                return services.addShopAllProductsPurchasePolicy(shopID,builder);
             }
             case "product" -> {
                 int serialNumber = context.formParamAsClass("productOrCategory", int.class).get();
-                return services.addProductPurchasePolicy(username, shopID, serialNumber, builder);
+                return services.addProductPurchasePolicy(shopID, serialNumber, builder);
             }
             default -> {
                 return new Response("not a legal ruleBase");
@@ -366,11 +367,13 @@ public class ShopController {
         }
     }
 
-    private Response addMaximumRule(Context context, String username){
+
+    private Response addMaximumRule(Context context){
         String ruleBase = context.formParam("ruleBase");
         if(ruleBase == null){
             return new Response("the basis of the rule is null");
         }
+        String username = context.cookieStore("uid");
         int shopID = context.pathParamAsClass("shopID", int.class).get();
         int maximumNumber = context.formParamAsClass("maximum", int.class).get();
         int targetProduct = context.formParamAsClass("targetProduct", int.class).get();
@@ -378,18 +381,18 @@ public class ShopController {
         if(response.isErrorOccurred()){
             return response;
         }
-        ToBuildPRPredicateFrom builder = new ToBuildPRPredicateFrom(maximumNumber,  targetProduct, response.getValue().getName() , PRPredType.MaximumAmount);
+        ToBuildPRPredicateFrom builder = new ToBuildPRPredicateFrom(maximumNumber,  targetProduct, response.getValue().getName() , PRPredType.MaximumAmount);;
         switch (ruleBase){
             case "category" -> {
                 String category = context.formParam("productOrCategory");
-                return services.addCategoryPurchasePolicy(username, shopID, category, builder);
+                return services.addCategoryPurchasePolicy(shopID, category, builder);
             }
             case "allProduct" -> {
-                return services.addShopAllProductsPurchasePolicy(username, shopID,builder);
+                return services.addShopAllProductsPurchasePolicy(shopID,builder);
             }
             case "product" -> {
-                int serialNumber = context.formParamAsClass("productOrCategory", int.class).get();
-                return services.addProductPurchasePolicy(username, shopID, serialNumber, builder);
+                int serialNumber = context.formParamAsClass("productOrCategory", int.class).get();;
+                return services.addProductPurchasePolicy(shopID, serialNumber, builder);
             }
             default -> {
                 return new Response("not a legal ruleBase");
@@ -397,7 +400,7 @@ public class ShopController {
         }
     }
 
-    private Response addMinimumRule(Context context, String username){
+    private Response addMinimumRule(Context context){
         String ruleBase = context.formParam("ruleBase");
         if(ruleBase == null){
             return new Response("the basis of the rule is null");
@@ -406,6 +409,7 @@ public class ShopController {
         int minimumNumber = context.formParamAsClass("minimum", int.class).get();
         int targetProduct = context.formParamAsClass("targetProduct", int.class).get();
 
+        String username = context.cookieStore("uid");
         ResponseT<Product> response = services.getProduct(username, shopID, targetProduct);
         if(response.isErrorOccurred()){
             return response;
@@ -416,14 +420,14 @@ public class ShopController {
         switch (ruleBase){
             case "category" -> {
                 String category = context.formParam("productOrCategory");
-                return services.addCategoryPurchasePolicy(username, shopID, category, builder);
+                return services.addCategoryPurchasePolicy(shopID, category, builder);
             }
             case "allProduct" -> {
-                return services.addShopAllProductsPurchasePolicy(username, shopID,builder);
+                return services.addShopAllProductsPurchasePolicy(shopID,builder);
             }
             case "product" -> {
                 int serialNumber = context.formParamAsClass("productOrCategory", int.class).get();
-                return services.addProductPurchasePolicy(username, shopID, serialNumber, builder);
+                return services.addProductPurchasePolicy(shopID, serialNumber, builder);
             }
             default -> {
                 return new Response("not a legal ruleBase");
@@ -442,8 +446,8 @@ public class ShopController {
         }
         Response response;
         switch (type){
-            case "and" -> response = services.addAndPurchaseRule(username, rules.get(0), rules.get(1), shopID);
-            case "or" -> response = services.addOrPurchaseRule(username, rules.get(0), rules.get(1), shopID);
+            case "and" -> response = services.addAndPurchaseRule(rules.get(0), rules.get(1), shopID);
+            case "or" -> response = services.addOrPurchaseRule(rules.get(0), rules.get(1), shopID);
             default -> response = new Response("Not supported operation");
         }
         if(response.isErrorOccurred()){
@@ -504,10 +508,10 @@ public class ShopController {
         switch (discountBase){
             case "category" -> {
                 String category = context.formParam("productOrCategoryDiscount");
-                return services.addConditionalCategoryDiscount(username,shopID,category,percentage,predicate);
+                return services.addConditionalCategoryDiscount(shopID,category,percentage,predicate);
             }
             case "allProduct" -> {
-                return services.addConditionalShopAllProductsDiscount(username, shopID,percentage,predicate);
+                return services.addConditionalShopAllProductsDiscount( shopID,percentage,predicate);
             }
             case "product" -> {
                 int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();
@@ -515,7 +519,7 @@ public class ShopController {
                 if(response.isErrorOccurred()){
                     return response;
                 }
-                return services.addConditionalProductDiscount(username, shopID,serialNumber,percentage,predicate);
+                return services.addConditionalProductDiscount( shopID,serialNumber,percentage,predicate);
             }
             default -> {
                 return new Response("not a legal ruleBase");
@@ -545,10 +549,10 @@ public class ShopController {
         switch (discountBase){
             case "category" -> {
                 String category = context.formParam("productOrCategoryDiscount");
-                return services.addConditionalCategoryDiscount(username,shopID,category,percentage,predicate);
+                return services.addConditionalCategoryDiscount(shopID,category,percentage,predicate);
             }
             case "allProduct" -> {
-                return services.addConditionalShopAllProductsDiscount(username, shopID,percentage,predicate);
+                return services.addConditionalShopAllProductsDiscount(shopID,percentage,predicate);
             }
             case "product" -> {
                 int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();
@@ -556,7 +560,7 @@ public class ShopController {
                 if(response.isErrorOccurred()){
                     return response;
                 }
-                return services.addConditionalProductDiscount(username, shopID,serialNumber,percentage,predicate);
+                return services.addConditionalProductDiscount(shopID,serialNumber,percentage,predicate);
             }
             default -> {
                 return new Response("not a legal ruleBase");
@@ -576,10 +580,10 @@ public class ShopController {
         switch (discountBase){
             case "category" -> {
                 String category = context.formParam("productOrCategoryDiscount");
-                return services.addCategoryDiscount(username, shopID, category, percentage);
+                return services.addCategoryDiscount( shopID, category, percentage);
             }
             case "allProduct" -> {
-                return services.addShopAllProductsDiscount(username, shopID,percentage);
+                return services.addShopAllProductsDiscount( shopID,percentage);
             }
             case "product" -> {
                 int serialNumber = context.formParamAsClass("productOrCategoryDiscount", int.class).get();
@@ -587,7 +591,7 @@ public class ShopController {
                 if(response.isErrorOccurred()){
                     return response;
                 }
-                return services.addProductDiscount(username, shopID, serialNumber, percentage);
+                return services.addProductDiscount( shopID, serialNumber, percentage);
             }
             default -> {
                 return new Response("not a legal ruleBase");
@@ -605,7 +609,7 @@ public class ShopController {
         int shopID = context.pathParamAsClass("shopID", int.class).get();
         int ruleId = context.formParamAsClass("deleteRuleId", int.class).get();
         String username = context.cookieStore("uid");
-        Response response = services.removePR(username, ruleId, shopID);
+        Response response = services.removePR(ruleId, shopID);
         if(response.isErrorOccurred()){
             context.status(400).render("errorPage.jte", Map.of("errorMessage", response.errorMessage, "status", 400));
             return;

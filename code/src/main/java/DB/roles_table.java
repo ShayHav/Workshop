@@ -16,6 +16,7 @@ public class roles_table {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
     public roles_table(String username,int shopid, Role role)
     {
         this.username = username;
@@ -29,6 +30,8 @@ public class roles_table {
     public roles_table merge(roles_table rt)
     {
         this.setR(rt.getR());
+        this.setShopid(rt.getShopid());
+        this.setUsername(rt.getUsername());
         return this;
     }
     public String getUsername() {
